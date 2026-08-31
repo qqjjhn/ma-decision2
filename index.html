@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理会计 · 虚拟仿真实验平台</title>
+<style>
+  :root{
+    --green:#2e7d32; --green-light:#66bb6a; --green-pale:#e8f5e9;
+    --blue:#1a4e7d;  --blue-light:#3a7bbf;  --blue-pale:#e8f1f9;
+    --orange:#c94b22; --orange-light:#e88a3a; --orange-pale:#fdf0e6;
+    --bg:#f5f7f4;
+    --card:#ffffff;
+    --ink:#243b33;
+    --ink-soft:#6b7f76;
+    --radius:20px;
+    --shadow:0 8px 24px rgba(36,59,51,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+    background:
+      radial-gradient(1000px 480px at 85% -10%, #dcefe0 0%, transparent 60%),
+      radial-gradient(700px 380px at -10% 35%, #f6e3d4 0%, transparent 55%),
+      radial-gradient(600px 320px at 90% 60%, #e3eef8 0%, transparent 50%),
+      var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+    padding:36px 18px 60px;
+    line-height:1.6;
+  }
+  .wrap{max-width:1060px;margin:0 auto}
+
+  header{
+    background:linear-gradient(120deg,#1a4e7d,#2e7d32 55%,#c94b22);
+    color:#fff;border-radius:var(--radius);
+    padding:30px 34px;box-shadow:var(--shadow);
+    position:relative;overflow:hidden;text-align:center;
+  }
+  header::after{
+    content:"";position:absolute;right:-60px;top:-60px;
+    width:240px;height:240px;border-radius:50%;
+    background:rgba(255,255,255,.08);
+  }
+  header .badge{
+    display:inline-block;background:rgba(255,255,255,.22);
+    border-radius:30px;padding:4px 18px;font-size:13px;
+    letter-spacing:3px;margin-bottom:12px;
+  }
+  header h1{font-size:30px;letter-spacing:2px}
+  header p{opacity:.92;margin-top:10px;font-size:15px}
+
+  .grid{
+    display:grid;gap:24px;margin-top:30px;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  }
+  .card{
+    background:var(--card);border-radius:var(--radius);
+    padding:28px;box-shadow:var(--shadow);cursor:pointer;
+    border:1px solid #e2e9e5;transition:transform .18s,box-shadow .18s;
+    display:flex;flex-direction:column;gap:12px;
+    text-decoration:none;color:inherit;
+    position:relative;overflow:hidden;
+  }
+  .card:hover{transform:translateY(-5px);box-shadow:0 16px 32px rgba(36,59,51,.2)}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:6px}
+  .card.green::before{background:linear-gradient(90deg,#2e7d32,#66bb6a)}
+  .card.blue::before{background:linear-gradient(90deg,#1a4e7d,#3a7bbf)}
+  .card.orange::before{background:linear-gradient(90deg,#c94b22,#e88a3a)}
+  .card .ic{
+    width:62px;height:62px;border-radius:18px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:32px;
+  }
+  .card.green .ic{background:var(--green-pale)}
+  .card.blue .ic{background:var(--blue-pale)}
+  .card.orange .ic{background:var(--orange-pale)}
+  .card h3{font-size:21px;color:var(--green)}
+  .card.blue h3{color:var(--blue)}
+  .card.orange h3{color:var(--orange)}
+  .card .sub{font-size:14px;color:var(--ink-soft)}
+  .card .go{
+    align-self:flex-start;margin-top:auto;font-size:14px;
+    padding:8px 22px;border-radius:30px;color:#fff;font-weight:700;
+  }
+  .card.green .go{background:var(--green-light)}
+  .card.blue .go{background:var(--blue-light)}
+  .card.orange .go{background:var(--orange-light)}
+  .card .tag{
+    position:absolute;top:16px;right:16px;font-size:12px;
+    color:#fff;padding:3px 12px;border-radius:20px;
+  }
+  .card.green .tag{background:var(--green-light)}
+  .card.blue .tag{background:var(--blue-light)}
+  .card.orange .tag{background:var(--orange-light)}
+
+  .foot{margin-top:36px;text-align:center;font-size:13px;color:var(--ink-soft)}
+  .tip{
+    margin-top:30px;background:#fff;border:1px dashed #b9d0c4;
+    border-radius:14px;padding:16px 20px;font-size:13px;color:var(--ink-soft);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="badge">虚 拟 仿 真 实 验</div>
+    <h1>管理会计 · 教学实验平台</h1>
+    <p>湖南农业大学商学院 · 线下课堂与线上自主学习共用入口</p>
+  </header>
+
+  <div class="grid">
+
+    <!-- 实验一：蜜雪冰城涨价决策模拟器 -->
+    <a class="card orange" href="https://qqjjhn.github.io/ma-decision2/%E7%AE%A1%E7%90%86%E4%BC%9A%E8%AE%A1_%E7%AC%AC%E4%B8%80%E6%AC%A1%E8%AF%BE_%E6%B6%A8%E4%BB%B7%E5%86%B3%E7%AD%96%E6%A8%A1%E6%8B%9F%E5%99%A8.html">
+      <div class="ic">🧋</div>
+      <h3>蜜雪冰城涨价决策模拟器</h3>
+      <div class="sub">扮演决策者为产品定价，观察涨价对销量、收入与利润的连锁影响，基于本量利数据做出最优决策。</div>
+      <span class="tag">第一堂课 · 决策</span>
+      <span class="go">进入实验 →</span>
+    </a>
+
+    <!-- 实验二：管理会计的产生与发展 -->
+    <a class="card blue" href="https://qqjjhn.github.io/ma-decision2/%E7%AE%A1%E7%90%86%E4%BC%9A%E8%AE%A1%E7%9A%84%E4%BA%A7%E7%94%9F%E4%B8%8E%E5%8F%91%E5%B1%95_%E4%BA%92%E5%8A%A8%E8%AF%BE%E5%A0%82_%E5%9B%BE%E7%A4%BA%E7%89%88.html">
+      <div class="ic">📚</div>
+      <h3>管理会计的产生与发展</h3>
+      <div class="sub">费曼式互动课堂·图示版。跟随8张图示理清产生脉络与两次"裂变"，完成闯关测验与费曼挑战。</div>
+      <span class="tag">第一章 · 发展史</span>
+      <span class="go">进入课堂 →</span>
+    </a>
+
+    <!-- 实验三：农场经营驾驶舱 -->
+    <a class="card green" href="https://qqjjhn.github.io/ma-decision/1%E3%80%81%E5%86%9C%E5%9C%BA%E7%BB%8F%E8%90%A5%E9%A9%BE%E9%A9%B6%E8%88%B1.html">
+      <div class="ic">🌾</div>
+      <h3>农场经营驾驶舱</h3>
+      <div class="sub">经营「湘农生态家庭农场」，点击五大模块对比管理会计与财务会计的信息差异，完成入门测验领取认知徽章。</div>
+      <span class="tag">第一章 · 概论</span>
+      <span class="go">进入实验 →</span>
+    </a>
+
+  </div>
+
+  <div class="tip">
+    💡 <b>教师提示：</b>三个实验均可在手机、平板、电脑上直接打开。建议线下课堂使用「涨价决策模拟器」制造决策代入感，线上自主学习依次完成「产生与发展」打底 → 「农场驾驶舱」实操，形成完整认知闭环。
+  </div>
+
+  <div class="foot">管理会计 · 虚拟仿真实验平台 | 湖南农业大学 商学院</div>
+
+</div>
+</body>
+</html>

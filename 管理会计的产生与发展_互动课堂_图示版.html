@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理会计的产生与发展 · 费曼式互动课堂（图示版）</title>
+<style>
+  :root{
+    --gray-900:#2C2C2A; --gray-600:#5F5E5A; --gray-50:#F1EFE8;
+    --blue-600:#185FA5; --blue-100:#B5D4F4;
+    --teal-600:#0F6E56; --teal-100:#9FE1CB;
+    --amber-600:#854F0B; --amber-100:#FAC775;
+    --coral-600:#993C1D; --coral-100:#F5C4B3;
+    --green-600:#3B6D11; --green-100:#C0DD97;
+    --radius:12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    color:var(--gray-900);background:#FBFAF7;line-height:1.65;padding:0 0 60px}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px}
+  header{background:linear-gradient(180deg,#fff,#FBFAF7);border-bottom:1px solid #e7e4dc;
+    padding:34px 0 26px;margin-bottom:10px}
+  header h1{font-size:26px;font-weight:600;letter-spacing:.5px}
+  header p{color:var(--gray-600);margin-top:8px;font-size:15px}
+  .tag{display:inline-block;background:var(--amber-100);color:var(--amber-600);
+    font-size:12px;padding:3px 10px;border-radius:20px;margin-bottom:12px;font-weight:500}
+  section{margin:38px 0;opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}
+  section.show{opacity:1;transform:none}
+  h2{font-size:20px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  h2 .num{background:var(--gray-900);color:#fff;width:26px;height:26px;border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;font-size:14px}
+  .lead{color:var(--gray-600);font-size:14px;margin-bottom:14px}
+  .feynman-quote{background:var(--gray-50);border-left:4px solid var(--amber-600);
+    padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;font-size:15px;margin:14px 0}
+  .feynman-quote b{color:var(--amber-600)}
+  .viz{background:#fff;border:1px solid #e7e4dc;border-radius:var(--radius);padding:14px;margin:14px 0}
+  .viz svg{width:100%;height:auto;display:block}
+  .cap{font-size:14px;color:var(--gray-600);margin-top:10px;padding:10px 14px;background:var(--gray-50);
+    border-radius:8px;min-height:20px}
+  .cap b{font-weight:600}
+  /* split svg interactive */
+  #splitSvg .branch{cursor:pointer;transition:opacity .25s}
+  #splitSvg.has-sel .branch:not(.sel){opacity:.32}
+  #splitSvg .headbox{transition:stroke-width .2s}
+  #splitSvg .branch.sel .headbox{stroke-width:3}
+  /* timeline svg */
+  #timeSvg .node{cursor:pointer}
+  #timeSvg .node:hover .circ{stroke-width:3}
+  /* cards */
+  .scard{border-radius:var(--radius);padding:16px;border:1px solid;cursor:pointer;transition:.2s}
+  .scard.fin{background:var(--blue-100);border-color:var(--blue-600)}
+  .scard.mg{background:var(--teal-100);border-color:var(--teal-600)}
+  .scard h3{font-size:17px;font-weight:600}
+  .scard .sub{font-size:13px;opacity:.8;margin-bottom:8px}
+  .scard .detail{display:none;font-size:14px;margin-top:8px}
+  .scard.open .detail{display:block}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+  /* scenario quiz */
+  .quiz-block{background:#fff;border:1px solid #e7e4dc;border-radius:var(--radius);padding:18px;margin-top:14px}
+  .sce{border:1px solid #e7e4dc;border-radius:10px;padding:14px;margin:12px 0}
+  .sce p{font-size:15px;margin-bottom:10px}
+  .btns{display:flex;gap:10px;flex-wrap:wrap}
+  button{font-family:inherit;font-size:14px;border:1px solid var(--gray-600);background:#fff;
+    color:var(--gray-900);padding:8px 16px;border-radius:8px;cursor:pointer;transition:.15s}
+  button:hover{background:var(--gray-50)}
+  button.fin{border-color:var(--blue-600);color:var(--blue-600)}
+  button.mg{border-color:var(--teal-600);color:var(--teal-600)}
+  button.ans{border-color:var(--amber-600);color:var(--amber-600)}
+  .fb{margin-top:10px;font-size:14px;display:none}
+  .fb.ok{color:var(--green-600)} .fb.no{color:var(--coral-600)}
+  .fb.show{display:block}
+  /* accordion */
+  .stage{border:1px solid #e7e4dc;border-radius:var(--radius);margin:12px 0;overflow:hidden;background:#fff}
+  .stage-head{padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+  .stage-head .t{font-size:16px;font-weight:600}
+  .stage-head .era{font-size:13px;color:var(--gray-600)}
+  .stage-head .arrow{transition:.2s;color:var(--gray-600)}
+  .stage.open .arrow{transform:rotate(90deg)}
+  .stage-body{display:none;padding:0 18px 18px;font-size:14px}
+  .stage.open .stage-body{display:block}
+  .stage .row{display:flex;gap:8px;margin:6px 0}
+  .stage .k{font-weight:600;min-width:54px;color:var(--gray-600)}
+  .s1 .stage-head{background:var(--blue-100)}
+  .s2 .stage-head{background:var(--teal-100)}
+  .s3 .stage-head{background:var(--amber-100)}
+  .china{background:var(--amber-100);border:1px solid var(--amber-600);border-radius:var(--radius);
+    padding:14px 18px;font-size:14px;margin-top:12px}
+  .china b{color:var(--amber-600)}
+  /* score + quiz */
+  .score-bar{background:#fff;border:1px solid #e7e4dc;border-radius:var(--radius);padding:14px 18px;
+    margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;font-size:14px}
+  .score-bar .num{font-size:22px;font-weight:600;color:var(--blue-600)}
+  .q{border:1px solid #e7e4dc;border-radius:var(--radius);padding:16px 18px;margin:14px 0;background:#fff}
+  .q .qt{font-size:15px;font-weight:500;margin-bottom:12px}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{border:1px solid #e7e4dc;border-radius:8px;padding:10px 14px;cursor:pointer;font-size:14px;transition:.15s}
+  .opt:hover{background:var(--gray-50)}
+  .opt.correct{background:var(--green-100);border-color:var(--green-600)}
+  .opt.wrong{background:var(--coral-100);border-color:var(--coral-600)}
+  .qfb{margin-top:10px;font-size:13px;display:none}
+  .qfb.show{display:block}
+  /* challenge */
+  .challenge{background:var(--gray-50);border:1px solid #e7e4dc;border-radius:var(--radius);padding:18px}
+  .challenge textarea{width:100%;min-height:90px;border:1px solid #e7e4dc;border-radius:8px;
+    padding:10px;font-family:inherit;font-size:14px;resize:vertical;margin-top:8px}
+  .ref{display:none;margin-top:12px;background:#fff;border:1px dashed var(--teal-600);border-radius:8px;
+    padding:14px;font-size:14px}
+  .ref.show{display:block}
+  .check{background:#fff;border:1px solid #e7e4dc;border-radius:var(--radius);padding:16px 18px}
+  .check label{display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-size:14px;cursor:pointer}
+  .check input{margin-top:4px;width:16px;height:16px}
+  footer{text-align:center;color:var(--gray-600);font-size:12px;margin-top:40px}
+  .totop{position:fixed;right:18px;bottom:18px;background:var(--gray-900);color:#fff;border:none;
+    border-radius:50%;width:46px;height:46px;font-size:18px;box-shadow:0 4px 14px rgba(0,0,0,.18);opacity:0;
+    transition:opacity .3s;pointer-events:none}
+  .totop.show{opacity:1;pointer-events:auto}
+  @media(max-width:600px){.split{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <span class="tag">费曼式互动课堂 · 图示版 · 管理会计</span>
+    <h1>管理会计的产生与发展</h1>
+    <p>别先背定义。先搞清楚：它到底是个什么东西，为什么非得从老会计里长出来。</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- 0 开场 -->
+  <section>
+    <div class="feynman-quote">费曼说："知道一只鸟叫什么名字，和知道那只鸟在做什么，完全是两回事。" 会计也一样——知道它叫"管理会计"，不等于知道它在干什么。所以这一课，咱们从"它在干什么"开始。</div>
+  </section>
+
+  <!-- 1 为什么会产生：第一性原理图示 -->
+  <section>
+    <h2><span class="num">1</span> 它为什么会产生：老账本解不了的"新麻烦"</h2>
+    <p class="lead">最早的会计是给"外人"看的（记历史）。但企业里冒出个新角色——管理者，他天天问的是"明天怎么办"。这张图就是那个"缺口"。</p>
+    <div class="viz">
+      <svg viewBox="0 0 680 300" role="img" aria-label="第一性原理图示">
+        <defs>
+          <marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <text x="40" y="34" font-size="14" font-weight="500" fill="#2C2C2A">同一家企业，两种不同的"问法"</text>
+
+        <!-- 老账本 对外 -->
+        <rect x="40" y="70" width="280" height="150" rx="12" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+        <text x="60" y="100" font-size="14" font-weight="500" fill="#042C53">老账本 · 财务会计（对外）</text>
+        <text x="60" y="128" font-size="13" fill="#2C2C2A">问的是："上个月花了多少？"</text>
+        <text x="60" y="152" font-size="13" fill="#2C2C2A">写给：税务局 / 投资人 / 银行</text>
+        <text x="60" y="176" font-size="13" fill="#2C2C2A">性质：事后 · 记录历史</text>
+        <text x="60" y="200" font-size="13" fill="#993C1D">短板：答不了"明天该种啥"</text>
+
+        <!-- 管理者 对内 -->
+        <rect x="360" y="70" width="280" height="150" rx="12" fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
+        <text x="380" y="100" font-size="14" font-weight="500" fill="#04342C">新需求 · 管理会计（对内）</text>
+        <text x="380" y="128" font-size="13" fill="#2C2C2A">问的是："明年该种玉米还是大豆？"</text>
+        <text x="380" y="152" font-size="13" fill="#2C2C2A">写给：企业内部管理者</text>
+        <text x="380" y="176" font-size="13" fill="#2C2C2A">性质：事前+事中+事后</text>
+        <text x="380" y="200" font-size="13" fill="#0F6E56">长处：帮做未来决策</text>
+
+        <!-- 中间的缺口箭头 -->
+        <line x1="320" y1="200" x2="360" y2="200" stroke="#854F0B" stroke-width="2" marker-end="url(#a1)"/>
+        <text x="324" y="192" font-size="11" fill="#854F0B">缺口</text>
+      </svg>
+      <div class="cap"><b>费曼式记法：</b>不是准则说要分家，是有一类真实问题老账本答不了——于是管理会计从成本会计里"长"了出来。它的根，是成本会计。</div>
+    </div>
+  </section>
+
+  <!-- 2 核心分流：可点击 SVG -->
+  <section>
+    <h2><span class="num">2</span> 核心：同一笔交易，为什么裂成两种会计</h2>
+    <p class="lead">本质差别不在"管理"二字，<b>在于这份账是给谁看的</b>。点图上任意一侧（或下方卡片），看它干啥、何时干。</p>
+    <div class="viz">
+      <svg id="splitSvg" viewBox="0 0 680 420" role="img" aria-label="对外与对内分流图">
+        <defs>
+          <marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <text x="40" y="34" font-size="14" font-weight="500" fill="#2C2C2A">同一笔交易，流向两种会计（点击任一侧）</text>
+
+        <rect x="230" y="54" width="220" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+        <text x="340" y="76" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#2C2C2A">企业的经营活动</text>
+        <text x="340" y="96" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#5F5E5A">一笔笔真实的交易</text>
+
+        <line x1="285" y1="110" x2="195" y2="156" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#a2)"/>
+        <line x1="395" y1="110" x2="485" y2="156" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#a2)"/>
+
+        <g class="branch" id="bFin" onclick="selectBranch('bFin')">
+          <rect class="headbox" x="70" y="162" width="250" height="46" rx="8" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+          <text x="195" y="180" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#042C53">财务会计</text>
+          <text x="195" y="198" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#042C53">对外报告会计</text>
+          <rect x="70" y="222" width="250" height="52" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+          <text x="84" y="244" dominant-baseline="central" font-size="13" fill="#2C2C2A">给谁看：投资者·税务局·债权人</text>
+          <text x="84" y="262" dominant-baseline="central" font-size="12" fill="#5F5E5A">做什么：记录价值（确认·计量·记录·报告）</text>
+          <rect x="70" y="282" width="250" height="44" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+          <text x="84" y="304" dominant-baseline="central" font-size="13" fill="#2C2C2A">何时：事后（历史信息）</text>
+        </g>
+
+        <g class="branch" id="bMg" onclick="selectBranch('bMg')">
+          <rect class="headbox" x="360" y="162" width="250" height="46" rx="8" fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
+          <text x="485" y="180" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#04342C">管理会计</text>
+          <text x="485" y="198" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#04342C">对内报告会计</text>
+          <rect x="360" y="222" width="250" height="52" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+          <text x="374" y="244" dominant-baseline="central" font-size="13" fill="#2C2C2A">给谁看：企业内部管理者</text>
+          <text x="374" y="262" dominant-baseline="central" font-size="12" fill="#5F5E5A">做什么：创造价值（规划·决策·控制·评价）</text>
+          <rect x="360" y="282" width="250" height="44" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+          <text x="374" y="304" dominant-baseline="central" font-size="13" fill="#2C2C2A">何时：事前 + 事中 + 事后</text>
+        </g>
+
+        <rect x="70" y="344" width="540" height="56" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+        <text x="84" y="366" dominant-baseline="central" font-size="14" font-weight="500" fill="#412402">费曼式记法</text>
+        <text x="84" y="388" dominant-baseline="central" font-size="12" fill="#412402">别去背"管理"二字。只问一句：这份账，是给外人看的，还是给自家人做决定看的？</text>
+      </svg>
+      <div class="cap" id="branchCap">点击上方蓝色（财务会计）或绿色（管理会计）一侧，看它"给谁看、干啥、何时干"。</div>
+    </div>
+  </section>
+
+  <!-- 3 三阶段时间轴：可点击 SVG + 展开卡片 -->
+  <section>
+    <h2><span class="num">3</span> 它怎么一步步长大：三次"长大"</h2>
+    <p class="lead">每一次长大，都是因为"又出了新麻烦"老办法解不了。<b>点时间轴上的圆点</b>，自动展开对应阶段。</p>
+    <div class="viz">
+      <svg id="timeSvg" viewBox="0 0 680 200" role="img" aria-label="三阶段时间轴">
+        <defs>
+          <marker id="a3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <text x="40" y="34" font-size="14" font-weight="500" fill="#2C2C2A">管理会计的三次"长大"（点击圆点展开）</text>
+
+        <line x1="80" y1="120" x2="610" y2="120" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#a3)"/>
+
+        <!-- 1952 marker -->
+        <line x1="345" y1="100" x2="345" y2="140" stroke="#854F0B" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="345" y="92" text-anchor="middle" font-size="11" fill="#854F0B">1952 正式定名·分家</text>
+
+        <g class="node" onclick="gotoStage(0)">
+          <circle class="circ" cx="160" cy="120" r="16" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+          <text x="160" y="120" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#042C53">1</text>
+          <text x="160" y="158" text-anchor="middle" font-size="13" font-weight="500" fill="#2C2C2A">执行性</text>
+          <text x="160" y="178" text-anchor="middle" font-size="11" fill="#5F5E5A">1900s–50s</text>
+        </g>
+        <g class="node" onclick="gotoStage(1)">
+          <circle class="circ" cx="345" cy="120" r="16" fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
+          <text x="345" y="120" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#04342C">2</text>
+          <text x="345" y="158" text-anchor="middle" font-size="13" font-weight="500" fill="#2C2C2A">决策性</text>
+          <text x="345" y="178" text-anchor="middle" font-size="11" fill="#5F5E5A">50s–80s</text>
+        </g>
+        <g class="node" onclick="gotoStage(2)">
+          <circle class="circ" cx="530" cy="120" r="16" fill="#FAC775" stroke="#854F0B" stroke-width="0.5"/>
+          <text x="530" y="120" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#412402">3</text>
+          <text x="530" y="158" text-anchor="middle" font-size="13" font-weight="500" fill="#2C2C2A">战略性</text>
+          <text x="530" y="178" text-anchor="middle" font-size="11" fill="#5F5E5A">80s–今</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="stage s1 open">
+      <div class="stage-head" onclick="toggleStage(this)">
+        <div><span class="t">① 执行性管理会计</span> &nbsp;<span class="era">20世纪初 – 50年代</span></div>
+        <span class="arrow">▶</span>
+      </div>
+      <div class="stage-body">
+        <div class="row"><span class="k">根</span><span>泰勒的科学管理（1911《科学管理原理》）——劳动可以标准化、可以算。</span></div>
+        <div class="row"><span class="k">方法</span><span>标准成本、预算控制、差异分析。</span></div>
+        <div class="row"><span class="k">本质</span><span>会计第一次从"事后算账"变成"事前定标准 + 事中控偏差"。</span></div>
+        <div class="row"><span class="k">关键年</span><span>1911 泰勒 · 1922 奎因坦斯首提"管理会计"之名 · 1924 麦金西专著。</span></div>
+      </div>
+    </div>
+    <div class="stage s2">
+      <div class="stage-head" onclick="toggleStage(this)">
+        <div><span class="t">② 决策性管理会计</span> &nbsp;<span class="era">20世纪50 – 80年代</span></div>
+        <span class="arrow">▶</span>
+      </div>
+      <div class="stage-body">
+        <div class="row"><span class="k">背景</span><span>二战后企业变巨无霸、竞争打到国际，光控成本不够，得"算未来"。</span></div>
+        <div class="row"><span class="k">方法</span><span>本量利分析、变动成本法、责任会计、运筹学；电子计算机进车间。</span></div>
+        <div class="row"><span class="k">本质</span><span>会计不光管"花了多少"，还要管"明天该怎么办"。</span></div>
+        <div class="row"><span class="k">关键年</span><span>1952 国际会计师联合会正式定名，会计一分为二。</span></div>
+      </div>
+    </div>
+    <div class="stage s3">
+      <div class="stage-head" onclick="toggleStage(this)">
+        <div><span class="t">③ 战略性管理会计</span> &nbsp;<span class="era">20世纪80年代 – 今</span></div>
+        <span class="arrow">▶</span>
+      </div>
+      <div class="stage-body">
+        <div class="row"><span class="k">背景</span><span>高新技术来了，老成本分摊会把决策带沟里（如一条线产多种产品）。</span></div>
+        <div class="row"><span class="k">方法</span><span>作业成本法、价值链分析、战略成本管理。</span></div>
+        <div class="row"><span class="k">本质</span><span>别只盯车间那点事，跳出来看整条价值链与战略。</span></div>
+      </div>
+    </div>
+    <div class="china"><b>中国线（同源但走自己的路）：</b> 班组经济核算 → 邯钢"模拟市场，成本否决" → 2014 财政部《关于全面推进管理会计体系建设的指导意见》全面推进。</div>
+  </section>
+
+  <!-- 4 成本流转 + 管理会计叠加 图示 -->
+  <section>
+    <h2><span class="num">4</span> 管理会计不是另起炉灶：叠在成本流转之上</h2>
+    <p class="lead">下面这条是真实的"物理流动"（材料→在制品→产成品→销售→成本结转）。管理会计的工具，是叠在每一段上面的——这就是它"长在成本会计上"的样子。</p>
+    <div class="viz">
+      <svg viewBox="0 0 680 300" role="img" aria-label="成本流转与管理会计叠加">
+        <defs>
+          <marker id="a4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <text x="40" y="34" font-size="14" font-weight="500" fill="#2C2C2A">真实流转（下） + 管理会计工具（上）</text>
+
+        <!-- MA tags above -->
+        <g font-size="11" text-anchor="middle">
+          <rect x="55" y="58" width="120" height="30" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+          <text x="115" y="77" dominant-baseline="central" fill="#412402">成本性态·分解</text>
+          <rect x="180" y="58" width="120" height="30" rx="8" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+          <text x="240" y="77" dominant-baseline="central" fill="#042C53">标准成本·设定</text>
+          <rect x="305" y="58" width="120" height="30" rx="8" fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
+          <text x="365" y="77" dominant-baseline="central" fill="#04342C">差异分析·监控</text>
+          <rect x="430" y="58" width="120" height="30" rx="8" fill="#C0DD97" stroke="#3B6D11" stroke-width="0.5"/>
+          <text x="490" y="77" dominant-baseline="central" fill="#173404">本量利·决策</text>
+          <rect x="540" y="58" width="110" height="30" rx="8" fill="#F5C4B3" stroke="#993C1D" stroke-width="0.5"/>
+          <text x="595" y="77" dominant-baseline="central" fill="#4A1B0C">责任会计·考评</text>
+        </g>
+
+        <!-- flow boxes -->
+        <g font-size="13" text-anchor="middle">
+          <rect x="40" y="120" width="110" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+          <text x="95" y="148" dominant-baseline="central" fill="#2C2C2A">原材料入库</text>
+          <rect x="165" y="120" width="110" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+          <text x="220" y="148" dominant-baseline="central" fill="#2C2C2A">在制品</text>
+          <rect x="290" y="120" width="110" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+          <text x="345" y="148" dominant-baseline="central" fill="#2C2C2A">产成品</text>
+          <rect x="415" y="120" width="110" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+          <text x="470" y="148" dominant-baseline="central" fill="#2C2C2A">销售</text>
+          <rect x="540" y="120" width="110" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+          <text x="595" y="148" dominant-baseline="central" fill="#2C2C2A">成本结转COGS</text>
+        </g>
+        <g stroke="#5F5E5A" stroke-width="1.5">
+          <line x1="150" y1="148" x2="163" y2="148" marker-end="url(#a4)"/>
+          <line x1="275" y1="148" x2="288" y2="148" marker-end="url(#a4)"/>
+          <line x1="400" y1="148" x2="413" y2="148" marker-end="url(#a4)"/>
+          <line x1="525" y1="148" x2="538" y2="148" marker-end="url(#a4)"/>
+        </g>
+        <text x="40" y="210" font-size="12" fill="#5F5E5A">实线 = 物料/商品的真实物理流动（成本会计就在记这条线）</text>
+        <text x="40" y="232" font-size="12" fill="#5F5E5A">上方彩色标签 = 管理会计在每一段叠加的工具：定标准、控偏差、帮决策、考绩效</text>
+
+        <!-- arrow from tag to box to show overlay -->
+        <line x1="240" y1="88" x2="240" y2="118" stroke="#185FA5" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="365" y1="88" x2="365" y2="118" stroke="#0F6E56" stroke-width="1" stroke-dasharray="3 3"/>
+      </svg>
+      <div class="cap"><b>一句话：</b>管理会计不推翻成本会计，而是站在它肩膀上——在"材料变商品"的每一步，多问一句"标准多少？差在哪？值不值？谁负责？"。</div>
+    </div>
+  </section>
+
+  <!-- 5 场景判断 -->
+  <section>
+    <h2><span class="num">5</span> 考一考：这份账，对外还是对内？</h2>
+    <p class="lead">选完立刻看反馈。错的当场纠正。</p>
+    <div class="quiz-block">
+      <div class="sce">
+        <p>① 年底给税务局报税，写清楚今年赚了多少、该交多少税。</p>
+        <div class="btns">
+          <button class="fin" onclick="judge(this,1)">对外（财务会计）</button>
+          <button class="mg" onclick="judge(this,0)">对内（管理会计）</button>
+        </div>
+        <div class="fb ok">✓ 正确。报税是写给税务局这个"外人"看的，属于财务会计。</div>
+        <div class="fb no">✗ 再想想。报税是写给税务局这个"外人"看的，属于财务会计。</div>
+      </div>
+      <div class="sce">
+        <p>② 年初定好每亩地的标准成本，中途发现肥料超支了，马上纠偏。</p>
+        <div class="btns">
+          <button class="fin" onclick="judge(this,0)">对外（财务会计）</button>
+          <button class="mg" onclick="judge(this,1)">对内（管理会计）</button>
+        </div>
+        <div class="fb ok">✓ 正确。这是农场主自己用来控成本、做决定的，属于管理会计。</div>
+        <div class="fb no">✗ 再想想。这是农场主自己用来控成本、做决定的，属于管理会计。</div>
+      </div>
+      <div class="sce">
+        <p>③ 算清楚"种玉米还是种大豆更划算"，帮老板决定明年种什么。</p>
+        <div class="btns">
+          <button class="fin" onclick="judge(this,0)">对外（财务会计）</button>
+          <button class="mg" onclick="judge(this,1)">对内（管理会计）</button>
+        </div>
+        <div class="fb ok">✓ 正确。这是给管理者做未来决策用的，典型的管理会计。</div>
+        <div class="fb no">✗ 再想想。这是给管理者做未来决策用的，典型的管理会计。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 闯关测验 -->
+  <section>
+    <h2><span class="num">6</span> 闯关测验（自动计分）</h2>
+    <p class="lead">做完看自己第几关过了。答错别慌——回上面那一节补那一小块就行。</p>
+    <div class="score-bar">
+      <span>已答对 <span id="correct">0</span> / <span id="total">5</span> 题</span>
+      <span class="num" id="scoreNum">0 分</span>
+    </div>
+    <div class="q" data-ok="2">
+      <div class="qt">1. "管理会计"这个名称，最早是谁在哪一年提出的？</div>
+      <div class="opts">
+        <div class="opt" onclick="pick(this,1)">A. 泰勒，1911 年</div>
+        <div class="opt" onclick="pick(this,0)">B. 麦金西，1952 年</div>
+        <div class="opt" onclick="pick(this,2)">C. 奎因坦斯，1922 年</div>
+        <div class="opt" onclick="pick(this,0)">D. 杜邦公司，1924 年</div>
+      </div>
+      <div class="qfb">答案：C。1922 年奎因坦斯在《管理会计：财务管理入门》中首次提出"管理会计"之名；麦金西 1924 年又出专著，但 1952 年才被官方正式定名。</div>
+    </div>
+    <div class="q" data-ok="1">
+      <div class="qt">2. 下列哪一年，管理会计被正式定名、与财务会计"分家"？</div>
+      <div class="opts">
+        <div class="opt" onclick="pick(this,0)">A. 1911 年</div>
+        <div class="opt" onclick="pick(this,1)">B. 1952 年</div>
+        <div class="opt" onclick="pick(this,0)">C. 1922 年</div>
+        <div class="opt" onclick="pick(this,0)">D. 1986 年</div>
+      </div>
+      <div class="qfb">答案：B。1952 年国际会计师联合会在伦敦正式采用"管理会计"统称企业内部会计体系，标志现代会计分为两大分支。</div>
+    </div>
+    <div class="q" data-ok="0">
+      <div class="qt">3. 泰勒科学管理给早期管理会计带来了什么核心方法？</div>
+      <div class="opts">
+        <div class="opt" onclick="pick(this,0)">A. 标准成本、预算控制、差异分析</div>
+        <div class="opt" onclick="pick(this,1)">B. 作业成本法</div>
+        <div class="opt" onclick="pick(this,0)">C. 本量利分析</div>
+        <div class="opt" onclick="pick(this,0)">D. 平衡计分卡</div>
+      </div>
+      <div class="qfb">答案：A。泰勒制要求"科学地控成本"，催生了标准成本、预算控制和差异分析——执行性管理会计的三大支柱。</div>
+    </div>
+    <div class="q" data-ok="3">
+      <div class="qt">4. 20 世纪 80 年代后，为什么又冒出"战略性管理会计"？</div>
+      <div class="opts">
+        <div class="opt" onclick="pick(this,0)">A. 因为税法变了</div>
+        <div class="opt" onclick="pick(this,0)">B. 因为计算机淘汰了会计</div>
+        <div class="opt" onclick="pick(this,0)">C. 因为泰勒制重新流行</div>
+        <div class="opt" onclick="pick(this,3)">D. 因为高新技术下老成本分摊会误导决策</div>
+      </div>
+      <div class="qfb">答案：D。一条生产线同时产多种产品时，传统成本分摊会歪曲真实成本、带偏决策，于是作业成本法、价值链分析等战略性方法出现。</div>
+    </div>
+    <div class="q" data-ok="1">
+      <div class="qt">5. 按"给谁看"来区分，下面哪件事属于管理会计？</div>
+      <div class="opts">
+        <div class="opt" onclick="pick(this,0)">A. 给股东发年报</div>
+        <div class="opt" onclick="pick(this,1)">B. 帮车间主任决定要不要换设备</div>
+        <div class="opt" onclick="pick(this,0)">C. 给银行看偿债能力</div>
+        <div class="opt" onclick="pick(this,0)">D. 给税务局报税</div>
+      </div>
+      <div class="qfb">答案：B。给内部管理者做决策用的，是管理会计；A/C/D 都是写给外部"外人"看的财务会计。</div>
+    </div>
+  </section>
+
+  <!-- 7 费曼挑战 -->
+  <section>
+    <h2><span class="num">7</span> 费曼挑战：给老王讲清楚</h2>
+    <p class="lead">费曼检验法——你能用一句话，给一个 12 岁的农场主老王讲明白"管理会计是啥"吗？先自己写，再点开看参考。</p>
+    <div class="challenge">
+      <p style="font-size:14px">我的版本：</p>
+      <textarea placeholder="比如：管理会计就是……（一句话，别说术语）"></textarea>
+      <button class="ans" onclick="document.getElementById('ref').classList.toggle('show')">看看参考怎么说</button>
+      <div class="ref" id="ref">
+        <p><b>参考口径：</b>"老王，财务会计是年底写下来你亏了多少、给税务局和银行看的账；管理会计是你年初先定每亩该花多少、中途发现超支就赶紧改、再算清楚种啥更划算——是给你自己明天做决定用的账。"</p>
+        <p style="margin-top:8px;color:var(--gray-600)">讲得清"给谁看、解决啥麻烦"，你就过关了。讲不清楚的地方，就是你还没真懂的地方。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 自检清单 -->
+  <section>
+    <h2><span class="num">8</span> 自检清单（关上书也能做）</h2>
+    <p class="lead">费曼说"凡不能创造，就不能理解"。下面这些你能不打草稿说清，才算真懂。</p>
+    <div class="check">
+      <label><input type="checkbox"> 我能说清：管理会计和财务会计，差在"给谁看"，不是差在"管理"二字。</label>
+      <label><input type="checkbox"> 我能讲出：泰勒科学管理 → 标准成本/预算/差异，这一连串因果。</label>
+      <label><input type="checkbox"> 我能说出：1922（名字）和 1952（定名分家）这两个年份分别意味着什么。</label>
+      <label><input type="checkbox"> 我能解释：第二次长大为什么从"控成本"变成了"算未来、帮决策"。</label>
+      <label><input type="checkbox"> 我能用农场/合作社的例子，给一个外行讲明白管理会计在干啥。</label>
+    </div>
+  </section>
+
+  <footer>
+    本互动课堂基于《费曼视角 · 管理会计学习辅导》框架整理；历史事实参考财政部 2014《指导意见》解读、孙茂竹《管理会计学》体系等公开资料。<br>
+    费曼本人未聊过管理会计，以上内容为其问题拆解方法论的外推应用。
+  </footer>
+</div>
+
+<button class="totop" id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+  // 分流图点击
+  function selectBranch(id){
+    var svg=document.getElementById('splitSvg');
+    svg.classList.add('has-sel');
+    svg.querySelectorAll('.branch').forEach(function(g){g.classList.remove('sel')});
+    document.getElementById(id).classList.add('sel');
+    var cap=document.getElementById('branchCap');
+    if(id==='bFin'){
+      cap.innerHTML='<b style="color:#185FA5">财务会计（对外）</b>：写给投资者、税务局、债权人看的账。只做一件事——把已经发生的事记下来（确认·计量·记录·报告），是"事后"的历史信息。';
+    }else{
+      cap.innerHTML='<b style="color:#0F6E56">管理会计（对内）</b>：写给企业内部管理者看的账。不光记，还要规划、决策、控制、评价——事前定标准、事中控偏差、事后做考评，是"创造价值"的账。';
+    }
+  }
+  // 时间轴点击展开对应阶段
+  function gotoStage(i){
+    var stages=document.querySelectorAll('.stage');
+    stages.forEach(function(s,j){ s.classList.toggle('open', j===i); });
+    stages[i].scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  // 阶段手风琴
+  function toggleStage(head){ head.parentElement.classList.toggle('open'); }
+  // 场景判断
+  function judge(btn, isRight){
+    var sce=btn.closest('.sce');
+    sce.querySelectorAll('.fb').forEach(function(f){f.classList.remove('show')});
+    sce.querySelectorAll('button').forEach(function(b){b.disabled=true;b.style.opacity=.6});
+    (isRight?sce.querySelector('.fb.ok'):sce.querySelector('.fb.no')).classList.add('show');
+  }
+  // 闯关计分
+  var correct=0;
+  function pick(opt, idx){
+    var q=opt.closest('.q');
+    if(q.dataset.done) return;
+    q.dataset.done=1;
+    var ok=parseInt(q.dataset.ok,10);
+    q.querySelectorAll('.opt').forEach(function(o,i){
+      o.style.cursor='default';
+      if(i===ok) o.classList.add('correct');
+      if(o===opt && i!==ok) o.classList.add('wrong');
+    });
+    q.querySelector('.qfb').classList.add('show');
+    if(idx===ok) correct++;
+    document.getElementById('correct').textContent=correct;
+    document.getElementById('scoreNum').textContent=(correct*20)+' 分';
+  }
+  document.getElementById('total').textContent=document.querySelectorAll('.q').length;
+  // 滚动入场动画
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('show'); });
+  },{threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){io.observe(s)});
+  // 回到顶部
+  var totop=document.getElementById('totop');
+  window.addEventListener('scroll',function(){
+    totop.classList.toggle('show', window.scrollY>500);
+  });
+</script>
+</body>
+</html>

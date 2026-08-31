@@ -177,12 +177,51 @@ input[type=range]::-moz-range-thumb{
   flex:0 0 auto;text-align:center;padding:10px;font-size:12px;color:#6E849C;
   background:rgba(16,29,47,.4);
 }
+/* ---------- 移动端 / 小屏适配 ---------- */
 @media (max-width:900px){
-  .dash{flex-direction:column}
-  .controls{flex:none}
-  .vote{width:min(280px,88vw)}
-  .kpis{grid-template-columns:1fr}
-  .cmp-vs{transform:rotate(90deg)}
+  body{overflow-y:auto;overflow-x:hidden;height:auto}
+  .topbar{flex-wrap:wrap;gap:8px;padding:10px 14px}
+  .brand{font-size:13px}
+  .steps .step{font-size:12px;padding:4px 10px}
+  .hint-top{display:none}
+  .stage{overflow:visible;height:auto}
+  .screen{
+    position:relative;inset:auto;transform:none;opacity:1;
+    display:none;justify-content:flex-start;
+    padding:20px 16px;overflow:visible;
+  }
+  .screen.active{display:flex}
+  .badge{font-size:12px;margin-bottom:12px}
+  .q-title{font-size:24px}
+  .q-sub{font-size:17px}
+  .role-line{font-size:14px;margin-top:12px}
+  .vote-options{gap:14px;margin-top:20px}
+  .vote{width:min(320px,84vw);padding:18px 14px}
+  .vote .sub{font-size:13px}
+  .poll-panel{width:92vw;margin-top:20px}
+  .dash{flex-direction:column;gap:16px;width:94vw;margin-top:12px}
+  .controls,.metrics{flex:none;padding:16px}
+  .kpis{grid-template-columns:1fr 1fr;gap:10px}
+  .kpi .v{font-size:19px}
+  .prof-compare{gap:30px}
+  .crit{font-size:13px}
+  .cmp{flex-direction:column;align-items:center;margin-top:20px}
+  .cmp-vs{transform:none;font-size:24px;margin:4px 0}
+  .cmp-card{min-width:0;width:88vw;max-width:360px;padding:22px 18px}
+  .cmp-card .ans{font-size:28px}
+  .takeaway{font-size:22px;margin-top:24px}
+  .sublime{font-size:16px}
+  .btn-next{font-size:16px;padding:14px 32px;margin-top:24px}
+  .btn-ghost{font-size:13px;padding:8px 20px}
+  .foot{padding:8px 10px;font-size:11px}
+}
+@media (max-width:480px){
+  .vote{width:min(300px,86vw)}
+  .q-title{font-size:21px}
+  .kpis{grid-template-columns:1fr 1fr}
+  .slider-group .lbl{font-size:13px}
+  .slider-group .lbl .val{font-size:17px}
+  .be-mark{font-size:11px}
 }
 </style>
 </head>

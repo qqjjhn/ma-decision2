@@ -1,0 +1,2353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>作业成本计算法·车间分摊 | 农产品加工车间作业成本计算器</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --g:#2e7d32; --gd:#1b5e20; --ggl:#e9f4e9; --gm:#7cc47f; --gline:#cfe3cf;
+  --bg:#f4f9f4; --card:#fff; --ink:#223021; --muted:#5f6f5c;
+  --hi:#e65100; --lo:#1565c0; --sd:0 2px 12px rgba(46,125,50,.09);
+}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);
+  font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB",system-ui,-apple-system,sans-serif;
+  line-height:1.68;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px 64px}
+
+/* ---------- 页头 ---------- */
+header{background:linear-gradient(135deg,#2e7d32 0%,#43a047 60%,#66bb6a 100%);color:#fff;padding:26px 0 22px;box-shadow:0 2px 14px rgba(46,125,50,.25)}
+header .wrap{padding-bottom:0}
+.kicker{font-size:13px;letter-spacing:2px;opacity:.9}
+h1{margin:6px 0 6px;font-size:27px;letter-spacing:1px}
+.sub{font-size:14px;opacity:.94}
+.chips{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 12px;font-size:12.5px}
+
+/* ---------- 区块 ---------- */
+section{background:var(--card);border:1px solid var(--gline);border-radius:14px;padding:18px 18px 20px;margin-top:18px;box-shadow:var(--sd)}
+h2{margin:0 0 4px;font-size:19px;color:var(--gd);display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+h2 .kp{background:var(--ggl);color:var(--gd);border:1px solid var(--gline);border-radius:6px;font-size:12px;padding:1px 8px;font-weight:600}
+.lead{color:var(--muted);font-size:13.5px;margin:0 0 14px}
+h3{font-size:15px;margin:18px 0 8px;color:var(--gd);border-left:4px solid var(--gm);padding-left:8px}
+
+/* ---------- 表单 ---------- */
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border:1px solid var(--gline);padding:7px 9px;text-align:center}
+th{background:var(--ggl);color:var(--gd);font-weight:600;white-space:nowrap}
+td.l,th.l{text-align:left}
+tbody tr:nth-child(even){background:#fafdfa}
+.tw{overflow-x:auto;margin-top:4px}
+input[type=number],select{width:100%;padding:6px 8px;border:1px solid var(--gline);border-radius:6px;background:#fff;font:inherit;color:var(--ink);min-width:76px}
+input[type=number]:focus,select:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(46,125,50,.13)}
+input[type=number].mini{min-width:96px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.field{background:#fbfefb;border:1px dashed var(--gline);border-radius:10px;padding:10px 12px}
+.field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:4px}
+
+/* ---------- 按钮 ---------- */
+.btn{border:1px solid var(--g);background:#fff;color:var(--gd);border-radius:8px;padding:7px 14px;font:inherit;font-size:13px;cursor:pointer;transition:.15s}
+.btn:hover{background:var(--ggl)}
+.btn.solid{background:var(--g);color:#fff}
+.btn.solid:hover{background:var(--gd)}
+.btn.sm{padding:4px 10px;font-size:12.5px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* ---------- 开关 ---------- */
+.sw{position:relative;display:inline-block;width:52px;height:28px;vertical-align:middle}
+.sw input{opacity:0;width:0;height:0;position:absolute}
+.sw span{position:absolute;inset:0;background:#cbd8cb;border-radius:28px;transition:.2s;cursor:pointer}
+.sw span:before{content:"";position:absolute;width:22px;height:22px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.sw input:checked + span{background:var(--g)}
+.sw input:checked + span:before{transform:translateX(24px)}
+
+/* ---------- 流程图 ---------- */
+#flowSvg{width:100%;height:auto;display:block;background:linear-gradient(180deg,#fbfefb,#f3f9f3);border:1px solid var(--gline);border-radius:12px}
+#flowSvg [data-node]{cursor:pointer}
+#flowSvg [data-node]:hover .box{filter:brightness(.97)}
+.nodeHint{font-size:12.5px;color:var(--muted);margin-top:8px}
+#nodeDetail{margin-top:12px;background:#fbfefb;border:1px solid var(--gline);border-left:4px solid var(--g);border-radius:0 10px 10px 0;padding:12px 14px;font-size:13.5px}
+#nodeDetail h4{margin:0 0 6px;color:var(--gd);font-size:14.5px}
+
+/* ---------- 卡片 ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:12px}
+.card{border:1px solid var(--gline);border-radius:12px;padding:12px 14px;background:#fff}
+.card .ttl{font-size:13px;color:var(--muted)}
+.card .big{font-size:23px;font-weight:700;color:var(--gd);letter-spacing:.5px}
+.card ul{margin:8px 0 0;padding-left:18px;font-size:12.5px;color:var(--muted)}
+.badge{display:inline-block;border-radius:6px;padding:1px 8px;font-size:12px;font-weight:600;color:#fff}
+.b-hi{background:var(--hi)} .b-lo{background:var(--lo)} .b-ok{background:var(--g)}
+.verdict{border-radius:12px;padding:12px 14px;margin-top:12px;font-size:13.5px;border:1px solid}
+.v-hi{background:#fff4ec;border-color:#ffcc9e;color:#7a3700}
+.v-lo{background:#eaf2fd;border-color:#b8d3f5;color:#0d3f78}
+.v-ok{background:var(--ggl);border-color:var(--gline);color:var(--gd)}
+.note{background:#fbfefb;border:1px dashed var(--gline);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--muted);margin-top:10px}
+.warn{background:#fff8e1;border:1px solid #ffe0a3;color:#7a5300;border-radius:10px;padding:8px 12px;font-size:13px;margin-top:8px}
+.formula{background:var(--ggl);border:1px solid var(--gline);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--gd);margin:10px 0;font-family:Consolas,"Courier New",monospace}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:13.5px}
+.kv b{font-weight:600;color:var(--muted);font-weight:400}
+.hide{display:none !important}
+.tag{display:inline-block;background:var(--ggl);color:var(--gd);border-radius:5px;padding:0 7px;font-size:12px;border:1px solid var(--gline)}
+.tiny{font-size:12px;color:var(--muted)}
+
+/* 知识点 */
+details{border:1px solid var(--gline);border-radius:10px;margin-top:10px;background:#fff;overflow:hidden}
+details[open]{background:#fbfefb}
+summary{cursor:pointer;padding:10px 14px;font-weight:600;color:var(--gd);background:var(--ggl);list-style:none;font-size:14.5px}
+summary::-webkit-details-marker{display:none}
+summary:before{content:"▸ ";color:var(--g)}
+details[open] summary:before{content:"▾ "}
+.kbody{padding:12px 16px 16px;font-size:13.5px;color:#31402f}
+.kbody p{margin:6px 0}
+.kbody ol,.kbody ul{margin:6px 0;padding-left:22px}
+.kbody li{margin:3px 0}
+.kbody code{background:var(--ggl);border-radius:4px;padding:1px 5px;color:var(--gd)}
+/* ---------- 顶部锚点导航 ---------- */
+.topnav{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.97);border-bottom:1px solid var(--gline);box-shadow:0 2px 10px rgba(46,125,50,.08)}
+.topnav .wrap{padding:0 16px;display:flex;gap:2px;align-items:center;flex-wrap:wrap}
+.topnav a{color:var(--gd);text-decoration:none;font-size:13px;padding:9px 10px;border-radius:8px;display:inline-block;white-space:nowrap}
+.topnav a:hover{background:var(--ggl)}
+html{scroll-behavior:smooth}
+section{scroll-margin-top:58px}
+
+/* ---------- 闯关练习 ---------- */
+.qz-top{display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:var(--ggl);border:1px solid var(--gline);border-radius:10px;padding:10px 12px}
+.qz-score{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.qz-score b{font-size:19px;color:var(--gd);margin:0 2px}
+.qz-prog{flex:1;min-width:120px;height:9px;background:#dbeadb;border-radius:9px;overflow:hidden}
+.qz-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#66bb6a,#2e7d32);transition:width .35s}
+.qz-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:6px;margin:12px 0 4px}
+.qz-step{border:1px solid var(--gline);border-radius:9px;padding:6px 8px;font-size:12px;text-align:center;background:#fff;color:var(--muted)}
+.qz-step.done{background:var(--ggl);border-color:var(--gm);color:var(--gd);font-weight:600}
+.qz-step.cur{outline:2px solid var(--g);color:var(--gd);font-weight:700;background:#fff}
+.qbox{border:1px solid var(--gline);border-radius:12px;padding:14px;background:#fff;margin-top:12px}
+.qt{font-size:14.5px;font-weight:600;color:var(--gd);margin:0 0 8px}
+.qstem{font-size:14px;margin:0 0 6px;line-height:1.7}
+.qsub{font-size:12.5px;color:var(--muted);margin:0 0 10px}
+.qitem{border:1px solid var(--gline);border-radius:10px;padding:11px 12px;margin-bottom:10px;background:#fbfefb}
+.opts{display:grid;gap:7px;margin-top:8px}
+.opt{border:1px solid var(--gline);border-radius:9px;padding:8px 11px;font-size:13.5px;cursor:pointer;background:#fff;transition:.14s;text-align:left;font-family:inherit;color:var(--ink)}
+.opt:hover{background:var(--ggl);border-color:var(--gm)}
+.opt.sel{background:var(--ggl);border-color:var(--g);font-weight:600}
+.opt.right{background:#e6f4ea;border-color:#2e7d32;color:#1b5e20;font-weight:600}
+.opt.wrong{background:#fdecea;border-color:#e57373;color:#8c1d18}
+.fill{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.fill input{width:160px}
+.qfb{border-radius:9px;padding:9px 12px;font-size:13.5px;margin-top:10px;line-height:1.7}
+.qfb.ok{background:#e6f4ea;border:1px solid #a5d6a7;color:#1b5e20}
+.qfb.no{background:#fdecea;border:1px solid #ef9a9a;color:#8c1d18}
+.qfb.tip{background:#fff8e1;border:1px solid #ffe0a3;color:#7a5300}
+.qz-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.mini{background:#fbfefb;border:1px dashed var(--gline);border-radius:10px;padding:11px 12px}
+.res-line{font-size:14px;margin:5px 0}
+.res-line b{color:var(--gd);font-size:16px}
+.pill{display:inline-block;border-radius:999px;padding:1px 10px;font-size:12px;background:var(--ggl);color:var(--gd);border:1px solid var(--gline);margin:0 6px 4px 0}
+.final{border-radius:12px;padding:14px 16px;margin-top:14px;border:1px solid var(--gm);background:linear-gradient(135deg,#f1f8f1,#e3f1e4)}
+.final h3{margin:0 0 6px;border:0;padding:0;font-size:18px;color:var(--gd)}
+.logrow{border-bottom:1px dashed var(--gline);padding:8px 0;font-size:13px}
+.logrow:last-child{border-bottom:0}
+.logrow .lg-t{font-weight:600;color:#31402f}
+.logrow .lg-a{font-size:12.5px;color:var(--muted)}
+
+/* ---------- 综合实战工作台 ---------- */
+.wb-intro{background:#fbfefb;border:1px dashed var(--gline);border-radius:10px;padding:11px 12px;font-size:13px;line-height:1.75;margin-bottom:12px}
+.wb-dat{border:1px solid var(--gline);border-radius:10px;overflow:hidden;margin:8px 0 4px}
+.wb-dat summary{cursor:pointer;padding:8px 12px;background:var(--ggl);font-size:13px;font-weight:600;color:var(--gd);list-style:none}
+.wb-dat summary::-webkit-details-marker{display:none}
+.wb-dat summary::before{content:'▸ ';}
+.wb-dat[open] summary::before{content:'▾ ';}
+.wb-dat .wb-in{padding:4px 10px 10px;overflow-x:auto}
+.stage{border:1px solid var(--gline);border-radius:11px;margin-top:11px;overflow:hidden;background:#fff}
+.stage.locked{background:#f7f8f7;opacity:.72}
+.stage.done{border-color:var(--gm)}
+.stage-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:9px 12px;background:var(--ggl);border-bottom:1px solid var(--gline)}
+.stage-h .sn{font-size:13.5px;font-weight:700;color:var(--gd)}
+.stage-h .sc{margin-left:auto;font-size:12px;color:var(--muted)}
+.stage-h .lk{font-size:12px;color:#8a8a8a}
+.stage-b{padding:11px 12px}
+.stage-b .qsub{margin-bottom:8px}
+.wb-tb{border-collapse:collapse;width:100%;font-size:12.5px;min-width:420px}
+.wb-tb th,.wb-tb td{border:1px solid var(--gline);padding:5px 7px;text-align:center;vertical-align:middle}
+.wb-tb th{background:var(--ggl);color:var(--gd);font-weight:600;white-space:nowrap}
+.wb-tb td.l,.wb-tb th.l{text-align:left;white-space:nowrap}
+.wb-tb td.tot{background:#f1f8f1;font-weight:600;color:var(--gd)}
+.wb-tb td.given{color:var(--muted);background:#fafbfa}
+.wb-inp{width:100%;min-width:66px;box-sizing:border-box;border:1px solid var(--gline);border-radius:6px;padding:4px 5px;font-size:12.5px;text-align:right;font-family:inherit;color:var(--ink);background:#fff}
+.wb-inp:focus{outline:0;border-color:var(--g);box-shadow:0 0 0 2px rgba(46,125,50,.13)}
+.wb-inp:disabled{background:#f2f3f2;color:#a9b0a8;border-style:dashed}
+.wb-inp.ok{border-color:#2e7d32;background:#e6f4ea;color:#1b5e20;font-weight:600}
+.wb-inp.no{border-color:#e57373;background:#fdecea;color:#8c1d18}
+.wb-inp.hintmark{box-shadow:0 0 0 2px rgba(255,193,7,.35)}
+.wb-ck{font-size:12px;margin-top:7px;padding:5px 9px;border-radius:7px;background:#f1f8f1;border:1px solid var(--gline);color:#4a5b48}
+.wb-ck.bad{background:#fff8e1;border-color:#ffe0a3;color:#7a5300}
+.wb-ck.good{background:#e6f4ea;border-color:#a5d6a7;color:#1b5e20}
+.wb-hint{display:none;margin-top:8px;padding:9px 11px;border-radius:8px;background:#fff8e1;border:1px solid #ffe0a3;color:#7a5300;font-size:12.5px;line-height:1.75}
+.wb-hint.on{display:block}
+.wb-hint code{background:rgba(255,255,255,.7);border-radius:4px;padding:1px 5px}
+.wbc-ok{color:#1b5e20;font-weight:600}
+.wbc-no{color:#8c1d18;font-weight:600}
+.stage-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.wb-sum{border:1px solid var(--gm);border-radius:11px;background:linear-gradient(135deg,#f1f8f1,#e3f1e4);padding:12px 14px;margin-top:12px}
+.wb-sum h4{margin:0 0 8px;font-size:15px;color:var(--gd)}
+.wb-sum .wb-tb th{background:#e3f1e4}
+/* ---- 练习中心：标签页 ---- */
+.qz-tabs{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0 14px;border-bottom:2px solid var(--ggl);padding-bottom:10px}
+.qz-tab{border:1px solid var(--line);background:#fff;color:var(--ink2);font-size:13.5px;font-weight:600;
+  padding:8px 15px;border-radius:9px 9px 0 0;cursor:pointer;font-family:inherit;transition:.15s}
+.qz-tab:hover{background:var(--ggl)}
+.qz-tab.on{background:var(--gd);border-color:var(--gd);color:#fff;box-shadow:0 2px 8px rgba(46,125,50,.22)}
+.qz-tab small{display:block;font-weight:400;opacity:.8;font-size:11px;margin-top:1px}
+/* ---- 全过程实操 ---- */
+.lb-chip{font-size:12px;line-height:1.35}
+.lb-chip.locked{opacity:.5;cursor:not-allowed}
+.wb-sel{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-start}
+.wb-sel .opt{margin:0;padding:7px 10px;font-size:12.5px}
+.stage.cur-glow{box-shadow:0 0 0 3px rgba(46,125,50,.18)}
+.lb-clock{font-variant-numeric:tabular-nums}
+.lb-tip{background:#fff8e1;border-left:4px solid #f9a825;padding:9px 12px;border-radius:0 8px 8px 0;font-size:13px;color:#6d4c00;margin:9px 0}
+.lb-tip b{color:#e65100}
+.lb-rate{display:inline-block;padding:2px 9px;border-radius:20px;font-size:12px;font-weight:700;margin-left:6px}
+.wb-sum h4{color:var(--gd);font-size:14.5px}
+footer{text-align:center;color:var(--muted);font-size:12.5px;padding:22px 0 0}
+
+@media (max-width:640px){
+  .wb-tb{font-size:11.5px}
+  .wb-inp{min-width:52px;padding:3px 4px}
+}
+
+@media (max-width:640px){
+  h1{font-size:22px}
+  .card .big{font-size:20px}
+  section{padding:14px 12px 16px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">虚拟仿真课件 · 第 9 章 作业成本计算法</div>
+    <h1>作业成本计算法 · 车间分摊</h1>
+    <div class="sub">农产品加工车间（果汁加工厂）作业成本计算器 —— 资源池 → 作业中心 → 产品 两阶段分摊</div>
+    <div class="chips">
+      <span class="chip">教材：孙茂竹《管理会计学》第10版</span>
+      <span class="chip">知识点 9.1 – 9.4</span>
+      <span class="chip">可编辑参数 · 实时重算</span>
+      <span class="chip">传统法对比 · 动因敏感性</span>
+    </div>
+  </div>
+</header>
+
+<nav class="topnav">
+  <div class="wrap">
+    <a href="#scene">场景</a>
+    <a href="#flow">流程图</a>
+    <a href="#inputs">参数</a>
+    <a href="#result">分摊结果</a>
+    <a href="#compare">传统法对比</a>
+    <a href="#sens">动因敏感性</a>
+    <a href="#quiz">练习中心</a>
+    <a href="#notes">知识点</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ============ 场景 ============ -->
+  <section id="scene">
+    <h2>场景设定<span class="kp">导入</span></h2>
+    <p class="lead">某果汁加工厂同一车间生产两条产品线。两条线产量差异大、工艺复杂程度不同，制造费用占比高（约 <b>59%</b>），是典型的作业成本法适用场景。</p>
+    <div class="grid g2">
+      <div class="field">
+        <h3 style="margin-top:0">产品 A：鲜榨果汁</h3>
+        <div class="kv">
+          <b>生产特点</b><span>大批量、品种单一、工艺稳定、换产次数少</span>
+          <b>本月产量</b><span>10,000 箱（标准箱）</span>
+          <b>直接成本</b><span>直接材料 ¥120,000 + 直接人工 ¥30,000</span>
+        </div>
+      </div>
+      <div class="field">
+        <h3 style="margin-top:0">产品 B：果酱</h3>
+        <div class="kv">
+          <b>生产特点</b><span>小批量、多批次、熬制工艺复杂、检验与换产频繁</span>
+          <b>本月产量</b><span>2,000 箱（标准箱）</span>
+          <b>直接成本</b><span>直接材料 ¥40,000 + 直接人工 ¥18,000</span>
+        </div>
+      </div>
+    </div>
+    <div class="note">制造费用（间接费用）合计 <b>¥300,000</b>，按四个作业中心归集：<b>备料</b>（备料次数）、<b>质检</b>（质检批次）、<b>机时</b>（机器小时）、<b>包装</b>（包装件数）。直接材料与直接人工可直接追溯，不参与分摊。</div>
+  </section>
+
+  <!-- ============ 流程图 ============ -->
+  <section id="flow">
+    <h2>一、作业成本流程全景图<span class="kp">9.2 基本原理</span></h2>
+    <p class="lead">“作业消耗资源，产品消耗作业”。<b>点击任意节点</b>查看明细，并高亮与之相连的价值流。</p>
+    <svg id="flowSvg" viewBox="0 0 1000 452" role="img" aria-label="资源池到作业中心到产品的作业成本流程图"></svg>
+    <div class="nodeHint" id="flowHint">提示：点击「资源池 / 作业中心 / 产品」任一节点查看构成明细。</div>
+    <div id="nodeDetail"></div>
+    <div class="formula">第一阶段（资源 → 作业）：按<b>资源动因</b>归集费用 → 形成作业成本池&nbsp;&nbsp;|&nbsp;&nbsp;第二阶段（作业 → 产品）：<b>动因分配率 = 作业成本 ÷ 动因总量</b>，某产品应分配作业成本 = 动因分配率 × 该产品耗用动因量</div>
+  </section>
+
+  <!-- ============ 参数输入 ============ -->
+  <section id="inputs">
+    <h2>二、参数输入：作业成本池与动因耗用<span class="kp">9.3 基本程序</span></h2>
+    <p class="lead">修改任一数字，下方全部结果（含流程图、对比表、敏感性）实时重算。</p>
+
+    <h3>① 作业中心：成本池与成本动因（第一阶段归集结果）</h3>
+    <div class="tw">
+      <table id="tAct">
+        <thead><tr>
+          <th class="l">作业中心</th><th class="l">成本动因</th><th>作业成本（元）</th>
+          <th>A 耗用量</th><th>B 耗用量</th><th>动因总量</th><th>动因分配率</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <h3>② 产品：产量与直接成本（可直接追溯）</h3>
+    <div class="tw">
+      <table id="tProd">
+        <thead><tr><th class="l">产品</th><th>产量（箱）</th><th>直接材料（元）</th><th>直接人工（元）</th><th>直接成本合计</th><th>单位直接成本</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <h3>③ 资源费用项目（资源池构成，用于与作业成本池勾稽）</h3>
+    <div class="tw">
+      <table id="tRes">
+        <thead><tr><th class="l">资源项目</th><th>金额（元）</th><th class="l">典型资源动因</th></tr></thead>
+        <tbody></tbody>
+        <tfoot><tr><th class="l">资源费用合计</th><th id="resTotal">—</th><th class="l"><span id="chkBadge" class="badge b-ok">—</span></th></tr></tfoot>
+      </table>
+    </div>
+    <div class="bar" style="margin-top:10px">
+      <button class="btn sm" id="btnSync">资源项目合计 ← 作业成本池合计（等比缩放）</button>
+      <button class="btn sm solid" id="btnReset">恢复标准案例数据</button>
+      <span class="tiny">资源费用合计应等于作业成本池合计；二者不等时，计算以<b>作业成本池</b>为准。</span>
+    </div>
+  </section>
+
+  <!-- ============ 分摊结果 ============ -->
+  <section id="result">
+    <h2>三、作业成本法：分摊结果与单位成本<span class="kp">9.3</span></h2>
+    <p class="lead">按“动因分配率 × 该产品耗用动因量”逐作业分摊，再汇总为产品成本。</p>
+    <div class="tw">
+      <table id="tAlloc">
+        <thead><tr>
+          <th class="l">作业中心</th><th>成本动因</th><th>动因分配率</th>
+          <th>A 耗用</th><th>A 分摊额</th><th>B 耗用</th><th>B 分摊额</th><th>分摊合计</th>
+        </tr></thead>
+        <tbody></tbody>
+        <tfoot id="allocFoot"></tfoot>
+      </table>
+    </div>
+    <div class="cards" id="abcCards"></div>
+  </section>
+
+  <!-- ============ 传统法对比 ============ -->
+  <section id="compare">
+    <h2>四、传统成本法对照：成本扭曲与决策含义<span class="kp">9.4 方法比较</span></h2>
+    <p class="lead">传统法只用一个<b>单一分配基础</b>（全厂或车间统一的机器小时 / 直接人工 / 产量）分配全部制造费用，隐含假设“制造费用与单一动因线性相关”。</p>
+    <div class="bar" style="margin-bottom:6px">
+      <label class="sw"><input type="checkbox" id="tradOn"><span></span></label>
+      <b>开启“传统法”并列对比</b>
+      <span style="width:14px"></span>
+      <span class="tiny">单一分配基础：</span>
+      <select id="tradBase" style="width:auto;min-width:130px">
+        <option value="mach">机器小时</option>
+        <option value="dl">直接人工成本</option>
+        <option value="qty">产品产量</option>
+      </select>
+      <span class="tiny">成本加成率：</span>
+      <input type="number" id="markup" data-bind="markup" value="20" step="1" min="0" max="200" style="width:84px"><span class="tiny">%</span>
+    </div>
+    <div id="tradBody" class="hide">
+      <div class="formula">传统法分配率 = 制造费用合计 ÷ 分配基础总量 ＝ <span id="fRate">—</span>　→　某产品制造费用 = 分配率 × 该产品分配基础耗用量</div>
+      <div class="tw">
+        <table id="tCmp">
+          <thead><tr>
+            <th class="l">产品</th><th>分配基础耗用</th><th>传统法制造费用</th><th>传统法单位总成本</th>
+            <th>作业法单位总成本</th><th>差异（传统 − 作业）</th><th>判定</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div id="verdicts"></div>
+      <div class="grid g2" style="margin-top:14px;align-items:start">
+        <div>
+          <h3 style="margin-top:0">单位总成本对比（元/箱）</h3>
+          <svg id="cmpChart" viewBox="0 0 440 210" style="width:100%;height:auto"></svg>
+        </div>
+        <div>
+          <h3 style="margin-top:0">定价决策含义（成本加成法）</h3>
+          <div id="priceBox"></div>
+        </div>
+      </div>
+    </div>
+    <div id="tradOff" class="note">当前未开启对比。打开上方开关，可看到同一批数据下传统法与作业成本法的成本差异，以及“哪个产品被高估 / 被低估”。</div>
+  </section>
+
+  <!-- ============ 敏感性 ============ -->
+  <section id="sens">
+    <h2>五、成本动因敏感性：动因选择如何影响成本<span class="kp">9.2 / 9.4</span></h2>
+    <p class="lead">拖动滑块调整某一产品对某作业的<b>动因耗用量</b>，观察两个产品单位作业成本如何同时变化——这正是“动因选择决定成本归属”的直观体现。</p>
+    <div class="grid g3">
+      <div class="field">
+        <label>选择要调整的成本动因</label>
+        <select id="sensKey"></select>
+      </div>
+      <div class="field">
+        <label>动因耗用量（滑块）</label>
+        <input type="range" id="sensRange" data-bind="sens" min="0" max="100" step="1" style="width:100%">
+        <div class="tiny">基线值 <span id="sensBase">—</span>　当前值 <span id="sensNow">—</span></div>
+      </div>
+      <div class="field">
+        <label>精确输入</label>
+        <input type="number" id="sensNum" data-bind="sensNum" step="1" min="0">
+        <div class="bar" style="margin-top:8px">
+          <button class="btn sm" id="btnSnap">以当前状态为新基线</button>
+        </div>
+      </div>
+    </div>
+    <div class="cards" id="sensCards"></div>
+    <div class="grid g2" style="margin-top:6px;align-items:start">
+      <div>
+        <h3 style="margin-top:0">单位制造费用：基线 vs 当前</h3>
+        <svg id="sensChart" viewBox="0 0 440 210" style="width:100%;height:auto"></svg>
+      </div>
+      <div>
+        <h3 style="margin-top:0">动因选择的影响</h3>
+        <div id="sensText"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 知识点 ============ -->
+  <!-- ============ 闯关练习 ============ -->
+  <section id="quiz">
+    <h2>六、练习中心<span class="kp">9.1 – 9.4 自测</span></h2>
+    <p class="lead">提供两种玩法：<b>全过程实操</b>给你一套原始资料，让你从"资源"一路算到"单位成本与经营决策"，完整走一遍作业成本法的七步程序（推荐先看上面五节再来做）；<b>闯关速练</b>是随机小题，用来快速巩固公式与概念。两套题目的参数<b>每次生成都不同</b>。</p>
+
+    <div class="qz-tabs">
+      <button class="qz-tab on" data-tab="lab">全过程实操<small>七步走完 ABC，48 分</small></button>
+      <button class="qz-tab" data-tab="drill">闯关速练<small>6 关随机小题，115 分</small></button>
+      <span style="flex:1"></span>
+      <button class="btn sm" id="btnRestart">换一套数据</button>
+    </div>
+
+    <!-- ===== 面板 A：全过程实操 ===== -->
+    <div id="paneLab">
+      <div class="qz-top">
+        <div class="qz-score">已完成 <b id="lbDone">0</b> / <span id="lbAll">7</span> 阶段</div>
+        <div class="qz-score">当前得分 <b id="lbScore">0</b> / <span id="lbFull">48</span></div>
+        <div class="qz-score">用时 <b class="lb-clock" id="lbTime">00:00</b></div>
+        <div class="qz-prog"><i id="lbBar"></i></div>
+        <button class="btn sm" id="lbJump">定位当前阶段</button>
+        <button class="btn sm" id="lbCopy">复制结果摘要</button>
+      </div>
+      <div class="qz-steps" id="lbChips"></div>
+      <div id="labBody"></div>
+      <div class="qz-acts" id="lbActs"></div>
+      <div id="lbResult"></div>
+      <details style="margin-top:14px">
+        <summary>本次实操的作答记录与解析（<span id="lbLogN">0</span> 条）</summary>
+        <div class="kbody" id="lbLog"><span class="tiny">还没有记录。每校验一次阶段，这里会记一笔。</span></div>
+      </details>
+    </div>
+
+    <!-- ===== 面板 B：闯关速练 ===== -->
+    <div id="paneDrill" hidden>
+      <div class="qz-top">
+        <div class="qz-score">基础分 <b id="qzScore">0</b> / <span id="qzFull">115</span></div>
+        <div class="qz-score">连击奖励 <b id="qzBonus">0</b></div>
+        <div class="qz-prog"><i id="qzProgBar"></i></div>
+        <div class="qz-score">连击 <b id="qzStreak">0</b></div>
+        <button class="btn sm" id="qzRestart">再来一轮（换题）</button>
+      </div>
+      <div class="qz-steps" id="qzSteps"></div>
+
+      <div class="qbox" id="qzBody"></div>
+      <div class="qz-acts" id="qzActs"></div>
+      <div id="qzResult"></div>
+
+      <details style="margin-top:14px">
+        <summary>答题记录与分步解析（<span id="qzLogN">0</span> 条）</summary>
+        <div class="kbody" id="qzLog"><span class="tiny">还没有答题记录。</span></div>
+      </details>
+    </div>
+  </section>
+
+  <section id="notes">
+    <h2>七、知识点注释（9.1 – 9.4）</h2>
+
+    <details open>
+      <summary>9.1 作业成本计算法概述：为什么需要 ABC</summary>
+      <div class="kbody">
+        <p><b>产生背景：</b>①直接人工比重持续下降、制造费用比重上升；②产品/客户多样化，间接费用与产量不再成比例；③自动化与信息化使小批量、多批次生产成为常态。此时用单一产量类基础分配制造费用，会系统性扭曲产品成本。</p>
+        <p><b>核心命题：</b><code>作业消耗资源，产品消耗作业</code>。成本不是"被生产出来的"，而是"被一系列作业驱动出来的"。</p>
+        <p><b>基本概念：</b></p>
+        <ul>
+          <li><b>资源</b>：执行作业所耗费的经济代价（薪酬、折旧、动力、耗材）。</li>
+          <li><b>作业</b>：组织内为达到目的而进行的、消耗资源的工作单元（备料、质检、机时、包装）。</li>
+          <li><b>作业中心 / 成本库</b>：若干同质作业归集而成的一个成本集合，共享同一成本动因。</li>
+          <li><b>成本动因</b>：导致成本发生的驱动因素。分<b>资源动因</b>（资源→作业）与<b>作业动因</b>（作业→产品）。</li>
+          <li><b>成本对象</b>：需要计量成本的客体——本课件为产品 A、产品 B。</li>
+        </ul>
+        <p><b>本课件对应：</b>资源池（5 类资源项目，¥300,000）→ 4 个作业中心 → 产品 A / B。</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>9.2 基本原理：两阶段分配与“成本分配观 + 过程观”</summary>
+      <div class="kbody">
+        <p><b>第一阶段（资源 → 作业）：</b>按<b>资源动因</b>把资源费用归集到各作业中心，形成作业成本池。如：检验耗材按检验批次归集到质检作业。</p>
+        <p><b>第二阶段（作业 → 产品）：</b>按<b>作业动因</b>把作业成本分配到产品：</p>
+        <div class="formula">动因分配率 = 作业中心成本 ÷ 该作业动因总量<br>某产品应分配的作业成本 = 动因分配率 × 该产品耗用的动因量</div>
+        <p><b>与传统法的根本差异：</b>传统法是"资源 → 部门 → 产品"的<b>单阶段</b>分摊，通常只用一个产量类基础（机器小时、人工工时、产量）；作业成本法是"资源 → 作业 → 产品"的<b>两阶段</b>多基础分摊，成本追溯路径更贴近因果。</p>
+        <p><b>两维视图：</b><b>成本分配观</b>（纵向，回答"成本是多少"）与<b>过程观</b>（横向，回答"为什么发生、作业是否增值"）。后者通向作业管理（ABM）与流程改进。</p>
+        <p><b>本课件对应：</b>流程图中，左侧箭头为第一阶段（资源动因），右侧八条箭头为第二阶段（作业动因 × 2 个产品）。</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>9.3 基本程序：六步走</summary>
+      <div class="kbody">
+        <ol>
+          <li><b>确认与划分作业</b>，建立作业中心（同质作业合并；动因相同才可合并）。本车间：备料、质检、机时、包装。</li>
+          <li><b>归集资源费用到作业中心</b>，形成成本池（用资源动因）。</li>
+          <li><b>为每个作业中心选择成本动因</b>——三原则：与成本<b>相关性强</b>、可<b>计量</b>、能<b>激励</b>正确行为。</li>
+          <li><b>计算动因分配率</b>：作业成本池 ÷ 动因实际总量。</li>
+          <li><b>按耗用量分配</b>到各成本对象，汇总得产品制造费用。</li>
+          <li><b>计算产品总成本与单位成本</b>：直接材料 + 直接人工 + 分配的制造费用。</li>
+        </ol>
+        <p><b>关键提醒：</b>直接成本（直接材料、直接人工）可<b>直接追溯</b>，不参与分摊；只有间接费用才需要分配。本课件中，A 的直接成本 ¥150,000、B 的直接成本 ¥58,000 都是直接追溯的。</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>9.4 与传统成本法的比较：成本扭曲与决策后果</summary>
+      <div class="kbody">
+        <p><b>扭曲机理：</b>传统法用单一基础分配，隐含"制造费用与机器小时（或人工、产量）同比例发生"。当产品<b>批量、工艺复杂度、批次与检验频次</b>差异大时，非产量类作业（备料、质检、换产）的成本被产量类基础"平均化"。</p>
+        <ul>
+          <li><b>大批量、工艺简单</b>的产品：耗用非产量作业少，却被按高产量摊了大量费用 → 成本被<b>高估</b>。</li>
+          <li><b>小批量、多批次、工艺复杂</b>的产品：耗用非产量作业多，却摊得少 → 成本被<b>低估</b>。</li>
+        </ul>
+        <p>结果就是<b>交叉补贴</b>：A 在"补贴" B。</p>
+        <p><b>决策后果：</b></p>
+        <ul>
+          <li>被高估的产品 → 定价偏高，丧失价格竞争力与市场份额；或被误判为亏损而错误停产、外包。</li>
+          <li>被低估的产品 → 定价偏低，"账面盈利、实则亏损"，卖得越多亏得越多；且容易过度占用产能。</li>
+          <li>错误的产品组合、客户盈利分析与自制/外购决策。</li>
+        </ul>
+        <p><b>ABC 的局限：</b>①实施与维护成本高，需要大量动因数据；②动因选择带有主观性，选择不当同样会扭曲；③部分成本（如厂房折旧、厂部管理）仍难找到合理动因，需"维持性作业成本"处理；④主要服务于内部管理决策，通常不直接用于对外财务报告的成本计量。</p>
+        <p><b>思考题：</b>①如果把"备料"的动因由备料次数改为原料重量，A、B 成本会怎样变化？②当 B 的产量提升到 5,000 箱，扭曲会消失吗？为什么？③哪些动因既能准确分配成本，又能引导车间减少不增值作业？</p>
+      </div>
+    </details>
+  </section>
+
+  <footer>湖南农业大学 管理学院 ·《管理会计》第 9 章 虚拟仿真课件 · 单文件 HTML（SVG + 原生 JS，无外部依赖）</footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ==================== 工具 ==================== */
+var $  = function(s,r){return (r||document).querySelector(s);};
+var P  = ['A','B'];
+function NUM(v){var n=parseFloat(String(v).replace(/,/g,''));return isFinite(n)?n:0;}
+function fmt(v,d){ if(!isFinite(v)) return '—';
+  return v.toLocaleString('zh-CN',{minimumFractionDigits:(d===undefined?2:d),maximumFractionDigits:(d===undefined?2:d)});}
+function yuan(v,d){return '¥'+fmt(v,d===undefined?0:d);}
+function pct(v,d){ if(!isFinite(v)) return '—'; return (v*100).toFixed(d===undefined?1:d)+'%';}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* ==================== 标准案例数据 ==================== */
+function defaults(){
+  return {
+    acts:[
+      {k:'prep', n:'备料', d:'备料次数', u:'次',   c:60000,  dr:{A:20,   B:30},  why:'原料清洗、分拣、切分、投料准备；批次驱动的作业'},
+      {k:'qc',   n:'质检', d:'质检批次', u:'批',   c:48000,  dr:{A:10,   B:14},  why:'抽样检验、留样与记录；批次驱动的作业'},
+      {k:'mach', n:'机时', d:'机器小时', u:'小时', c:132000, dr:{A:1600, B:400}, why:'压榨/熬制设备运行；产量驱动的作业'},
+      {k:'pack', n:'包装', d:'包装件数', u:'件',   c:60000,  dr:{A:10000,B:2000},why:'灌装、封口、贴标、装箱；产量驱动的作业'}
+    ],
+    prod:{
+      A:{n:'A 鲜榨果汁', tag:'大批量 · 工艺稳定',        qty:10000, dm:120000, dl:30000},
+      B:{n:'B 果酱',     tag:'小批量 · 多批次 · 工艺复杂', qty:2000,  dm:40000,  dl:18000}
+    },
+    res:[
+      {n:'职工薪酬', v:132000, rd:'各作业中心人工工时占用'},
+      {n:'设备折旧', v:78000,  rd:'设备占用台时 / 使用强度'},
+      {n:'燃料动力', v:42000,  rd:'设备运行台时'},
+      {n:'检验耗材', v:24000,  rd:'检验批次领用量'},
+      {n:'包装物料', v:24000,  rd:'包装件数领用量'}
+    ]
+  };
+}
+var S = defaults();
+S.tradBase='mach'; S.markup=0.20; S.tradOn=false; S.sel=null; S.sensKey='prep.B';
+var BASE = null;
+function snapshot(){ return {acts:S.acts.map(function(a){return {A:a.dr.A,B:a.dr.B};})}; }
+BASE = snapshot();
+
+/* ==================== 计算引擎 ==================== */
+function compute(acts){
+  var r={rows:[],oh:{A:0,B:0},unit:{},total:{},ohTotal:0};
+  acts.forEach(function(a){
+    var tot=a.dr.A+a.dr.B;
+    var rate = tot>0 ? a.c/tot : 0;
+    var al={A:rate*a.dr.A, B:rate*a.dr.B};
+    r.rows.push({a:a,tot:tot,rate:rate,al:al});
+    r.oh.A+=al.A; r.oh.B+=al.B;
+  });
+  r.ohTotal=r.oh.A+r.oh.B;
+  P.forEach(function(p){
+    var pr=S.prod[p], q=pr.qty>0?pr.qty:0;
+    r.unit[p]  = q>0 ? r.oh[p]/q : 0;
+    r.total[p] = q>0 ? (pr.dm+pr.dl+r.oh[p])/q : 0;
+  });
+  return r;
+}
+function baseVal(p){
+  if(S.tradBase==='mach'){ var m=S.acts.filter(function(a){return a.k==='mach';})[0]; return m?m.dr[p]:0; }
+  if(S.tradBase==='dl')  return S.prod[p].dl;
+  return S.prod[p].qty;
+}
+function baseName(){
+  return {mach:'机器小时（小时）',dl:'直接人工成本（元）',qty:'产品产量（箱）'}[S.tradBase];
+}
+function computeTrad(ohTotal){
+  var b={}; P.forEach(function(p){b[p]=baseVal(p);});
+  var t=b.A+b.B, rate = t>0 ? ohTotal/t : 0;
+  var oh={A:rate*b.A,B:rate*b.B}, unit={}, total={};
+  P.forEach(function(p){ var pr=S.prod[p], q=pr.qty>0?pr.qty:0;
+    unit[p]= q>0?oh[p]/q:0;
+    total[p]= q>0?(pr.dm+pr.dl+oh[p])/q:0;
+  });
+  return {b:b,t:t,rate:rate,oh:oh,unit:unit,total:total};
+}
+function baseActs(){
+  return S.acts.map(function(a,i){ return {k:a.k,n:a.n,d:a.d,u:a.u,c:a.c,dr:{A:BASE.acts[i].A,B:BASE.acts[i].B}}; });
+}
+
+/* ==================== 输入表构建（只建一次） ==================== */
+function buildInputs(){
+  var tb=$('#tAct tbody'); tb.innerHTML='';
+  S.acts.forEach(function(a,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML=
+      '<td class="l"><b>'+esc(a.n)+'</b> <span class="tag">作业中心</span><div class="tiny">'+esc(a.why)+'</div></td>'+
+      '<td class="l">'+esc(a.d)+'</td>'+
+      '<td><input type="number" data-bind="actCost" data-i="'+i+'" step="1000" min="0" value="'+a.c+'"></td>'+
+      '<td><input type="number" data-bind="drv" data-i="'+i+'" data-p="A" step="1" min="0" value="'+a.dr.A+'"></td>'+
+      '<td><input type="number" data-bind="drv" data-i="'+i+'" data-p="B" step="1" min="0" value="'+a.dr.B+'"></td>'+
+      '<td id="tot-'+i+'">—</td><td id="rate-'+i+'">—</td>';
+    tb.appendChild(tr);
+  });
+
+  var tp=$('#tProd tbody'); tp.innerHTML='';
+  P.forEach(function(p){
+    var pr=S.prod[p], tr=document.createElement('tr');
+    tr.innerHTML=
+      '<td class="l"><b>'+esc(pr.n)+'</b><div class="tiny">'+esc(pr.tag)+'</div></td>'+
+      '<td><input type="number" data-bind="prod" data-p="'+p+'" data-f="qty" step="100" min="0" value="'+pr.qty+'"></td>'+
+      '<td><input type="number" data-bind="prod" data-p="'+p+'" data-f="dm" step="1000" min="0" value="'+pr.dm+'"></td>'+
+      '<td><input type="number" data-bind="prod" data-p="'+p+'" data-f="dl" step="1000" min="0" value="'+pr.dl+'"></td>'+
+      '<td id="dc-'+p+'">—</td><td id="duc-'+p+'">—</td>';
+    tp.appendChild(tr);
+  });
+
+  var tr2=$('#tRes tbody'); tr2.innerHTML='';
+  S.res.forEach(function(r,i){
+    var row=document.createElement('tr');
+    row.innerHTML='<td class="l">'+esc(r.n)+'</td>'+
+      '<td><input type="number" data-bind="res" data-i="'+i+'" step="1000" min="0" value="'+r.v+'"></td>'+
+      '<td class="l tiny">'+esc(r.rd)+'</td>';
+    tr2.appendChild(row);
+  });
+
+  var sk=$('#sensKey'); sk.innerHTML='';
+  S.acts.forEach(function(a){
+    P.forEach(function(p){
+      var o=document.createElement('option');
+      o.value=a.k+'.'+p;
+      o.textContent=a.n+'作业 · '+S.prod[p].n+' 耗用（'+a.d+'）';
+      sk.appendChild(o);
+    });
+  });
+  sk.value=S.sensKey;
+}
+function syncInputValues(){
+  S.acts.forEach(function(a,i){
+    var r=$('#tAct tbody').children[i];
+    r.children[2].firstChild.value=a.c;
+    r.children[3].firstChild.value=a.dr.A;
+    r.children[4].firstChild.value=a.dr.B;
+  });
+  P.forEach(function(p,idx){
+    var r=$('#tProd tbody').children[idx];
+    r.children[1].firstChild.value=S.prod[p].qty;
+    r.children[2].firstChild.value=S.prod[p].dm;
+    r.children[3].firstChild.value=S.prod[p].dl;
+  });
+  S.res.forEach(function(r,i){ $('#tRes tbody').children[i].children[1].firstChild.value=r.v; });
+}
+
+/* ==================== 流程图（SVG） ==================== */
+var LAY={
+  res:{x:25,y:170,w:160,h:140},
+  act:{x:390,w:180,h:76,ys:[28,132,236,340]},
+  prod:{x:800,w:175,h:96,ys:[120,260]}
+};
+function flowData(){
+  var r=compute(S.acts);
+  var d={res:{},acts:[],prods:[],edges:[]};
+  var resTotal=S.res.reduce(function(s,x){return s+x.v;},0);
+  d.res={total:resTotal};
+  S.acts.forEach(function(a,i){
+    var row=r.rows[i];
+    d.acts.push({k:a.k,n:a.n,d:a.d,u:a.u,c:a.c,rate:row.rate,tot:row.tot,al:row.al});
+    d.edges.push({id:'r-'+a.k, from:'res', to:'act-'+a.k,
+      path:'M185,240 C 270,240 300,'+(LAY.act.ys[i]+38)+' 388,'+(LAY.act.ys[i]+38),
+      label:yuan(a.c,0), t:0.5});
+    P.forEach(function(p,j){
+      d.edges.push({id:a.k+'-'+p, from:'act-'+a.k, to:'prod-'+p,
+        path:'M570,'+(LAY.act.ys[i]+38)+' C 660,'+(LAY.act.ys[i]+38)+' 700,'+(LAY.prod.ys[j]+48)+' 798,'+(LAY.prod.ys[j]+48),
+        label:yuan(row.al[p],0), t:0.25});
+    });
+  });
+  P.forEach(function(p,j){
+    var pr=S.prod[p];
+    d.prods.push({p:p,n:pr.n,tag:pr.tag,unit:r.unit[p],total:r.total[p],oh:r.oh[p]});
+  });
+  return d;
+}
+function renderFlow(){
+  var d=flowData(), sel=S.sel;
+  var parts=[];
+  parts.push('<defs>'+
+    '<marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">'+
+    '<path d="M0,0 L10,5 L0,10 z" fill="#8ab98a"/></marker>'+
+    '<marker id="arh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse">'+
+    '<path d="M0,0 L10,5 L0,10 z" fill="#2e7d32"/></marker></defs>');
+
+  // 泳道标题
+  parts.push('<text x="105" y="150" text-anchor="middle" font-size="13" font-weight="700" fill="#1b5e20">资源（Resource）</text>');
+  parts.push('<text x="480" y="20" text-anchor="middle" font-size="13" font-weight="700" fill="#1b5e20">作业中心（Activity Center）</text>');
+  parts.push('<text x="887" y="112" text-anchor="middle" font-size="13" font-weight="700" fill="#1b5e20">成本对象（Cost Object）</text>');
+
+  // 边
+  parts.push('<g id="edges">');
+  d.edges.forEach(function(e){
+    var on = !sel || e.from===sel || e.to===sel;
+    parts.push('<path id="pe-'+e.id+'" class="edge" d="'+e.path+'" fill="none" stroke="'+(on?'#2e7d32':'#a9cba9')+
+      '" stroke-width="'+(on?2.4:1.5)+'" marker-end="url(#'+(on?'arh':'ar')+')" '+(on?'':'opacity=".75"')+'/>');
+  });
+  parts.push('</g>');
+
+  // 资源池节点
+  var R=LAY.res, rs=(sel==='res');
+  parts.push('<g data-node="res">'+
+    '<rect class="box" x="'+R.x+'" y="'+R.y+'" width="'+R.w+'" height="'+R.h+'" rx="12" fill="#e9f4e9" stroke="'+(rs?'#1b5e20':'#2e7d32')+'" stroke-width="'+(rs?3:2)+'"/>'+
+    '<text x="'+(R.x+R.w/2)+'" y="'+(R.y+32)+'" text-anchor="middle" font-size="17" font-weight="700" fill="#1b5e20">资 源 池</text>'+
+    '<text x="'+(R.x+R.w/2)+'" y="'+(R.y+56)+'" text-anchor="middle" font-size="11.5" fill="#5f6f5c">资源费用合计</text>'+
+    '<text x="'+(R.x+R.w/2)+'" y="'+(R.y+80)+'" text-anchor="middle" font-size="16" font-weight="700" fill="#2e7d32">'+yuan(d.res.total,0)+'</text>'+
+    '<text x="'+(R.x+R.w/2)+'" y="'+(R.y+102)+'" text-anchor="middle" font-size="11" fill="#5f6f5c">'+S.res.length+' 类资源项目</text>'+
+    '<text x="'+(R.x+R.w/2)+'" y="'+(R.y+122)+'" text-anchor="middle" font-size="10.5" fill="#8aa58a">点击查看详情</text>'+
+    '</g>');
+
+  // 作业中心节点
+  d.acts.forEach(function(a,i){
+    var y=LAY.act.ys[i], x=LAY.act.x, w=LAY.act.w, h=LAY.act.h;
+    var on=(sel==='act-'+a.k);
+    parts.push('<g data-node="act-'+a.k+'">'+
+      '<rect class="box" x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="10" fill="#fff" stroke="'+(on?'#1b5e20':'#66bb6a')+'" stroke-width="'+(on?3:2)+'"/>'+
+      '<rect x="'+x+'" y="'+y+'" width="6" height="'+h+'" rx="3" fill="#2e7d32"/>'+
+      '<text x="'+(x+w/2)+'" y="'+(y+27)+'" text-anchor="middle" font-size="15" font-weight="700" fill="#1b5e20">'+esc(a.n)+'作业中心</text>'+
+      '<text x="'+(x+w/2)+'" y="'+(y+46)+'" text-anchor="middle" font-size="11.5" fill="#5f6f5c">动因：'+esc(a.d)+'（'+esc(a.u)+'）</text>'+
+      '<text x="'+(x+w/2)+'" y="'+(y+65)+'" text-anchor="middle" font-size="12" fill="#2e7d32"><tspan font-weight="700">'+yuan(a.c,0)+'</tspan>　率 '+yuan(a.rate,2)+'/'+esc(a.u)+'</text>'+
+      '</g>');
+  });
+
+  // 产品节点
+  d.prods.forEach(function(pr,j){
+    var y=LAY.prod.ys[j], x=LAY.prod.x, w=LAY.prod.w, h=LAY.prod.h;
+    var on=(sel==='prod-'+pr.p);
+    parts.push('<g data-node="prod-'+pr.p+'">'+
+      '<rect class="box" x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="10" fill="#fff" stroke="'+(on?'#1b5e20':'#43a047')+'" stroke-width="'+(on?3:2)+'"/>'+
+      '<text x="'+(x+w/2)+'" y="'+(y+28)+'" text-anchor="middle" font-size="15.5" font-weight="700" fill="#1b5e20">'+esc(pr.n)+'</text>'+
+      '<text x="'+(x+w/2)+'" y="'+(y+46)+'" text-anchor="middle" font-size="11" fill="#7a8a78">'+esc(pr.tag)+'</text>'+
+      '<text x="'+(x+w/2)+'" y="'+(y+67)+'" text-anchor="middle" font-size="11.5" fill="#5f6f5c">单位制造费用 <tspan font-weight="700" fill="#2e7d32">'+yuan(pr.unit,2)+'</tspan></text>'+
+      '<text x="'+(x+w/2)+'" y="'+(y+86)+'" text-anchor="middle" font-size="12" fill="#5f6f5c">单位总成本 <tspan font-size="13" font-weight="700" fill="#1b5e20">'+yuan(pr.total,2)+'</tspan></text>'+
+      '</g>');
+  });
+
+  parts.push('<text x="25" y="440" font-size="12" fill="#7a8a78">① 资源 → 作业（资源动因）　② 作业 → 产品（作业动因）　·　点击节点查看明细</text>');
+
+  var svg=$('#flowSvg');
+  svg.innerHTML=parts.join('');
+
+  // 边上标签（按路径长度定位）
+  var lg=document.createElementNS('http://www.w3.org/2000/svg','g');
+  svg.appendChild(lg);
+  d.edges.forEach(function(e){
+    var path=svg.querySelector('#pe-'+e.id);
+    if(!path) return;
+    var len=0; try{ len=path.getTotalLength(); }catch(err){ len=0; }
+    var pt={x:0,y:0};
+    if(len>0){ try{ pt=path.getPointAtLength(len*e.t); }catch(err2){ pt={x:0,y:0}; } }
+    var on = !sel || e.from===sel || e.to===sel;
+    var t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',pt.x.toFixed(1));
+    t.setAttribute('y',(pt.y-6).toFixed(1));
+    t.setAttribute('text-anchor','middle');
+    t.setAttribute('font-size','11');
+    t.setAttribute('font-weight',on?'700':'400');
+    t.setAttribute('fill',on?'#1b5e20':'#5f6f5c');
+    t.setAttribute('style','paint-order:stroke fill;stroke:#f6fbf6;stroke-width:4px;stroke-linejoin:round');
+    t.textContent=e.label;
+    lg.appendChild(t);
+  });
+}
+
+/* ==================== 节点明细 ==================== */
+function renderDetail(){
+  var box=$('#nodeDetail'), sel=S.sel;
+  if(!sel){ box.innerHTML='<span class="tiny">尚未选中节点。点击流程图中的「资源池」「作业中心」或「产品」查看构成明细。</span>'; return; }
+  var r=compute(S.acts), html='';
+  if(sel==='res'){
+    var tot=S.res.reduce(function(s,x){return s+x.v;},0);
+    var pool=S.acts.reduce(function(s,a){return s+a.c;},0);
+    html='<h4>资源池 · 资源费用构成（第一阶段：按资源动因归集到各作业中心）</h4>'+
+      '<div class="kv">';
+    S.res.forEach(function(x){ html+='<b>'+esc(x.n)+'</b><span>'+yuan(x.v,0)+'　<span class="tiny">资源动因：'+esc(x.rd)+'</span></span>'; });
+    html+='<b>资源费用合计</b><span><b>'+yuan(tot,0)+'</b></span>'+
+      '<b>作业成本池合计</b><span><b>'+yuan(pool,0)+'</b>　'+(Math.abs(tot-pool)<0.5?'<span class="badge b-ok">勾稽平衡</span>':'<span class="badge b-hi">存在差额 '+yuan(pool-tot,0)+'</span>')+'</span>'+
+      '</div><div class="note">资源动因（如人工工时占用、设备台时、耗材领用）决定资源费用如何流入各作业中心。差额不为零时，本课件以<b>作业成本池</b>作为分摊基数。</div>';
+  } else if(sel.indexOf('act-')===0){
+    var k=sel.slice(4), idx=-1;
+    S.acts.forEach(function(a,i){ if(a.k===k) idx=i; });
+    var a=S.acts[idx], row=r.rows[idx];
+    var shA=row.tot>0?row.al.A/a.c:0, shB=row.tot>0?row.al.B/a.c:0;
+    html='<h4>'+esc(a.n)+'作业中心 · 成本池 '+yuan(a.c,0)+'</h4>'+
+      '<div class="kv">'+
+      '<b>作业说明</b><span>'+esc(a.why)+'</span>'+
+      '<b>成本动因</b><span>'+esc(a.d)+'（单位：'+esc(a.u)+'）</span>'+
+      '<b>动因总量</b><span>'+fmt(row.tot,0)+' '+esc(a.u)+'（A '+fmt(a.dr.A,0)+' ＋ B '+fmt(a.dr.B,0)+'）</span>'+
+      '<b>动因分配率</b><span><b>'+yuan(row.rate,2)+' / '+esc(a.u)+'</b>　＝ '+yuan(a.c,0)+' ÷ '+fmt(row.tot,0)+'</span>'+
+      '<b>A 分摊</b><span>'+yuan(row.al.A,2)+'　（占比 '+pct(shA)+'）</span>'+
+      '<b>B 分摊</b><span>'+yuan(row.al.B,2)+'　（占比 '+pct(shB)+'）</span>'+
+      '</div><div class="note">该作业属于<b>'+(a.k==='mach'||a.k==='pack'?'产量驱动（与产量同步变动）':'批次/非产量驱动（与批次、频次相关，不与产量同步）')+'</b>作业。'+
+      (a.k==='mach'||a.k==='pack'?'若传统法只按机器小时分配，此类作业成本归属大体合理。':'若传统法只按机器小时分配，此类作业成本会被"按产量平均化"，从而扭曲小批量多批次产品的成本。')+'</div>';
+  } else {
+    var p=sel.slice(5), pr=S.prod[p];
+    html='<h4>'+esc(pr.n)+' · 成本汇总（作业成本法）</h4><div class="tw"><table><thead><tr>'+
+      '<th class="l">作业中心</th><th>耗用动因量</th><th>动因分配率</th><th>分摊制造费用</th></tr></thead><tbody>';
+    r.rows.forEach(function(row){
+      html+='<tr><td class="l">'+esc(row.a.n)+'</td><td>'+fmt(row.a.dr[p],0)+' '+esc(row.a.u)+'</td><td>'+yuan(row.rate,2)+'</td><td>'+yuan(row.al[p],2)+'</td></tr>';
+    });
+    html+='</tbody><tfoot><tr><th class="l">制造费用合计</th><th></th><th></th><th>'+yuan(r.oh[p],2)+'</th></tr></tfoot></table></div>'+
+      '<div class="kv" style="margin-top:8px">'+
+      '<b>直接成本</b><span>'+yuan(pr.dm+pr.dl,0)+'（材料 '+yuan(pr.dm,0)+' ＋ 人工 '+yuan(pr.dl,0)+'）</span>'+
+      '<b>总成本</b><span>'+yuan(pr.dm+pr.dl+r.oh[p],2)+'</span>'+
+      '<b>产量</b><span>'+fmt(pr.qty,0)+' 箱</span>'+
+      '<b>单位制造费用</b><span>'+yuan(r.unit[p],2)+' / 箱</span>'+
+      '<b>单位总成本</b><span><b>'+yuan(r.total[p],2)+' / 箱</b></span>'+
+      '</div>';
+  }
+  box.innerHTML=html;
+}
+
+/* ==================== 分摊结果 ==================== */
+function renderTables(){
+  var r=compute(S.acts);
+  S.acts.forEach(function(a,i){
+    var row=r.rows[i];
+    $('#tot-'+i).textContent  = fmt(row.tot,0)+' '+a.u;
+    $('#rate-'+i).innerHTML   = '<b>'+yuan(row.rate,2)+'</b> / '+esc(a.u);
+  });
+  P.forEach(function(p){
+    var pr=S.prod[p];
+    $('#dc-'+p).textContent  = yuan(pr.dm+pr.dl,0);
+    $('#duc-'+p).textContent = pr.qty>0 ? yuan((pr.dm+pr.dl)/pr.qty,2) : '—';
+  });
+
+  var tb=$('#tAlloc tbody'); tb.innerHTML='';
+  r.rows.forEach(function(row){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td class="l"><b>'+esc(row.a.n)+'</b></td><td>'+esc(row.a.d)+'（'+esc(row.a.u)+'）</td>'+
+      '<td>'+yuan(row.rate,2)+'</td>'+
+      '<td>'+fmt(row.a.dr.A,0)+'</td><td>'+yuan(row.al.A,2)+'</td>'+
+      '<td>'+fmt(row.a.dr.B,0)+'</td><td>'+yuan(row.al.B,2)+'</td>'+
+      '<td>'+yuan(row.al.A+row.al.B,2)+'</td>';
+    tb.appendChild(tr);
+  });
+  $('#allocFoot').innerHTML='<tr><th class="l">合计</th><th colspan="2">—</th><th>—</th><th>'+yuan(r.oh.A,2)+
+    '</th><th>—</th><th>'+yuan(r.oh.B,2)+'</th><th>'+yuan(r.ohTotal,2)+'</th></tr>';
+
+  var cards=$('#abcCards'); cards.innerHTML='';
+  P.forEach(function(p){
+    var pr=S.prod[p];
+    var div=document.createElement('div');
+    div.className='card';
+    div.innerHTML='<div class="ttl">'+esc(pr.n)+' · 单位总成本（作业成本法）</div>'+
+      '<div class="big">'+yuan(r.total[p],2)+' <span style="font-size:13px;font-weight:400">/ 箱</span></div>'+
+      '<ul><li>直接材料：'+yuan(pr.dm/pr.qty,2)+' / 箱</li>'+
+      '<li>直接人工：'+yuan(pr.dl/pr.qty,2)+' / 箱</li>'+
+      '<li>制造费用（分摊）：'+yuan(r.unit[p],2)+' / 箱</li>'+
+      '<li>制造费用占单位成本：<b>'+pct(r.unit[p]/r.total[p])+'</b></li></ul>';
+    cards.appendChild(div);
+  });
+
+  // 资源勾稽
+  var tot=S.res.reduce(function(s,x){return s+x.v;},0);
+  $('#resTotal').textContent=yuan(tot,0);
+  var badge=$('#chkBadge');
+  if(Math.abs(tot-r.ohTotal)<0.5){ badge.className='badge b-ok'; badge.textContent='✓ 与作业成本池勾稽平衡'; }
+  else { badge.className='badge b-hi'; badge.textContent='⚠ 与作业成本池相差 '+yuan(r.ohTotal-tot,0); }
+}
+
+/* ==================== 传统法对比 ==================== */
+function renderCompare(){
+  $('#tradBody').classList.toggle('hide',!S.tradOn);
+  $('#tradOff').classList.toggle('hide',S.tradOn);
+  if(!S.tradOn) return;
+  var r=compute(S.acts), t=computeTrad(r.ohTotal);
+
+  $('#fRate').innerHTML = yuan(r.ohTotal,0)+' ÷ '+fmt(t.t,0)+' ＝ <b>'+yuan(t.rate,2)+' / '+esc(baseName())+'</b>';
+
+  var tb=$('#tCmp tbody'); tb.innerHTML='';
+  P.forEach(function(p){
+    var diff=t.total[p]-r.total[p];
+    var rate = r.total[p]>0 ? diff/r.total[p] : 0;
+    var judge = Math.abs(diff)<0.005 ? '<span class="badge b-ok">基本一致</span>'
+              : (diff>0 ? '<span class="badge b-hi">被高估</span>' : '<span class="badge b-lo">被低估</span>');
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td class="l"><b>'+esc(S.prod[p].n)+'</b></td>'+
+      '<td>'+fmt(t.b[p],0)+'</td><td>'+yuan(t.oh[p],0)+'</td>'+
+      '<td><b>'+yuan(t.total[p],2)+'</b></td><td><b>'+yuan(r.total[p],2)+'</b></td>'+
+      '<td style="color:'+(diff>0?'#e65100':(diff<0?'#1565c0':'#2e7d32'))+';font-weight:700">'+
+        (diff>0?'+':'')+yuan(diff,2)+'　<span class="tiny">('+(diff>0?'+':'')+pct(rate)+')</span></td>'+
+      '<td>'+judge+'</td>';
+    tb.appendChild(tr);
+  });
+
+  var v=$('#verdicts'); v.innerHTML='';
+  P.forEach(function(p){
+    var diff=t.total[p]-r.total[p], pr=S.prod[p];
+    var rate = r.total[p]>0 ? diff/r.total[p] : 0;
+    var d=document.createElement('div');
+    if(Math.abs(diff)<0.005){
+      d.className='verdict v-ok';
+      d.innerHTML='<b>'+esc(pr.n)+'：两种方法基本一致。</b>说明该产品耗用的各项作业与所选单一分配基础高度同向，传统法在此情形下不会明显扭曲成本。';
+    } else if(diff>0){
+      d.className='verdict v-hi';
+      d.innerHTML='<b>'+esc(pr.n)+'：成本被<span class="badge b-hi">高估</span> '+yuan(diff,2)+' / 箱（' +pct(rate)+'）。</b>'+
+        '<br>传统法把本应由其他产品承担的非产量类作业成本（备料、质检等）按'+esc(baseName().split('（')[0])+'摊给了它。'+
+        '<br><b>决策后果：</b>按成本加成定价会<b>定价偏高</b>，可能丧失价格竞争力与订单；也可能被误判为"亏损产品"而错误减产、停产或放弃。';
+    } else {
+      d.className='verdict v-lo';
+      d.innerHTML='<b>'+esc(pr.n)+'：成本被<span class="badge b-lo">低估</span> '+yuan(-diff,2)+' / 箱（'+pct(rate)+'）。</b>'+
+        '<br>它频繁耗用备料、质检等批次类作业，但这些成本被按'+esc(baseName().split('（')[0])+'"平均化"后摊得太少。'+
+        '<br><b>决策后果：</b>定价<b>偏低</b>，账面盈利而实际不盈利；按本月产量 '+fmt(pr.qty,0)+' 箱计，全年（月）将少计成本约 <b>'+yuan(-diff*pr.qty,0)+'</b>，卖得越多亏得越多。';
+    }
+    v.appendChild(d);
+  });
+
+  // 定价含义
+  var mk=S.markup, pb=$('#priceBox'); pb.innerHTML='';
+  var rows='<div class="tw"><table><thead><tr><th class="l">产品</th><th>作业法单位成本</th><th>作业法建议售价</th><th>传统法单位成本</th><th>传统法建议售价</th><th>售价偏差</th></tr></thead><tbody>';
+  P.forEach(function(p){
+    var pa=r.total[p]*(1+mk), pt2=t.total[p]*(1+mk), dv=pt2-pa;
+    rows+='<tr><td class="l">'+esc(S.prod[p].n)+'</td><td>'+yuan(r.total[p],2)+'</td><td><b>'+yuan(pa,2)+'</b></td>'+
+      '<td>'+yuan(t.total[p],2)+'</td><td><b>'+yuan(pt2,2)+'</b></td>'+
+      '<td style="color:'+(dv>0?'#e65100':(dv<0?'#1565c0':'#2e7d32'))+';font-weight:700">'+(dv>0?'+':'')+yuan(dv,2)+'</td></tr>';
+  });
+  rows+='</tbody></table></div>';
+  var dA=t.total.A-r.total.A, dB=t.total.B-r.total.B;
+  var concl='';
+  if(dA*dB<0){
+    var hiP = dA>0?'A':'B', loP = dA>0?'B':'A';
+    concl='<div class="note"><b>结论（交叉补贴）：</b>在传统法下，<b>'+hiP+' 产品在补贴 '+loP+' 产品</b>。'+
+      '被高估的 '+hiP+' 因报价过高可能丢单；被低估的 '+loP+' 因报价过低而"赔本赚吆喝"。'+
+      '作业成本法通过多动因追溯，把批次类作业成本还给真正的消耗者，为<b>定价、产品组合、客户盈利分析与自制/外购决策</b>提供可靠信息。</div>';
+  } else {
+    concl='<div class="note">两种方法的差异方向一致，未出现明显的交叉补贴；但仍可比较差异幅度是否足以改变定价或产品组合决策。</div>';
+  }
+  pb.innerHTML=rows+concl+
+    '<div class="tiny" style="margin-top:6px">建议售价 ＝ 单位总成本 ×（1 ＋ 加成率 '+pct(mk,0)+'）。加成率可在上方调整。</div>';
+
+  drawBars('#cmpChart',[
+    {label:'A · 作业法', value:r.total.A, color:'#2e7d32'},
+    {label:'A · 传统法', value:t.total.A, color:'#e65100'},
+    {label:'B · 作业法', value:r.total.B, color:'#43a047'},
+    {label:'B · 传统法', value:t.total.B, color:'#1565c0'}
+  ],'元 / 箱');
+}
+
+/* ==================== 柱状图（通用） ==================== */
+function drawBars(sel, items, unit){
+  var svg=$(sel); if(!svg) return;
+  var W=440,H=210,padL=46,padB=34,padT=14,padR=10;
+  var pw=W-padL-padR, ph=H-padT-padB;
+  var max=0; items.forEach(function(it){ if(it.value>max) max=it.value; });
+  max = max>0 ? max*1.22 : 1;
+  var parts=[];
+  for(var g=0; g<=4; g++){
+    var y=padT+ph-ph*g/4, val=max*g/4;
+    parts.push('<line x1="'+padL+'" y1="'+y.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+y.toFixed(1)+'" stroke="#e2eee2" stroke-width="1"/>');
+    parts.push('<text x="'+(padL-6)+'" y="'+(y+4).toFixed(1)+'" text-anchor="end" font-size="10.5" fill="#7a8a78">'+fmt(val,0)+'</text>');
+  }
+  var n=items.length, slot=pw/n, bw=Math.min(58, slot*0.52);
+  items.forEach(function(it,i){
+    var cx=padL+slot*(i+0.5), h=Math.max(1, it.value/max*ph), y=padT+ph-h;
+    parts.push('<rect x="'+(cx-bw/2).toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="4" fill="'+it.color+'" opacity=".92"/>');
+    parts.push('<text x="'+cx.toFixed(1)+'" y="'+(y-6).toFixed(1)+'" text-anchor="middle" font-size="11.5" font-weight="700" fill="'+it.color+'">'+fmt(it.value,2)+'</text>');
+    parts.push('<text x="'+cx.toFixed(1)+'" y="'+(padT+ph+16)+'" text-anchor="middle" font-size="11" fill="#5f6f5c">'+esc(it.label)+'</text>');
+  });
+  parts.push('<text x="'+padL+'" y="'+(H-4)+'" font-size="10.5" fill="#8aa58a">单位：'+esc(unit||'')+'</text>');
+  svg.innerHTML=parts.join('');
+}
+
+/* ==================== 敏感性 ==================== */
+function sensGet(){
+  var ks=S.sensKey.split('.');
+  var idx=-1; S.acts.forEach(function(a,i){ if(a.k===ks[0]) idx=i; });
+  return {i:idx, p:ks[1], act:S.acts[idx]};
+}
+function renderSens(){
+  var g=sensGet(), cur=g.act.dr[g.p];
+  var bv=BASE.acts[g.i][g.p];
+  var maxv=Math.max(bv*2, cur*1.3, 10);
+  var rng=$('#sensRange');
+  rng.max=Math.ceil(maxv);
+  rng.step = maxv>=1000 ? 10 : (maxv>=100 ? 1 : 1);
+  rng.value=cur;
+  $('#sensBase').textContent=fmt(bv,0)+' '+g.act.u;
+  $('#sensNow').textContent =fmt(cur,0)+' '+g.act.u;
+  var numIn=$('#sensNum'); if(document.activeElement!==numIn) numIn.value=cur;
+
+  var rNow=compute(S.acts);
+  var rBase=compute(baseActs());
+
+  var cards=$('#sensCards'); cards.innerHTML='';
+  P.forEach(function(p){
+    var d=rNow.unit[p]-rBase.unit[p];
+    var rate = rBase.unit[p]>0 ? d/rBase.unit[p] : 0;
+    var div=document.createElement('div');
+    div.className='card';
+    div.style.borderColor = Math.abs(d)<0.005 ? '#cfe3cf' : (d>0?'#ffcc9e':'#b8d3f5');
+    div.innerHTML='<div class="ttl">'+esc(S.prod[p].n)+' · 单位制造费用</div>'+
+      '<div class="big">'+yuan(rNow.unit[p],2)+'</div>'+
+      '<ul><li>基线：'+yuan(rBase.unit[p],2)+'</li>'+
+      '<li>变化：<b style="color:'+(Math.abs(d)<0.005?'#2e7d32':(d>0?'#e65100':'#1565c0'))+'">'+(d>0?'+':'')+yuan(d,2)+'（'+(d>0?'+':'')+pct(rate)+'）</b></li>'+
+      '<li>单位总成本：<b>'+yuan(rNow.total[p],2)+'</b>（基线 '+yuan(rBase.total[p],2)+'）</li></ul>';
+    cards.appendChild(div);
+  });
+
+  drawBars('#sensChart',[
+    {label:'A 基线', value:rBase.unit.A, color:'#a5c8a5'},
+    {label:'A 当前', value:rNow.unit.A,  color:'#2e7d32'},
+    {label:'B 基线', value:rBase.unit.B, color:'#a5c8a5'},
+    {label:'B 当前', value:rNow.unit.B,  color:'#1565c0'}
+  ],'元 / 箱（仅制造费用）');
+
+  // 文字解读
+  var rowNow=rNow.rows[g.i], rowBase=rBase.rows[g.i];
+  var dQ=cur-bv, dQr = bv>0 ? dQ/bv : 0;
+  var dU=rNow.unit[g.p]-rBase.unit[g.p];
+  var dUr = rBase.unit[g.p]>0 ? dU/rBase.unit[g.p] : 0;
+  var other = g.p==='A'?'B':'A';
+  var dO=rNow.unit[other]-rBase.unit[other];
+  var dOr = rBase.unit[other]>0 ? dO/rBase.unit[other] : 0;
+  var elast = Math.abs(dQr)>1e-9 ? (dUr/dQr) : 0;
+  var txt=$('#sensText');
+  txt.innerHTML=
+    '<div class="kv">'+
+    '<b>调整项</b><span><b>'+esc(g.act.n)+'</b>作业 · '+esc(S.prod[g.p].n)+' 耗用（'+esc(g.act.d)+'）</span>'+
+    '<b>动因量</b><span>'+fmt(bv,0)+' → '+fmt(cur,0)+' '+esc(g.act.u)+'　<span class="tiny">('+(dQr>0?'+':'')+pct(dQr)+')</span></span>'+
+    '<b>动因分配率</b><span>'+yuan(rowBase.rate,2)+' → <b>'+yuan(rowNow.rate,2)+'</b> / '+esc(g.act.u)+'</span>'+
+    '<b>'+esc(S.prod[g.p].n)+'</b><span>单位制造费用 '+yuan(rBase.unit[g.p],2)+' → <b>'+yuan(rNow.unit[g.p],2)+'</b>　<span class="tiny">('+(dU>0?'+':'')+yuan(dU,2)+'，'+(dU>0?'+':'')+pct(dUr)+')</span></span>'+
+    '<b>'+esc(S.prod[other].n)+'</b><span>单位制造费用 '+yuan(rBase.unit[other],2)+' → <b>'+yuan(rNow.unit[other],2)+'</b>　<span class="tiny">('+(dO>0?'+':'')+yuan(dO,2)+'，'+(dO>0?'+':'')+pct(dOr)+')</span></span>'+
+    '<b>敏感弹性</b><span>动因量变动 1% → 本产品单位制造费用变动 <b>'+fmt(elast,2)+'%</b></span>'+
+    '</div>'+
+    '<div class="note"><b>解读：</b>动因耗用量变化会同时改变<b>动因分配率</b>与<b>两产品的分摊份额</b>——作业成本池总额不变，谁耗用得多谁就多承担。'+
+    '这就是为什么<b>动因的选择与计量直接决定成本归属</b>：若动因选错（例如用机器小时去分配备料、质检这类批次驱动作业），'+
+    '成本就会系统性地流向高产量、大批量的产品，形成第四节的扭曲。</div>'+
+    '<div class="note"><b>课堂提问：</b>把'+esc(g.act.n)+'的动因换成别的口径（如按原料重量、按人工工时），'+esc(S.prod.B.n)+' 的成本会上升还是下降？这说明"动因相关性"为什么是 ABC 成败的关键。</div>';
+}
+
+/* ==================== 总渲染 ==================== */
+function render(){ renderFlow(); renderTables(); renderCompare(); renderSens(); renderDetail(); }
+
+/* ==================== 事件 ==================== */
+document.addEventListener('input', function(e){
+  var t=e.target; if(!t.dataset || !t.dataset.bind) return;
+  var b=t.dataset.bind, v=NUM(t.value);
+  if(b==='actCost'){ S.acts[+t.dataset.i].c=v; }
+  else if(b==='drv'){ S.acts[+t.dataset.i].dr[t.dataset.p]=v; }
+  else if(b==='prod'){ S.prod[t.dataset.p][t.dataset.f]=v; }
+  else if(b==='res'){ S.res[+t.dataset.i].v=v; }
+  else if(b==='markup'){ S.markup=Math.max(0,v)/100; }
+  else if(b==='sens'){ var g=sensGet(); g.act.dr[g.p]=v; }
+  else if(b==='sensNum'){ var g2=sensGet(); g2.act.dr[g2.p]=v; }
+  else return;
+  render();
+});
+document.addEventListener('change', function(e){
+  var t=e.target;
+  if(t.id==='tradOn'){ S.tradOn=t.checked; render(); }
+  else if(t.id==='tradBase'){ S.tradBase=t.value; render(); }
+  else if(t.id==='sensKey'){ S.sensKey=t.value; render(); }
+});
+$('#flowSvg').addEventListener('click', function(e){
+  var n=e.target.closest ? e.target.closest('[data-node]') : null;
+  if(!n){ return; }
+  var id=n.getAttribute('data-node');
+  S.sel = (S.sel===id) ? null : id;
+  render();
+});
+$('#btnSync').addEventListener('click', function(){
+  var tot=S.res.reduce(function(s,x){return s+x.v;},0);
+  var pool=S.acts.reduce(function(s,a){return s+a.c;},0);
+  if(tot<=0 || pool<=0) return;
+  var f=pool/tot;
+  S.res.forEach(function(x){ x.v=Math.round(x.v*f); });
+  syncInputValues(); render();
+});
+$('#btnReset').addEventListener('click', function(){
+  var keep={tradBase:S.tradBase,markup:S.markup,tradOn:S.tradOn,sel:S.sel,sensKey:S.sensKey};
+  S=defaults();
+  S.tradBase=keep.tradBase; S.markup=keep.markup; S.tradOn=keep.tradOn; S.sel=keep.sel; S.sensKey=keep.sensKey;
+  BASE=snapshot(); buildInputs(); render();
+});
+$('#btnSnap').addEventListener('click', function(){ BASE=snapshot(); render(); });
+
+/* ==================== 启动 ==================== */
+buildInputs();
+render();
+})();
+
+/* ==================================================================
+   闯关练习模块（独立 IIFE —— 不读取、不修改主仿真的任何参数）
+   ================================================================== */
+(function(){
+"use strict";
+function $(s){return document.querySelector(s);}
+function R(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+function pk(a){return a[Math.floor(Math.random()*a.length)];}
+function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function fm(v,d){if(!isFinite(v))return '—';return v.toLocaleString('zh-CN',{minimumFractionDigits:(d===undefined?2:d),maximumFractionDigits:(d===undefined?2:d)});}
+function ym(v,d){return '¥'+fm(v,d===undefined?0:d);}
+function pc(v,d){if(!isFinite(v))return '—';return (v*100).toFixed(d===undefined?1:d)+'%';}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function A2(j){return String.fromCharCode(65+j);}
+
+/* ---------------- 题库：概念速答 ---------------- */
+var QB=[
+{q:'作业成本法的基本命题是？',o:['产品消耗资源，作业消耗产品','作业消耗资源，产品消耗作业','部门消耗资源，产品消耗部门','资源消耗作业，作业消耗产品'],a:1,
+ why:'ABC 的核心命题是"作业消耗资源，产品消耗作业"，由此形成"资源→作业→产品"的两阶段分配路径。'},
+{q:'把资源费用归集到各作业中心，依据的是？',o:['作业动因','资源动因','产量动因','成本动因总量'],a:1,
+ why:'第一阶段（资源→作业）用资源动因，如人工工时占用、设备台时、耗材领用；第二阶段（作业→产品）才用作业动因。'},
+{q:'动因分配率的计算公式是？',o:['作业成本 × 动因总量','作业成本 ÷ 动因总量','动因总量 ÷ 作业成本','产品耗用量 ÷ 作业成本'],a:1,
+ why:'动因分配率 = 作业中心成本 ÷ 该作业动因的实际消耗总量。分母是"实际产能下的实际动因量"，不是预算量。'},
+{q:'下列作业中，通常属于"批次级作业"的是？',o:['机器加工','产品包装','生产准备与换产','厂房折旧'],a:2,
+ why:'备料、质检、换产等随"批次/次数"发生，而非随单位产品发生；包装、机时属单位级作业，厂房折旧属维持级作业。'},
+{q:'在作业成本法下，直接材料与直接人工应当？',o:['按机器小时分配','按产量分配','直接追溯，不参与分摊','并入作业成本池统一分配'],a:2,
+ why:'可直接追溯到成本对象的成本直接计入，只有间接费用（制造费用）才需要分配。'},
+{q:'传统成本法用单一分配基础分配制造费用，最可能导致？',o:['大批量、工艺简单的产品成本被高估','小批量、工艺复杂的产品成本被高估','所有产品成本都同样准确','直接人工成本被低估'],a:0,
+ why:'非产量类作业成本被按产量类基础"平均化"，高产量的大批量产品摊得过多（被高估），小批量多批次产品摊得过少（被低估）。'},
+{q:'成本信息中的"交叉补贴"是指？',o:['政府对企业的财政补贴','某产品承担了本应由另一产品承担的成本','各作业之间相互分摊成本','直接成本与间接成本相互替代'],a:1,
+ why:'被高估的产品在"补贴"被低估的产品，导致定价、产品组合与自制/外购决策失真。'},
+{q:'选择成本动因时，最重要的标准是？',o:['数据最容易取得','与作业成本的发生具有强因果相关性','计量单位必须是小时','必须与产量成正比'],a:1,
+ why:'相关性（因果性）是第一原则，其次是可计量性与行为导向性。动因选错，ABC 与传统法一样会扭曲成本。'},
+{q:'作业成本法的"过程观"主要回答的问题是？',o:['成本是多少','成本为什么发生、作业是否增值','利润是多少','产量是多少'],a:1,
+ why:'成本分配观（纵向）回答"成本是多少"；过程观（横向）回答"为什么发生"，通向作业管理（ABM）与流程改进。'},
+{q:'下列哪项是作业成本法的主要局限？',o:['完全不能用于定价决策','实施与维护成本高、动因选择带主观性','只能用于单一产品企业','会导致直接成本无法追溯'],a:1,
+ why:'ABC 数据量大、实施维护成本高，动因选择带主观性，且通常不直接用于对外财务报告的成本计量。'},
+{q:'某产品成本在传统法下被低估，其直接决策后果是？',o:['定价偏高，丧失竞争力','定价偏低，卖得越多亏得越多','必须立即扩大产量','直接材料成本上升'],a:1,
+ why:'成本被低估 → 售价偏低 → 账面盈利而实际不盈利，销量越大亏损越大。'},
+{q:'若把"质检"作业的动因由"质检批次"改为"机器小时"，最可能发生？',o:['成本归属更准确','批次驱动的成本被产量类基础平均化，扭曲再现','作业成本池总额改变','动因分配率必然上升'],a:1,
+ why:'动因与成本的发生不同源时，就退回到传统法的扭曲逻辑——这正是"动因选择决定成本归属"。'},
+{q:'成本池不变而动因总量增加时，动因分配率将？',o:['上升','下降','不变','先升后降'],a:1,
+ why:'分配率 = 成本池 ÷ 动因总量，分母变大则率变小；某产品耗用量不变时，其承担的成本随之下降（被"稀释"）。'},
+{q:'作业成本法下，某产品应分配的作业成本等于？',o:['动因分配率 × 该产品耗用动因量','动因分配率 ÷ 该产品耗用动因量','作业成本池 ÷ 产品种类数','直接人工 × 分配率'],a:0,
+ why:'这是第二阶段分配公式：某产品应分配作业成本 = 动因分配率 × 该产品耗用的动因量。'}
+];
+
+/* ---------------- 各关：出题 ---------------- */
+function gen1(){ return {tries:0, qs:shuf(QB).slice(0,3).map(function(o){return {o:o,sel:-1};})}; }
+
+function gen2(){
+  var rate=pk([20,25,40,50,60,80,100,120,150,200,240,300,400,500,600,800,1200,1500,2000]);
+  var Q=pk([10,12,15,16,20,24,25,30,40,50,60,80,100,120,150,200,240,300]);
+  var nm=pk(['备料','质检','机时','包装','设备调整','物料搬运']);
+  var dn=pk(['备料次数','质检批次','机器小时','调整次数','搬运车次','检验工时']);
+  var un={'备料次数':'次','质检批次':'批','机器小时':'小时','调整次数':'次','搬运车次':'车次','检验工时':'工时'}[dn];
+  return {tries:0,rate:rate,Q:Q,C:rate*Q,nm:nm,dn:dn,un:un};
+}
+
+function gen3(){
+  var rate=pk([50,80,100,120,150,200,240,300,400,500,600,800,1200,1500,2000,3000]);
+  var qb=R(5,40), qa=R(6,60), Q=qa+qb, C=rate*Q, ans=rate*qa;
+  var nm=pk(['备料','质检','机时','包装','设备调整','物料搬运']);
+  var dn=pk(['备料次数','质检批次','机器小时','调整次数','搬运车次','检验工时']);
+  var un={'备料次数':'次','质检批次':'批','机器小时':'小时','调整次数':'次','搬运车次':'车次','检验工时':'工时'}[dn];
+  var pn=pk(['甲产品','乙产品']);
+  return {tries:0,rate:rate,QA:qa,QB:qb,Q:Q,C:C,ans:ans,nm:nm,dn:dn,un:un,pn:pn};
+}
+
+function gen4(){
+  var qty=pk([500,800,1000,1200,1500,2000,2500,3000,4000,5000]);
+  var uc =pk([18,20,24,25,28,30,32,36,40,45,48,50,55,60,72,80]);
+  var tot=uc*qty;
+  var oh =Math.round(tot*pk([0.30,0.35,0.40,0.45,0.50])/100)*100;
+  var rest=tot-oh;
+  var dm =Math.round(rest*pk([0.60,0.65,0.70,0.75])/100)*100;
+  var dl =rest-dm;
+  var pn=pk(['A 鲜榨果汁','B 果酱','果汁礼盒','果脯产品']);
+  return {tries:0,qty:qty,uc:uc,tot:tot,oh:oh,dm:dm,dl:dl,pn:pn};
+}
+
+function gen5(){
+  for(var t=0;t<300;t++){
+    var bigFirst=Math.random()<0.5;
+    var qBig=pk([4000,5000,6000,8000,10000,12000]), qSml=pk([500,800,1000,1200,1500,2000]);
+    var qa=bigFirst?qBig:qSml, qb=bigFirst?qSml:qBig;
+    var machA,machB,bA,bB,wA,wB;
+    if(bigFirst){ machA=Math.round(qa*0.16); machB=Math.round(qb*0.20); bA=R(8,20); bB=R(18,40); wA=R(5,15); wB=R(12,32); }
+    else        { machA=Math.round(qa*0.20); machB=Math.round(qb*0.16); bA=R(18,40); bB=R(8,20); wA=R(12,32); wB=R(5,15); }
+    if(machA<20||machB<20) continue;
+    var F=pk([200000,240000,280000,300000,320000,360000,400000]);
+    var cPrep=Math.round(F*0.30/1000)*1000, cW=Math.round(F*0.25/1000)*1000,
+        cMach=Math.round(F*0.30/1000)*1000, cPack=F-cPrep-cW-cMach;
+    var abcA=cPrep*bA/(bA+bB)+cW*wA/(wA+wB)+cMach*machA/(machA+machB)+cPack*qa/(qa+qb);
+    var abcB=cPrep*bB/(bA+bB)+cW*wB/(wA+wB)+cMach*machB/(machA+machB)+cPack*qb/(qa+qb);
+    var uA=pk([8,10,12,14,15,16,18,20]), uB=pk([10,12,14,15,16,18,20,24]);
+    var dcA=qa*uA, dcB=qb*uB;
+    var aUA=(dcA+abcA)/qa, aUB=(dcB+abcB)/qb;
+    var rate=F/(machA+machB);
+    var tUA=(dcA+rate*machA)/qa, tUB=(dcB+rate*machB)/qb;
+    var rA=(tUA-aUA)/aUA, rB=(tUB-aUB)/aUB;
+    if(rA*rB>=0) continue;
+    if(Math.max(Math.abs(rA),Math.abs(rB))<0.05) continue;
+    return {tries:0,qa:qa,qb:qb,machA:machA,machB:machB,bA:bA,bB:bB,wA:wA,wB:wB,F:F,
+      cPrep:cPrep,cW:cW,cMach:cMach,cPack:cPack,uA:uA,uB:uB,
+      aA:abcA,aB:abcB,aUA:aUA,aUB:aUB,tA:rate*machA,tB:rate*machB,tUA:tUA,tUB:tUB,
+      rA:rA,rB:rB,rate:rate,ans:(rA>0?0:1)};
+  }
+  return null;
+}
+
+function gen6(){
+  var bB=R(10,40);
+  var cPrep=pk([48000,54000,60000,66000,72000,84000,90000,96000]);
+  var cMach=pk([60000,72000,84000,96000,108000,120000]);
+  var machA=R(300,1800), machB=R(100,600);
+  var qa=pk([800,1000,1200,1500,2000,2500,3000]);
+  var dcA=qa*pk([8,10,12,14,15,16,18,20]);
+  var machAl=cMach*machA/(machA+machB);
+  var unit=function(x){ return (dcA + cPrep*x/(x+bB) + machAl)/qa; };
+  var x0=R(4,60);
+  var target=unit(x0);
+  var cur = x0>30 ? Math.max(2,x0-R(10,22)) : x0+R(8,20);
+  return {tries:0,bB:bB,cPrep:cPrep,cMach:cMach,machA:machA,machB:machB,qa:qa,dcA:dcA,
+    machAl:machAl,unit:unit,x0:x0,target:target,cur:Math.min(120,cur)};
+}
+
+/* ================================================================
+   第 7 关：综合实战 —— 独立完成一次完整的作业成本计算
+   阶段 ①资源→作业 ②动因分配率 ③作业→产品 ④制造费用汇总
+        ⑤单位总成本 ⑥传统法对比与判定
+   每个阶段独立判分（分步给分），上游算错不连环扣下游的分。
+   ================================================================ */
+var RES7N=['职工薪酬','设备折旧','水电动力','物料消耗','厂房租赁','维修保养'];
+var ACT7D=[
+  {n:'备料',dn:'备料次数',un:'次',  lo:25,hi:90},
+  {n:'质检',dn:'质检批次',un:'批',  lo:15,hi:70},
+  {n:'机时',dn:'机器小时',un:'小时',lo:400,hi:3200},
+  {n:'包装',dn:'包装件数',un:'件',  lo:2000,hi:18000}
+];
+var PATS7=[[40,20,30,10],[25,25,25,25],[20,30,40,10],[15,25,45,15],[30,20,10,40],
+           [35,15,20,30],[10,40,20,30],[20,25,15,40],[45,15,25,15],[30,25,20,25],
+           [15,35,30,20],[20,20,35,25]];
+/* ---------------- 全过程实操：七阶段定义 ---------------- */
+var ACTDESC=[
+  '按生产批次领料、清洗、切分——每投产一批发生一次',
+  '每批产品抽样检验并出具报告——按检验批次发生',
+  '机器加工、杀菌、浓缩——随机器开动时间发生',
+  '灌装、贴标、装箱——每生产一箱发生一次'
+];
+var DRIPOOL=['机器小时','产品产量','直接人工工时','生产批次','厂房面积','搬运次数','生产工人工资','原料重量'];
+var STG7=[
+ {t:'① 确认作业中心，为每个作业选择成本动因', f:6, n:4,
+  h:'对应教材六步走的<b>第 1 步（确认与划分作业）</b>与<b>第 3 步（选择成本动因）</b>。'+
+    '<br>判据：成本动因必须与<b>该作业成本的发生同源</b>——随"批次/次数"发生的作业（备料、质检）要用<b>频次类</b>动因；'+
+    '随单位产品发生的作业（机时、包装）用<b>产量类</b>动因。<br>⚠ 动因选错，作业成本法会退回传统法的扭曲逻辑。'},
+ {t:'② 资源 → 作业：按资源动因归集各作业中心成本', f:6, n:16,
+  h:'分配公式：<code>某作业中心归集的某项资源费用 ＝ 该资源费用 × 该资源分给该作业的比例</code>。<br>'+
+    '勾稽：每一<b>横行</b>合计应等于该资源项目的费用总额；每一<b>竖列</b>合计就是该作业中心的<b>成本池</b>。'+
+    '<br>能直接追溯到某作业的资源（如检验耗材只用于质检）应<b>全额计入</b>，不要再分摊。'},
+ {t:'③ 计算各作业中心的动因分配率', f:6, n:4,
+  h:'<code>动因分配率 ＝ 该作业中心成本池 ÷ 该作业成本动因的实际消耗总量</code>。<br>'+
+    '分母是<b>实际消耗量</b>（不是预算量、也不是产能）。保留 2 位小数，容差 ±0.5%。'},
+ {t:'④ 作业 → 产品：把作业成本分摊到两产品', f:10, n:8,
+  h:'<code>某产品应分配的作业成本 ＝ 动因分配率 × 该产品耗用的动因量</code>。<br>'+
+    '勾稽：每一行的「A ＋ B」应等于该作业中心的成本池 —— 成本池必须被<b>全部分完</b>。'},
+ {t:'⑤ 汇总两产品的制造费用', f:2, n:2,
+  h:'把 4 个作业中心分摊给某产品的金额纵向相加。<br>勾稽：A ＋ B 的合计应等于制造费用总额（＝资源费用总额）。'},
+ {t:'⑥ 计算两产品的单位总成本', f:4, n:2,
+  h:'<code>单位总成本 ＝ 单位直接材料 ＋ 单位直接人工 ＋ 制造费用合计 ÷ 产量</code>。<br>'+
+    '注意直接材料、直接人工是<b>直接追溯</b>，不参与分摊。'},
+ {t:'⑦ 传统法对比与经营决策', f:14, n:5,
+  h:'传统法只用<b>单一分配基础（机器小时）</b>：<code>分配率 ＝ 制造费用总额 ÷ 机器小时合计</code>。<br>'+
+    '再算两产品单位总成本，与作业法（阶段 ⑥）逐一对差，判断谁被高估、谁被低估，并据此做出经营决策。'}
+];
+var OPT6=['A 产品成本被高估（B 产品被低估）','B 产品成本被高估（A 产品被低估）','两产品成本都被高估','两产品成本都被低估'];
+
+function r2(v){ return Math.round(v*100)/100; }
+
+/* ---------------- 全过程实操：随机出题 ---------------- */
+function tryGen7(strict){
+  var rn=4, names=shuf(RES7N).slice(0,rn), vv=[], r, a, i;
+  for(r=0;r<rn;r++) vv.push(R(20,60)*2000);
+  var pct=[];
+  for(r=0;r<rn;r++) pct.push(shuf(pk(PATS7)));
+  var C=[0,0,0,0];
+  for(a=0;a<4;a++) for(r=0;r<rn;r++) C[a]+=vv[r]*pct[r][a]/100;
+  if(C[0]<8000||C[1]<8000||C[2]<8000||C[3]<8000) return null;
+  var F=C[0]+C[1]+C[2]+C[3];
+  var Q=[];
+  for(a=0;a<4;a++){
+    var ds=[];
+    for(i=ACT7D[a].lo;i<=ACT7D[a].hi;i++){ if(C[a]%i===0) ds.push(i); }
+    if(ds.length<5) return null;
+    Q.push(ds[Math.floor(ds.length*R(25,75)/100)]);
+  }
+  var bigFirst=Math.random()<0.5;
+  var qBig=R(6,14)*1000, qSml=R(8,30)*100;
+  var qa=bigFirst?qBig:qSml, qb=bigFirst?qSml:qBig;
+  var dBig=[0,0,0,0], dSml=[0,0,0,0];
+  dBig[0]=Math.round(Q[0]*R(20,40)/100); dSml[0]=Q[0]-dBig[0];
+  dBig[1]=Math.round(Q[1]*R(18,38)/100); dSml[1]=Q[1]-dBig[1];
+  dBig[2]=Math.round(Q[2]*R(72,88)/100); dSml[2]=Q[2]-dBig[2];
+  dBig[3]=Math.round(Q[3]*qBig/(qBig+qSml)); dSml[3]=Q[3]-dBig[3];
+  if(dSml[0]<3||dSml[1]<3||dBig[2]<20||dSml[2]<5||dSml[3]<50||dBig[3]<100) return null;
+  var dA=[],dB=[];
+  for(a=0;a<4;a++){ dA[a]=bigFirst?dBig[a]:dSml[a]; dB[a]=bigFirst?dSml[a]:dBig[a]; }
+  var rate=[],allocA=[],allocB=[];
+  for(a=0;a<4;a++){ rate[a]=C[a]/Q[a]; allocA[a]=rate[a]*dA[a]; allocB[a]=rate[a]*dB[a]; }
+  var OHA=0,OHB=0;
+  for(a=0;a<4;a++){ OHA+=allocA[a]; OHB+=allocB[a]; }
+  if(Math.abs(OHA+OHB-F)>1) return null;
+  var dma=pk([6,8,9,10,12,14,15,16,18]), dla=pk([3,4,5,6,7,8]);
+  var dmb=pk([6,8,9,10,12,14,15,16,18]), dlb=pk([3,4,5,6,7,8]);
+  var ua=dma+dla, ub=dmb+dlb;
+  var uA=ua+OHA/qa, uB=ub+OHB/qb;
+  var machA=dA[2], machB=dB[2];
+  var rateT=F/(machA+machB);
+  var tUA=ua+rateT*machA/qa, tUB=ub+rateT*machB/qb;
+  var rA=(tUA-uA)/uA, rB=(tUB-uB)/uB;
+  if(rA*rB>=0) return null;
+  if(strict && Math.max(Math.abs(rA),Math.abs(rB))<0.06) return null;
+  /* —— 被低估产品的经营决策题 —— */
+  var lowA = rA<0;
+  var dU = r2(lowA?uA:uB), dT = r2(lowA?tUA:tUB);
+  var dP = Math.round((dU+dT)/2*100)/100;
+  if(dU-dP<1 || dP-dT<1) return null;
+  var decProd = lowA?'A 产品':'B 产品';
+  var DOPT=[
+    '同意扩大 '+decProd+' 的产销：报价 ¥'+fm(dP,2)+' 高于单位成本 ¥'+fm(dT,2)+'，每箱毛利 ¥'+fm(dP-dT,2)+'，多接单多赚钱',
+    '反对扩大：按作业成本法，'+decProd+'真实单位成本 ¥'+fm(dU,2)+' 高于报价 ¥'+fm(dP,2)+'，每箱实亏 ¥'+fm(dU-dP,2)+'，卖得越多亏得越多',
+    '无法判断，需要先补充市场容量与竞争对手报价资料',
+    '该决策与成本计算方法无关，只要客户愿意接受报价就应接单'
+  ];
+  var dord=shuf([0,1,2,3]);
+  var dopts=dord.map(function(x){return DOPT[x];});
+  var dans=dord.indexOf(1);
+  /* —— 每个作业中心的候选动因 —— */
+  var dri=[];
+  for(a=0;a<4;a++){
+    var wrong=shuf(DRIPOOL.filter(function(x){return x!==ACT7D[a].dn;})).slice(0,2);
+    var opts=shuf([ACT7D[a].dn].concat(wrong));
+    dri.push({opts:opts, ans:opts.indexOf(ACT7D[a].dn)});
+  }
+  var res=[];
+  for(r=0;r<rn;r++) res.push({n:names[r],v:vv[r]});
+  var act=ACT7D.map(function(x,j){return {n:x.n,dn:x.dn,un:x.un,d:ACTDESC[j]};});
+  return {kind:7,tries:0,res:res,pct:pct,C:C,F:F,act:act,Q:Q,dA:dA,dB:dB,rate:rate,
+    allocA:allocA,allocB:allocB,OHA:OHA,OHB:OHB,qa:qa,qb:qb,
+    dma:dma,dla:dla,dmb:dmb,dlb:dlb,ua:ua,ub:ub,uA:uA,uB:uB,
+    machA:machA,machB:machB,rateT:rateT,tA:rateT*machA,tB:rateT*machB,
+    tUA:tUA,tUB:tUB,rA:rA,rB:rB,ans6:(rA>0?0:1),
+    dri:dri,dopts:dopts,dans:dans,decProd:decProd,dU:dU,dT:dT,dP:dP,lowA:lowA,
+    V:{},hint:{},datOpen:true,sel6:-1,selD:-1,
+    S:STG7.map(function(){return {tries:0,passed:false,shown:false,cells:0,right:0,gain:0,coef:0,det:[],mark:{}};})};
+}
+function gen7(){
+  for(var t=0;t<900;t++){
+    var g=tryGen7(t<700);
+    if(g) return g;
+  }
+  var fb={kind:7,tries:0,fail:true,res:[{n:'职工薪酬',v:80000}],pct:[[25,25,25,25]],C:[20000,20000,20000,20000],F:80000,
+    act:ACT7D.map(function(x,j){return {n:x.n,dn:x.dn,un:x.un,d:ACTDESC[j]};}),Q:[50,40,2000,6000],dA:[20,16,1600,5000],dB:[30,24,400,1000],
+    rate:[400,500,10,1],allocA:[8000,8000,16000,5000],allocB:[12000,12000,4000,1000],OHA:37000,OHB:29000,
+    qa:5000,qb:1000,dma:10,dla:5,dmb:12,dlb:6,ua:15,ub:18,uA:22.4,uB:47,
+    machA:1600,machB:400,rateT:40,tA:64000,tB:16000,tUA:27.8,tUB:34,rA:0.241,rB:-0.277,ans6:0,
+    dri:[{opts:['备料次数','机器小时','产品产量'],ans:0},{opts:['质检批次','产品产量','厂房面积'],ans:0},
+         {opts:['机器小时','生产批次','直接人工工时'],ans:0},{opts:['包装件数','质检批次','原料重量'],ans:0}],
+    dopts:['同意扩大 B 产品的产销','反对扩大：B 产品真实成本高于报价，卖得越多亏得越多','无法判断','与成本计算方法无关'],
+    dans:1,decProd:'B 产品',dU:47,dT:34,dP:40.5,lowA:false,
+    V:{},hint:{},datOpen:true,sel6:-1,selD:-1,
+    S:STG7.map(function(){return {tries:0,passed:false,shown:false,cells:0,right:0,gain:0,coef:0,det:[],mark:{}};})};
+  return fb;
+}
+
+/* ---------------- 全过程实操：小工具 ---------------- */
+function stgEditable(q,i){ return !q.S[i].passed && ((i===0)||q.S[i-1].passed); }
+function stgCls(q,i){ return q.S[i].passed?' done':(stgEditable(q,i)?'':' locked'); }
+function stgTag(q,i){ return q.S[i].passed?'已完成 ✓':(stgEditable(q,i)?'待作答':'🔒 未解锁'); }
+function dnTxt(q,j){ return q.S[0].passed? q.act[j].dn : '待阶段 ① 确定'; }
+function unTxt(q,j){ return q.S[0].passed? q.act[j].un : '—'; }
+function wbInp(k,val,dis,mark,ph){
+  return '<input type="number" class="wb-inp'+(mark?' '+mark:'')+'" data-k="'+k+'" value="'+
+    (val===undefined||val===null||val===''?'':esc(String(val)))+'"'+(dis?' disabled':'')+
+    ' step="any"'+(ph?' placeholder="'+esc(ph)+'"':'')+'>';
+}
+function optBtn(sel,mark,isRight,i,txt){
+  return '<button type="button" class="opt'+(sel?' sel':'')+
+    (mark==='ok'&&isRight?' right':'')+(mark==='no'&&sel&&!isRight?' wrong':'')+
+    '" data-act="opt" data-i="'+i+'">'+A2(i)+'. '+esc(txt)+'</button>';
+}
+function stgFoot(q,i){
+  var S=q.S[i], ed=stgEditable(q,i), h='';
+  h+='<div class="wb-hint'+(q.hint[i]?' on':'')+'">'+STG7[i].h+'</div>';
+  if(S.passed){
+    h+='<div class="wb-ck '+((S.gain>0)?'good':'bad')+'">'+(S.shown?'已显示标准答案（本阶段记 0 分）'
+        :'本阶段通过：'+S.right+' / '+S.cells+' 格正确，得 <b>'+S.gain+' / '+STG7[i].f+'</b> 分'
+         +(S.coef<1?'（第 '+S.tries+' 次校验按 '+Math.round(S.coef*100)+'% 计分）':''))+'</div>';
+  } else {
+    h+='<div class="wb-ck">'+(ed?('已校验 '+S.tries+' 次'+(S.tries?'，最近一次 '+S.right+' / '+S.cells+' 格正确':'')+' · 全部正确才解锁下一阶段'):'完成上一阶段后解锁')+'</div>';
+  }
+  h+='<div class="stage-acts">';
+  if(ed){
+    h+='<button type="button" class="btn solid" data-act="chk" data-s="'+i+'">'+(S.tries?'再校验一次':'校验本阶段')+'</button>';
+    h+='<button type="button" class="btn" data-act="hint" data-s="'+i+'">'+(q.hint[i]?'收起提示':'看提示（不扣分）')+'</button>';
+    h+='<button type="button" class="btn" data-act="show" data-s="'+i+'">显示答案（本阶段 0 分）</button>';
+  } else if(S.passed){
+    h+='<button type="button" class="btn" data-act="hint" data-s="'+i+'">'+(q.hint[i]?'收起提示':'看提示')+'</button>';
+  } else {
+    h+='<span class="tiny">完成上一阶段后解锁</span>';
+  }
+  h+='</div>';
+  return h;
+}
+
+/* ---------------- 案例资料（原始凭证） ---------------- */
+function dat7(q){
+  var h='<details class="wb-dat"'+(q.datOpen===false?'':' open')+'><summary>案例原始资料（点击收起 / 展开）</summary><div class="wb-in">';
+  h+='<div class="qsub" style="margin:9px 0 4px">（1）资源费用及其<b>资源动因</b>分配比例</div>';
+  h+='<table class="wb-tb"><thead><tr><th class="l">资源项目</th><th>资源费用</th>';
+  q.act.forEach(function(a){ h+='<th>'+esc(a.n)+'</th>'; });
+  h+='</tr></thead><tbody>';
+  q.res.forEach(function(r,i){
+    h+='<tr><td class="l">'+esc(r.n)+'</td><td class="given">'+ym(r.v)+'</td>';
+    q.act.forEach(function(a,j){ h+='<td>'+q.pct[i][j]+'%</td>'; });
+    h+='</tr>';
+  });
+  h+='<tr><td class="l"><b>资源费用合计</b></td><td class="tot">'+ym(q.F)+'</td>';
+  q.act.forEach(function(a,j){ h+='<td class="given">待计算</td>'; });
+  h+='</tr></tbody></table>';
+  h+='<div class="qsub" style="margin:12px 0 4px">（2）作业中心、作业内容与两产品耗用量</div>';
+  h+='<table class="wb-tb"><thead><tr><th class="l">作业中心</th><th class="l">作业内容</th><th class="l">成本动因</th>'+
+     '<th>动因总量</th><th>A 产品耗用</th><th>B 产品耗用</th></tr></thead><tbody>';
+  q.act.forEach(function(a,j){
+    h+='<tr><td class="l">'+esc(a.n)+'</td><td class="l" style="font-size:12px;color:var(--muted)">'+esc(a.d)+'</td>'+
+       '<td class="l">'+esc(dnTxt(q,j))+'</td><td>'+fm(q.Q[j],0)+' '+esc(unTxt(q,j))+'</td>'+
+       '<td>'+fm(q.dA[j],0)+'</td><td>'+fm(q.dB[j],0)+'</td></tr>';
+  });
+  h+='</tbody></table>';
+  h+='<div class="qsub" style="margin:12px 0 4px">（3）产品产量与直接成本</div>';
+  h+='<table class="wb-tb"><thead><tr><th class="l">产品</th><th>产量（箱）</th><th>单位直接材料</th><th>单位直接人工</th></tr></thead><tbody>'+
+     '<tr><td class="l">A 产品</td><td>'+fm(q.qa,0)+'</td><td>'+ym(q.dma,2)+'</td><td>'+ym(q.dla,2)+'</td></tr>'+
+     '<tr><td class="l">B 产品</td><td>'+fm(q.qb,0)+'</td><td>'+ym(q.dmb,2)+'</td><td>'+ym(q.dlb,2)+'</td></tr>'+
+     '</tbody></table>';
+  h+='</div></details>';
+  return h;
+}
+
+/* ---------------- 阶段 ①：选择成本动因 ---------------- */
+function stg0(q){
+  var ed=stgEditable(q,0), S=q.S[0], h='';
+  h+='<div class="stage'+stgCls(q,0)+'" id="stg0"><div class="stage-h"><span class="sn">'+STG7[0].t+'</span>'+
+     '<span class="lk">'+stgTag(q,0)+'</span><span class="sc">满分 '+STG7[0].f+' 分</span></div><div class="stage-b">';
+  h+='<div class="qsub">车间已确认 4 个作业中心。请为每个作业中心挑出<b>最合适</b>的成本动因（三选一）。</div>';
+  h+='<table class="wb-tb"><thead><tr><th class="l">作业中心</th><th class="l">该作业做了什么</th><th class="l">请选择成本动因</th></tr></thead><tbody>';
+  q.act.forEach(function(a,j){
+    var k='s0_'+j, cur=parseInt(q.V[k],10);
+    h+='<tr><td class="l"><b>'+esc(a.n)+'</b></td><td class="l" style="font-size:12px;color:var(--muted)">'+esc(a.d)+'</td><td>';
+    h+='<div class="wb-sel" data-dri="'+j+'">';
+    q.dri[j].opts.forEach(function(op,oi){
+      var mk=S.mark[k];
+      h+='<button type="button" class="opt'+(cur===oi?' sel':'')+
+         ((mk==='ok'&&oi===q.dri[j].ans)?' right':'')+((mk==='no'&&cur===oi&&oi!==q.dri[j].ans)?' wrong':'')+
+         '" data-act="dri" data-a="'+j+'" data-i="'+oi+'">'+A2(oi)+'. '+esc(op)+'</button>';
+    });
+    h+='</div></td></tr>';
+  });
+  h+='</tbody></table>'+stgFoot(q,0)+'</div></div>';
+  return h;
+}
+/* ---------------- 阶段 ②：资源 → 作业 ---------------- */
+function stg1(q){
+  var ed=stgEditable(q,1), S=q.S[1], h='';
+  h+='<div class="stage'+stgCls(q,1)+'" id="stg1"><div class="stage-h"><span class="sn">'+STG7[1].t+'</span>'+
+     '<span class="lk">'+stgTag(q,1)+'</span><span class="sc">满分 '+STG7[1].f+' 分</span></div><div class="stage-b">';
+  h+='<table class="wb-tb"><thead><tr><th class="l">资源项目</th><th>资源费用</th>';
+  q.act.forEach(function(a){ h+='<th>'+esc(a.n)+'</th>'; });
+  h+='<th class="l">横行合计校验</th></tr></thead><tbody>';
+  q.res.forEach(function(r,i){
+    h+='<tr><td class="l">'+esc(r.n)+'</td><td class="given">'+ym(r.v)+'</td>';
+    q.act.forEach(function(a,j){
+      var k='s1_'+i+'_'+j;
+      h+='<td>'+wbInp(k, q.V[k], !ed, S.mark[k], fm(r.v,0)+'×'+q.pct[i][j]+'%')+'</td>';
+    });
+    h+='<td class="l" id="ck1_'+i+'">—</td></tr>';
+  });
+  h+='<tr><td class="l"><b>竖列合计 ＝ 作业成本池</b></td><td class="given">'+ym(q.F)+'</td>';
+  q.act.forEach(function(a,j){ h+='<td class="tot" id="cs1_'+j+'">—</td>'; });
+  h+='<td class="l" id="ck1t">—</td></tr></tbody></table>';
+  h+=stgFoot(q,1)+'</div></div>';
+  return h;
+}
+/* ---------------- 阶段 ③：动因分配率 ---------------- */
+function stg2(q){
+  var ed=stgEditable(q,2), S=q.S[2], h='';
+  h+='<div class="stage'+stgCls(q,2)+'" id="stg2"><div class="stage-h"><span class="sn">'+STG7[2].t+'</span>'+
+     '<span class="lk">'+stgTag(q,2)+'</span><span class="sc">满分 '+STG7[2].f+' 分</span></div><div class="stage-b">';
+  h+='<div class="qsub">下表的「作业中心成本池」取自阶段 ② 的竖列合计。请计算各作业的<b>动因分配率</b>。</div>';
+  h+='<table class="wb-tb"><thead><tr><th class="l">作业中心</th><th>成本池（阶段 ② 结果）</th><th class="l">成本动因</th>'+
+     '<th>动因总量</th><th>动因分配率</th></tr></thead><tbody>';
+  q.act.forEach(function(a,j){
+    var k='s2_'+j;
+    h+='<tr><td class="l">'+esc(a.n)+'</td><td class="tot">'+ym(q.C[j])+'</td><td class="l">'+esc(dnTxt(q,j))+'</td>'+
+       '<td>'+fm(q.Q[j],0)+' '+esc(unTxt(q,j))+'</td><td>'+wbInp(k, q.V[k], !ed, S.mark[k], '元/'+unTxt(q,j))+'</td></tr>';
+  });
+  h+='</tbody></table>'+stgFoot(q,2)+'</div></div>';
+  return h;
+}
+/* ---------------- 阶段 ④：作业 → 产品 ---------------- */
+function stg3(q){
+  var ed=stgEditable(q,3), S=q.S[3], h='';
+  h+='<div class="stage'+stgCls(q,3)+'" id="stg3"><div class="stage-h"><span class="sn">'+STG7[3].t+'</span>'+
+     '<span class="lk">'+stgTag(q,3)+'</span><span class="sc">满分 '+STG7[3].f+' 分</span></div><div class="stage-b">';
+  h+='<table class="wb-tb"><thead><tr><th class="l">作业中心</th><th>动因分配率（阶段 ③）</th><th>A 耗用</th>'+
+     '<th>A 应分摊</th><th>B 耗用</th><th>B 应分摊</th><th class="l">A＋B 校验</th></tr></thead><tbody>';
+  q.act.forEach(function(a,j){
+    var kA='s3A_'+j, kB='s3B_'+j;
+    h+='<tr><td class="l">'+esc(a.n)+'</td><td class="tot">'+fm(q.rate[j],2)+'</td>'+
+       '<td>'+fm(q.dA[j],0)+'</td><td>'+wbInp(kA, q.V[kA], !ed, S.mark[kA], '元')+'</td>'+
+       '<td>'+fm(q.dB[j],0)+'</td><td>'+wbInp(kB, q.V[kB], !ed, S.mark[kB], '元')+'</td>'+
+       '<td class="l" id="ck3_'+j+'">—</td></tr>';
+  });
+  h+='<tr><td class="l" colspan="2"><b>合计</b></td><td class="given">—</td><td class="tot" id="cs3A">—</td>'+
+     '<td class="given">—</td><td class="tot" id="cs3B">—</td><td class="l" id="ck3t">—</td></tr>';
+  h+='</tbody></table>'+stgFoot(q,3)+'</div></div>';
+  return h;
+}
+/* ---------------- 阶段 ⑤：汇总制造费用 ---------------- */
+function stg4(q){
+  var ed=stgEditable(q,4), S=q.S[4], h='';
+  h+='<div class="stage'+stgCls(q,4)+'" id="stg4"><div class="stage-h"><span class="sn">'+STG7[4].t+'</span>'+
+     '<span class="lk">'+stgTag(q,4)+'</span><span class="sc">满分 '+STG7[4].f+' 分</span></div><div class="stage-b">';
+  h+='<table class="wb-tb"><thead><tr><th class="l">产品</th><th>备料</th><th>质检</th><th>机时</th><th>包装</th>'+
+     '<th>制造费用合计</th></tr></thead><tbody>';
+  h+='<tr><td class="l">A 产品</td>';
+  q.act.forEach(function(a,j){ h+='<td class="given">'+ym(q.allocA[j])+'</td>'; });
+  h+='<td>'+wbInp('s4A', q.V['s4A'], !ed, S.mark['s4A'], '元')+'</td></tr>';
+  h+='<tr><td class="l">B 产品</td>';
+  q.act.forEach(function(a,j){ h+='<td class="given">'+ym(q.allocB[j])+'</td>'; });
+  h+='<td>'+wbInp('s4B', q.V['s4B'], !ed, S.mark['s4B'], '元')+'</td></tr>';
+  h+='</tbody></table><div class="wb-ck" id="ck4">—</div>'+stgFoot(q,4)+'</div></div>';
+  return h;
+}
+/* ---------------- 阶段 ⑥：单位总成本 ---------------- */
+function stg5(q){
+  var ed=stgEditable(q,5), S=q.S[5], h='';
+  h+='<div class="stage'+stgCls(q,5)+'" id="stg5"><div class="stage-h"><span class="sn">'+STG7[5].t+'</span>'+
+     '<span class="lk">'+stgTag(q,5)+'</span><span class="sc">满分 '+STG7[5].f+' 分</span></div><div class="stage-b">';
+  h+='<table class="wb-tb"><thead><tr><th class="l">产品</th><th>产量（箱）</th><th>单位直接材料</th><th>单位直接人工</th>'+
+     '<th>制造费用合计（阶段 ⑤）</th><th>单位总成本</th></tr></thead><tbody>';
+  h+='<tr><td class="l">A 产品</td><td>'+fm(q.qa,0)+'</td><td>'+ym(q.dma,2)+'</td><td>'+ym(q.dla,2)+'</td>'+
+     '<td class="tot">'+ym(q.OHA)+'</td><td>'+wbInp('s5A', q.V['s5A'], !ed, S.mark['s5A'], '元/箱')+'</td></tr>';
+  h+='<tr><td class="l">B 产品</td><td>'+fm(q.qb,0)+'</td><td>'+ym(q.dmb,2)+'</td><td>'+ym(q.dlb,2)+'</td>'+
+     '<td class="tot">'+ym(q.OHB)+'</td><td>'+wbInp('s5B', q.V['s5B'], !ed, S.mark['s5B'], '元/箱')+'</td></tr>';
+  h+='</tbody></table>'+stgFoot(q,5)+'</div></div>';
+  return h;
+}
+/* ---------------- 阶段 ⑦：传统法对比与经营决策 ---------------- */
+function stg6(q){
+  var ed=stgEditable(q,6), S=q.S[6], h='';
+  h+='<div class="stage'+stgCls(q,6)+'" id="stg6"><div class="stage-h"><span class="sn">'+STG7[6].t+'</span>'+
+     '<span class="lk">'+stgTag(q,6)+'</span><span class="sc">满分 '+STG7[6].f+' 分</span></div><div class="stage-b">';
+  h+='<div class="qsub">若改用<b>传统成本法</b>：全部制造费用只按<b>机器小时</b>一个基础分配。</div>';
+  h+='<table class="wb-tb"><thead><tr><th class="l">项目</th><th>数值 / 请填空</th></tr></thead><tbody>'+
+     '<tr><td class="l">制造费用总额</td><td class="given">'+ym(q.F)+'</td></tr>'+
+     '<tr><td class="l">机器小时合计（A '+fm(q.machA,0)+' ＋ B '+fm(q.machB,0)+'）</td><td class="given">'+fm(q.machA+q.machB,0)+' 小时</td></tr>'+
+     '<tr><td class="l">传统法分配率（元 / 机器小时）</td><td>'+wbInp('s6r', q.V['s6r'], !ed, S.mark['s6r'], '元/小时')+'</td></tr>'+
+     '<tr><td class="l">A 产品单位总成本（元/箱）</td><td>'+wbInp('s6A', q.V['s6A'], !ed, S.mark['s6A'], '元/箱')+'</td></tr>'+
+     '<tr><td class="l">B 产品单位总成本（元/箱）</td><td>'+wbInp('s6B', q.V['s6B'], !ed, S.mark['s6B'], '元/箱')+'</td></tr>'+
+     '</tbody></table>';
+  h+='<div class="qsub" style="margin-top:11px">把上面算出的传统法结果与阶段 ⑥ 的作业法结果对比，结论是？</div>'+
+     '<div class="opts" id="opt6">';
+  OPT6.forEach(function(op,j){
+    h+=optBtn(q.sel6===j, S.mark['s6o'], j===q.ans6, j, op);
+  });
+  h+='</div>';
+  h+='<div class="qsub" style="margin-top:13px">【决策题】销售部拿到一张 '+esc(q.decProd)+
+     ' 的长期订单，客户出价 <b>'+ym(q.dP,2)+' / 箱</b>。财务部按<b>传统成本法</b>核算，认为该产品单位成本只有 <b>'+
+     ym(q.dT,2)+'</b>，每箱可赚 '+ym(q.dP-q.dT,2)+'，主张接单并扩大产销。'+
+     '你用<b>作业成本法</b>重新核算后，正确的建议是？</div>'+
+     '<div class="opts" data-dec="1">';
+  q.dopts.forEach(function(op,j){
+    h+=optBtn(q.selD===j, S.mark['s6d'], j===q.dans, j, op);
+  });
+  h+='</div>'+stgFoot(q,6)+'</div></div>';
+  return h;
+}
+
+/* ---------------- 全过程：渲染 ---------------- */
+function draw7(q,box){
+  if(!box) return;
+  var prev=box.querySelector('.wb-dat');
+  if(prev) q.datOpen=prev.open;
+  if(q.sel6===undefined) q.sel6=-1;
+  if(q.selD===undefined) q.selD=-1;
+  var full=STG7.reduce(function(s,x){return s+x.f;},0);
+  box.innerHTML='<div class="qt">全过程实操 · 独立完成一次完整的作业成本计算（'+full+' 分）</div>'+
+    '<div class="wb-intro">下面是某农产品加工车间的<b>完整原始资料</b>。请你扮演成本会计，'+
+    '按 <b>① 选动因 → ② 资源→作业 → ③ 动因分配率 → ④ 作业→产品 → ⑤ 汇总制造费用 → ⑥ 单位总成本 → ⑦ 传统法对比与决策</b> 的顺序，'+
+    '把作业成本法的<b>全过程</b>算完。<br>'+
+    '每个阶段填完点「校验本阶段」，<b>全部正确</b>才解锁下一阶段；卡住时点「看提示」<b>不扣分</b>，点「显示答案」则本阶段记 0 分。'+
+    '各阶段<b>分步给分</b>：上游某格算错，不会连环扣掉下游的分 —— 下游按标准值继续判。</div>'+
+    dat7(q)+stg0(q)+stg1(q)+stg2(q)+stg3(q)+stg4(q)+stg5(q)+stg6(q)+'<div id="wbSum"></div>';
+  if(!box.dataset.b7){
+    box.dataset.b7='1';
+    box.addEventListener('input',function(e){
+      var t=e.target; if(!t.classList||!t.classList.contains('wb-inp')) return;
+      var qq=LABQ; if(!qq||qq.kind!==7) return;
+      qq.V[t.dataset.k]=t.value; upd7(qq);
+    });
+    box.addEventListener('click',function(e){
+      var qq=LABQ; if(!qq||qq.kind!==7) return;
+      var b=(e.target.closest?e.target.closest('[data-act]'):null); if(!b) return;
+      var act=b.getAttribute('data-act');
+      var i=parseInt(b.getAttribute('data-s'),10);
+      if(act==='hint'){ qq.hint[i]=!qq.hint[i]; draw7(qq,box); labSync(); }
+      else if(act==='chk'){ doChk7(qq,i,box); }
+      else if(act==='show'){ doShow7(qq,i,box); }
+      else if(act==='dri'){
+        if(!stgEditable(qq,0)) return;
+        var aj=parseInt(b.getAttribute('data-a'),10), oi=parseInt(b.getAttribute('data-i'),10);
+        qq.V['s0_'+aj]=oi;
+        var row=box.querySelectorAll('[data-dri="'+aj+'"] .opt');
+        Array.prototype.forEach.call(row,function(x,k){
+          x.classList.toggle('sel',k===oi); x.classList.remove('right','wrong');
+        });
+        delete qq.S[0].mark['s0_'+aj];
+      }
+      else if(act==='opt'){
+        var wrap=b.parentNode;
+        var isDec = wrap && wrap.getAttribute && wrap.getAttribute('data-dec')==='1';
+        var stg = isDec?6:6;
+        if(!stgEditable(qq,stg)) return;
+        var oi2=parseInt(b.getAttribute('data-i'),10);
+        if(isDec){ qq.selD=oi2; delete qq.S[6].mark['s6d']; }
+        else { qq.sel6=oi2; delete qq.S[6].mark['s6o']; }
+        Array.prototype.forEach.call(wrap.querySelectorAll('.opt'),function(x,k){
+          x.classList.toggle('sel',k===oi2); x.classList.remove('right','wrong');
+        });
+      }
+    });
+  }
+  upd7(q); sum7(q);
+}
+
+/* ---------------- 全过程：实时勾稽校验 ---------------- */
+function markCell(el,ok,txt){
+  if(!el) return;
+  el.innerHTML=txt;
+  if(ok===true) el.className='l wbc-ok';
+  else if(ok===false) el.className='l wbc-no';
+  else el.className='l';
+}
+function upd7(q){
+  var i,j,d,el,s;
+  for(i=0;i<q.res.length;i++){
+    s=0; var allr=true;
+    for(j=0;j<4;j++){ var v0=parseFloat(q.V['s1_'+i+'_'+j]); if(isFinite(v0)) s+=v0; else allr=false; }
+    el=document.getElementById('ck1_'+i);
+    if(!allr){ markCell(el,null,'待填'); }
+    else { d=s-q.res[i].v; var g1=Math.abs(d)<=Math.max(1,q.res[i].v*0.002);
+      markCell(el,g1,(g1?'✓ ':'✗ ')+ym(s)+(g1?'':'（差 '+(d>0?'+':'')+ym(d)+'）')); }
+  }
+  var okAll=true,sumF=0;
+  for(j=0;j<4;j++){
+    s=0; var all=true;
+    for(i=0;i<q.res.length;i++){ var v=parseFloat(q.V['s1_'+i+'_'+j]); if(isFinite(v)) s+=v; else all=false; }
+    el=document.getElementById('cs1_'+j); if(el) el.textContent=all?ym(s):'—';
+    if(all) sumF+=s; else okAll=false;
+  }
+  el=document.getElementById('ck1t');
+  if(el){ if(!okAll) markCell(el,null,'待填'); else { d=sumF-q.F; var g2=Math.abs(d)<=Math.max(2,q.F*0.002);
+    markCell(el,g2,(g2?'✓ 总资源已分完 ':'✗ 总额差 '+(d>0?'+':'')+ym(d))); } }
+  var tA=0,tB=0,all3=true;
+  for(j=0;j<4;j++){
+    var va=parseFloat(q.V['s3A_'+j]), vb=parseFloat(q.V['s3B_'+j]);
+    el=document.getElementById('ck3_'+j);
+    if(!isFinite(va)||!isFinite(vb)){ markCell(el,null,'待填'); all3=false; }
+    else { d=va+vb-q.C[j]; tA+=va; tB+=vb;
+      var good=Math.abs(d)<=Math.max(2,q.C[j]*0.002);
+      if(!good) all3=false;
+      markCell(el,good,(good?'✓ ':'✗ ')+ym(va+vb)+(good?'':'（差 '+(d>0?'+':'')+ym(d)+'）')); }
+  }
+  el=document.getElementById('cs3A'); if(el) el.textContent=all3?ym(tA):'—';
+  el=document.getElementById('cs3B'); if(el) el.textContent=all3?ym(tB):'—';
+  el=document.getElementById('ck3t');
+  if(el){ if(!all3) markCell(el,null,'待填'); else { d=tA+tB-q.F; var g3=Math.abs(d)<=Math.max(2,q.F*0.002);
+    markCell(el,g3,(g3?'✓ 成本池已分完 ':'✗ 总额差 '+(d>0?'+':'')+ym(d))); } }
+  var oa=parseFloat(q.V['s4A']), ob=parseFloat(q.V['s4B']);
+  el=document.getElementById('ck4');
+  if(el){ if(!isFinite(oa)||!isFinite(ob)){ el.textContent='A＋B 应等于制造费用总额 '+ym(q.F); el.className='wb-ck'; }
+    else { d=oa+ob-q.F; var g=Math.abs(d)<=Math.max(2,q.F*0.002);
+      el.innerHTML=(g?'✓ 勾稽通过：A ＋ B ＝ '+ym(oa+ob)+' ＝ 制造费用总额':'✗ A ＋ B ＝ '+ym(oa+ob)+'，与制造费用总额差 '+(d>0?'+':'')+ym(d));
+      el.className='wb-ck '+(g?'good':'bad'); } }
+}
+
+/* ---------------- 全过程：判卷 ---------------- */
+function grade7(q,i){
+  var mark={},right=0,cells=0,det=[];
+  function one(k,std,lb){
+    cells++;
+    var v=parseFloat(q.V[k]);
+    var ok=isFinite(v)&&Math.abs(v-std)<=Math.max(0.02,Math.abs(std)*0.005);
+    mark[k]=ok?'ok':'no';
+    if(ok) right++; else det.push({k:k,your:v,std:std,lb:lb||k});
+    return ok;
+  }
+  function pick(k,selv,ansv,lb,yourT,stdT){
+    cells++;
+    var ok=(selv===ansv);
+    mark[k]=ok?'ok':'no';
+    if(ok) right++; else det.push({k:k,lb:lb,yourT:yourT,stdT:stdT});
+    return ok;
+  }
+  if(i===0){
+    q.act.forEach(function(a,aj){
+      cells++;
+      var v=parseInt(q.V['s0_'+aj],10);
+      var ok=(v===q.dri[aj].ans);
+      mark['s0_'+aj]=ok?'ok':'no';
+      if(ok) right++; else det.push({k:'s0_'+aj,lb:a.n+' 的成本动因',
+        yourT:(isFinite(v)?a.dn+'？你选的是「'+q.dri[aj].opts[v]+'」':'未选择'),
+        stdT:'「'+a.dn+'」'});
+    });
+  }
+  else if(i===1){ q.res.forEach(function(r,ri){ q.act.forEach(function(a,aj){ one('s1_'+ri+'_'+aj, r2(r.v*q.pct[ri][aj]/100), r.n+'→'+a.n); }); }); }
+  else if(i===2){ q.act.forEach(function(a,aj){ one('s2_'+aj, r2(q.rate[aj]), a.n+' 动因分配率'); }); }
+  else if(i===3){ q.act.forEach(function(a,aj){ one('s3A_'+aj, r2(q.allocA[aj]), a.n+'：A 分摊'); one('s3B_'+aj, r2(q.allocB[aj]), a.n+'：B 分摊'); }); }
+  else if(i===4){ one('s4A', r2(q.OHA), 'A 制造费用合计'); one('s4B', r2(q.OHB), 'B 制造费用合计'); }
+  else if(i===5){ one('s5A', r2(q.uA), 'A 单位总成本'); one('s5B', r2(q.uB), 'B 单位总成本'); }
+  else if(i===6){
+    one('s6r', r2(q.rateT), '传统法分配率');
+    one('s6A', r2(q.tUA), 'A 单位成本（传统法）');
+    one('s6B', r2(q.tUB), 'B 单位成本（传统法）');
+    pick('s6o', q.sel6, q.ans6, '高估 / 低估判定',
+      q.sel6<0?'未作答':OPT6[q.sel6], OPT6[q.ans6]);
+    pick('s6d', q.selD, q.dans, '经营决策建议',
+      q.selD<0?'未作答':(A2(q.selD)+'. '+q.dopts[q.selD]), (A2(q.dans)+'. '+q.dopts[q.dans]));
+  }
+  return {mark:mark,right:right,cells:cells,det:det};
+}
+function ans7(q,i){
+  var o={};
+  if(i===0){ q.act.forEach(function(a,aj){ o['s0_'+aj]=q.dri[aj].ans; }); }
+  else if(i===1){ q.res.forEach(function(r,ri){ q.act.forEach(function(a,aj){ o['s1_'+ri+'_'+aj]=r2(r.v*q.pct[ri][aj]/100); }); }); }
+  else if(i===2){ q.act.forEach(function(a,aj){ o['s2_'+aj]=r2(q.rate[aj]); }); }
+  else if(i===3){ q.act.forEach(function(a,aj){ o['s3A_'+aj]=r2(q.allocA[aj]); o['s3B_'+aj]=r2(q.allocB[aj]); }); }
+  else if(i===4){ o['s4A']=r2(q.OHA); o['s4B']=r2(q.OHB); }
+  else if(i===5){ o['s5A']=r2(q.uA); o['s5B']=r2(q.uB); }
+  else if(i===6){ o['s6r']=r2(q.rateT); o['s6A']=r2(q.tUA); o['s6B']=r2(q.tUB); q.sel6=q.ans6; q.selD=q.dans; }
+  return o;
+}
+function goStage(i){
+  var el=document.getElementById('stg'+i);
+  if(el && el.scrollIntoView) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function doChk7(q,i,box){
+  var S=q.S[i]; S.tries++;
+  var g=grade7(q,i);
+  S.mark=g.mark; S.right=g.right; S.cells=g.cells; S.det=g.det; S.shown=false;
+  if(g.right===g.cells){
+    S.passed=true;
+    S.coef = S.tries===1?1:(S.tries===2?0.5:0.3);
+    S.gain = Math.round(STG7[i].f*S.coef);
+  } else { S.passed=false; S.coef=0; S.gain=0; }
+  draw7(q,box); labSync(); labLog();
+  if(S.passed && i+1<STG7.length) setTimeout(function(){ goStage(i+1); },60);
+}
+function doShow7(q,i,box){
+  var S=q.S[i], vals=ans7(q,i), k;
+  for(k in vals){ if(Object.prototype.hasOwnProperty.call(vals,k)) q.V[k]=vals[k]; }
+  S.shown=true; S.passed=true; S.coef=0; S.gain=0;
+  if(!S.tries) S.tries=1;
+  var g=grade7(q,i); S.mark=g.mark; S.right=g.right; S.cells=g.cells; S.det=[];
+  draw7(q,box); labSync(); labLog();
+}
+
+/* ---------------- 全过程：完整成本计算单 ---------------- */
+function sum7(q){
+  var el=document.getElementById('wbSum'); if(!el) return;
+  var all=q.S.every(function(s){return s.passed;});
+  if(!all){ el.innerHTML='<div class="wb-ck" style="margin-top:12px">完成全部 '+STG7.length+
+    ' 个阶段后，这里会自动生成一份<b>完整的作业成本计算单</b>供你核对，并解锁提交结算。</div>'; return; }
+  var got=q.S.reduce(function(s,x){return s+(x.gain||0);},0);
+  var full=STG7.reduce(function(s,x){return s+x.f;},0);
+  var h='<div class="wb-sum"><h4>✓ 全部 '+STG7.length+' 个阶段完成 —— 完整作业成本计算单</h4>';
+  h+='<table class="wb-tb"><thead><tr><th class="l">作业中心</th><th>成本池</th><th class="l">成本动因</th><th>动因总量</th>'+
+     '<th>动因分配率</th><th>A 耗用</th><th>A 分摊</th><th>B 耗用</th><th>B 分摊</th></tr></thead><tbody>';
+  q.act.forEach(function(a,j){
+    h+='<tr><td class="l">'+esc(a.n)+'</td><td>'+ym(q.C[j])+'</td><td class="l">'+esc(a.dn)+'</td>'+
+       '<td>'+fm(q.Q[j],0)+'</td><td>'+fm(q.rate[j],2)+'</td><td>'+fm(q.dA[j],0)+'</td><td>'+ym(q.allocA[j])+'</td>'+
+       '<td>'+fm(q.dB[j],0)+'</td><td>'+ym(q.allocB[j])+'</td></tr>';
+  });
+  h+='<tr><td class="l"><b>合计</b></td><td class="tot">'+ym(q.F)+'</td><td class="l">—</td><td class="given">—</td>'+
+     '<td class="given">—</td><td class="given">—</td><td class="tot">'+ym(q.OHA)+'</td><td class="given">—</td>'+
+     '<td class="tot">'+ym(q.OHB)+'</td></tr></tbody></table>';
+  h+='<table class="wb-tb" style="margin-top:9px"><thead><tr><th class="l">产品成本汇总</th><th>A 产品</th><th>B 产品</th></tr></thead><tbody>'+
+     '<tr><td class="l">产量（箱）</td><td>'+fm(q.qa,0)+'</td><td>'+fm(q.qb,0)+'</td></tr>'+
+     '<tr><td class="l">直接材料（直接追溯）</td><td>'+ym(q.qa*q.dma)+'</td><td>'+ym(q.qb*q.dmb)+'</td></tr>'+
+     '<tr><td class="l">直接人工（直接追溯）</td><td>'+ym(q.qa*q.dla)+'</td><td>'+ym(q.qb*q.dlb)+'</td></tr>'+
+     '<tr><td class="l">制造费用（作业法分摊）</td><td>'+ym(q.OHA)+'</td><td>'+ym(q.OHB)+'</td></tr>'+
+     '<tr><td class="l"><b>总成本</b></td><td class="tot">'+ym(q.qa*q.ua+q.OHA)+'</td><td class="tot">'+ym(q.qb*q.ub+q.OHB)+'</td></tr>'+
+     '<tr><td class="l"><b>单位总成本</b></td><td class="tot">'+ym(q.uA,2)+'</td><td class="tot">'+ym(q.uB,2)+'</td></tr>'+
+     '</tbody></table>';
+  var hi=q.rA>0?'A 产品':'B 产品', lo=q.rA>0?'B 产品':'A 产品';
+  h+='<table class="wb-tb" style="margin-top:9px"><thead><tr><th class="l">与传统法（单一机器小时）对比</th><th>A 产品</th><th>B 产品</th></tr></thead><tbody>'+
+     '<tr><td class="l">作业法单位成本</td><td>'+ym(q.uA,2)+'</td><td>'+ym(q.uB,2)+'</td></tr>'+
+     '<tr><td class="l">传统法单位成本（率 '+ym(q.rateT,2)+'/小时）</td><td>'+ym(q.tUA,2)+'</td><td>'+ym(q.tUB,2)+'</td></tr>'+
+     '<tr><td class="l"><b>差异</b></td><td class="tot" style="color:'+(q.rA>0?'#c62828':'#1565c0')+'">'+(q.rA>0?'+':'')+ym(q.tUA-q.uA,2)+'（'+(q.rA>0?'+':'')+pc(q.rA)+'）</td>'+
+     '<td class="tot" style="color:'+(q.rB>0?'#c62828':'#1565c0')+'">'+(q.rB>0?'+':'')+ym(q.tUB-q.uB,2)+'（'+(q.rB>0?'+':'')+pc(q.rB)+'）</td></tr>'+
+     '</tbody></table>';
+  h+='<div class="qfb ok" style="margin-top:10px"><b>结论：'+hi+'被高估，'+lo+'被低估。</b>'+
+     lo+'产量小但批次 / 频次类作业耗用密集，这些成本在传统法下被按机器小时"平均化"摊给了'+hi+'，形成交叉补贴。'+
+     '本轮各阶段得分合计 <b>'+got+' / '+full+'</b>。</div></div>';
+  el.innerHTML=h;
+}
+
+/* ---------------- 全过程：结算报告 ---------------- */
+function chk7(q){
+  var got=0, rows='';
+  q.S.forEach(function(S,i){
+    got+=S.gain||0;
+    rows+='<tr><td class="l">'+esc(STG7[i].t)+'</td><td>'+S.right+' / '+S.cells+'</td><td>'+(S.tries||0)+'</td>'+
+      '<td class="l">'+(S.shown?'<span style="color:#c62828">看答案 0 分</span>'
+        :(S.passed?('<b>'+S.gain+'</b> / '+STG7[i].f+'（'+(S.coef<1?Math.round(S.coef*100)+'%':'满分')+'）')
+                 :'<span style="color:#c62828">未通过</span>'))+'</td></tr>';
+  });
+  var all=q.S.every(function(s){return s.passed;});
+  var full=STG7.reduce(function(s,x){return s+x.f;},0);
+  return {ok:all, gain:got, full:full, rows:rows};
+}
+function detTxt(d){
+  if(d.yourT!==undefined) return '你的答案：'+d.yourT+'　|　正确答案：'+d.stdT;
+  return '你填 '+fm(d.your,2)+'　|　应为 '+fm(d.std,2);
+}
+function labLogs(q){
+  var out=[];
+  q.S.forEach(function(S,i){
+    if(!S.tries && !S.shown) return;
+    var t=STG7[i].t.replace(/^[①-⑦]\s*/,'');
+    var note=STG7[i].h.replace(/<[^>]+>/g,'');
+    var extra='';
+    if(S.det && S.det.length){
+      extra='　错题：'+S.det.slice(0,8).map(function(d){ return d.lb+'（'+detTxt(d)+'）'; }).join('；');
+    }
+    if(i===6){
+      extra+='　本题结论：'+(q.rA>0?'A 产品被高估、B 产品被低估':'B 产品被高估、A 产品被低估')+
+        '（作业法 '+ym(q.uA,2)+' / '+ym(q.uB,2)+'，传统法 '+ym(q.tUA,2)+' / '+ym(q.tUB,2)+'）。'+
+        '决策题：'+esc(q.decProd)+'报价 '+ym(q.dP,2)+'，传统法成本 '+ym(q.dT,2)+'（看似盈利），作业法真实成本 '+ym(q.dU,2)+'（实亏 '+ym(q.dU-q.dP,2)+'/箱）。';
+    }
+    out.push({t:t, ok:!!S.passed,
+      your:(S.passed?('正确 '+S.right+'/'+S.cells+' 格'+(S.shown?'（已看答案）':'')):('正确 '+S.right+'/'+S.cells+' 格，尚未通过')),
+      right:'全部 '+S.cells+' 格正确',
+      note:note+extra});
+  });
+  return out;
+}
+
+/* ==================================================================
+   实操面板控制（进度 / 计时 / 提交 / 记录 / 复制）
+   ================================================================== */
+var LABQ=null, LABT0=0, LABTMR=null, LABEND=null, LABTAB='lab';
+function labFull(){ return STG7.reduce(function(s,x){return s+x.f;},0); }
+function fmtTime(ms){
+  var s=Math.max(0,Math.floor(ms/1000)), m=Math.floor(s/60); s=s%60;
+  return (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+}
+function labSync(){
+  var q=LABQ; if(!q) return;
+  var done=0, got=0;
+  q.S.forEach(function(s){ if(s.passed) done++; got+=(s.gain||0); });
+  var e=$('#lbDone'); if(e) e.textContent=done;
+  e=$('#lbAll'); if(e) e.textContent=STG7.length;
+  e=$('#lbScore'); if(e) e.textContent=got;
+  e=$('#lbFull'); if(e) e.textContent=labFull();
+  e=$('#lbBar'); if(e) e.style.width=(done/STG7.length*100)+'%';
+  e=$('#lbChips');
+  if(e){
+    var h='';
+    STG7.forEach(function(s,i){
+      var S=q.S[i];
+      var cls=(S.passed?'done':(stgEditable(q,i)?'cur':''));
+      var tail=S.passed?('✓ '+S.gain+' / '+s.f):(stgEditable(q,i)?'进行中':'🔒 未解锁');
+      h+='<div class="qz-step lb-chip '+cls+'" data-go="'+i+'">'+esc(s.t.replace(/^[①-⑦]\s*/,''))+
+         '<br><span class="tiny">'+tail+'</span></div>';
+    });
+    e.innerHTML=h;
+  }
+  var all=done===STG7.length, acts=$('#lbActs');
+  if(acts){
+    if(!all){
+      acts.innerHTML='<button class="btn" disabled style="opacity:.55;cursor:not-allowed">完成全部 '+
+        STG7.length+' 个阶段后可提交结算</button>';
+    } else if(!LABEND){
+      acts.innerHTML='<button class="btn solid" id="lbSub">提交本次实操，查看总评</button>';
+      var b=$('#lbSub'); if(b) b.addEventListener('click', labSubmit);
+    } else {
+      acts.innerHTML='<span class="tiny">本次实操已提交。点右上角「换一套数据」可重新做一套新题。</span>';
+    }
+  }
+}
+function labLog(){
+  var q=LABQ; if(!q) return;
+  var logs=labLogs(q);
+  var n=$('#lbLogN'); if(n) n.textContent=logs.length;
+  var box=$('#lbLog'); if(!box) return;
+  if(!logs.length){ box.innerHTML='<span class="tiny">还没有记录。每校验一次阶段，这里会记一笔。</span>'; return; }
+  var h='';
+  logs.forEach(function(r,k){
+    h+='<div class="qrec"><div class="qrec-t">'+(k+1)+'. '+esc(r.t)+
+       '　<span class="lb-rate" style="background:'+(r.ok?'#e8f5e9':'#ffebee')+';color:'+(r.ok?'#2e7d32':'#c62828')+'">'+
+       (r.ok?'通过':'未通过')+'</span></div>'+
+       '<div class="qrec-b">你的答案：'+esc(r.your)+'<br>正确答案：'+esc(r.right)+
+       '<br><span class="tiny">解析：'+esc(r.note)+'</span></div></div>';
+  });
+  box.innerHTML=h;
+}
+function escHtml(s){ return esc(s); }
+function labSubmit(){
+  var q=LABQ; if(!q || LABEND) return;
+  LABEND=Date.now();
+  var r=chk7(q);
+  var full=r.full, got=r.gain, p=got/full, dur=fmtTime(LABEND-LABT0);
+  var g;
+  if(p>=0.90) g={t:'作业成本分析师',c:'#2e7d32',m:'你已经能独立完成一次完整的作业成本计算，并说清它如何改变定价与产品组合决策。下一步可以挑战 9.4 的思考题：把"备料"的动因换成原料重量，成本会怎么变？'};
+  else if(p>=0.75) g={t:'成本分摊能手',c:'#1565c0',m:'两阶段分配的流程已经走通，丢分点多半在个别计算格或决策判断。回看 <b>9.4</b>，把"谁被高估、谁被低估"的判据记牢：耗用批次 / 频次类作业相对更多的那个小批量产品，在传统法下被低估。'};
+  else if(p>=0.55) g={t:'合格的成本会计',c:'#ef6c00',m:'基本流程能走下来，但计算还不够稳。建议重做一遍，重点盯两处：①成本池必须被<b>全部分完</b>（行内 A＋B ＝ 成本池）；②单位成本 = 单位直接成本 + 制造费用 ÷ 产量。'};
+  else g={t:'作业成本入门学徒',c:'#c62828',m:'先回到 <b>9.2–9.3</b>，牢牢记住两条公式（动因分配率、应分配作业成本）与一句命题（作业消耗资源、产品消耗作业），再回来二刷。允许"看提示"不扣分，卡住就点。'};
+  var tv=q.S.reduce(function(s,x){return s+(x.cells||0);},0);
+  var tr=q.S.reduce(function(s,x){return s+(x.right||0);},0);
+  var hi=q.rA>0?'A 产品':'B 产品', lo=q.rA>0?'B 产品':'A 产品';
+  var h='<div class="final"><h3>本次实操得分 <b>'+got+'</b> / '+full+'　（'+pc(p)+'）'+
+    '<span class="lb-rate" style="background:'+g.c+';color:#fff">'+g.t+'</span></h3>'+
+    '<div>用时 <b>'+dur+'</b>　·　计算格累计答对 <b>'+tr+'</b> / '+tv+
+    (r.ok?'':'　·　<span style="color:#c62828">仍有阶段未通过（"看答案"的阶段记 0 分）</span>')+'</div>'+
+    '<div style="margin-top:6px">'+g.m+'</div>'+
+    '<div class="lb-tip" style="margin-top:10px"><b>本套数据的核心结论：</b>'+hi+'被传统成本法<b>高估</b>，'+lo+'被<b>低估</b>。'+
+    '作业法单位成本：A '+ym(q.uA,2)+' 元 / B '+ym(q.uB,2)+' 元；传统法：A '+ym(q.tUA,2)+' 元 / B '+ym(q.tUB,2)+' 元。<br>'+
+    '决策题：'+esc(q.decProd)+'报价 '+ym(q.dP,2)+' 元/箱，传统法看起来每箱赚 '+ym(q.dP-q.dT,2)+
+    ' 元，但作业法显示真实成本 '+ym(q.dU,2)+' 元，每箱实亏 <b>'+ym(q.dU-q.dP,2)+'</b> 元 —— 这就是"卖得越多亏得越多"。</div>'+
+    '<div class="tw" style="margin-top:10px"><table><thead><tr><th class="l">阶段</th><th>正确格数</th><th>校验次数</th><th class="l">得分</th></tr></thead><tbody>'+
+    r.rows+'</tbody></table></div></div>';
+  var el=$('#lbResult'); if(el) el.innerHTML=h;
+  labSync(); labLog();
+  if(el && el.scrollIntoView) el.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function labCopy(){
+  var q=LABQ; if(!q) return;
+  var full=labFull(), got=q.S.reduce(function(s,x){return s+(x.gain||0);},0);
+  var dur=fmtTime((LABEND||Date.now())-LABT0);
+  var L=[];
+  L.push('《管理会计》第9章 · 作业成本法全过程实操 结果摘要');
+  L.push('生成时间：'+new Date().toLocaleString('zh-CN')+'　用时：'+dur+'　得分：'+got+' / '+full);
+  L.push('');
+  L.push('【一、资源→作业：作业成本池】');
+  q.act.forEach(function(a,j){ L.push('  '+a.n+'：'+ym(q.C[j])+'　（动因：'+a.dn+'，总量 '+fm(q.Q[j],0)+' '+a.un+'，分配率 '+fm(q.rate[j],2)+'）'); });
+  L.push('  合计：'+ym(q.F));
+  L.push('');
+  L.push('【二、作业→产品】');
+  q.act.forEach(function(a,j){
+    L.push('  '+a.n+'：A 耗用 '+fm(q.dA[j],0)+' → '+ym(q.allocA[j])+'；B 耗用 '+fm(q.dB[j],0)+' → '+ym(q.allocB[j]));
+  });
+  L.push('');
+  L.push('【三、产品成本（作业成本法）】');
+  L.push('  A 产品：产量 '+fm(q.qa,0)+' 箱，制造费用 '+ym(q.OHA)+'，单位总成本 '+ym(q.uA,2)+' 元');
+  L.push('  B 产品：产量 '+fm(q.qb,0)+' 箱，制造费用 '+ym(q.OHB)+'，单位总成本 '+ym(q.uB,2)+' 元');
+  L.push('');
+  L.push('【四、与传统成本法对比（单一机器小时，率 '+ym(q.rateT,2)+' 元/小时）】');
+  L.push('  A 产品：'+ym(q.tUA,2)+' 元（'+(q.rA>0?'+':'')+pc(q.rA)+'）');
+  L.push('  B 产品：'+ym(q.tUB,2)+' 元（'+(q.rB>0?'+':'')+pc(q.rB)+'）');
+  L.push('  结论：'+(q.rA>0?'A 产品被高估、B 产品被低估':'B 产品被高估、A 产品被低估')+'，存在交叉补贴。');
+  L.push('');
+  L.push('【五、决策题】'+q.decProd+'报价 '+ym(q.dP,2)+' 元/箱；传统法成本 '+ym(q.dT,2)+'（看似每箱赚 '+
+    ym(q.dP-q.dT,2)+'）；作业法真实成本 '+ym(q.dU,2)+'（每箱实亏 '+ym(q.dU-q.dP,2)+'），应拒绝该订单。');
+  var txt=L.join('\n');
+  var ta=document.createElement('textarea');
+  ta.value=txt; ta.style.position='fixed'; ta.style.left='-9999px';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+  var b=$('#lbCopy');
+  if(b){ var old=b.textContent; b.textContent='已复制 ✓'; setTimeout(function(){ b.textContent=old; },1600); }
+}
+function startLab(fresh){
+  if(!fresh && LABQ){ labSync(); return; }
+  LABQ=gen7(); LABT0=Date.now(); LABEND=null;
+  var r=$('#lbResult'); if(r) r.innerHTML='';
+  var lg=$('#lbLog'); if(lg) lg.innerHTML='<span class="tiny">还没有记录。每校验一次阶段，这里会记一笔。</span>';
+  var ln=$('#lbLogN'); if(ln) ln.textContent='0';
+  draw7(LABQ, $('#labBody'));
+  labSync(); labLog();
+  if(LABTMR) clearInterval(LABTMR);
+  LABTMR=setInterval(function(){
+    if(LABEND) return;
+    var e=$('#lbTime'); if(e) e.textContent=fmtTime(Date.now()-LABT0);
+  },1000);
+  var t=$('#lbTime'); if(t) t.textContent='00:00';
+}
+function switchTab(name, force){
+  LABTAB=name;
+  Array.prototype.forEach.call(document.querySelectorAll('.qz-tab'),function(b){
+    b.classList.toggle('on', b.getAttribute('data-tab')===name);
+  });
+  var pa=$('#paneLab'), pb=$('#paneDrill');
+  if(pa) pa.hidden=(name!=='lab');
+  if(pb) pb.hidden=(name!=='drill');
+  var br=$('#btnRestart'); if(br) br.textContent=(name==='lab'?'换一套数据（重新实操）':'再来一轮（换题）');
+  if(name==='lab') startLab(!!force);
+}
+Array.prototype.forEach.call(document.querySelectorAll('.qz-tab'),function(b){
+  b.addEventListener('click',function(){ switchTab(b.getAttribute('data-tab'), false); });
+});
+(function(){
+  var br=$('#btnRestart');
+  if(br) br.addEventListener('click',function(){
+    if(LABTAB==='lab'){ startLab(true); var q=$('#quiz'); if(q&&q.scrollIntoView) q.scrollIntoView({behavior:'smooth',block:'start'}); }
+    else restart();
+  });
+  var jm=$('#lbJump');
+  if(jm) jm.addEventListener('click',function(){
+    var q=LABQ; if(!q) return;
+    for(var i=0;i<STG7.length;i++){ if(!q.S[i].passed){ goStage(i); return; } }
+    goStage(STG7.length-1);
+  });
+  var cp=$('#lbCopy');
+  if(cp) cp.addEventListener('click', labCopy);
+  var ch=$('#lbChips');
+  if(ch) ch.addEventListener('click',function(e){
+    var d=(e.target.closest?e.target.closest('[data-go]'):null); if(!d) return;
+    var i=parseInt(d.getAttribute('data-go'),10), q=LABQ;
+    if(q && !stgEditable(q,i) && !q.S[i].passed) return;
+    goStage(i);
+  });
+})();
+switchTab('lab', true);
+
+/* ---------------- 各关：渲染 ---------------- */
+function optBind(container, onPick){
+  var bs=container.querySelectorAll('.opt');
+  Array.prototype.forEach.call(bs,function(b){
+    b.addEventListener('click',function(){
+      if(container.dataset.lock==='1') return;
+      Array.prototype.forEach.call(bs,function(x){x.classList.remove('sel');});
+      b.classList.add('sel'); onPick(parseInt(b.dataset.i,10));
+    });
+  });
+}
+function draw1(q,box){
+  var h='<div class="qt">第 1 关 · 概念速答（3 小题，每题 10 分）</div>';
+  q.qs.forEach(function(it,i){
+    h+='<div class="qitem"><div class="qstem">'+(i+1)+'. '+esc(it.o.q)+'</div><div class="opts">';
+    it.o.o.forEach(function(op,j){ h+='<button type="button" class="opt" data-i="'+j+'">'+A2(j)+'. '+esc(op)+'</button>'; });
+    h+='</div></div>';
+  });
+  box.innerHTML=h;
+  Array.prototype.forEach.call(box.querySelectorAll('.qitem'),function(item,idx){
+    optBind(item,function(j){ q.qs[idx].sel=j; });
+  });
+}
+function draw2(q,box){
+  box.innerHTML='<div class="qt">第 2 关 · 计算动因分配率（15 分）</div>'+
+    '<div class="qstem">'+esc(q.nm)+'作业中心的成本池为 <b>'+ym(q.C)+'</b>，本月该作业的成本动因（'+esc(q.dn)+'）实际消耗总量为 <b>'+fm(q.Q,0)+' '+esc(q.un)+'</b>。</div>'+
+    '<div class="qsub">请计算该作业中心的<b>动因分配率</b>（保留 2 位小数，容差 ±0.5%）。</div>'+
+    '<div class="fill"><input type="number" id="qzAns" step="0.01" placeholder="请输入"><span class="tiny">元 / '+esc(q.un)+'</span></div>';
+}
+function draw3(q,box){
+  box.innerHTML='<div class="qt">第 3 关 · 计算作业成本分摊额（15 分）</div>'+
+    '<div class="qstem">'+esc(q.nm)+'作业中心成本池 <b>'+ym(q.C)+'</b>，动因（'+esc(q.dn)+'）本月消耗总量 <b>'+fm(q.Q,0)+' '+esc(q.un)+'</b>，其中 <b>'+esc(q.pn)+'</b> 耗用 <b>'+fm(q.QA,0)+' '+esc(q.un)+'</b>。</div>'+
+    '<div class="qsub">请计算 '+esc(q.pn)+' 应分摊的'+esc(q.nm)+'作业成本（先算分配率，再乘耗用量；保留 2 位小数，容差 ±0.5%）。</div>'+
+    '<div class="fill"><input type="number" id="qzAns" step="0.01" placeholder="请输入"><span class="tiny">元</span></div>';
+}
+function draw4(q,box){
+  box.innerHTML='<div class="qt">第 4 关 · 计算单位总成本（15 分）</div>'+
+    '<div class="qstem">'+esc(q.pn)+'本月完工 <b>'+fm(q.qty,0)+'</b> 箱。直接材料 <b>'+ym(q.dm)+'</b>，直接人工 <b>'+ym(q.dl)+'</b>，按作业成本法分摊的制造费用 <b>'+ym(q.oh)+'</b>。</div>'+
+    '<div class="qsub">请计算该产品的<b>单位总成本</b>（保留 2 位小数，容差 ±0.5%）。</div>'+
+    '<div class="fill"><input type="number" id="qzAns" step="0.01" placeholder="请输入"><span class="tiny">元 / 箱</span></div>';
+}
+function draw5(q,box){
+  var h='<div class="qt">第 5 关 · 判断哪个产品成本被扭曲（15 分）</div>'+
+   '<div class="qstem">某车间本月制造费用合计 <b>'+ym(q.F)+'</b>，归集为 4 个作业中心；传统法<b>只按机器小时</b>分配全部制造费用。资料如下：</div>'+
+   '<div class="tw"><table><thead><tr><th class="l">项目</th><th>甲产品</th><th>乙产品</th></tr></thead><tbody>'+
+   '<tr><td class="l">产量（箱）</td><td>'+fm(q.qa,0)+'</td><td>'+fm(q.qb,0)+'</td></tr>'+
+   '<tr><td class="l">单位直接成本（元/箱）</td><td>'+fm(q.uA,2)+'</td><td>'+fm(q.uB,2)+'</td></tr>'+
+   '<tr><td class="l">备料次数（成本池 '+ym(q.cPrep)+'）</td><td>'+q.bA+'</td><td>'+q.bB+'</td></tr>'+
+   '<tr><td class="l">质检批次（成本池 '+ym(q.cW)+'）</td><td>'+q.wA+'</td><td>'+q.wB+'</td></tr>'+
+   '<tr><td class="l">机器小时（成本池 '+ym(q.cMach)+'）</td><td>'+fm(q.machA,0)+'</td><td>'+fm(q.machB,0)+'</td></tr>'+
+   '<tr><td class="l">包装件数（成本池 '+ym(q.cPack)+'）</td><td>'+fm(q.qa,0)+'</td><td>'+fm(q.qb,0)+'</td></tr>'+
+   '</tbody></table></div>'+
+   '<div class="qsub" style="margin-top:10px">问：与传统法相比，作业成本法算出的结果意味着什么？</div><div class="opts">';
+  OPT5.forEach(function(op,j){ h+='<button type="button" class="opt" data-i="'+j+'">'+A2(j)+'. '+esc(op)+'</button>'; });
+  h+='</div>';
+  box.innerHTML=h;
+  optBind(box,function(j){ q.sel=(j===undefined)?-1:j; });
+  q.sel=-1;
+}
+function upd6(q){
+  var x=parseFloat($('#qzAns')?$('#qzAns').value:q.cur); if(!isFinite(x)) x=0;
+  q.cur=x;
+  var s=$('#qzSld'); if(s && parseFloat(s.value)!==x) s.value=x;
+  var u=q.unit(x), d=u-q.target, r=q.target>0?d/q.target:0;
+  var c=$('#qzCur'); if(c) c.textContent=ym(u,2);
+  var g=$('#qzGap'); if(!g) return;
+  if(Math.abs(r)<=0.01) g.innerHTML='<span style="color:#1b5e20;font-weight:700">已进入命中区间（偏差 '+pc(Math.abs(r))+'），点「提交答案」确认。</span>';
+  else if(Math.abs(r)<=0.05) g.innerHTML='很接近了！当前 <b>'+(d>0?'偏高':'偏低')+'</b> '+ym(Math.abs(d),2)+'（'+pc(Math.abs(r))+'），请微调。';
+  else g.innerHTML='当前 <b>'+(d>0?'偏高':'偏低')+'</b> '+ym(Math.abs(d),2)+'（'+pc(Math.abs(r))+'）　→ 需要把备料批次调<b>'+(d>0?'小':'大')+'</b>。';
+}
+function draw6(q,box){
+  box.innerHTML='<div class="qt">第 6 关 · 动因敏感性挑战（25 分）</div>'+
+   '<div class="qstem">下面的「迷你车间」里，只有 <b>甲产品耗用的备料批次</b> 可以调整。请拖动滑块，使 <b>甲产品的单位总成本</b> 达到目标值。</div>'+
+   '<div class="mini">'+
+     '<span class="pill">备料作业成本池 '+ym(q.cPrep)+'</span><span class="pill">动因＝备料批次</span>'+
+     '<span class="pill">乙耗用 '+q.bB+' 次（固定）</span>'+
+     '<span class="pill">机时作业 '+ym(q.cMach)+'</span><span class="pill">机器小时 甲 '+fm(q.machA,0)+' / 乙 '+fm(q.machB,0)+'</span>'+
+     '<div class="res-line">甲产品：产量 <b>'+fm(q.qa,0)+'</b> 箱　直接成本合计 <b>'+ym(q.dcA)+'</b>（机时分摊固定为 '+ym(q.machAl,2)+'）</div>'+
+   '</div>'+
+   '<div class="mini" style="margin-top:10px">'+
+     '<label style="font-size:12.5px;color:#5f6f5c;display:block;margin-bottom:4px">甲产品耗用备料批次（次）</label>'+
+     '<input type="range" id="qzSld" min="0" max="120" step="1" value="'+q.cur+'" style="width:100%">'+
+     '<div class="fill"><input type="number" id="qzAns" step="1" min="0" value="'+q.cur+'"><span class="tiny">次</span></div>'+
+     '<div class="res-line">甲单位总成本（当前）：<b id="qzCur">—</b></div>'+
+     '<div class="res-line">目标单位总成本：<b>'+ym(q.target,2)+'</b>　<span class="tiny">容差 ±1%</span></div>'+
+     '<div class="res-line" id="qzGap">—</div>'+
+   '</div>';
+  var s=$('#qzSld'), n=$('#qzAns');
+  s.addEventListener('input',function(){ n.value=s.value; upd6(q); });
+  n.addEventListener('input',function(){ upd6(q); });
+  upd6(q);
+}
+
+/* ---------------- 各关：判卷 ---------------- */
+function chk1(q){
+  var box=$('#qzBody'); box.dataset.lock='1';
+  var items=box.querySelectorAll('.qitem'), right=0, logs=[];
+  q.qs.forEach(function(it,i){
+    var bs=items[i].querySelectorAll('.opt');
+    Array.prototype.forEach.call(bs,function(b,j){
+      if(j===it.o.a) b.classList.add('right'); else if(j===it.sel) b.classList.add('wrong');
+    });
+    if(it.sel===it.o.a) right++;
+    logs.push({t:it.o.q, ok:it.sel===it.o.a,
+      your: it.sel<0?'（未作答）':A2(it.sel)+'. '+it.o.o[it.sel],
+      right:A2(it.o.a)+'. '+it.o.o[it.o.a], note:it.o.why});
+  });
+  var ok=right===3;
+  return {ok:ok, gain:10*right,
+    fb:'<div class="qfb '+(ok?'ok':'no')+'">答对 <b>'+right+' / 3</b> 题'+(ok?'—— 全对，概念很扎实！':'。正确答案已标为绿色，解析见下方「答题记录」。')+'</div>',
+    logs:logs};
+}
+function numChk(ans,std,tip){
+  var a=parseFloat(ans);
+  var ok=isFinite(a)&&Math.abs(a-std)<=Math.max(0.01,Math.abs(std)*0.005);
+  return {ok:ok, a:a};
+}
+function chk2(q){
+  var r=numChk($('#qzAns').value,q.rate);
+  return {ok:r.ok, gain:r.ok?15:0,
+    fb:r.ok?'<div class="qfb ok">正确！动因分配率 = '+ym(q.C)+' ÷ '+fm(q.Q,0)+' = <b>'+ym(q.rate,2)+' / '+esc(q.un)+'</b>。</div>'
+           :'<div class="qfb no">不正确。正确算式：动因分配率 ＝ 作业中心成本 ÷ 动因总量 ＝ '+ym(q.C)+' ÷ '+fm(q.Q,0)+' ＝ <b>'+ym(q.rate,2)+' / '+esc(q.un)+'</b>。你的答案：'+(isFinite(r.a)?ym(r.a,2):'（未作答）')+'</div>',
+    logs:[{t:'计算'+q.nm+'作业中心的动因分配率（成本池 '+ym(q.C)+'，动因总量 '+fm(q.Q,0)+' '+q.un+'）',
+      ok:r.ok, your:isFinite(r.a)?ym(r.a,2):'（未作答）', right:ym(q.rate,2),
+      note:'动因分配率 = 作业中心成本 ÷ 该作业动因实际消耗总量 = '+ym(q.C)+' ÷ '+fm(q.Q,0)+' = '+ym(q.rate,2)+' 元/'+q.un+'。'}]};
+}
+function chk3(q){
+  var r=numChk($('#qzAns').value,q.ans);
+  return {ok:r.ok, gain:r.ok?15:0,
+    fb:r.ok?'<div class="qfb ok">正确！分配率 = '+ym(q.C)+' ÷ '+fm(q.Q,0)+' = '+ym(q.rate,2)+'，'+esc(q.pn)+'分摊 = '+ym(q.rate,2)+' × '+fm(q.QA,0)+' = <b>'+ym(q.ans,2)+'</b>。</div>'
+           :'<div class="qfb no">不正确。先算率：'+ym(q.C)+' ÷ '+fm(q.Q,0)+' = '+ym(q.rate,2)+' 元/'+esc(q.un)+'；再乘耗用量：'+ym(q.rate,2)+' × '+fm(q.QA,0)+' = <b>'+ym(q.ans,2)+'</b>。你的答案：'+(isFinite(r.a)?ym(r.a,2):'（未作答）')+'</div>',
+    logs:[{t:'计算'+q.pn+'应分摊的'+q.nm+'作业成本', ok:r.ok,
+      your:isFinite(r.a)?ym(r.a,2):'（未作答）', right:ym(q.ans,2),
+      note:'两步：①动因分配率 = '+ym(q.C)+' ÷ '+fm(q.Q,0)+' = '+ym(q.rate,2)+' 元/'+q.un+'；②应分摊 = 分配率 × 该产品耗用量 = '+ym(q.rate,2)+' × '+fm(q.QA,0)+' = '+ym(q.ans,2)+' 元。'}]};
+}
+function chk4(q){
+  var r=numChk($('#qzAns').value,q.uc);
+  return {ok:r.ok, gain:r.ok?15:0,
+    fb:r.ok?'<div class="qfb ok">正确！总成本 = '+ym(q.dm)+' + '+ym(q.dl)+' + '+ym(q.oh)+' = '+ym(q.tot)+'，单位总成本 = '+ym(q.tot)+' ÷ '+fm(q.qty,0)+' = <b>'+ym(q.uc,2)+'</b> 元/箱。</div>'
+           :'<div class="qfb no">不正确。总成本 = 直接材料 '+ym(q.dm)+' ＋ 直接人工 '+ym(q.dl)+' ＋ 制造费用 '+ym(q.oh)+' = '+ym(q.tot)+'；单位总成本 = '+ym(q.tot)+' ÷ '+fm(q.qty,0)+' = <b>'+ym(q.uc,2)+'</b> 元/箱。你的答案：'+(isFinite(r.a)?ym(r.a,2):'（未作答）')+'</div>',
+    logs:[{t:'计算'+q.pn+'的单位总成本', ok:r.ok,
+      your:isFinite(r.a)?ym(r.a,2):'（未作答）', right:ym(q.uc,2),
+      note:'单位总成本 =（直接材料 + 直接人工 + 分摊制造费用）÷ 产量 =（'+ym(q.dm)+' + '+ym(q.dl)+' + '+ym(q.oh)+'）÷ '+fm(q.qty,0)+' = '+ym(q.uc,2)+' 元/箱。'}]};
+}
+var OPT5=['甲产品的成本被高估（乙被低估）','乙产品的成本被高估（甲被低估）','两种产品的成本都被高估','资料不足，无法判断'];
+function chk5(q){
+  var box=$('#qzBody'); box.dataset.lock='1';
+  var bs=box.querySelectorAll('.opt');
+  Array.prototype.forEach.call(bs,function(b,j){
+    if(j===q.ans) b.classList.add('right'); else if(j===q.sel) b.classList.add('wrong');
+  });
+  var ok=q.sel===q.ans;
+  var hi = q.rA>0?'甲产品':'乙产品', lo = q.rA>0?'乙产品':'甲产品';
+  var det='作业法单位成本：甲 '+ym(q.aUA,2)+'、乙 '+ym(q.aUB,2)+'；传统法（单一机器小时，率 '+ym(q.rate,2)+'/小时）：甲 '+ym(q.tUA,2)+'、乙 '+ym(q.tUB,2)+'。'+
+          '甲差异 '+(q.rA>0?'+':'')+pc(q.rA)+'、乙差异 '+(q.rB>0?'+':'')+pc(q.rB)+'。'+hi+'承担了本应由'+lo+'承担的批次类作业成本。';
+  return {ok:ok, gain:ok?15:0,
+    fb:'<div class="qfb '+(ok?'ok':'no')+'">'+(ok?'正确！':'不正确。')+'<b>'+hi+'被高估、'+lo+'被低估。</b><br><span class="tiny">'+esc(det)+'</span></div>',
+    logs:[{t:'判断哪个产品成本被传统法扭曲', ok:ok,
+      your:q.sel<0?'（未作答）':A2(q.sel)+'. '+OPT5[q.sel],
+      right:A2(q.ans)+'. '+OPT5[q.ans],
+      note:det+' 判定口诀：耗用"批次/频次类作业"相对更多的那个小批量产品，在传统法下被低估。'}]};
+}
+function chk6(q){
+  var u=q.unit(q.cur), r=q.target>0?(u-q.target)/q.target:0, ok=Math.abs(r)<=0.01;
+  return {ok:ok, gain:ok?25:0,
+    fb:ok?'<div class="qfb ok">命中！备料批次 = <b>'+fm(q.cur,0)+' 次</b> 时，甲单位总成本 = '+ym(u,2)+'，与目标 '+ym(q.target,2)+' 的偏差仅 '+pc(Math.abs(r))+'。</div>'
+         :'<div class="qfb no">还差一点：当前 '+fm(q.cur,0)+' 次 → 单位成本 '+ym(u,2)+'，目标 '+ym(q.target,2)+'，偏差 '+pc(Math.abs(r))+'（需 ≤1%）。参考解：'+fm(q.x0,0)+' 次。</div>',
+    logs:[{t:'调节甲产品备料批次，使甲单位总成本命中目标 '+ym(q.target,2), ok:ok,
+      your:fm(q.cur,0)+' 次 → '+ym(u,2), right:fm(q.x0,0)+' 次 → '+ym(q.target,2),
+      note:'甲单位总成本 =（直接成本 '+ym(q.dcA)+' ＋ 备料分摊 '+ym(q.cPrep)+'×x/(x+'+q.bB+') ＋ 机时分摊 '+ym(q.machAl,2)+'）÷ '+fm(q.qa,0)+' 箱。'+
+           'x 增大 → 甲分摊的备料成本上升但被更多次"稀释"的效应递减，函数单调递增，故可用二分/试值逼近。'}]};
+}
+
+/* ---------------- 关卡与流程 ---------------- */
+var LV=[
+ {n:'① 概念速答',      f:30, gen:gen1, draw:draw1, chk:chk1},
+ {n:'② 动因分配率',    f:15, gen:gen2, draw:draw2, chk:chk2},
+ {n:'③ 作业成本分摊',  f:15, gen:gen3, draw:draw3, chk:chk3},
+ {n:'④ 单位总成本',    f:15, gen:gen4, draw:draw4, chk:chk4},
+ {n:'⑤ 高估/低判判断', f:15, gen:gen5, draw:draw5, chk:chk5},
+ {n:'⑥ 敏感性挑战',    f:25, gen:gen6, draw:draw6, chk:chk6}
+];
+var FULL=LV.reduce(function(s,l){return s+l.f;},0);
+var st={lv:0,done:0,score:0,bonus:0,streak:0,recs:[],q:null};
+
+function paintTop(){
+  $('#qzScore').textContent=st.score;
+  $('#qzBonus').textContent='+'+st.bonus;
+  $('#qzFull').textContent=FULL;
+  $('#qzStreak').textContent=st.streak;
+  $('#qzProgBar').style.width=(st.done/LV.length*100)+'%';
+  var h='';
+  LV.forEach(function(l,i){
+    var cls=(i<st.done?'done':(i===st.lv&&st.done<LV.length?'cur':''));
+    var tail=(i<st.done?'已完成':(i===st.lv?'进行中':l.f+' 分'));
+    h+='<div class="qz-step '+cls+'">'+esc(l.n)+'<br><span class="tiny">'+tail+'</span></div>';
+  });
+  $('#qzSteps').innerHTML=h;
+}
+function paintLog(){
+  $('#qzLogN').textContent=st.recs.length;
+  if(!st.recs.length){ $('#qzLog').innerHTML='<span class="tiny">还没有答题记录。</span>'; return; }
+  var h='';
+  st.recs.forEach(function(r){
+    h+='<div class="logrow"><span class="pill" style="'+(r.ok?'':'background:#fdecea;border-color:#ef9a9a;color:#8c1d18')+'">'+(r.ok?'正确':'错误')+'</span>'+
+       '<span class="lg-t">'+esc(r.t)+'</span>'+
+       '<div class="lg-a">你的答案：'+esc(r.your)+'</div>'+
+       '<div class="lg-a">正确答案：'+esc(r.right)+'</div>'+
+       '<div class="lg-a">解析：'+esc(r.note)+'</div></div>';
+  });
+  $('#qzLog').innerHTML=h;
+}
+function paintActs(mode){
+  var a=$('#qzActs'); a.innerHTML='';
+  function mk(txt,solid,fn){ var b=document.createElement('button'); b.className='btn'+(solid?' solid':''); b.textContent=txt; b.onclick=fn; a.appendChild(b); return b; }
+  if(mode==='answer'){ mk('提交答案',true,submit); }
+  else if(mode==='retry'){
+    mk('再试一次',true,function(){ st.q.tries++; redraw(); });
+    mk('跳过，进入下一关',false,next);
+  }
+  else if(mode==='next'){ mk(st.lv+1<LV.length?'进入下一关 →':'查看结算 →',true,next); }
+  else if(mode==='done'){ mk('再来一轮（换题）',true,restart); }
+}
+function redraw(){
+  var box=$('#qzBody'); box.dataset.lock='0'; box.innerHTML='';
+  $('#qzResult').innerHTML='';
+  var q=st.q, L=LV[st.lv];
+  if(st.lv===0) q.qs.forEach(function(it){ it.sel=-1; });
+  if(st.lv===4) q.sel=-1;
+  L.draw(q,box);
+  paintActs('answer');
+}
+function start(i){
+  st.lv=i; st.q=LV[i].gen();
+  if(!st.q){ st.q=LV[i].gen(); }
+  redraw(); paintTop();
+}
+function submit(){
+  var L=LV[st.lv], res=L.chk(st.q);
+  st.q.tries=(st.q.tries||0)+1;
+  var gain=0, bonus=0;
+  if(res.ok){
+    gain = (st.q.tries===1 ? L.f : Math.round(L.f/2));
+    bonus = (st.q.tries===1 ? Math.min(15, 5*st.streak) : 0);
+    st.streak++;
+  } else { st.streak=0; }
+  st.score+=gain; st.bonus+=bonus;
+  st.recs=st.recs.concat(res.logs||[]);
+  var head='<div class="qfb '+(res.ok?'ok':'no')+'">'+
+    '<b>'+(res.ok?'通过':'未通过')+'</b>　本关得分 <b>'+gain+' / '+L.f+'</b>'+
+    (res.ok&&st.q.tries>1?'（重试后按半分计）':'')+
+    (bonus>0?'　连击奖励 <b>+'+bonus+'</b>':'')+'</div>';
+  $('#qzResult').innerHTML=head+(res.fb||'');
+  if(st.lv+1>=st.done){ st.done=st.lv+1; }
+  paintTop(); paintLog();
+  paintActs(res.ok?'next':(st.q.tries<3?'retry':'next'));
+}
+function next(){ if(st.lv+1<LV.length){ start(st.lv+1); } else { finish(); } }
+function finish(){
+  var p=st.score/FULL, g;
+  if(p>=0.95) g={t:'作业成本分析师',m:'你已经能独立完成"资源→作业→产品"的两阶段分摊，并解释传统法为什么会扭曲成本。下一步可以试着为自己的案例设计作业中心与成本动因。'};
+  else if(p>=0.80) g={t:'成本分摊能手',m:'分摊计算与高估/低估判定都很扎实。建议再强化"动因选择的因果逻辑"——试着为同一作业找出 2~3 个候选动因并比较其相关性。'};
+  else if(p>=0.60) g={t:'合格的成本会计',m:'基本计算已过关，重点回看 <b>9.4</b>：为什么小批量多批次产品会被低估，以及这如何改变定价与产品组合决策。'};
+  else g={t:'作业成本入门学徒',m:'建议从 <b>9.1–9.3</b> 重看，先牢牢记住两条公式（动因分配率、应分配作业成本）与一句命题（作业消耗资源、产品消耗作业），再回来二刷。'};
+  $('#qzBody').innerHTML='<div class="final"><h3>基础分 '+st.score+' / '+FULL+'　（'+pc(p)+'）　·　'+esc(g.t)+'</h3>'+
+    '<div>连击奖励 <b>+'+st.bonus+'</b>　→　本轮总分 <b>'+(st.score+st.bonus)+'</b>　（评级依据基础分）</div>'+
+    '<div style="margin-top:6px">'+g.m+'</div>'+
+    '<div class="tiny" style="margin-top:8px">最高连击 '+Math.max(0,st.streak)+'　·　答题记录 '+st.recs.length+' 条（见下方折叠区）</div></div>';
+  $('#qzActs').innerHTML=''; paintActs('done');
+  $('#qzResult').innerHTML='';
+  if($('#qzBody').scrollIntoView) $('#qzBody').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function restart(){
+  st={lv:0,done:0,score:0,bonus:0,streak:0,recs:[],q:null};
+  paintLog(); start(0);
+  var qz=$('#quiz'); if(qz.scrollIntoView) qz.scrollIntoView({behavior:'smooth',block:'start'});
+}
+$('#qzRestart').addEventListener('click',restart);
+start(0);
+})();
+</script>
+</body>
+</html>

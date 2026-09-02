@@ -1,0 +1,1969 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>本-量-利分析·草莓园 | 虚拟仿真课件</title>
+<style>
+  :root{
+    --primary:#2e7d32;
+    --primary-light:#4caf50;
+    --primary-dark:#1b5e20;
+    --accent:#f9a825;
+    --bg:#f1f8e9;
+    --card:#ffffff;
+    --text:#263238;
+    --muted:#607d8b;
+    --border:#c8e6c9;
+    --revenue:#2e7d32;
+    --cost:#e65100;
+    --profit:#1565c0;
+    --loss:#c62828;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC","Helvetica Neue",Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    min-height:100vh;
+  }
+  /* 顶部标题 */
+  .header{
+    background:linear-gradient(135deg,var(--primary-dark),var(--primary),var(--primary-light));
+    color:#fff;
+    padding:20px 30px;
+    box-shadow:0 2px 12px rgba(46,125,50,.3);
+    position:relative;
+    overflow:hidden;
+  }
+  .header::after{
+    content:"🍓";
+    position:absolute;
+    right:30px;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:48px;
+    opacity:.25;
+  }
+  .header h1{font-size:24px;font-weight:700;letter-spacing:1px}
+  .header .subtitle{font-size:13px;opacity:.85;margin-top:4px}
+  .header .chapter{
+    display:inline-block;
+    background:rgba(255,255,255,.2);
+    padding:2px 12px;
+    border-radius:20px;
+    font-size:12px;
+    margin-top:8px;
+  }
+
+  .container{
+    max-width:1400px;
+    margin:0 auto;
+    padding:20px;
+  }
+
+  /* 主布局 */
+  .main-grid{
+    display:grid;
+    grid-template-columns:340px 1fr;
+    gap:20px;
+    margin-bottom:20px;
+  }
+  @media(max-width:900px){
+    .main-grid{grid-template-columns:1fr}
+  }
+
+  /* 卡片通用 */
+  .card{
+    background:var(--card);
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
+    border:1px solid var(--border);
+  }
+  .card-title{
+    font-size:16px;
+    font-weight:700;
+    color:var(--primary-dark);
+    margin-bottom:16px;
+    padding-bottom:10px;
+    border-bottom:2px solid var(--border);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .card-title .icon{font-size:18px}
+
+  /* 控制面板 */
+  .control-group{margin-bottom:18px}
+  .control-label{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:6px;
+    font-size:14px;
+    font-weight:600;
+  }
+  .control-label .name{color:var(--text)}
+  .control-label .value{
+    color:var(--primary);
+    font-family:"Consolas","Monaco",monospace;
+    background:#e8f5e9;
+    padding:2px 8px;
+    border-radius:4px;
+    font-size:13px;
+    min-width:70px;
+    text-align:right;
+  }
+  .control-label .unit{color:var(--muted);font-size:12px;font-weight:400;margin-left:4px}
+  input[type="range"]{
+    width:100%;
+    height:6px;
+    -webkit-appearance:none;
+    background:linear-gradient(to right,var(--primary-light),var(--primary));
+    border-radius:3px;
+    outline:none;
+    cursor:pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:18px;height:18px;
+    background:#fff;
+    border:3px solid var(--primary);
+    border-radius:50%;
+    cursor:pointer;
+    box-shadow:0 2px 4px rgba(0,0,0,.2);
+    transition:transform .15s;
+  }
+  input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+  input[type="range"]::-moz-range-thumb{
+    width:18px;height:18px;
+    background:#fff;
+    border:3px solid var(--primary);
+    border-radius:50%;
+    cursor:pointer;
+  }
+
+  /* 开关 */
+  .switch-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 0;
+    border-top:1px dashed var(--border);
+    margin-top:10px;
+  }
+  .switch-row .label{font-size:14px;font-weight:600}
+  .switch-row .desc{font-size:11px;color:var(--muted);margin-top:2px}
+  .toggle{
+    position:relative;
+    width:48px;height:26px;
+    background:#ccc;
+    border-radius:13px;
+    cursor:pointer;
+    transition:background .3s;
+    flex-shrink:0;
+  }
+  .toggle.active{background:var(--primary)}
+  .toggle::after{
+    content:"";
+    position:absolute;
+    top:3px;left:3px;
+    width:20px;height:20px;
+    background:#fff;
+    border-radius:50%;
+    transition:transform .3s;
+    box-shadow:0 1px 3px rgba(0,0,0,.2);
+  }
+  .toggle.active::after{transform:translateX(22px)}
+
+  /* 多品种面板 */
+  .multi-panel{
+    display:none;
+    margin-top:14px;
+    padding:14px;
+    background:#f9fbe7;
+    border-radius:8px;
+    border:1px solid #dce775;
+  }
+  .multi-panel.show{display:block}
+  .multi-panel h4{
+    font-size:13px;
+    color:var(--primary-dark);
+    margin-bottom:10px;
+  }
+  .product-row{
+    display:grid;
+    grid-template-columns:60px 1fr 1fr;
+    gap:8px;
+    align-items:center;
+    margin-bottom:8px;
+    font-size:12px;
+  }
+  .product-row .pname{font-weight:600;color:var(--primary-dark)}
+  .product-row input[type="number"]{
+    width:100%;
+    padding:4px 6px;
+    border:1px solid var(--border);
+    border-radius:4px;
+    font-size:12px;
+    font-family:inherit;
+  }
+  .product-row input[type="number"]:focus{
+    outline:none;
+    border-color:var(--primary);
+  }
+  .weight-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:8px;
+    font-size:12px;
+  }
+  .weight-row input[type="range"]{flex:1}
+
+  /* 图表区 */
+  .chart-wrap{position:relative}
+  .chart-svg{
+    width:100%;
+    height:auto;
+    display:block;
+  }
+  .chart-legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:16px;
+    margin-top:12px;
+    padding:10px 14px;
+    background:#f9fbe7;
+    border-radius:8px;
+    font-size:13px;
+  }
+  .legend-item{display:flex;align-items:center;gap:6px}
+  .legend-line{width:24px;height:3px;border-radius:2px}
+  .legend-dot{width:12px;height:12px;border-radius:50%}
+
+  /* 指标卡片区 */
+  .metrics-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:12px;
+    margin-bottom:16px;
+  }
+  .metric-box{
+    background:linear-gradient(135deg,#e8f5e9,#c8e6c9);
+    border-radius:8px;
+    padding:12px;
+    text-align:center;
+    border-left:4px solid var(--primary);
+  }
+  .metric-box.warn{
+    background:linear-gradient(135deg,#fff3e0,#ffe0b2);
+    border-left-color:#e65100;
+  }
+  .metric-box .m-label{font-size:11px;color:var(--muted);margin-bottom:4px}
+  .metric-box .m-value{
+    font-size:20px;
+    font-weight:700;
+    color:var(--primary-dark);
+    font-family:"Consolas",monospace;
+  }
+  .metric-box.warn .m-value{color:#bf360c}
+  .metric-box .m-unit{font-size:11px;color:var(--muted);font-weight:400}
+
+  /* 变化提示气泡 */
+  .delta-bubble{
+    position:absolute;
+    background:var(--accent);
+    color:#fff;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:600;
+    box-shadow:0 2px 8px rgba(249,168,37,.4);
+    pointer-events:none;
+    opacity:0;
+    transform:translateY(-10px);
+    transition:all .3s;
+    z-index:10;
+    white-space:nowrap;
+  }
+  .delta-bubble.show{opacity:1;transform:translateY(0)}
+
+  /* 敏感性分析 */
+  .sensitivity-section{margin-top:20px}
+  .sens-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+    margin-top:10px;
+  }
+  .sens-table th{
+    background:var(--primary);
+    color:#fff;
+    padding:10px 8px;
+    text-align:center;
+    font-weight:600;
+  }
+  .sens-table th:first-child{text-align:left;border-radius:8px 0 0 0}
+  .sens-table th:last-child{border-radius:0 8px 0 0}
+  .sens-table td{
+    padding:9px 8px;
+    text-align:center;
+    border-bottom:1px solid #eee;
+    font-family:"Consolas",monospace;
+  }
+  .sens-table td:first-child{
+    text-align:left;
+    font-family:inherit;
+    font-weight:600;
+    color:var(--text);
+  }
+  .sens-table tr:hover{background:#f1f8e9}
+  .sens-table .pos{color:#2e7d32;font-weight:600}
+  .sens-table .neg{color:#c62828;font-weight:600}
+  .sens-rank{
+    display:inline-block;
+    width:22px;height:22px;
+    line-height:22px;
+    text-align:center;
+    border-radius:50%;
+    font-size:12px;
+    font-weight:700;
+    color:#fff;
+    margin-right:6px;
+  }
+  .rank-1{background:#f9a825}
+  .rank-2{background:#ff8f00}
+  .rank-3{background:#f57c00}
+  .rank-4{background:#e65100}
+
+  .leverage-tip{
+    margin-top:12px;
+    padding:12px 16px;
+    background:#fff8e1;
+    border-left:4px solid var(--accent);
+    border-radius:0 8px 8px 0;
+    font-size:13px;
+    color:#5d4037;
+  }
+  .leverage-tip strong{color:#e65100}
+
+  /* 知识点注释 */
+  .knowledge-section{
+    margin-top:20px;
+  }
+  .knowledge-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:16px;
+    margin-top:14px;
+  }
+  .knowledge-card{
+    background:#fff;
+    border-radius:10px;
+    padding:16px;
+    border:1px solid var(--border);
+    border-top:4px solid var(--primary);
+  }
+  .knowledge-card .k-num{
+    display:inline-block;
+    background:var(--primary);
+    color:#fff;
+    padding:2px 10px;
+    border-radius:12px;
+    font-size:12px;
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .knowledge-card h4{
+    font-size:15px;
+    color:var(--primary-dark);
+    margin-bottom:8px;
+  }
+  .knowledge-card p{
+    font-size:13px;
+    color:var(--text);
+    line-height:1.7;
+  }
+  .knowledge-card .formula{
+    background:#f1f8e9;
+    padding:8px 12px;
+    border-radius:6px;
+    font-family:"Consolas",monospace;
+    font-size:13px;
+    color:var(--primary-dark);
+    margin:8px 0;
+    text-align:center;
+  }
+
+  /* 重置按钮 */
+  .btn-row{
+    display:flex;
+    gap:10px;
+    margin-top:16px;
+  }
+  .btn{
+    flex:1;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all .2s;
+    font-family:inherit;
+  }
+  .btn-primary{
+    background:var(--primary);
+    color:#fff;
+  }
+  .btn-primary:hover{background:var(--primary-dark)}
+  .btn-outline{
+    background:#fff;
+    color:var(--primary);
+    border:1px solid var(--primary);
+  }
+  .btn-outline:hover{background:#e8f5e9}
+
+  /* 堆叠图 */
+  .stack-chart{
+    margin-top:14px;
+    padding:14px;
+    background:#f9fbe7;
+    border-radius:8px;
+  }
+  .stack-chart h4{
+    font-size:13px;
+    color:var(--primary-dark);
+    margin-bottom:10px;
+  }
+
+  /* ===== 顶部锚点导航 ===== */
+  .nav-bar{
+    position:sticky;top:0;z-index:60;
+    background:rgba(255,255,255,.96);
+    border-bottom:1px solid var(--border);
+    display:flex;gap:8px;padding:10px 20px;justify-content:center;flex-wrap:wrap;
+    box-shadow:0 2px 8px rgba(0,0,0,.04);
+  }
+  .nav-pill{
+    text-decoration:none;font-size:13px;font-weight:600;color:var(--primary-dark);
+    padding:6px 18px;border-radius:20px;border:1px solid var(--border);background:#fff;
+    transition:all .2s;
+  }
+  .nav-pill:hover{background:#e8f5e9;border-color:var(--primary)}
+  .nav-pill.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+  .anchor{scroll-margin-top:72px}
+
+  /* ===== 闯关练习模块 ===== */
+  .practice-section{border-top:4px solid var(--accent)}
+
+  /* 关卡导航 */
+  .level-stepper{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .level-chip{
+    flex:1 1 150px;min-width:150px;
+    padding:9px 12px;border-radius:10px;border:1px solid var(--border);
+    background:#fff;cursor:pointer;transition:all .2s;
+    display:flex;align-items:center;gap:8px;font-family:inherit;text-align:left;
+  }
+  .level-chip:hover{border-color:var(--primary);background:#f1f8e9}
+  .level-chip.active{border-color:var(--primary);background:#e8f5e9;box-shadow:0 2px 8px rgba(46,125,50,.18)}
+  .level-chip.done{background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border-color:var(--primary-light)}
+  .level-chip .lv-icon{font-size:17px;flex-shrink:0}
+  .level-chip .lv-name{font-weight:700;color:var(--primary-dark);font-size:13px;line-height:1.3}
+  .level-chip .lv-tag{font-size:11px;color:var(--muted);line-height:1.3}
+  .level-chip .lv-check{margin-left:auto;font-size:13px;color:var(--primary);font-weight:700}
+
+  /* 计分板 */
+  .score-board{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr));
+    gap:10px;margin-bottom:16px;
+  }
+  .score-item{
+    background:linear-gradient(135deg,#fff8e1,#ffecb3);
+    border-radius:10px;padding:10px;text-align:center;border-left:4px solid var(--accent);
+  }
+  .score-item .s-label{font-size:11px;color:#8d6e63;margin-bottom:2px}
+  .score-item .s-value{font-size:19px;font-weight:700;color:#e65100;font-family:"Consolas",monospace}
+
+  /* 题目区 */
+  .question-box{
+    background:#f9fbe7;border-radius:10px;padding:16px;
+    border:1px solid #dce775;min-height:150px;
+  }
+  .q-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+  .q-badge{background:var(--primary);color:#fff;padding:3px 12px;border-radius:14px;font-size:12px;font-weight:700}
+  .q-progress{font-size:12px;color:var(--muted)}
+  .q-text{font-size:15px;line-height:1.8;margin-bottom:10px;color:var(--text)}
+  .q-params{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;
+    background:#fff;border:1px dashed var(--primary-light);border-radius:8px;padding:12px;margin-bottom:10px;
+  }
+  .q-params .p-item{font-size:12px;color:var(--muted)}
+  .q-params .p-item b{
+    display:block;font-family:"Consolas",monospace;font-size:14px;color:var(--primary-dark);
+  }
+  .q-params .p-item i{font-style:normal;font-size:11px;color:var(--muted)}
+
+  /* 选择题 */
+  .options{display:grid;gap:8px}
+  .option-btn{
+    text-align:left;padding:11px 14px;border:1px solid var(--border);background:#fff;
+    border-radius:8px;cursor:pointer;font-size:14px;transition:all .15s;
+    font-family:inherit;color:var(--text);line-height:1.5;
+  }
+  .option-btn:hover:not(:disabled){background:#e8f5e9;border-color:var(--primary)}
+  .option-btn:disabled{cursor:default}
+  .option-btn.correct{background:#c8e6c9;border-color:#2e7d32;color:#1b5e20;font-weight:600}
+  .option-btn.wrong{background:#ffcdd2;border-color:#c62828;color:#b71c1c}
+
+  /* 填空 */
+  .input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .num-input{
+    padding:9px 12px;border:1px solid var(--border);border-radius:8px;
+    font-size:15px;width:170px;font-family:"Consolas",monospace;background:#fff;color:var(--text);
+  }
+  .num-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(46,125,50,.15)}
+  .num-input:disabled{background:#f5f5f5;color:#78909c}
+  .q-unit{font-size:13px;color:var(--muted);font-weight:600}
+  .q-hint{font-size:12px;color:var(--muted);margin-top:8px}
+
+  /* 排序题 */
+  .rank-list{display:flex;gap:10px;flex-wrap:wrap}
+  .rank-btn{
+    position:relative;padding:10px 34px 10px 14px;border:1px solid var(--border);background:#fff;
+    border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;color:var(--text);transition:all .15s;
+  }
+  .rank-btn:hover{border-color:var(--primary);background:#f1f8e9}
+  .rank-btn.picked{border-color:var(--primary);background:#e8f5e9;font-weight:600}
+  .rank-btn.ok{border-color:#2e7d32;background:#c8e6c9}
+  .rank-btn.bad{border-color:#c62828;background:#ffcdd2}
+  .rank-badge{
+    position:absolute;top:-9px;right:-9px;width:21px;height:21px;line-height:21px;text-align:center;
+    border-radius:50%;background:var(--primary);color:#fff;font-size:11px;font-weight:700;
+  }
+  .rank-preview{
+    margin-top:12px;font-size:13px;color:var(--primary-dark);
+    background:#f1f8e9;padding:8px 12px;border-radius:6px;line-height:1.7;
+  }
+
+  /* 反馈区 */
+  .feedback{
+    margin-top:14px;padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.7;display:none;
+  }
+  .feedback.show{display:block}
+  .feedback.ok{background:#e8f5e9;border-left:4px solid var(--primary);color:#1b5e20}
+  .feedback.no{background:#ffebee;border-left:4px solid var(--loss);color:#b71c1c}
+  .exp-box{
+    margin-top:8px;padding:10px 12px;background:#fffde7;border-radius:6px;
+    border-left:3px solid var(--accent);color:#5d4037;line-height:1.75;
+  }
+
+  /* 滑块挑战 */
+  .challenge-panel{background:#fff;border:1px dashed var(--primary-light);border-radius:10px;padding:16px;margin-top:4px}
+  .ch-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:14px}
+  .ch-head b{font-family:"Consolas",monospace;font-size:20px}
+  .meter{position:relative;height:26px;background:#eceff1;border-radius:13px;overflow:hidden;margin:12px 0 8px}
+  .meter-fill{height:100%;width:0;border-radius:13px;transition:width .3s;background:linear-gradient(90deg,#a5d6a7,#4caf50)}
+  .meter-fill.hit{background:linear-gradient(90deg,#66bb6a,#2e7d32)}
+  .meter-target{position:absolute;left:50%;top:-4px;width:3px;height:34px;background:var(--loss)}
+  .meter-target::after{
+    content:"目标";position:absolute;top:-15px;left:50%;transform:translateX(-50%);
+    font-size:10px;color:var(--loss);font-weight:700;
+  }
+  .meter-text{font-size:13px;line-height:1.7}
+  .ch-tip{
+    margin-top:10px;padding:8px 12px;background:#fff8e1;border-radius:6px;
+    font-size:12px;color:#5d4037;
+  }
+
+  /* 结算面板 */
+  .finish-panel{text-align:center;padding:22px 10px}
+  .finish-emoji{font-size:56px;line-height:1}
+  .finish-panel h3{color:var(--primary-dark);margin:12px 0}
+  .finish-stats{font-size:14px;color:var(--text);margin-bottom:12px;line-height:2}
+  .finish-panel p{font-size:13px;color:#5d4037;line-height:1.9;max-width:660px;margin:0 auto;text-align:left}
+
+  /* 答题记录 */
+  .record-wrap{margin-top:18px;border-top:1px dashed var(--border);padding-top:12px}
+  .record-head{cursor:pointer;font-size:14px;font-weight:700;color:var(--primary-dark);user-select:none}
+  .record-head:hover{color:var(--primary)}
+  .record-body{margin-top:10px;max-height:340px;overflow:auto}
+  .rec-item{
+    display:flex;gap:10px;align-items:flex-start;padding:9px 10px;
+    border-bottom:1px solid #eee;font-size:12.5px;line-height:1.75;
+  }
+  .rec-no{color:var(--muted);font-family:"Consolas",monospace;min-width:22px}
+  .rec-badge{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;margin-top:2px}
+  .rec-ok{background:var(--primary)}
+  .rec-bad{background:var(--loss)}
+  .rec-item .rec-exp{color:#5d4037}
+
+  /* 轻提示 */
+  .toast{
+    position:fixed;left:50%;bottom:40px;transform:translateX(-50%) translateY(20px);
+    background:rgba(38,50,56,.94);color:#fff;padding:10px 22px;border-radius:22px;
+    font-size:13px;opacity:0;pointer-events:none;transition:all .25s;z-index:999;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  footer{
+    text-align:center;
+    padding:20px;
+    color:var(--muted);
+    font-size:12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🍓 本-量-利分析 · 草莓采摘园</h1>
+  <div class="subtitle">虚拟仿真交互课件 | 拖动滑块实时观察保本点与保利点变化 · 内含 6 关闯关练习</div>
+  <div class="chapter">教材第3章 · 本量利分析</div>
+</div>
+
+<div class="nav-bar">
+  <a href="#sim" class="nav-pill active">📈 仿真探究</a>
+  <a href="#practice" class="nav-pill">🎯 闯关练习</a>
+  <a href="#knowledge" class="nav-pill">📚 知识点回顾</a>
+</div>
+
+<div class="container">
+
+  <!-- 主区域：控制面板 + 图表 -->
+  <div class="main-grid anchor" id="sim">
+
+    <!-- 左侧控制面板 -->
+    <div class="card">
+      <div class="card-title"><span class="icon">⚙️</span>参数控制面板</div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span class="name">单价 P</span>
+          <span><span class="value" id="valP">30.00</span><span class="unit">元/斤</span></span>
+        </div>
+        <input type="range" id="sliderP" min="10" max="80" step="0.5" value="30">
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span class="name">单位变动成本 V</span>
+          <span><span class="value" id="valV">8.00</span><span class="unit">元/斤</span></span>
+        </div>
+        <input type="range" id="sliderV" min="1" max="40" step="0.5" value="8">
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span class="name">年固定成本 F</span>
+          <span><span class="value" id="valF">120,000</span><span class="unit">元</span></span>
+        </div>
+        <input type="range" id="sliderF" min="20000" max="300000" step="5000" value="120000">
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span class="name">目标利润 T</span>
+          <span><span class="value" id="valT">60,000</span><span class="unit">元</span></span>
+        </div>
+        <input type="range" id="sliderT" min="0" max="200000" step="5000" value="60000">
+      </div>
+
+      <!-- 多品种开关 -->
+      <div class="switch-row">
+        <div>
+          <div class="label">🍓 多品种分析（草莓酱）</div>
+          <div class="desc">启用后按加权平均贡献毛利率计算综合保本</div>
+        </div>
+        <div class="toggle" id="toggleMulti"></div>
+      </div>
+
+      <!-- 多品种参数面板 -->
+      <div class="multi-panel" id="multiPanel">
+        <h4>产品参数设置</h4>
+        <div class="product-row">
+          <span class="pname">草莓</span>
+          <input type="number" id="p1_price" value="30" step="1" title="草莓单价">
+          <input type="number" id="p1_vc" value="8" step="0.5" title="草莓单位变动成本">
+        </div>
+        <div class="product-row">
+          <span class="pname">草莓酱</span>
+          <input type="number" id="p2_price" value="50" step="1" title="草莓酱单价">
+          <input type="number" id="p2_vc" value="20" step="0.5" title="草莓酱单位变动成本">
+        </div>
+        <div class="weight-row">
+          <span style="min-width:70px">草莓销售比重</span>
+          <input type="range" id="sliderW1" min="10" max="90" step="5" value="60">
+          <span id="valW1" style="font-weight:600;color:var(--primary);min-width:40px;text-align:right">60%</span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px">
+          草莓酱比重 = <span id="valW2">40%</span>（自动计算）
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btnReset">🔄 重置默认</button>
+        <button class="btn btn-outline" id="btnScenario">📊 示例场景</button>
+      </div>
+    </div>
+
+    <!-- 右侧图表区 -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📈</span>本量利平衡图 <span id="modeTag" style="font-size:12px;background:#e8f5e9;color:var(--primary);padding:2px 10px;border-radius:12px;margin-left:auto">单一品种</span></div>
+
+      <!-- 关键指标 -->
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <div class="m-label">保本量 Q₀</div>
+          <div class="m-value" id="mQ0">5,455</div>
+          <div class="m-unit">斤/年</div>
+        </div>
+        <div class="metric-box">
+          <div class="m-label">保本销售额</div>
+          <div class="m-value" id="mS0">163,636</div>
+          <div class="m-unit">元</div>
+        </div>
+        <div class="metric-box warn">
+          <div class="m-label">保利量 Q₁</div>
+          <div class="m-value" id="mQ1">8,182</div>
+          <div class="m-unit">斤/年</div>
+        </div>
+        <div class="metric-box warn">
+          <div class="m-label">单位贡献毛益</div>
+          <div class="m-value" id="mCM">22.00</div>
+          <div class="m-unit">元/斤</div>
+        </div>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="delta-bubble" id="deltaBubble">保本量变化 ΔQ = +0 斤</div>
+        <svg class="chart-svg" id="chartSvg" viewBox="0 0 700 460" preserveAspectRatio="xMidYMid meet">
+          <!-- 图表将由JS动态绘制 -->
+        </svg>
+      </div>
+
+      <!-- 图例 -->
+      <div class="chart-legend">
+        <div class="legend-item">
+          <span class="legend-line" style="background:var(--revenue)"></span>
+          <span>收入线 Y = P·Q</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-line" style="background:var(--cost)"></span>
+          <span>总成本线 Y = F + V·Q</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot" style="background:var(--accent)"></span>
+          <span>保本点 (Q₀, S₀)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot" style="background:var(--profit)"></span>
+          <span>保利点 (Q₁, S₁)</span>
+        </div>
+        <div class="legend-item" id="legendTarget" style="display:none">
+          <span class="legend-line" style="background:var(--profit);border-top:2px dashed"></span>
+          <span>目标成本线 F+T+V·Q</span>
+        </div>
+      </div>
+
+      <!-- 多品种堆叠图 -->
+      <div class="stack-chart" id="stackChart" style="display:none">
+        <h4>📊 多品种销售结构与综合保本（加权平均法）</h4>
+        <svg id="stackSvg" viewBox="0 0 660 200" style="width:100%;height:auto"></svg>
+        <div id="multiResult" style="margin-top:10px;font-size:13px;line-height:1.8"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 敏感性分析 -->
+  <div class="card sensitivity-section">
+    <div class="card-title"><span class="icon">🔬</span>敏感性分析（各因素变动 ±5% 对利润的影响）</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:8px">
+      基准销量 = 保利量 Q₁，基准利润 = 目标利润 T。按利润变动幅度绝对值从大到小排序。
+    </div>
+    <table class="sens-table" id="sensTable">
+      <thead>
+        <tr>
+          <th>影响因素</th>
+          <th>因素变动</th>
+          <th>变动后利润（元）</th>
+          <th>利润变动率</th>
+          <th>敏感系数</th>
+          <th>敏感度排名</th>
+        </tr>
+      </thead>
+      <tbody id="sensBody"></tbody>
+    </table>
+    <div class="leverage-tip" id="leverageTip">
+      💡 <strong>经营杠杆提示：</strong>经营杠杆系数 DOL = 贡献毛益总额 / 利润 = <span id="dolValue">3.00</span>。
+      销量每变动 1%，利润将变动约 <span id="dolPct">3.00%</span>。固定成本越高，经营杠杆越大，经营风险也越高。
+      价格因素通常最敏感，单位变动成本敏感度相对较低——这正是本量利分析的核心洞察。
+    </div>
+  </div>
+
+  <!-- 知识点注释 -->
+  <div class="card knowledge-section anchor" id="knowledge">
+    <div class="card-title"><span class="icon">📚</span>知识点注释（教材 3.1 – 3.3）</div>
+    <div class="knowledge-grid">
+      <div class="knowledge-card">
+        <span class="k-num">3.1</span>
+        <h4>本量利分析基本模型</h4>
+        <p>本量利分析（CVP Analysis）研究成本、业务量与利润之间的内在联系。基本假设：相关范围与线性假设、品种结构稳定、产销平衡。</p>
+        <div class="formula">利润 π = P·Q − V·Q − F = (P−V)·Q − F</div>
+        <p>其中 <strong>P−V</strong> 为单位贡献毛益，反映每增加一单位销量对利润的贡献。草莓园中，每多摘一斤草莓，门票+采摘收入扣除种苗、肥料等变动成本后，即为贡献毛益。</p>
+      </div>
+      <div class="knowledge-card">
+        <span class="k-num">3.2</span>
+        <h4>保本点分析（盈亏临界点）</h4>
+        <p>保本点是利润为零时的销售量或销售额，是企业经营的"安全底线"。低于保本点则亏损，高于保本点则盈利。</p>
+        <div class="formula">保本量 Q₀ = F / (P−V)<br>保本额 S₀ = F / 贡献毛益率</div>
+        <p>图形上，收入线与总成本线的交点即为保本点。<strong>安全边际率</strong> = (实际销量−保本量)/实际销量，反映经营安全程度，通常大于 30% 较安全。拖动 P 或 V 滑块，可直观看到交点左右平移。</p>
+      </div>
+      <div class="knowledge-card">
+        <span class="k-num">3.3</span>
+        <h4>保利分析与敏感性分析</h4>
+        <p>保利分析确定实现目标利润所需的销量；敏感性分析衡量各因素变动对利润的影响程度，帮助管理者识别关键风险因子。</p>
+        <div class="formula">保利量 Q₁ = (F+T) / (P−V)<br>敏感系数 = 利润变动率 / 因素变动率</div>
+        <p>多品种条件下，需按<strong>加权平均贡献毛益率</strong>计算综合保本销售额：综合保本额 = F / Σ(各产品贡献毛益率×销售比重)。经营杠杆系数 DOL 反映销量变动对利润的放大效应，固定成本占比越高，杠杆效应越强。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 闯关练习 -->
+  <div class="card practice-section anchor" id="practice">
+    <div class="card-title">
+      <span class="icon">🎯</span>闯关练习 · 本量利大挑战
+      <span id="pracBadge" style="font-size:12px;background:#fff8e1;color:#e65100;padding:2px 12px;border-radius:12px;margin-left:auto">共 6 关</span>
+    </div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:14px">
+      题目参数全部<strong>随机生成</strong>，可反复换题练习。计算题允许 ±0.5%（或 ±1 单位）误差；连续答对 3 题起有连击加分。
+    </div>
+
+    <!-- 关卡导航 -->
+    <div class="level-stepper" id="levelStepper"></div>
+
+    <!-- 计分板 -->
+    <div class="score-board">
+      <div class="score-item"><div class="s-label">总得分</div><div class="s-value" id="scScore">0</div></div>
+      <div class="score-item"><div class="s-label">正确率</div><div class="s-value" id="scRate">—</div></div>
+      <div class="score-item"><div class="s-label">连击 / 最高</div><div class="s-value" id="scStreak">0 / 0</div></div>
+      <div class="score-item"><div class="s-label">已通关</div><div class="s-value" id="scDone">0 / 6</div></div>
+      <div class="score-item"><div class="s-label">综合评级</div><div class="s-value" id="scStar" style="font-size:15px">—</div></div>
+    </div>
+
+    <!-- 题目区 -->
+    <div class="question-box" id="questionBox"></div>
+
+    <!-- 反馈区 -->
+    <div class="feedback" id="feedback"></div>
+
+    <!-- 操作按钮 -->
+    <div class="btn-row" id="actionRow"></div>
+
+    <!-- 答题记录 -->
+    <div class="record-wrap">
+      <div class="record-head" id="recordToggle">📋 答题记录与解析（<span id="recCount">0</span> 题）▾</div>
+      <div class="record-body" id="recordBody" style="display:none"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  管理会计 · 第3章 本量利分析 | 虚拟仿真交互课件 | 湖南农业大学商学院
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  // ========== 默认参数 ==========
+  const DEFAULTS = { P:30, V:8, F:120000, T:60000 };
+
+  // ========== DOM 引用 ==========
+  const $ = id => document.getElementById(id);
+  const sliderP = $("sliderP"), sliderV = $("sliderV"), sliderF = $("sliderF"), sliderT = $("sliderT");
+  const valP = $("valP"), valV = $("valV"), valF = $("valF"), valT = $("valT");
+  const chartSvg = $("chartSvg");
+  const deltaBubble = $("deltaBubble");
+  const toggleMulti = $("toggleMulti");
+  const multiPanel = $("multiPanel");
+  const stackChart = $("stackChart");
+  const modeTag = $("modeTag");
+  const legendTarget = $("legendTarget");
+
+  // ========== 状态 ==========
+  let state = { ...DEFAULTS };
+  let prevQ0 = null;
+  let multiEnabled = false;
+  let deltaTimer = null;
+
+  // ========== 工具函数 ==========
+  const fmt = n => n.toLocaleString("zh-CN",{maximumFractionDigits:0});
+  const fmt2 = n => n.toLocaleString("zh-CN",{minimumFractionDigits:2,maximumFractionDigits:2});
+  const fmtPct = n => (n>=0?"+":"") + n.toFixed(2) + "%";
+
+  // 计算核心指标
+  function calcMetrics(P,V,F,T){
+    const cm = P - V; // 单位贡献毛益
+    const cmRate = cm / P; // 贡献毛益率
+    const Q0 = F / cm; // 保本量
+    const S0 = Q0 * P; // 保本销售额
+    const Q1 = (F + T) / cm; // 保利量
+    const S1 = Q1 * P; // 保利销售额
+    return { cm, cmRate, Q0, S0, Q1, S1 };
+  }
+
+  // ========== 更新数值显示 ==========
+  function updateValues(){
+    valP.textContent = fmt2(state.P);
+    valV.textContent = fmt2(state.V);
+    valF.textContent = fmt(state.F);
+    valT.textContent = fmt(state.T);
+  }
+
+  // ========== 绘制主图表 ==========
+  function drawChart(){
+    const { P, V, F, T } = state;
+    const m = calcMetrics(P,V,F,T);
+
+    // 更新指标卡片
+    $("mQ0").textContent = fmt(m.Q0);
+    $("mS0").textContent = fmt(m.S0);
+    $("mQ1").textContent = fmt(m.Q1);
+    $("mCM").textContent = fmt2(m.cm);
+
+    // 图表尺寸
+    const W = 700, H = 460;
+    const pad = { top:30, right:30, bottom:55, left:75 };
+    const cw = W - pad.left - pad.right;
+    const ch = H - pad.top - pad.bottom;
+
+    // 确定坐标范围
+    // X轴：0 到 max(保利量*1.25, 保本量*1.5)
+    const xMax = Math.max(m.Q1 * 1.25, m.Q0 * 1.5, 1000);
+    // Y轴：0 到 max(收入在xMax处, 总成本在xMax处)*1.1
+    const yMax = Math.max(P * xMax, F + V * xMax) * 1.08;
+
+    const xScale = q => pad.left + (q / xMax) * cw;
+    const yScale = y => pad.top + ch - (y / yMax) * ch;
+
+    // 生成SVG
+    let svg = "";
+
+    // 背景
+    svg += `<rect x="0" y="0" width="${W}" height="${H}" fill="#fffdf5" rx="8"/>`;
+
+    // 网格线
+    const xTicks = 5, yTicks = 5;
+    for(let i=0;i<=xTicks;i++){
+      const x = pad.left + (i/xTicks)*cw;
+      const val = (i/xTicks)*xMax;
+      svg += `<line x1="${x}" y1="${pad.top}" x2="${x}" y2="${pad.top+ch}" stroke="#e8f5e9" stroke-width="1"/>`;
+      svg += `<text x="${x}" y="${pad.top+ch+18}" text-anchor="middle" font-size="11" fill="#607d8b">${fmt(val)}</text>`;
+    }
+    for(let i=0;i<=yTicks;i++){
+      const y = pad.top + ch - (i/yTicks)*ch;
+      const val = (i/yTicks)*yMax;
+      svg += `<line x1="${pad.left}" y1="${y}" x2="${pad.left+cw}" y2="${y}" stroke="#e8f5e9" stroke-width="1"/>`;
+      svg += `<text x="${pad.left-8}" y="${y+4}" text-anchor="end" font-size="11" fill="#607d8b">${fmt(val)}</text>`;
+    }
+
+    // 坐标轴
+    svg += `<line x1="${pad.left}" y1="${pad.top}" x2="${pad.left}" y2="${pad.top+ch}" stroke="#37474f" stroke-width="1.5"/>`;
+    svg += `<line x1="${pad.left}" y1="${pad.top+ch}" x2="${pad.left+cw}" y2="${pad.top+ch}" stroke="#37474f" stroke-width="1.5"/>`;
+
+    // 轴标签
+    svg += `<text x="${pad.left+cw/2}" y="${H-8}" text-anchor="middle" font-size="13" fill="#37474f" font-weight="600">销量 Q（斤/年）</text>`;
+    svg += `<text x="18" y="${pad.top+ch/2}" text-anchor="middle" font-size="13" fill="#37474f" font-weight="600" transform="rotate(-90,18,${pad.top+ch/2})">金额（元）</text>`;
+
+    // 亏损区（保本点左侧）浅红
+    const lossPath = `M ${xScale(0)} ${yScale(0)} L ${xScale(m.Q0)} ${yScale(m.S0)} L ${xScale(m.Q0)} ${yScale(F)} L ${xScale(0)} ${yScale(F)} Z`;
+    svg += `<path d="${lossPath}" fill="#ffcdd2" opacity="0.35"/>`;
+
+    // 盈利区（保本点右侧）浅绿
+    const profitPath = `M ${xScale(m.Q0)} ${yScale(m.S0)} L ${xScale(xMax)} ${yScale(P*xMax)} L ${xScale(xMax)} ${yScale(F+V*xMax)} L ${xScale(m.Q0)} ${yScale(F+V*m.Q0)} Z`;
+    svg += `<path d="${profitPath}" fill="#c8e6c9" opacity="0.4"/>`;
+
+    // 固定成本线（虚线）
+    svg += `<line x1="${xScale(0)}" y1="${yScale(F)}" x2="${xScale(xMax)}" y2="${yScale(F)}" stroke="#9e9e9e" stroke-width="1" stroke-dasharray="6,4"/>`;
+    svg += `<text x="${xScale(xMax)-4}" y="${yScale(F)-5}" text-anchor="end" font-size="10" fill="#757575">固定成本 F=${fmt(F)}</text>`;
+
+    // 总成本线 Y = F + V*Q
+    const costEndX = xScale(xMax), costEndY = yScale(F + V*xMax);
+    svg += `<line x1="${xScale(0)}" y1="${yScale(F)}" x2="${costEndX}" y2="${costEndY}" stroke="#e65100" stroke-width="2.5"/>`;
+    svg += `<text x="${costEndX-6}" y="${costEndY-8}" text-anchor="end" font-size="12" fill="#e65100" font-weight="600">总成本 Y=F+V·Q</text>`;
+
+    // 收入线 Y = P*Q
+    const revEndX = xScale(xMax), revEndY = yScale(P*xMax);
+    svg += `<line x1="${xScale(0)}" y1="${yScale(0)}" x2="${revEndX}" y2="${revEndY}" stroke="#2e7d32" stroke-width="2.5"/>`;
+    svg += `<text x="${revEndX-6}" y="${revEndY+16}" text-anchor="end" font-size="12" fill="#2e7d32" font-weight="600">收入 Y=P·Q</text>`;
+
+    // 目标利润成本线（虚线）Y = F+T+V*Q
+    if(T > 0){
+      legendTarget.style.display = "flex";
+      const tgtY0 = yScale(F + T);
+      const tgtEndY = yScale(F + T + V*xMax);
+      svg += `<line x1="${xScale(0)}" y1="${tgtY0}" x2="${xScale(xMax)}" y2="${tgtEndY}" stroke="#1565c0" stroke-width="1.5" stroke-dasharray="8,4"/>`;
+
+      // 保利点
+      const q1x = xScale(m.Q1), q1y = yScale(m.S1);
+      // 辅助线
+      svg += `<line x1="${q1x}" y1="${q1y}" x2="${q1x}" y2="${pad.top+ch}" stroke="#1565c0" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>`;
+      svg += `<line x1="${pad.left}" y1="${q1y}" x2="${q1x}" y2="${q1y}" stroke="#1565c0" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>`;
+      // 点
+      svg += `<circle cx="${q1x}" cy="${q1y}" r="7" fill="#1565c0" stroke="#fff" stroke-width="2"/>`;
+      svg += `<circle cx="${q1x}" cy="${q1y}" r="11" fill="none" stroke="#1565c0" stroke-width="1" opacity="0.4"/>`;
+      // 标签
+      svg += `<rect x="${q1x+12}" y="${q1y-32}" width="130" height="26" rx="4" fill="#1565c0" opacity="0.92"/>`;
+      svg += `<text x="${q1x+77}" y="${q1y-15}" text-anchor="middle" font-size="11" fill="#fff" font-weight="600">保利点 Q₁=${fmt(m.Q1)}斤</text>`;
+    } else {
+      legendTarget.style.display = "none";
+    }
+
+    // 保本点
+    const q0x = xScale(m.Q0), q0y = yScale(m.S0);
+    // 辅助线
+    svg += `<line x1="${q0x}" y1="${q0y}" x2="${q0x}" y2="${pad.top+ch}" stroke="#f9a825" stroke-width="1" stroke-dasharray="4,3" opacity="0.7"/>`;
+    svg += `<line x1="${pad.left}" y1="${q0y}" x2="${q0x}" y2="${q0y}" stroke="#f9a825" stroke-width="1" stroke-dasharray="4,3" opacity="0.7"/>`;
+    // 点
+    svg += `<circle cx="${q0x}" cy="${q0y}" r="8" fill="#f9a825" stroke="#fff" stroke-width="2.5"/>`;
+    svg += `<circle cx="${q0x}" cy="${q0y}" r="13" fill="none" stroke="#f9a825" stroke-width="1.5" opacity="0.5"/>`;
+    // 标签
+    const labelX = q0x > W*0.6 ? q0x - 150 : q0x + 12;
+    svg += `<rect x="${labelX}" y="${q0y-40}" width="145" height="30" rx="5" fill="#f9a825" opacity="0.95"/>`;
+    svg += `<text x="${labelX+72}" y="${q0y-22}" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">保本点 Q₀=${fmt(m.Q0)}斤</text>`;
+    svg += `<text x="${labelX+72}" y="${q0y-10}" text-anchor="middle" font-size="10" fill="#fff8e1">销售额=${fmt(m.S0)}元</text>`;
+
+    // 区域标注
+    svg += `<text x="${xScale(m.Q0*0.4)}" y="${yScale(F*0.5)+pad.top*0.3}" text-anchor="middle" font-size="13" fill="#c62828" font-weight="700" opacity="0.7">亏损区</text>`;
+    svg += `<text x="${xScale((m.Q0+xMax)/2)}" y="${yScale(P*xMax*0.6)}" text-anchor="middle" font-size="13" fill="#2e7d32" font-weight="700" opacity="0.7">盈利区</text>`;
+
+    chartSvg.innerHTML = svg;
+
+    // 保本量变化提示
+    if(prevQ0 !== null){
+      const dQ = m.Q0 - prevQ0;
+      if(Math.abs(dQ) > 0.5){
+        showDeltaBubble(dQ);
+      }
+    }
+    prevQ0 = m.Q0;
+  }
+
+  // ========== 变化气泡 ==========
+  function showDeltaBubble(dQ){
+    const sign = dQ >= 0 ? "+" : "";
+    deltaBubble.textContent = `保本量变化 ΔQ = ${sign}${fmt(dQ)} 斤（${dQ>=0?"保本压力增大":"保本压力减小"}）`;
+    deltaBubble.classList.add("show");
+    if(deltaTimer) clearTimeout(deltaTimer);
+    deltaTimer = setTimeout(()=>deltaBubble.classList.remove("show"), 2500);
+  }
+
+  // ========== 敏感性分析 ==========
+  function calcSensitivity(){
+    const { P, V, F, T } = state;
+    const m = calcMetrics(P,V,F,T);
+    const Q = m.Q1; // 基准销量 = 保利量
+    const baseProfit = T; // 基准利润
+
+    const factors = [
+      { name:"销售价格 P", key:"P", delta:0.05 },
+      { name:"销售量 Q", key:"Q", delta:0.05 },
+      { name:"单位变动成本 V", key:"V", delta:0.05 },
+      { name:"固定成本 F", key:"F", delta:0.05 }
+    ];
+
+    const results = [];
+    factors.forEach(f=>{
+      // +5%
+      let pUp = P, qUp = Q, vUp = V, fUp = F;
+      if(f.key==="P") pUp = P*(1+f.delta);
+      if(f.key==="Q") qUp = Q*(1+f.delta);
+      if(f.key==="V") vUp = V*(1+f.delta);
+      if(f.key==="F") fUp = F*(1+f.delta);
+      const profitUp = pUp*qUp - vUp*qUp - fUp;
+      const rateUp = (profitUp - baseProfit) / baseProfit * 100;
+
+      // -5%
+      let pDn = P, qDn = Q, vDn = V, fDn = F;
+      if(f.key==="P") pDn = P*(1-f.delta);
+      if(f.key==="Q") qDn = Q*(1-f.delta);
+      if(f.key==="V") vDn = V*(1-f.delta);
+      if(f.key==="F") fDn = F*(1-f.delta);
+      const profitDn = pDn*qDn - vDn*qDn - fDn;
+      const rateDn = (profitDn - baseProfit) / baseProfit * 100;
+
+      const sensCoeff = Math.abs(rateUp) / 5; // 敏感系数 = 利润变动率/因素变动率
+      results.push({
+        name:f.name,
+        profitUp, rateUp,
+        profitDn, rateDn,
+        sensCoeff,
+        avgAbs: (Math.abs(rateUp)+Math.abs(rateDn))/2
+      });
+    });
+
+    // 按敏感度排序
+    results.sort((a,b)=>b.avgAbs - a.avgAbs);
+
+    // 渲染表格
+    const tbody = $("sensBody");
+    let html = "";
+    results.forEach((r,i)=>{
+      const rankClass = `rank-${i+1}`;
+      html += `<tr>
+        <td><span class="sens-rank ${rankClass}">${i+1}</span>${r.name}</td>
+        <td>+5% / −5%</td>
+        <td>${fmt(r.profitUp)} / ${fmt(r.profitDn)}</td>
+        <td><span class="${r.rateUp>=0?"pos":"neg"}">${fmtPct(r.rateUp)}</span> / <span class="${r.rateDn>=0?"pos":"neg"}">${fmtPct(r.rateDn)}</span></td>
+        <td><strong>${r.sensCoeff.toFixed(2)}</strong></td>
+        <td style="font-weight:700;color:var(--primary-dark)">第 ${i+1} 位</td>
+      </tr>`;
+    });
+    tbody.innerHTML = html;
+
+    // 经营杠杆
+    const totalCM = (P - V) * Q;
+    const DOL = totalCM / baseProfit;
+    $("dolValue").textContent = DOL.toFixed(2);
+    $("dolPct").textContent = DOL.toFixed(2) + "%";
+  }
+
+  // ========== 多品种分析 ==========
+  function drawMulti(){
+    if(!multiEnabled) return;
+
+    const F = state.F;
+    const p1p = parseFloat($("p1_price").value) || 30;
+    const p1v = parseFloat($("p1_vc").value) || 8;
+    const p2p = parseFloat($("p2_price").value) || 50;
+    const p2v = parseFloat($("p2_vc").value) || 20;
+    const w1 = parseInt($("sliderW1").value) / 100;
+    const w2 = 1 - w1;
+
+    const cmRate1 = (p1p - p1v) / p1p;
+    const cmRate2 = (p2p - p2v) / p2p;
+    const weightedCM = cmRate1 * w1 + cmRate2 * w2;
+    const breakEvenSales = F / weightedCM;
+    const beSales1 = breakEvenSales * w1;
+    const beSales2 = breakEvenSales * w2;
+    const beQty1 = beSales1 / p1p;
+    const beQty2 = beSales2 / p2p;
+
+    // 绘制堆叠条形图
+    const svgW = 660, svgH = 200;
+    const barH = 50, barY = 70;
+    const maxW = 560;
+    const totalSales = breakEvenSales;
+    const w1px = (beSales1 / totalSales) * maxW;
+    const w2px = (beSales2 / totalSales) * maxW;
+
+    let svg = `<rect x="0" y="0" width="${svgW}" height="${svgH}" fill="#f9fbe7" rx="6"/>`;
+    // 标签
+    svg += `<text x="20" y="30" font-size="13" fill="#37474f" font-weight="600">综合保本销售额构成（按销售比重分摊）</text>`;
+
+    // 堆叠条
+    const startX = 50;
+    svg += `<rect x="${startX}" y="${barY}" width="${w1px}" height="${barH}" fill="#66bb6a" rx="4"/>`;
+    svg += `<rect x="${startX+w1px}" y="${barY}" width="${w2px}" height="${barH}" fill="#ffa726" rx="4"/>`;
+
+    // 草莓标签
+    if(w1px > 80){
+      svg += `<text x="${startX+w1px/2}" y="${barY+22}" text-anchor="middle" font-size="12" fill="#fff" font-weight="600">草莓 ${(w1*100).toFixed(0)}%</text>`;
+      svg += `<text x="${startX+w1px/2}" y="${barY+40}" text-anchor="middle" font-size="11" fill="#e8f5e9">${fmt(beSales1)}元</text>`;
+    }
+    // 草莓酱标签
+    if(w2px > 80){
+      svg += `<text x="${startX+w1px+w2px/2}" y="${barY+22}" text-anchor="middle" font-size="12" fill="#fff" font-weight="600">草莓酱 ${(w2*100).toFixed(0)}%</text>`;
+      svg += `<text x="${startX+w1px+w2px/2}" y="${barY+40}" text-anchor="middle" font-size="11" fill="#fff3e0">${fmt(beSales2)}元</text>`;
+    }
+
+    // 总额标注
+    svg += `<text x="${startX+maxW+10}" y="${barY+32}" font-size="13" fill="#e65100" font-weight="700">合计 ${fmt(breakEvenSales)} 元</text>`;
+
+    // 底部说明
+    svg += `<text x="20" y="155" font-size="11" fill="#607d8b">草莓贡献毛益率=${(cmRate1*100).toFixed(1)}% | 草莓酱贡献毛益率=${(cmRate2*100).toFixed(1)}% | 加权平均=${(weightedCM*100).toFixed(1)}%</text>`;
+    svg += `<text x="20" y="175" font-size="11" fill="#607d8b">综合保本销售额 = 固定成本 F / 加权平均贡献毛益率 = ${fmt(F)} / ${(weightedCM*100).toFixed(1)}% = ${fmt(breakEvenSales)} 元</text>`;
+
+    $("stackSvg").innerHTML = svg;
+
+    // 文字结果
+    $("multiResult").innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
+        <div style="background:#e8f5e9;padding:8px 12px;border-radius:6px">
+          <div style="font-size:11px;color:#607d8b">综合保本销售额</div>
+          <div style="font-size:18px;font-weight:700;color:#2e7d32">${fmt(breakEvenSales)} 元</div>
+        </div>
+        <div style="background:#fff3e0;padding:8px 12px;border-radius:6px">
+          <div style="font-size:11px;color:#607d8b">草莓保本量</div>
+          <div style="font-size:18px;font-weight:700;color:#e65100">${fmt(beQty1)} 斤</div>
+        </div>
+        <div style="background:#fce4ec;padding:8px 12px;border-radius:6px">
+          <div style="font-size:11px;color:#607d8b">草莓酱保本量</div>
+          <div style="font-size:18px;font-weight:700;color:#ad1457">${fmt(beQty2)} 瓶</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ========== 事件绑定 ==========
+  function onSliderChange(){
+    state.P = parseFloat(sliderP.value);
+    state.V = parseFloat(sliderV.value);
+    state.F = parseFloat(sliderF.value);
+    state.T = parseFloat(sliderT.value);
+    updateValues();
+    drawChart();
+    calcSensitivity();
+    if(multiEnabled) drawMulti();
+  }
+
+  sliderP.addEventListener("input", onSliderChange);
+  sliderV.addEventListener("input", onSliderChange);
+  sliderF.addEventListener("input", onSliderChange);
+  sliderT.addEventListener("input", onSliderChange);
+
+  // 多品种开关
+  toggleMulti.addEventListener("click", ()=>{
+    multiEnabled = !multiEnabled;
+    toggleMulti.classList.toggle("active", multiEnabled);
+    multiPanel.classList.toggle("show", multiEnabled);
+    stackChart.style.display = multiEnabled ? "block" : "none";
+    modeTag.textContent = multiEnabled ? "多品种（加权平均）" : "单一品种";
+    modeTag.style.background = multiEnabled ? "#fff3e0" : "#e8f5e9";
+    modeTag.style.color = multiEnabled ? "#e65100" : "var(--primary)";
+    if(multiEnabled) drawMulti();
+  });
+
+  // 多品种参数变化
+  ["p1_price","p1_vc","p2_price","p2_vc","sliderW1"].forEach(id=>{
+    $(id).addEventListener("input", ()=>{
+      const w1 = parseInt($("sliderW1").value);
+      $("valW1").textContent = w1 + "%";
+      $("valW2").textContent = (100-w1) + "%";
+      drawMulti();
+    });
+  });
+
+  // 重置按钮
+  $("btnReset").addEventListener("click", ()=>{
+    state = { ...DEFAULTS };
+    sliderP.value = DEFAULTS.P;
+    sliderV.value = DEFAULTS.V;
+    sliderF.value = DEFAULTS.F;
+    sliderT.value = DEFAULTS.T;
+    prevQ0 = null;
+    updateValues();
+    drawChart();
+    calcSensitivity();
+    if(multiEnabled) drawMulti();
+  });
+
+  // 示例场景
+  const scenarios = [
+    { P:30, V:8, F:120000, T:60000, label:"基准场景" },
+    { P:25, V:10, F:150000, T:50000, label:"竞争加剧（降价+成本上升）" },
+    { P:35, V:7, F:100000, T:80000, label:"品牌升级（提价+降本）" },
+    { P:28, V:9, F:200000, T:40000, label:"重资产运营（固定成本高）" }
+  ];
+  let scenarioIdx = 0;
+  $("btnScenario").addEventListener("click", ()=>{
+    scenarioIdx = (scenarioIdx + 1) % scenarios.length;
+    const s = scenarios[scenarioIdx];
+    state = { P:s.P, V:s.V, F:s.F, T:s.T };
+    sliderP.value = s.P;
+    sliderV.value = s.V;
+    sliderF.value = s.F;
+    sliderT.value = s.T;
+    prevQ0 = null;
+    updateValues();
+    drawChart();
+    calcSensitivity();
+    if(multiEnabled) drawMulti();
+    // 临时提示
+    const orig = $("btnScenario").textContent;
+    $("btnScenario").textContent = "✓ " + s.label;
+    setTimeout(()=>{ $("btnScenario").textContent = orig; }, 2000);
+  });
+
+  // ========== 初始化 ==========
+  updateValues();
+  drawChart();
+  calcSensitivity();
+
+})();
+
+/* ============================================================
+   闯关练习模块：6 关（概念 / 保本 / 保利 / 多品种 / 排序 / 滑块挑战）
+   ============================================================ */
+(function(){
+  "use strict";
+
+  const $ = id => document.getElementById(id);
+  const fmt = n => n.toLocaleString("zh-CN",{maximumFractionDigits:0});
+  const numStr = n => n.toLocaleString("zh-CN",{maximumFractionDigits:Math.abs(n)>=1000?0:2});
+  const randInt = (a,b)=> a + Math.floor(Math.random()*(b-a+1));
+  const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+  const round1 = n => Math.round(n*10)/10;
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      const t=a[i]; a[i]=a[j]; a[j]=t;
+    }
+    return a;
+  }
+
+  /* ---------- 关卡定义 ---------- */
+  const LEVELS = [
+    {id:1,name:"概念速答",      icon:"💡",tag:"选择题 × 3"},
+    {id:2,name:"保本量计算",    icon:"📐",tag:"数值填空"},
+    {id:3,name:"保利量计算",    icon:"🎯",tag:"数值填空"},
+    {id:4,name:"多品种综合保本",icon:"🍯",tag:"综合计算"},
+    {id:5,name:"敏感性排序",    icon:"🔬",tag:"点击排序"},
+    {id:6,name:"滑块挑战",      icon:"🎮",tag:"实操挑战"}
+  ];
+
+  /* ---------- 概念题库 ---------- */
+  const CONCEPT_BANK = [
+    {q:"在其他条件不变时，单价 P 上升，保本点将如何变化？",
+     o:["上升","下降","不变","先升后降"],a:1,
+     e:"Q₀ = F ÷ (P − V)。单价上升使单位贡献毛益 (P−V) 增大，每斤草莓补偿固定成本的能力增强，因此保本量下降，图形上保本点左移。"},
+    {q:"固定成本 F 上升，保本量与保利量的变化是：",
+     o:["均下降","均上升","保本量上升、保利量下降","均不变"],a:1,
+     e:"Q₀ = F ÷ (P−V)，Q₁ = (F+T) ÷ (P−V)，固定成本与两者同方向同幅度变动。"},
+    {q:"贡献毛益率的正确表达式是：",
+     o:["(P − V) ÷ P","(P − V) ÷ V","F ÷ P","V ÷ P"],a:0,
+     e:"贡献毛益率 = 单位贡献毛益 ÷ 单价 = (P−V) ÷ P，表示每 1 元销售收入中可用于补偿固定成本并形成利润的比例。"},
+    {q:"安全边际率主要反映企业的：",
+     o:["盈利能力","经营安全程度","偿债能力","营运效率"],a:1,
+     e:"安全边际率 =（实际销量 − 保本量）÷ 实际销量，反映销量还能下降多少才会亏损，是衡量经营安全程度的核心指标，通常 30% 以上较安全。"},
+    {q:"当实际销量恰好等于保本量时，下列说法正确的是：",
+     o:["利润为正","利润为零","贡献毛益为零","固定成本为零"],a:1,
+     e:"保本点处收入 = 总成本，利润为零；此时贡献毛益总额恰好等于固定成本，并非为零。"},
+    {q:"经营杠杆系数 DOL 越大，表明：",
+     o:["经营风险越小","利润对销量变动越敏感","固定成本比重越低","保本点一定越低"],a:1,
+     e:"DOL = 贡献毛益总额 ÷ 利润，表示销量变动 1% 引起利润变动的百分比。DOL 越大，放大效应越强，经营风险越高。"},
+    {q:"多品种条件下计算综合保本销售额，应采用：",
+     o:["各品种保本量简单相加","加权平均贡献毛益率","算术平均贡献毛益率","最高的贡献毛益率"],a:1,
+     e:"综合保本销售额 = 固定成本 ÷ 加权平均贡献毛益率，权重为各品种销售额比重，且以品种结构稳定为前提。"},
+    {q:"单位变动成本 V 上升，单位贡献毛益与保本量将：",
+     o:["贡献毛益上升、保本量上升","贡献毛益下降、保本量上升","贡献毛益下降、保本量下降","均不变"],a:1,
+     e:"单位贡献毛益 = P − V，V 上升则贡献毛益下降，分摊固定成本变慢，保本量随之上升。"},
+    {q:"当目标利润 T > 0 时，保利量 Q₁ 与保本量 Q₀ 的关系是：",
+     o:["Q₁ < Q₀","Q₁ = Q₀","Q₁ > Q₀","两者无确定关系"],a:2,
+     e:"Q₁ = (F+T) ÷ (P−V) = Q₀ + T ÷ (P−V)，目标利润为正时，保利量必大于保本量。"},
+    {q:"下列不属于本量利分析基本假设的是：",
+     o:["成本可分解为固定成本与变动成本","相关范围内收入与成本呈线性关系","产销平衡","单价随销量增加而持续下降"],a:3,
+     e:"基本假设包括：成本性态可分解、相关范围内线性、品种结构稳定、产销平衡。单价随销量变化属非线性情形，不在基本假设内。"},
+    {q:"在其他条件不变时，目标利润 T 提高，保利点在图形上：",
+     o:["向左移动","向右移动","保持不动","无法确定"],a:1,
+     e:"Q₁ = (F+T) ÷ (P−V)，T 提高使保利量上升，保利点沿横轴向右移动。"},
+    {q:"某园贡献毛益率为 40%，年固定成本 120,000 元，其保本销售额为：",
+     o:["48,000 元","300,000 元","120,000 元","200,000 元"],a:1,
+     e:"保本销售额 = F ÷ 贡献毛益率 = 120,000 ÷ 40% = 300,000 元。"},
+    {q:"销售收入线与总成本线的交点，在图形上称为：",
+     o:["保利点","保本点（盈亏临界点）","安全边际点","贡献毛益点"],a:1,
+     e:"两线交点处收入等于总成本、利润为零，即保本点；其左侧为亏损区，右侧为盈利区。"},
+    {q:"企业实际销量为 10,000 斤，保本量为 6,000 斤，其安全边际率为：",
+     o:["40%","60%","166.7%","25%"],a:0,
+     e:"安全边际率 =（10,000 − 6,000）÷ 10,000 = 40%，处于较安全区间（>30%）。"}
+  ];
+
+  /* ---------- 全局状态 ---------- */
+  let score = 0, answered = 0, correctCnt = 0, streak = 0, bestStreak = 0;
+  const completed = new Set();
+  let records = [];
+  let curLevel = 1, queue = [], qIdx = 0, curQ = null, answeredCur = false;
+  let chTimer = null;
+
+  /* ---------- 工具 ---------- */
+  function toast(msg){
+    const t = $("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"), 1800);
+  }
+  function paramsHtml(list){
+    return `<div class="q-params">` + list.map(p =>
+      `<div class="p-item">${p[0]}<b>${p[1]}<i> ${p[2]||""}</i></b></div>`
+    ).join("") + `</div>`;
+  }
+  function starText(){
+    const rate = answered ? correctCnt/answered : 0;
+    if(completed.size === LEVELS.length && rate >= 0.85) return "⭐⭐⭐ 本量利达人";
+    if(completed.size >= 4) return "⭐⭐ 熟练应用";
+    if(completed.size >= 2) return "⭐ 初步掌握";
+    return "继续加油";
+  }
+
+  /* ---------- 题目生成器 ---------- */
+  function genConcept(){
+    return shuffle(CONCEPT_BANK).slice(0,3).map(c=>({
+      type:"choice", text:c.q, options:c.o, answer:c.a, exp:c.e
+    }));
+  }
+
+  function genBreakEven(){
+    const cm = randInt(5,30), V = randInt(3,20), P = cm + V;
+    const Q0 = randInt(1500,12000), F = cm * Q0;
+    return {
+      type:"number", unit:" 斤",
+      text:"请计算该草莓园的<strong>保本量 Q₀</strong>（斤，保留整数）。",
+      params:[["单价 P",numStr(P),"元/斤"],["单位变动成本 V",numStr(V),"元/斤"],["年固定成本 F",fmt(F),"元"]],
+      ans:Q0, tol:Math.max(1, Q0*0.005),
+      formula:"Q₀ = F ÷ (P − V)",
+      exp:`单位贡献毛益 P − V = ${numStr(P)} − ${numStr(V)} = <b>${numStr(cm)}</b> 元/斤；保本量 Q₀ = F ÷ (P−V) = ${fmt(F)} ÷ ${numStr(cm)} = <b>${fmt(Q0)}</b> 斤。对应的保本销售额 = ${fmt(Q0)} × ${numStr(P)} = ${fmt(Q0*P)} 元。`
+    };
+  }
+
+  function genTargetProfit(){
+    const cm = randInt(5,30), V = randInt(3,20), P = cm + V;
+    const Q1 = randInt(3000,15000), total = cm * Q1;
+    let F = Math.round(total * (0.4 + Math.random()*0.3) / 10000) * 10000;
+    if(F < 10000) F = 10000;
+    if(F >= total) F = Math.round(total*0.5/10000)*10000;
+    const T = total - F;
+    return {
+      type:"number", unit:" 斤",
+      text:"该园计划实现目标利润，请计算<strong>保利量 Q₁</strong>（斤，保留整数）。",
+      params:[["单价 P",numStr(P),"元/斤"],["单位变动成本 V",numStr(V),"元/斤"],["年固定成本 F",fmt(F),"元"],["目标利润 T",fmt(T),"元"]],
+      ans:Q1, tol:Math.max(1, Q1*0.005),
+      formula:"Q₁ = (F + T) ÷ (P − V)",
+      exp:`单位贡献毛益 P − V = ${numStr(cm)} 元/斤；保利量 Q₁ = (F+T) ÷ (P−V) =（${fmt(F)} + ${fmt(T)}）÷ ${numStr(cm)} = <b>${fmt(Q1)}</b> 斤。保利销售额 = ${fmt(Q1)} × ${numStr(P)} = ${fmt(Q1*P)} 元。其中保本量 Q₀ = F ÷ (P−V) = ${fmt(F/cm)} 斤。`
+    };
+  }
+
+  function genMulti(){
+    const ratePool = [40,50,60,75];
+    const r1 = pick(ratePool);
+    let r2 = pick(ratePool); while(r2 === r1) r2 = pick(ratePool);
+    const p1 = pick([20,25,30,40,50]), p2 = pick([20,30,40,50,80]);
+    const v1 = round1(p1*(1-r1/100)), v2 = round1(p2*(1-r2/100));
+    const w1 = pick([30,40,50,60,70]), w2 = 100 - w1;
+    const cr1 = (p1-v1)/p1*100, cr2 = (p2-v2)/p2*100;
+    const weighted = cr1*w1/100 + cr2*w2/100;
+    const target = randInt(12,40)*10000;
+    const F = Math.round(target * weighted / 100);
+    const ans = F / (weighted/100);
+    return {
+      type:"number", unit:" 元",
+      text:"草莓园同时销售鲜果与草莓酱，请按加权平均法计算<strong>综合保本销售额</strong>（元，保留整数）。",
+      params:[
+        ["草莓单价",numStr(p1),"元/斤"],["草莓单位变动成本",numStr(v1),"元/斤"],["草莓销售比重",w1,"%"],
+        ["草莓酱单价",numStr(p2),"元/瓶"],["草莓酱单位变动成本",numStr(v2),"元/瓶"],["草莓酱销售比重",w2,"%"],
+        ["固定成本合计",fmt(F),"元"]
+      ],
+      ans:ans, tol:Math.max(1, ans*0.005),
+      formula:"综合保本额 = F ÷ 加权平均贡献毛益率",
+      exp:`草莓贡献毛益率 =（${numStr(p1)} − ${numStr(v1)}）÷ ${numStr(p1)} = <b>${cr1.toFixed(1)}%</b>；草莓酱贡献毛益率 =（${numStr(p2)} − ${numStr(v2)}）÷ ${numStr(p2)} = <b>${cr2.toFixed(1)}%</b>；加权平均贡献毛益率 = ${cr1.toFixed(1)}%×${w1}% + ${cr2.toFixed(1)}%×${w2}% = <b>${weighted.toFixed(2)}%</b>；综合保本销售额 = ${fmt(F)} ÷ ${weighted.toFixed(2)}% = <b>${fmt(ans)}</b> 元。其中草莓保本额 ${fmt(ans*w1/100)} 元（${fmt(ans*w1/100/p1)} 斤），草莓酱保本额 ${fmt(ans*w2/100)} 元（${fmt(ans*w2/100/p2)} 瓶）。`
+    };
+  }
+
+  function genRank(){
+    const cm = randInt(6,24), V = randInt(4,18), P = cm + V;
+    const F = randInt(5,20)*10000, T = randInt(3,10)*10000;
+    const Q1 = (F+T)/cm, pi = T;
+    const items = [
+      {key:"P",name:"销售价格 P",c:P*Q1/pi},
+      {key:"Q",name:"销售量 Q",c:cm*Q1/pi},
+      {key:"V",name:"单位变动成本 V",c:V*Q1/pi},
+      {key:"F",name:"固定成本 F",c:F/pi}
+    ];
+    const sorted = items.slice().sort((a,b)=>b.c-a.c);
+    const order = sorted.map(x=>x.key);
+    const exp = `敏感系数 = |利润变动率| ÷ 因素变动率（5%）：P 为 P·Q÷π = ${sorted.find(x=>x.key==="P").c.toFixed(2)}，Q 为 (P−V)·Q÷π = ${sorted.find(x=>x.key==="Q").c.toFixed(2)}，V 为 V·Q÷π = ${sorted.find(x=>x.key==="V").c.toFixed(2)}，F 为 F÷π = ${sorted.find(x=>x.key==="F").c.toFixed(2)}。基准销量取保利量 Q₁ = ${fmt(Q1)} 斤，基准利润 π = T = ${fmt(T)} 元。正确顺序：<b>` + sorted.map(x=>x.name).join(" &gt; ") + `</b>。由于 P &gt; (P−V) &gt; V，单价始终最敏感，这与敏感性分析表中的排序一致。`;
+    return {
+      type:"rank", _sel:[],
+      text:"请将下列因素按<strong>对利润的敏感程度由高到低</strong>排序（依次点击）。",
+      params:[["单价 P",numStr(P),"元/斤"],["单位变动成本 V",numStr(V),"元/斤"],["年固定成本 F",fmt(F),"元"],["目标利润 T",fmt(T),"元"]],
+      items:shuffle(items), order:order, exp:exp
+    };
+  }
+
+  function findSolution(target, tol){
+    const cands = [];
+    for(let V=4; V<=20; V+=0.5){
+      for(let cm=4; cm<=40; cm+=0.5){
+        const P = round1(V+cm);
+        if(P > 80 || P < 10) continue;
+        const F0 = cm*target;
+        if(F0 < 30000 || F0 > 280000) continue;
+        const F = Math.round(F0/5000)*5000;
+        const Q0 = F/cm;
+        if(Math.abs(Q0-target) <= tol*0.4) cands.push({P:P,V:V,F:F,Q0:Q0});
+      }
+    }
+    return cands.length ? pick(cands) : null;
+  }
+
+  function genChallenge(){
+    let target = 0, tol = 0, sol = null, guard = 0;
+    while(!sol && guard < 60){
+      target = randInt(30,140)*100;
+      tol = Math.max(50, Math.round(target*0.01));
+      sol = findSolution(target, tol);
+      guard++;
+    }
+    if(!sol){ target = 6000; tol = 60; sol = {P:30,V:8,F:132000,Q0:6000}; }
+    return {
+      type:"challenge", target:target, tol:tol, sol:sol, adjust:0, done:false,
+      text:"<strong>实操挑战：</strong>请拖动页面上方「参数控制面板」中的滑块，使草莓园的<strong>保本量</strong>精准命中目标值。"
+    };
+  }
+
+  function buildQueue(id){
+    switch(id){
+      case 1: return genConcept();
+      case 2: return [genBreakEven()];
+      case 3: return [genTargetProfit()];
+      case 4: return [genMulti()];
+      case 5: return [genRank()];
+      case 6: return [genChallenge()];
+    }
+    return [];
+  }
+
+  /* ---------- 渲染：关卡导航 ---------- */
+  function renderStepper(){
+    $("levelStepper").innerHTML = LEVELS.map(L=>{
+      const cls = ["level-chip"];
+      if(L.id === curLevel) cls.push("active");
+      if(completed.has(L.id)) cls.push("done");
+      return `<button class="${cls.join(" ")}" data-lv="${L.id}">
+        <span class="lv-icon">${L.icon}</span>
+        <span><span class="lv-name">${L.id}. ${L.name}</span><br><span class="lv-tag">${L.tag}</span></span>
+        <span class="lv-check">${completed.has(L.id) ? "✓" : ""}</span>
+      </button>`;
+    }).join("");
+    $("levelStepper").querySelectorAll(".level-chip").forEach(b=>{
+      b.addEventListener("click", ()=>startLevel(+b.dataset.lv));
+    });
+    $("scDone").textContent = completed.size + " / " + LEVELS.length;
+  }
+
+  function renderScore(){
+    $("scScore").textContent = score;
+    $("scRate").textContent = answered ? Math.round(correctCnt/answered*100) + "%" : "—";
+    $("scStreak").textContent = streak + " / " + bestStreak;
+    $("scDone").textContent = completed.size + " / " + LEVELS.length;
+    $("scStar").textContent = starText();
+  }
+
+  /* ---------- 渲染：题目 ---------- */
+  function renderQuestion(){
+    const q = queue[qIdx];
+    curQ = q;
+    answeredCur = false;
+    const fb = $("feedback");
+    fb.className = "feedback"; fb.innerHTML = "";
+
+    let html = `<div class="q-head">
+        <span class="q-badge">第 ${curLevel} 关 · ${LEVELS[curLevel-1].name}</span>
+        <span class="q-progress">${queue.length > 1 ? "第 " + (qIdx+1) + " / " + queue.length + " 题" : ""}</span>
+      </div>
+      <div class="q-text">${q.text}</div>`;
+    if(q.params) html += paramsHtml(q.params);
+    html += `<div id="answerArea"></div>`;
+    $("questionBox").innerHTML = html;
+
+    if(q.type === "choice") renderChoice();
+    else if(q.type === "number") renderNumber();
+    else if(q.type === "rank") renderRank();
+    else if(q.type === "challenge") renderChallenge();
+
+    renderActions();
+  }
+
+  function renderChoice(){
+    const q = curQ, area = $("answerArea");
+    area.innerHTML = `<div class="options">` + q.options.map((o,i)=>
+      `<button class="option-btn" data-i="${i}"><b>${String.fromCharCode(65+i)}.</b> ${o}</button>`
+    ).join("") + `</div>`;
+    area.querySelectorAll(".option-btn").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        if(answeredCur) return;
+        const i = +btn.dataset.i;
+        answeredCur = true;
+        const ok = (i === q.answer);
+        area.querySelectorAll(".option-btn").forEach(b=>{
+          b.disabled = true;
+          if(+b.dataset.i === q.answer) b.classList.add("correct");
+        });
+        if(!ok) btn.classList.add("wrong");
+        finishQuestion(ok,
+          String.fromCharCode(65+i) + ". " + q.options[i],
+          String.fromCharCode(65+q.answer) + ". " + q.options[q.answer],
+          q.exp);
+      });
+    });
+  }
+
+  function renderNumber(){
+    const q = curQ;
+    $("answerArea").innerHTML = `
+      <div class="input-row">
+        <input type="number" class="num-input" id="numAns" step="any" placeholder="请输入数值">
+        <span class="q-unit">${q.unit||""}</span>
+      </div>
+      <div class="q-hint">参考公式：${q.formula}　|　误差在 ±${Math.max(1,Math.round(q.tol))} 以内即算正确</div>`;
+    $("numAns").addEventListener("keydown", e=>{ if(e.key === "Enter") submitNumber(); });
+  }
+
+  function submitNumber(){
+    if(answeredCur) return;
+    const el = $("numAns");
+    if(!el || el.value === ""){ toast("请先输入一个数值"); return; }
+    const val = parseFloat(el.value);
+    if(isNaN(val)){ toast("请输入有效数字"); return; }
+    answeredCur = true;
+    el.disabled = true;
+    const ok = Math.abs(val - curQ.ans) <= curQ.tol;
+    finishQuestion(ok,
+      numStr(val) + (curQ.unit||""),
+      numStr(curQ.ans) + (curQ.unit||""),
+      curQ.exp);
+  }
+
+  function renderRank(){
+    const q = curQ, area = $("answerArea");
+    q._sel = [];
+    area.innerHTML = `
+      <div class="q-hint" style="margin-bottom:8px">请按<strong>敏感度从高到低</strong>依次点击下列因素（点击后不可撤销，可用「换一题」重来）</div>
+      <div class="rank-list">` + q.items.map(it=>
+        `<button class="rank-btn" data-k="${it.key}">${it.name}<span class="rank-badge"></span></button>`
+      ).join("") + `</div>
+      <div class="rank-preview" id="rankPreview">你的排序：尚未开始</div>
+      <div class="q-hint">提示：敏感系数 = |利润变动率| ÷ 因素变动率；基准销量折算为保利量 Q₁。</div>`;
+    area.querySelectorAll(".rank-btn").forEach(b=>{
+      b.addEventListener("click", ()=>{
+        if(answeredCur) return;
+        const k = b.dataset.k;
+        if(q._sel.indexOf(k) >= 0) return;
+        q._sel.push(k);
+        b.classList.add("picked");
+        b.querySelector(".rank-badge").textContent = q._sel.length;
+        const nameOf = kk => q.items.find(x=>x.key===kk).name;
+        $("rankPreview").innerHTML = "你的排序：" + q._sel.map((kk,i)=>`<b>${i+1}</b>. ${nameOf(kk)}`).join(" ＞ ");
+      });
+    });
+  }
+
+  function submitRank(){
+    if(answeredCur) return;
+    const q = curQ, sel = q._sel || [];
+    if(sel.length < q.items.length){ toast("请完成全部 " + q.items.length + " 个因素的排序"); return; }
+    answeredCur = true;
+    const nameOf = k => q.items.find(x=>x.key===k).name;
+    const match = sel.filter((k,i)=>k === q.order[i]).length;
+    const ok = match === q.order.length;
+    document.querySelectorAll("#answerArea .rank-btn").forEach(b=>{
+      const idx = sel.indexOf(b.dataset.k);
+      b.classList.add(q.order[idx] === b.dataset.k ? "ok" : "bad");
+      b.disabled = true;
+    });
+    finishQuestion(ok,
+      sel.map(nameOf).join(" ＞ "),
+      q.order.map(nameOf).join(" ＞ "),
+      q.exp,
+      ok ? 10 : (match >= 2 ? 5 : 0));
+  }
+
+  /* ---------- 渲染：滑块挑战 ---------- */
+  function renderChallenge(){
+    const q = curQ;
+    q.adjust = 0; q.done = false;
+    $("answerArea").innerHTML = `
+      <div class="challenge-panel">
+        <div class="ch-head">
+          <div>🎯 目标保本量：<b style="color:#c62828">${fmt(q.target)}</b> 斤</div>
+          <div>当前保本量：<b id="chCur" style="color:#2e7d32">—</b> 斤</div>
+        </div>
+        <div class="meter">
+          <div class="meter-fill" id="chFill"></div>
+          <div class="meter-target"></div>
+        </div>
+        <div class="meter-text" id="chText">请拖动上方「参数控制面板」的滑块开始调整</div>
+        <div class="ch-tip">
+          💡 单价 P ↑ → 保本量 ↓ ；单位变动成本 V ↑ → 保本量 ↑ ；年固定成本 F ↑ → 保本量 ↑<br>
+          命中区间：${fmt(q.target - q.tol)} ~ ${fmt(q.target + q.tol)} 斤（允许误差 ±${fmt(q.tol)} 斤）
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-top:8px">
+          已调整 <b id="chCount">0</b> 次　|　实时偏差 <b id="chDev">—</b>
+        </div>
+      </div>`;
+    paintChallenge();
+  }
+
+  function paintChallenge(){
+    const q = curQ;
+    if(!q || q.type !== "challenge") return;
+    const P = parseFloat($("sliderP").value);
+    const V = parseFloat($("sliderV").value);
+    const F = parseFloat($("sliderF").value);
+    const elCur = $("chCur"), elDev = $("chDev"), elFill = $("chFill"), elText = $("chText");
+    if(!elCur) return;
+    const cm = P - V;
+    if(cm <= 0){
+      elCur.textContent = "无保本点";
+      elDev.textContent = "—";
+      elFill.style.width = "0%";
+      elText.innerHTML = `<b style="color:#c62828">单位贡献毛益 ≤ 0（P ≤ V），不存在保本点，请提高单价或降低变动成本。</b>`;
+      return;
+    }
+    const Q0 = F/cm, dev = Q0 - q.target;
+    elCur.textContent = fmt(Q0);
+    elDev.textContent = (dev >= 0 ? "+" : "") + fmt(dev) + " 斤";
+    elFill.style.width = Math.max(0, Math.min(100, Q0/(q.target*2)*100)) + "%";
+
+    if(Math.abs(dev) <= q.tol){
+      elFill.classList.add("hit");
+      if(!q.done){
+        q.done = true;
+        elText.innerHTML = `<b style="color:#2e7d32">🎉 达标！保本量 ${fmt(Q0)} 斤，偏差仅 ${fmt(Math.abs(dev))} 斤。</b>`;
+        completed.add(6); renderStepper();
+        const exp = `你的参数组合：P = ${numStr(P)} 元/斤、V = ${numStr(V)} 元/斤、F = ${fmt(F)} 元；单位贡献毛益 P − V = <b>${numStr(cm)}</b> 元/斤；保本量 Q₀ = F ÷ (P−V) = ${fmt(F)} ÷ ${numStr(cm)} = <b>${fmt(Q0)}</b> 斤，目标 ${fmt(q.target)} 斤，偏差 ${fmt(Math.abs(dev))} 斤（允许 ±${fmt(q.tol)} 斤）。`;
+        finishQuestion(true,
+          `保本量 ${fmt(Q0)} 斤（偏差 ${fmt(Math.abs(dev))} 斤，共调整 ${q.adjust} 次）`,
+          `保本量落在 ${fmt(q.target)} ± ${fmt(q.tol)} 斤区间内`,
+          exp, 20);
+        renderActions();
+      }
+    } else {
+      elFill.classList.remove("hit");
+      elText.innerHTML = dev > 0
+        ? `当前保本量偏<b style="color:#c62828">高</b> ${fmt(Math.abs(dev))} 斤 → 可提高单价 P，或降低 V / F`
+        : `当前保本量偏<b style="color:#1565c0">低</b> ${fmt(Math.abs(dev))} 斤 → 可降低单价 P，或提高 V / F`;
+    }
+  }
+
+  function demoChallenge(){
+    const q = curQ;
+    if(!q || q.type !== "challenge" || q.done) return;
+    const sol = q.sol || findSolution(q.target, q.tol);
+    if(!sol){ toast("暂无可行解，请换一题"); return; }
+    q.done = true;
+    setSlider("sliderP", sol.P);
+    setSlider("sliderV", sol.V);
+    setSlider("sliderF", sol.F);
+    paintChallenge();
+    const exp = `参考解：取 P = ${numStr(sol.P)} 元/斤、V = ${numStr(sol.V)} 元/斤，则单位贡献毛益 = ${numStr(sol.P-sol.V)} 元/斤；令 F = ${fmt(sol.F)} 元，保本量 Q₀ = ${fmt(sol.F)} ÷ ${numStr(sol.P-sol.V)} = <b>${fmt(sol.Q0)}</b> 斤，命中目标区间。滑块已同步到该组合，可在上方图表观察保本点位置——本题记为未得分。`;
+    finishQuestion(false, "查看参考解（本题不计分）",
+      `保本量落在 ${fmt(q.target)} ± ${fmt(q.tol)} 斤区间内`, exp, 0);
+  }
+
+  function setSlider(id, val){
+    const el = $(id);
+    el.value = val;
+    el.dispatchEvent(new Event("input", {bubbles:true}));
+  }
+
+  /* ---------- 判分与反馈 ---------- */
+  function finishQuestion(ok, yourAns, correctAns, exp, pts){
+    answeredCur = true;
+    const base = (pts === undefined) ? (ok ? 10 : 0) : pts;
+    let bonus = 0;
+    answered++;
+    if(ok){
+      correctCnt++;
+      streak++;
+      if(streak > bestStreak) bestStreak = streak;
+      if(streak >= 3) bonus = 5;
+    } else {
+      streak = 0;
+    }
+    score += base + bonus;
+
+    records.push({
+      level:curLevel, name:LEVELS[curLevel-1].name,
+      your:yourAns, correct:correctAns, ok:ok, exp:exp
+    });
+
+    const fb = $("feedback");
+    fb.className = "feedback show " + (ok ? "ok" : "no");
+    fb.innerHTML = `
+      <div style="font-weight:700;margin-bottom:6px">
+        ${ok ? "✅ 回答正确" : "❌ 回答错误"}　本题得分 <b>${base + bonus}</b> 分${bonus ? `（含连击奖励 +${bonus}）` : ""}${ok && streak >= 2 ? `　🔥 连击 ${streak}` : ""}
+      </div>
+      <div>你的答案：<b>${yourAns}</b>　|　正确答案：<b style="color:#2e7d32">${correctAns}</b></div>
+      <div class="exp-box">💡 <b>解析：</b>${exp}</div>`;
+
+    renderScore();
+    renderRecords();
+    renderActions();
+  }
+
+  /* ---------- 操作按钮 ---------- */
+  function renderActions(){
+    const row = $("actionRow");
+    let html = "";
+    if(curQ && curQ.type === "challenge"){
+      if(!answeredCur){
+        html += `<button class="btn btn-outline" id="btnPeek">👀 查看参考解</button>`;
+      } else {
+        html += `<button class="btn btn-primary" id="btnNextLevel">🏁 ${curLevel < LEVELS.length ? "进入下一关" : "完成全部关卡"}</button>`;
+        html += `<button class="btn btn-outline" id="btnRetryLevel">🔁 重做本关</button>`;
+      }
+      html += `<button class="btn btn-outline" id="btnShuffle">🔀 换个目标</button>`;
+    } else {
+      if(!answeredCur){
+        if(curQ.type === "number") html += `<button class="btn btn-primary" id="btnSubmit">✔ 提交答案</button>`;
+        if(curQ.type === "rank")   html += `<button class="btn btn-primary" id="btnSubmit">✔ 提交排序</button>`;
+        html += `<button class="btn btn-outline" id="btnPeek">👀 查看解析</button>`;
+      } else {
+        if(qIdx < queue.length - 1){
+          html += `<button class="btn btn-primary" id="btnNext">➡ 下一题</button>`;
+        } else {
+          html += `<button class="btn btn-primary" id="btnNextLevel">🏁 ${curLevel < LEVELS.length ? "进入下一关" : "完成全部关卡"}</button>`;
+        }
+        html += `<button class="btn btn-outline" id="btnRetryLevel">🔁 重做本关</button>`;
+      }
+      html += `<button class="btn btn-outline" id="btnShuffle">🔀 换一题</button>`;
+    }
+    row.innerHTML = html;
+
+    const sub = $("btnSubmit");
+    if(sub) sub.addEventListener("click", ()=>{
+      if(curQ.type === "number") submitNumber();
+      else if(curQ.type === "rank") submitRank();
+    });
+    const peek = $("btnPeek");
+    if(peek) peek.addEventListener("click", ()=>{
+      if(curQ.type === "challenge"){ demoChallenge(); return; }
+      const fb = $("feedback");
+      fb.className = "feedback show ok";
+      fb.innerHTML = `<div style="font-weight:700;margin-bottom:6px">👀 解析（未作答，不计分）</div>
+        <div>正确答案：<b style="color:#2e7d32">${curQ.type === "choice"
+          ? String.fromCharCode(65+curQ.answer) + ". " + curQ.options[curQ.answer]
+          : (curQ.type === "rank" ? curQ.order.map(k=>curQ.items.find(x=>x.key===k).name).join(" ＞ ") : numStr(curQ.ans) + (curQ.unit||""))
+        }</b></div>
+        <div class="exp-box">💡 <b>解析：</b>${curQ.exp}</div>`;
+    });
+    const next = $("btnNext");
+    if(next) next.addEventListener("click", ()=>{ qIdx++; renderQuestion(); });
+    const nl = $("btnNextLevel");
+    if(nl) nl.addEventListener("click", ()=>{
+      completed.add(curLevel);
+      renderStepper(); renderScore();
+      if(curLevel < LEVELS.length) startLevel(curLevel + 1);
+      else finishAll();
+    });
+    const rl = $("btnRetryLevel");
+    if(rl) rl.addEventListener("click", ()=>startLevel(curLevel));
+    const sh = $("btnShuffle");
+    if(sh) sh.addEventListener("click", ()=>{
+      if(curQ.type === "challenge"){ queue = buildQueue(curLevel); qIdx = 0; renderQuestion(); toast("已更换新的目标值"); }
+      else { queue = buildQueue(curLevel); qIdx = 0; renderQuestion(); }
+    });
+  }
+
+  /* ---------- 结算 ---------- */
+  function finishAll(){
+    const rate = answered ? Math.round(correctCnt/answered*100) : 0;
+    let emoji, comment;
+    if(rate >= 85){ emoji = "🏆"; comment = "你已经能熟练运用本量利模型：看到单价、变动成本、固定成本的变化，就能迅速判断保本点与保利点的移动方向，并能用敏感性排序识别最关键的风险因子。下一步可尝试放松「线性」「单一品种」假设，了解决策中的相关范围与结构变动问题。"; }
+    else if(rate >= 60){ emoji = "🍓"; comment = "基本模型已经掌握，建议重点回看：①贡献毛益与贡献毛益率的区别与换算；②多品种加权平均法中的「销售额比重」权重；③敏感系数的排序规律（P 始终最敏感）。回到上方仿真区拖动滑块，观察保本点移动，会比纯计算更容易建立直觉。"; }
+    else { emoji = "🌱"; comment = "别急，先回到上面的仿真探究区：只拖动单价 P 一个滑块，观察保本点如何移动，把「Q₀ = F ÷ (P−V)」这个公式和图形上的交点对应起来。建议先完成第 1 关概念速答，再重做计算关卡。"; }
+
+    $("questionBox").innerHTML = `
+      <div class="finish-panel">
+        <div class="finish-emoji">${emoji}</div>
+        <h3>闯关完成！</h3>
+        <div class="finish-stats">
+          总得分 <b>${score}</b> 分　|　正确率 <b>${rate}%</b>（${correctCnt}/${answered}）<br>
+          最高连击 <b>${bestStreak}</b>　|　通关数 <b>${completed.size}/6</b>　|　综合评级 <b>${starText()}</b>
+        </div>
+        <p>${comment}</p>
+      </div>`;
+    $("feedback").className = "feedback"; $("feedback").innerHTML = "";
+    curQ = null;
+    $("actionRow").innerHTML = `
+      <button class="btn btn-primary" id="btnRestart">🔄 重新闯关</button>
+      <button class="btn btn-outline" id="btnBackL6">↩ 回到第 6 关</button>`;
+    $("btnRestart").addEventListener("click", ()=>{
+      score = 0; answered = 0; correctCnt = 0; streak = 0; bestStreak = 0;
+      completed.clear(); records = [];
+      renderScore(); renderRecords(); renderStepper();
+      startLevel(1);
+      toast("已重置，从第 1 关重新开始");
+    });
+    $("btnBackL6").addEventListener("click", ()=>startLevel(6));
+  }
+
+  /* ---------- 答题记录 ---------- */
+  function renderRecords(){
+    $("recCount").textContent = records.length;
+    const body = $("recordBody");
+    if(!records.length){
+      body.innerHTML = `<div style="color:var(--muted);font-size:13px">暂无答题记录，开始闯关后这里会记录每题的作答与解析，便于课后复习。</div>`;
+      return;
+    }
+    body.innerHTML = records.map((r,i)=>`
+      <div class="rec-item">
+        <span class="rec-no">${i+1}</span>
+        <span class="rec-badge ${r.ok ? "rec-ok" : "rec-bad"}">${r.ok ? "✓" : "✗"}</span>
+        <div>
+          <div style="font-weight:700;color:var(--primary-dark)">第 ${r.level} 关 · ${r.name}</div>
+          <div>你的答案：<b>${r.your}</b></div>
+          <div>正确答案：<b style="color:#2e7d32">${r.correct}</b></div>
+          <div class="rec-exp">💡 ${r.exp}</div>
+        </div>
+      </div>`).join("");
+  }
+
+  /* ---------- 关卡切换 ---------- */
+  function startLevel(id){
+    curLevel = id;
+    queue = buildQueue(id);
+    qIdx = 0;
+    renderStepper();
+    renderQuestion();
+    const fb = $("feedback");
+    fb.className = "feedback"; fb.innerHTML = "";
+  }
+
+  /* ---------- 滑块联动（挑战关实时判定） ---------- */
+  ["sliderP","sliderV","sliderF"].forEach(id=>{
+    $(id).addEventListener("input", ()=>{
+      if(curQ && curQ.type === "challenge" && !curQ.done){
+        if(chTimer) clearTimeout(chTimer);
+        chTimer = setTimeout(()=>{
+          curQ.adjust++;
+          const c = $("chCount");
+          if(c) c.textContent = curQ.adjust;
+        }, 350);
+        paintChallenge();
+      }
+    });
+  });
+
+  /* ---------- 导航高亮 & 记录折叠 ---------- */
+  document.querySelectorAll(".nav-pill").forEach(a=>{
+    a.addEventListener("click", ()=>{
+      document.querySelectorAll(".nav-pill").forEach(x=>x.classList.remove("active"));
+      a.classList.add("active");
+    });
+  });
+  $("recordToggle").addEventListener("click", ()=>{
+    const b = $("recordBody");
+    const show = b.style.display === "none";
+    b.style.display = show ? "block" : "none";
+    $("recordToggle").innerHTML = `📋 答题记录与解析（<span id="recCount">${records.length}</span> 题）${show ? "▴" : "▾"}`;
+  });
+
+  /* ---------- 初始化 ---------- */
+  renderStepper();
+  renderScore();
+  renderRecords();
+  startLevel(1);
+
+})();
+</script>
+</body>
+</html>

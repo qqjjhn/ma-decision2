@@ -14,8 +14,15 @@
 html,body{margin:0;padding:0}
 body{background:var(--bg);color:var(--ink);
   font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB",system-ui,-apple-system,sans-serif;
-  line-height:1.68;-webkit-font-smoothing:antialiased;}
+  line-height:1.68;-webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;text-size-adjust:100%;
+  -webkit-tap-highlight-color:rgba(46,125,50,.12);}
 .wrap{max-width:1180px;margin:0 auto;padding:0 16px 64px}
+/* 横向可滚动容器：带边缘渐隐提示 */
+.sw-x{overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.sw-x::-webkit-scrollbar{height:6px}
+.sw-x::-webkit-scrollbar-thumb{background:var(--gm);border-radius:6px}
+.sw-x::-webkit-scrollbar-track{background:#eef5ee;border-radius:6px}
 
 /* ---------- 页头 ---------- */
 header{background:linear-gradient(135deg,#2e7d32 0%,#43a047 60%,#66bb6a 100%);color:#fff;padding:26px 0 22px;box-shadow:0 2px 14px rgba(46,125,50,.25)}
@@ -39,7 +46,16 @@ th,td{border:1px solid var(--gline);padding:7px 9px;text-align:center}
 th{background:var(--ggl);color:var(--gd);font-weight:600;white-space:nowrap}
 td.l,th.l{text-align:left}
 tbody tr:nth-child(even){background:#fafdfa}
-.tw{overflow-x:auto;margin-top:4px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:4px}
+.sw-tip{display:none;font-size:11.5px;color:var(--muted);margin-top:3px;padding-left:2px}
+.sw-tip.on{display:block}
+/* 主仿真表格同样冻结首列 */
+.tw th.l,.tw td.l{position:sticky;left:0;z-index:2}
+.tw th.l{background:var(--ggl)}
+.tw td.l{background:#fff}
+.tw tbody tr:nth-child(even) td.l{background:#fafdfa}
+/* border-collapse:collapse 下 sticky 单元格会丢边框，用 inset 阴影补回 */
+.tw th.l,.tw td.l,.wb-tb th.l,.wb-tb td.l{box-shadow:inset -1px 0 0 var(--gline),inset 1px 0 0 var(--gline)}
 input[type=number],select{width:100%;padding:6px 8px;border:1px solid var(--gline);border-radius:6px;background:#fff;font:inherit;color:var(--ink);min-width:76px}
 input[type=number]:focus,select:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(46,125,50,.13)}
 input[type=number].mini{min-width:96px}
@@ -66,8 +82,12 @@ input[type=number].mini{min-width:96px}
 .sw input:checked + span:before{transform:translateX(24px)}
 
 /* ---------- 流程图 ---------- */
-#flowSvg{width:100%;height:auto;display:block;background:linear-gradient(180deg,#fbfefb,#f3f9f3);border:1px solid var(--gline);border-radius:12px}
-#flowSvg [data-node]{cursor:pointer}
+.flow-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;border-radius:12px}
+.flow-scroll::-webkit-scrollbar{height:7px}
+.flow-scroll::-webkit-scrollbar-thumb{background:var(--gm);border-radius:7px}
+.flow-scroll::-webkit-scrollbar-track{background:#eef5ee;border-radius:7px}
+#flowSvg{width:100%;height:auto;display:block;min-width:700px;background:linear-gradient(180deg,#fbfefb,#f3f9f3);border:1px solid var(--gline);border-radius:12px}
+#flowSvg [data-node]{cursor:pointer;touch-action:manipulation}
 #flowSvg [data-node]:hover .box{filter:brightness(.97)}
 .nodeHint{font-size:12.5px;color:var(--muted);margin-top:8px}
 #nodeDetail{margin-top:12px;background:#fbfefb;border:1px solid var(--gline);border-left:4px solid var(--g);border-radius:0 10px 10px 0;padding:12px 14px;font-size:13.5px}
@@ -168,12 +188,22 @@ section{scroll-margin-top:58px}
 .stage-h .sn{font-size:13.5px;font-weight:700;color:var(--gd)}
 .stage-h .sc{margin-left:auto;font-size:12px;color:var(--muted)}
 .stage-h .lk{font-size:12px;color:#8a8a8a}
-.stage-b{padding:11px 12px}
+.stage-b{padding:11px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.stage-b::-webkit-scrollbar{height:6px}
+.stage-b::-webkit-scrollbar-thumb{background:var(--gm);border-radius:6px}
+.stage-b::-webkit-scrollbar-track{background:#eef5ee;border-radius:6px}
 .stage-b .qsub{margin-bottom:8px}
 .wb-tb{border-collapse:collapse;width:100%;font-size:12.5px;min-width:420px}
 .wb-tb th,.wb-tb td{border:1px solid var(--gline);padding:5px 7px;text-align:center;vertical-align:middle}
 .wb-tb th{background:var(--ggl);color:var(--gd);font-weight:600;white-space:nowrap}
 .wb-tb td.l,.wb-tb th.l{text-align:left;white-space:nowrap}
+/* 横向滚动时首列吸附，避免"这行是备料还是质检"看丢 */
+.wb-tb th.l,.wb-tb td.l{position:sticky;left:0;z-index:2;background:var(--ggl)}
+.wb-tb td.l{background:#fff}
+.wb-tb tbody tr:nth-child(even) td.l{background:#fafdfa}
+.wb-tb td.l.tot{background:#f1f8f1}
+.wb-tb td.l.given{background:#fafbfa}
+.wb-tb th.l{background:var(--ggl)}
 .wb-tb td.tot{background:#f1f8f1;font-weight:600;color:var(--gd)}
 .wb-tb td.given{color:var(--muted);background:#fafbfa}
 .wb-inp{width:100%;min-width:66px;box-sizing:border-box;border:1px solid var(--gline);border-radius:6px;padding:4px 5px;font-size:12.5px;text-align:right;font-family:inherit;color:var(--ink);background:#fff}
@@ -191,6 +221,10 @@ section{scroll-margin-top:58px}
 .wbc-ok{color:#1b5e20;font-weight:600}
 .wbc-no{color:#8c1d18;font-weight:600}
 .stage-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.wb-sc{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.wb-sc::-webkit-scrollbar{height:6px}
+.wb-sc::-webkit-scrollbar-thumb{background:var(--gm);border-radius:6px}
+.wb-sc::-webkit-scrollbar-track{background:#e3f1e4;border-radius:6px}
 .wb-sum{border:1px solid var(--gm);border-radius:11px;background:linear-gradient(135deg,#f1f8f1,#e3f1e4);padding:12px 14px;margin-top:12px}
 .wb-sum h4{margin:0 0 8px;font-size:15px;color:var(--gd)}
 .wb-sum .wb-tb th{background:#e3f1e4}
@@ -214,15 +248,133 @@ section{scroll-margin-top:58px}
 .wb-sum h4{color:var(--gd);font-size:14.5px}
 footer{text-align:center;color:var(--muted);font-size:12.5px;padding:22px 0 0}
 
-@media (max-width:640px){
-  .wb-tb{font-size:11.5px}
-  .wb-inp{min-width:52px;padding:3px 4px}
+/* ================= 触摸设备：命中区与输入体验 ================= */
+@media (hover:none){
+  /* 无 hover 的设备用 :active 替代 :hover，避免"点一下卡在高亮态" */
+  .opt:active,.btn:active,.qz-tab:active{background:var(--ggl)}
+  .btn.solid:active,.qz-tab.on:active{background:var(--gd)}
+}
+@media (pointer:coarse){
+  .btn{min-height:40px;padding:9px 16px}
+  .btn.sm{min-height:38px;padding:7px 12px;font-size:13px}
+  .wb-inp{min-height:42px;padding:8px 10px;font-size:15px}
+  input[type=range]{height:34px;margin:4px 0}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;
+    background:var(--g);border:3px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.3);cursor:pointer}
+  input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:8px;background:#dbeadb}
+  input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--g);
+    border:3px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.3);cursor:pointer}
+  input[type=range]::-moz-range-track{height:8px;border-radius:8px;background:#dbeadb}
+  .sw{width:56px;height:30px}
+  .sw span:before{width:24px;height:24px}
+  .sw input:checked + span:before{transform:translateX(26px)}
 }
 
-@media (max-width:640px){
-  h1{font-size:22px}
+/* ============ 平板 / 手机（≤900px）============ */
+@media (max-width:900px){
+  /* iOS Safari 聚焦时字号 <16px 会强制放大整页 —— 统一提到 16px */
+  input[type=number],input[type=text],select,textarea,.wb-inp{font-size:16px}
+  .wb-inp{padding:6px 7px;min-width:74px}
+  .grid{gap:12px}
+  .g2{grid-template-columns:1fr}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .cards{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+  section{scroll-margin-top:52px}
+}
+
+/* ============ 手机（≤760px）============ */
+@media (max-width:760px){
+  h1{font-size:21px;letter-spacing:.5px}
+  .sub{font-size:13px}
+  .kicker{font-size:11.5px;letter-spacing:1.5px}
+  .chip{font-size:11.5px;padding:2px 10px}
+  section{padding:14px 12px 16px;margin-top:14px;border-radius:12px}
+  h2{font-size:17px;gap:7px}
+  h2 .kp{font-size:11px;padding:1px 7px}
+  .lead{font-size:13px}
+  .wrap{padding:0 11px 56px}
+
+  /* 顶部导航：改为单行横向滑动，避免占掉两行把内容顶下去 */
+  .topnav .wrap{padding:0 10px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;-ms-overflow-style:none}
+  .topnav .wrap::-webkit-scrollbar{display:none}
+  .topnav a{font-size:12.5px;padding:10px 9px;white-space:nowrap}
+  section{scroll-margin-top:46px}
+
+  /* 表格 / 流程图：统一可横向滑动，JS 自动给溢出的容器加滑动提示 */
+  .sw-tip{font-size:11.5px}
+
+  /* 流程图：保证字号可读，靠横向滑动看全貌 */
+  #flowSvg{min-width:680px}
+
+  /* 按钮与选项：整行、加大 */
+  .opt{padding:12px 13px;font-size:14px;line-height:1.6;min-height:46px}
+  .wb-sel .opt{padding:10px 12px;font-size:13px;min-height:44px;flex:1 1 auto}
+  .fill{gap:10px}
+  .fill input{width:100%;max-width:100%;flex:1 1 100%}
+  .qz-acts .btn,.stage-acts .btn{flex:1 1 auto;min-width:96px;justify-content:center;text-align:center}
+  .btn{min-height:44px;padding:10px 16px;font-size:14px}
+
+  /* 练习顶部信息条：得分一行、进度条独占一行 */
+  .qz-top{gap:9px;padding:10px 11px}
+  .qz-score{flex:1 1 auto}
+  .qz-score b{font-size:17px}
+  .qz-prog{flex:1 1 100%;order:9;min-width:100%}
+  #qzRestart{flex:1 1 100%;order:10;min-height:42px}
+
+  /* 步骤条：太多格子会挤成细条，改成横向滑动的 chip */
+  .qz-steps{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    padding-bottom:4px;scrollbar-width:none;-ms-overflow-style:none;margin:11px 0 4px}
+  .qz-steps::-webkit-scrollbar{display:none}
+  .qz-step{flex:0 0 auto;min-width:74px;padding:8px 10px;font-size:12px;line-height:1.35}
+
+  /* 标签页：两行不如半宽并排 */
+  .qz-tabs{gap:7px;padding-bottom:9px}
+  .qz-tab{flex:1 1 auto;min-height:46px;padding:9px 10px;font-size:13px;text-align:center}
+  .qz-tab small{font-size:10.5px}
+
+  /* 工作台表格与输入 */
+  .wb-tb{font-size:12px;min-width:400px}
+  .wb-tb th,.wb-tb td{padding:6px 7px}
+  .stage-h{padding:9px 11px;gap:7px}
+  .stage-h .sc{margin-left:0;flex:1 1 100%}
+  .stage-b{padding:10px 11px}
+  .wb-intro{font-size:12.5px;padding:10px 11px}
+  .wb-ck{font-size:12px}
+  .qbox{padding:12px 11px}
+  .formula{font-size:12px;padding:8px 10px;line-height:1.7}
+  .kv{font-size:13px}
+  .final{padding:12px 13px}
+  .final h3{font-size:16px}
   .card .big{font-size:20px}
-  section{padding:14px 12px 16px}
+  .nodeHint{font-size:12px}
+  #nodeDetail{padding:11px 12px;font-size:13px}
+  summary{font-size:14px;padding:11px 13px}
+  .kbody{padding:11px 13px 13px;font-size:13px}
+
+  /* 阶段⑦（传统法对比）只有两列，取消强制最小宽度与首列sticky，避免手机上横向滚动 */
+  #stg6 .wb-tb{min-width:0}
+  #stg6 .wb-tb th.l,#stg6 .wb-tb td.l{position:static}
+}
+
+/* ============ 小屏手机（≤400px）============ */
+@media (max-width:400px){
+  h1{font-size:19px}
+  .wrap{padding:0 9px 48px}
+  section{padding:12px 10px 14px}
+  .qz-score{font-size:11.5px}
+  .qz-score b{font-size:16px}
+  .opt{font-size:13.5px;padding:11px 12px}
+  .wb-tb{font-size:11.5px;min-width:370px}
+  .qz-tab{font-size:12.5px;padding:9px 7px}
+}
+
+/* ============ 横屏手机：导航与区块压缩 ============ */
+@media (max-height:480px) and (orientation:landscape){
+  header{padding:14px 0 12px}
+  h1{font-size:19px}
+  .topnav a{padding:7px 9px;font-size:12px}
+  section{scroll-margin-top:40px}
 }
 </style>
 </head>
@@ -286,7 +438,10 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:22px 0 0}
   <section id="flow">
     <h2>一、作业成本流程全景图<span class="kp">9.2 基本原理</span></h2>
     <p class="lead">“作业消耗资源，产品消耗作业”。<b>点击任意节点</b>查看明细，并高亮与之相连的价值流。</p>
-    <svg id="flowSvg" viewBox="0 0 1000 452" role="img" aria-label="资源池到作业中心到产品的作业成本流程图"></svg>
+    <div class="flow-scroll">
+      <svg id="flowSvg" viewBox="0 0 1000 452" role="img" aria-label="资源池到作业中心到产品的作业成本流程图"></svg>
+    </div>
+    <div class="sw-tip" data-swipe="flow">⟷ 流程图可左右滑动查看完整内容</div>
     <div class="nodeHint" id="flowHint">提示：点击「资源池 / 作业中心 / 产品」任一节点查看构成明细。</div>
     <div id="nodeDetail"></div>
     <div class="formula">第一阶段（资源 → 作业）：按<b>资源动因</b>归集费用 → 形成作业成本池&nbsp;&nbsp;|&nbsp;&nbsp;第二阶段（作业 → 产品）：<b>动因分配率 = 作业成本 ÷ 动因总量</b>，某产品应分配作业成本 = 动因分配率 × 该产品耗用动因量</div>
@@ -1414,9 +1569,9 @@ function stgTag(q,i){ return q.S[i].passed?'已完成 ✓':(stgEditable(q,i)?'�
 function dnTxt(q,j){ return q.S[0].passed? q.act[j].dn : '待阶段 ① 确定'; }
 function unTxt(q,j){ return q.S[0].passed? q.act[j].un : '—'; }
 function wbInp(k,val,dis,mark,ph){
-  return '<input type="number" class="wb-inp'+(mark?' '+mark:'')+'" data-k="'+k+'" value="'+
+  return '<input type="text" inputmode="decimal" pattern="[0-9.\\-]*" class="wb-inp'+(mark?' '+mark:'')+'" data-k="'+k+'" value="'+
     (val===undefined||val===null||val===''?'':esc(String(val)))+'"'+(dis?' disabled':'')+
-    ' step="any"'+(ph?' placeholder="'+esc(ph)+'"':'')+'>';
+    (ph?' placeholder="'+esc(ph)+'"':'')+'>';
 }
 function optBtn(sel,mark,isRight,i,txt){
   return '<button type="button" class="opt'+(sel?' sel':'')+
@@ -1639,6 +1794,9 @@ function draw7(q,box){
     box.dataset.b7='1';
     box.addEventListener('input',function(e){
       var t=e.target; if(!t.classList||!t.classList.contains('wb-inp')) return;
+      /* 手机端 type=text 时过滤非数字字符（允许小数点、负号） */
+      var cleaned=t.value.replace(/[^0-9.\-]/g,'');
+      if(cleaned!==t.value) t.value=cleaned;
       var qq=LABQ; if(!qq||qq.kind!==7) return;
       qq.V[t.dataset.k]=t.value; upd7(qq);
     });
@@ -1818,7 +1976,7 @@ function sum7(q){
   var got=q.S.reduce(function(s,x){return s+(x.gain||0);},0);
   var full=STG7.reduce(function(s,x){return s+x.f;},0);
   var h='<div class="wb-sum"><h4>✓ 全部 '+STG7.length+' 个阶段完成 —— 完整作业成本计算单</h4>';
-  h+='<table class="wb-tb"><thead><tr><th class="l">作业中心</th><th>成本池</th><th class="l">成本动因</th><th>动因总量</th>'+
+  h+='<div class="wb-sc"><table class="wb-tb"><thead><tr><th class="l">作业中心</th><th>成本池</th><th class="l">成本动因</th><th>动因总量</th>'+
      '<th>动因分配率</th><th>A 耗用</th><th>A 分摊</th><th>B 耗用</th><th>B 分摊</th></tr></thead><tbody>';
   q.act.forEach(function(a,j){
     h+='<tr><td class="l">'+esc(a.n)+'</td><td>'+ym(q.C[j])+'</td><td class="l">'+esc(a.dn)+'</td>'+
@@ -1827,22 +1985,22 @@ function sum7(q){
   });
   h+='<tr><td class="l"><b>合计</b></td><td class="tot">'+ym(q.F)+'</td><td class="l">—</td><td class="given">—</td>'+
      '<td class="given">—</td><td class="given">—</td><td class="tot">'+ym(q.OHA)+'</td><td class="given">—</td>'+
-     '<td class="tot">'+ym(q.OHB)+'</td></tr></tbody></table>';
-  h+='<table class="wb-tb" style="margin-top:9px"><thead><tr><th class="l">产品成本汇总</th><th>A 产品</th><th>B 产品</th></tr></thead><tbody>'+
+     '<td class="tot">'+ym(q.OHB)+'</td></tr></tbody></table></div>';
+  h+='<div class="wb-sc"><table class="wb-tb" style="margin-top:9px"><thead><tr><th class="l">产品成本汇总</th><th>A 产品</th><th>B 产品</th></tr></thead><tbody>'+
      '<tr><td class="l">产量（箱）</td><td>'+fm(q.qa,0)+'</td><td>'+fm(q.qb,0)+'</td></tr>'+
      '<tr><td class="l">直接材料（直接追溯）</td><td>'+ym(q.qa*q.dma)+'</td><td>'+ym(q.qb*q.dmb)+'</td></tr>'+
      '<tr><td class="l">直接人工（直接追溯）</td><td>'+ym(q.qa*q.dla)+'</td><td>'+ym(q.qb*q.dlb)+'</td></tr>'+
      '<tr><td class="l">制造费用（作业法分摊）</td><td>'+ym(q.OHA)+'</td><td>'+ym(q.OHB)+'</td></tr>'+
      '<tr><td class="l"><b>总成本</b></td><td class="tot">'+ym(q.qa*q.ua+q.OHA)+'</td><td class="tot">'+ym(q.qb*q.ub+q.OHB)+'</td></tr>'+
      '<tr><td class="l"><b>单位总成本</b></td><td class="tot">'+ym(q.uA,2)+'</td><td class="tot">'+ym(q.uB,2)+'</td></tr>'+
-     '</tbody></table>';
+     '</tbody></table></div>';
   var hi=q.rA>0?'A 产品':'B 产品', lo=q.rA>0?'B 产品':'A 产品';
-  h+='<table class="wb-tb" style="margin-top:9px"><thead><tr><th class="l">与传统法（单一机器小时）对比</th><th>A 产品</th><th>B 产品</th></tr></thead><tbody>'+
+  h+='<div class="wb-sc"><table class="wb-tb" style="margin-top:9px"><thead><tr><th class="l">与传统法（单一机器小时）对比</th><th>A 产品</th><th>B 产品</th></tr></thead><tbody>'+
      '<tr><td class="l">作业法单位成本</td><td>'+ym(q.uA,2)+'</td><td>'+ym(q.uB,2)+'</td></tr>'+
      '<tr><td class="l">传统法单位成本（率 '+ym(q.rateT,2)+'/小时）</td><td>'+ym(q.tUA,2)+'</td><td>'+ym(q.tUB,2)+'</td></tr>'+
      '<tr><td class="l"><b>差异</b></td><td class="tot" style="color:'+(q.rA>0?'#c62828':'#1565c0')+'">'+(q.rA>0?'+':'')+ym(q.tUA-q.uA,2)+'（'+(q.rA>0?'+':'')+pc(q.rA)+'）</td>'+
      '<td class="tot" style="color:'+(q.rB>0?'#c62828':'#1565c0')+'">'+(q.rB>0?'+':'')+ym(q.tUB-q.uB,2)+'（'+(q.rB>0?'+':'')+pc(q.rB)+'）</td></tr>'+
-     '</tbody></table>';
+     '</tbody></table></div>';
   h+='<div class="qfb ok" style="margin-top:10px"><b>结论：'+hi+'被高估，'+lo+'被低估。</b>'+
      lo+'产量小但批次 / 频次类作业耗用密集，这些成本在传统法下被按机器小时"平均化"摊给了'+hi+'，形成交叉补贴。'+
      '本轮各阶段得分合计 <b>'+got+' / '+full+'</b>。</div></div>';
@@ -2095,19 +2253,19 @@ function draw2(q,box){
   box.innerHTML='<div class="qt">第 2 关 · 计算动因分配率（15 分）</div>'+
     '<div class="qstem">'+esc(q.nm)+'作业中心的成本池为 <b>'+ym(q.C)+'</b>，本月该作业的成本动因（'+esc(q.dn)+'）实际消耗总量为 <b>'+fm(q.Q,0)+' '+esc(q.un)+'</b>。</div>'+
     '<div class="qsub">请计算该作业中心的<b>动因分配率</b>（保留 2 位小数，容差 ±0.5%）。</div>'+
-    '<div class="fill"><input type="number" id="qzAns" step="0.01" placeholder="请输入"><span class="tiny">元 / '+esc(q.un)+'</span></div>';
+    '<div class="fill"><input type="text" inputmode="decimal" pattern="[0-9.\\-]*" id="qzAns" placeholder="请输入"><span class="tiny">元 / '+esc(q.un)+'</span></div>';
 }
 function draw3(q,box){
   box.innerHTML='<div class="qt">第 3 关 · 计算作业成本分摊额（15 分）</div>'+
     '<div class="qstem">'+esc(q.nm)+'作业中心成本池 <b>'+ym(q.C)+'</b>，动因（'+esc(q.dn)+'）本月消耗总量 <b>'+fm(q.Q,0)+' '+esc(q.un)+'</b>，其中 <b>'+esc(q.pn)+'</b> 耗用 <b>'+fm(q.QA,0)+' '+esc(q.un)+'</b>。</div>'+
     '<div class="qsub">请计算 '+esc(q.pn)+' 应分摊的'+esc(q.nm)+'作业成本（先算分配率，再乘耗用量；保留 2 位小数，容差 ±0.5%）。</div>'+
-    '<div class="fill"><input type="number" id="qzAns" step="0.01" placeholder="请输入"><span class="tiny">元</span></div>';
+    '<div class="fill"><input type="text" inputmode="decimal" pattern="[0-9.\\-]*" id="qzAns" placeholder="请输入"><span class="tiny">元</span></div>';
 }
 function draw4(q,box){
   box.innerHTML='<div class="qt">第 4 关 · 计算单位总成本（15 分）</div>'+
     '<div class="qstem">'+esc(q.pn)+'本月完工 <b>'+fm(q.qty,0)+'</b> 箱。直接材料 <b>'+ym(q.dm)+'</b>，直接人工 <b>'+ym(q.dl)+'</b>，按作业成本法分摊的制造费用 <b>'+ym(q.oh)+'</b>。</div>'+
     '<div class="qsub">请计算该产品的<b>单位总成本</b>（保留 2 位小数，容差 ±0.5%）。</div>'+
-    '<div class="fill"><input type="number" id="qzAns" step="0.01" placeholder="请输入"><span class="tiny">元 / 箱</span></div>';
+    '<div class="fill"><input type="text" inputmode="decimal" pattern="[0-9.\\-]*" id="qzAns" placeholder="请输入"><span class="tiny">元 / 箱</span></div>';
 }
 function draw5(q,box){
   var h='<div class="qt">第 5 关 · 判断哪个产品成本被扭曲（15 分）</div>'+
@@ -2150,14 +2308,19 @@ function draw6(q,box){
    '<div class="mini" style="margin-top:10px">'+
      '<label style="font-size:12.5px;color:#5f6f5c;display:block;margin-bottom:4px">甲产品耗用备料批次（次）</label>'+
      '<input type="range" id="qzSld" min="0" max="120" step="1" value="'+q.cur+'" style="width:100%">'+
-     '<div class="fill"><input type="number" id="qzAns" step="1" min="0" value="'+q.cur+'"><span class="tiny">次</span></div>'+
+     '<div class="fill"><input type="text" inputmode="numeric" pattern="[0-9]*" id="qzAns" value="'+q.cur+'"><span class="tiny">次</span></div>'+
      '<div class="res-line">甲单位总成本（当前）：<b id="qzCur">—</b></div>'+
      '<div class="res-line">目标单位总成本：<b>'+ym(q.target,2)+'</b>　<span class="tiny">容差 ±1%</span></div>'+
      '<div class="res-line" id="qzGap">—</div>'+
    '</div>';
   var s=$('#qzSld'), n=$('#qzAns');
   s.addEventListener('input',function(){ n.value=s.value; upd6(q); });
-  n.addEventListener('input',function(){ upd6(q); });
+  n.addEventListener('input',function(){
+    /* 手机端 type=text 时只保留整数 */
+    var cleaned=n.value.replace(/[^0-9]/g,'');
+    if(cleaned!==n.value) n.value=cleaned;
+    upd6(q);
+  });
   upd6(q);
 }
 
@@ -2347,6 +2510,47 @@ function restart(){
 }
 $('#qzRestart').addEventListener('click',restart);
 start(0);
+})();
+
+/* ==================== 移动端：横向滑动提示（自动探测） ==================== */
+(function(){
+  var TBL='⟷ 表格可左右滑动查看完整内容';
+  function tipAfter(el,text){
+    var t=el.nextElementSibling;
+    if(t && t.classList && t.classList.contains('sw-tip')) return t;
+    t=document.createElement('div');
+    t.className='sw-tip'; t.textContent=text;
+    if(el.parentNode) el.parentNode.insertBefore(t, el.nextSibling);
+    return t;
+  }
+  var busy=false;
+  function scan(){
+    if(busy) return; busy=true;
+    try{
+      var list=document.querySelectorAll('.tw,.stage-b,.wb-dat .wb-in,.flow-scroll,.wb-sc');
+      for(var i=0;i<list.length;i++){
+        var el=list[i];
+        var over=(el.scrollWidth-el.clientWidth)>6;
+        var ex=el.nextElementSibling;
+        if(ex && ex.classList && ex.classList.contains('sw-tip')){
+          if(over) ex.classList.add('on'); else ex.classList.remove('on');
+        } else if(over){
+          tipAfter(el, el.classList.contains('flow-scroll')?'⟷ 流程图可左右滑动查看完整内容':TBL).classList.add('on');
+        }
+      }
+    }catch(e){}
+    busy=false;
+  }
+  var tid=null, mtd=null;
+  function deb(){ clearTimeout(tid); tid=setTimeout(scan,140); }
+  function mdeb(){ clearTimeout(mtd); mtd=setTimeout(scan,120); }
+  window.addEventListener('resize',deb);
+  window.addEventListener('orientationchange',function(){ setTimeout(scan,450); });
+  if(window.MutationObserver){
+    try{ new MutationObserver(mdeb).observe(document.body,{childList:true,subtree:true}); }catch(e){}
+  }
+  setTimeout(scan,90); setTimeout(scan,700);
+  window.__scanSwipe=scan;
 })();
 </script>
 </body>

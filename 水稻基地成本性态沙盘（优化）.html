@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>成本性态与变动成本法·水稻沙盘</title>
+<style>
+  :root{
+    --green:#2e7d32;        /* 主色 */
+    --green-d:#1b5e20;
+    --green-l:#a5d6a7;
+    --green-bg:#f1f8f1;
+    --green-bg2:#e8f5e9;
+    --amber:#ef6c00;        /* 变动成本强调 */
+    --blue:#1565c0;         /* 总成本强调 */
+    --line:#c8e6c9;
+    --txt:#1f3320;
+    --muted:#5d705f;
+    --card:#ffffff;
+    --warn:#c62828;
+    --ok:#2e7d32;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:"Microsoft YaHei","PingFang SC",sans-serif;
+    color:var(--txt); background:linear-gradient(180deg,#f1f8f1,#e8f5e9 40%,#f1f8f1);
+    line-height:1.6;
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:18px 16px 60px;}
+  header.title{
+    background:linear-gradient(135deg,var(--green),var(--green-d));
+    color:#fff; border-radius:16px; padding:22px 26px; position:relative;
+    box-shadow:0 6px 20px rgba(46,125,50,.25); overflow:hidden;
+  }
+  header.title::after{
+    content:"🌾"; position:absolute; right:24px; top:14px; font-size:54px; opacity:.25;
+  }
+  header.title h1{margin:0 0 6px; font-size:25px; letter-spacing:1px;}
+  header.title p{margin:0; font-size:14px; opacity:.92;}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:18px 20px; margin-top:18px; box-shadow:0 2px 10px rgba(46,125,50,.06);
+  }
+  .card h2{
+    margin:0 0 14px; font-size:18px; color:var(--green-d);
+    display:flex; align-items:center; gap:8px;
+  }
+  .card h2 .tag{
+    background:var(--green-bg2); color:var(--green-d); font-size:12px;
+    padding:2px 10px; border-radius:20px; border:1px solid var(--line);
+  }
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  @media(max-width:780px){.grid2{grid-template-columns:1fr;}}
+  label{font-size:13px; color:var(--muted); display:block; margin:10px 0 4px;}
+  input[type=range]{width:100%; accent-color:var(--green);}
+  input[type=number],input[type=text],select{
+    width:100%; padding:8px 10px; border:1px solid #cfe3cf; border-radius:8px;
+    font-size:14px; color:var(--txt); background:#fbfefb;
+  }
+  input[type=number]:focus{border-color:var(--green); outline:none; box-shadow:0 0 0 2px var(--green-bg2);}
+  .valbox{font-weight:bold; color:var(--green-d);}
+  .sliderbox{display:flex; align-items:center; gap:10px;}
+  .sliderbox .out{min-width:96px; text-align:right; font-size:13px;}
+  svg{width:100%; height:auto; display:block; background:var(--green-bg2); border-radius:10px; border:1px solid var(--line);}
+  .legend{display:flex; gap:16px; flex-wrap:wrap; font-size:13px; margin-top:8px;}
+  .legend i{display:inline-block; width:16px; height:3px; vertical-align:middle; margin-right:6px; border-radius:2px;}
+  .btn{
+    background:var(--green); color:#fff; border:none; padding:9px 18px; border-radius:9px;
+    font-size:14px; cursor:pointer; transition:.15s; margin-top:8px;
+  }
+  .btn:hover{background:var(--green-d);}
+  .btn.ghost{background:#fff; color:var(--green-d); border:1px solid var(--green);}
+  .btn.ghost:hover{background:var(--green-bg2);}
+  .radio-row{display:flex; gap:18px; align-items:center; margin:8px 0;}
+  .radio-row label{margin:0; color:var(--txt); font-size:14px; display:flex; align-items:center; gap:6px;}
+  table{width:100%; border-collapse:collapse; font-size:13px; margin-top:8px;}
+  th,td{border:1px solid var(--line); padding:6px 8px; text-align:center;}
+  th{background:var(--green-bg2); color:var(--green-d);}
+  td input{border:none; background:transparent; width:64px; text-align:center; font-size:13px; color:var(--txt);}
+  .result{
+    background:var(--green-bg); border:1px dashed var(--green); border-radius:10px;
+    padding:12px 14px; margin-top:12px; font-size:14px;
+  }
+  .result b{color:var(--green-d);}
+  .switch{display:inline-flex; background:var(--green-bg2); border:1px solid var(--line); border-radius:30px; padding:3px; margin:6px 0;}
+  .switch button{border:none; background:transparent; padding:8px 20px; border-radius:26px; cursor:pointer; font-size:14px; color:var(--muted);}
+  .switch button.on{background:var(--green); color:#fff; box-shadow:0 2px 6px rgba(46,125,50,.3);}
+  .stmt{font-size:13px;}
+  .stmt caption{font-weight:bold; color:var(--green-d); font-size:14px; padding:6px; text-align:left;}
+  .hl{background:#fff3e0 !important; color:var(--amber); font-weight:bold;}
+  .hl2{background:#e3f2fd !important; color:var(--blue); font-weight:bold;}
+  .quiz-area{background:var(--green-bg); border-radius:10px; padding:14px; margin-top:10px;}
+  .badge{display:inline-block; padding:4px 14px; border-radius:20px; font-weight:bold; font-size:14px;}
+  .badge.ok{background:#e8f5e9; color:var(--ok); border:1px solid var(--green);}
+  .badge.no{background:#fdecea; color:var(--warn); border:1px solid var(--warn);}
+  .note{
+    font-size:12.5px; color:var(--muted); background:#f7fbf7; border-left:3px solid var(--green-l);
+    padding:8px 12px; border-radius:0 8px 8px 0; margin-top:10px;
+  }
+  details.kp{margin-top:8px; border:1px solid var(--line); border-radius:10px; background:#fbfefb;}
+  details.kp summary{cursor:pointer; padding:10px 14px; font-weight:bold; color:var(--green-d); list-style:none;}
+  details.kp summary::-webkit-details-marker{display:none;}
+  details.kp summary::before{content:"📘 ";}
+  details.kp .body{padding:0 16px 14px; font-size:13px; color:var(--txt);}
+  details.kp .body code{background:var(--green-bg2); padding:1px 6px; border-radius:5px; color:var(--green-d);}
+  .flex{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+  .small{font-size:12px; color:var(--muted);}
+  footer{text-align:center; color:var(--muted); font-size:12px; margin-top:30px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="title">
+    <h1>🌾 成本性态与变动成本法·水稻沙盘</h1>
+    <p>湖南农业大学 · 管理会计（B422L02000）· 第 2 章虚拟仿真 · 水稻种植基地成本性态分析</p>
+  </header>
+
+  <!-- ========== 知识点导航 2.1–2.4 ========== -->
+  <details class="kp" open>
+    <summary>本章知识点导航（教材 2.1 – 2.4）</summary>
+    <div class="body">
+      <p><b>2.1 成本性态分类：</b>按成本总额与业务量（种植面积 X）的依存关系，分为
+      <code>固定成本</code>（总额不变，y=a 水平线）、<code>变动成本</code>（总额随业务量正比例变动，y=bX 过原点）、
+      <code>混合成本</code>（兼有固定与变动部分，需用高低点法/回归法分解）。</p>
+      <p><b>2.2 混合成本分解：</b><code>高低点法</code> b=(Y高−Y低)/(X高−X低)，a=Y高−b·X高；
+      <code>回归分析法</code> b=(nΣXY−ΣXΣY)/(nΣX²−(ΣX)²)，a=(ΣY−bΣX)/n。</p>
+      <p><b>2.3 变动成本法 vs 完全成本法：</b>核心差异在于<code>固定制造费用</code>的处理——
+      变动成本法将其全额计入当期费用；完全成本法则将其吸收进产品成本，随存货流转。</p>
+      <p><b>2.4 利润差额解释：</b><code>利润差额 = 完全成本法利润 − 变动成本法利润 = 固定制造费用/产量 ×(产量−销量) = 存货吸收的固定制造费用</code>。</p>
+    </div>
+  </details>
+
+  <!-- ========== 模块1：成本性态曲线沙盘 ========== -->
+  <section class="card">
+    <h2><span class="tag">模块一 · 2.1</span> 成本性态曲线沙盘</h2>
+    <div class="grid2">
+      <div>
+        <label>① 固定成本总额 a（元/期）</label>
+        <div class="sliderbox">
+          <input type="range" id="inpA" min="0" max="200000" step="2000" value="80000">
+          <span class="out">a=<span class="valbox" id="outA">80000</span> 元</span>
+        </div>
+        <label>② 单位变动生产成本 b（元/亩）</label>
+        <div class="sliderbox">
+          <input type="range" id="inpB" min="0" max="800" step="10" value="420">
+          <span class="out">b=<span class="valbox" id="outB">420</span> 元/亩</span>
+        </div>
+        <label>③ 种植规模 X（亩）— 拖动观察当前点</label>
+        <div class="sliderbox">
+          <input type="range" id="inpX" min="0" max="1000" step="10" value="300">
+          <span class="out">X=<span class="valbox" id="outX">300</span> 亩</span>
+        </div>
+        <div class="result">
+          当前点（X=<span id="rX">300</span> 亩）：<br>
+          固定成本 = <b id="rFix">80000</b> 元 ｜ 变动成本 = <b id="rVar">126000</b> 元 ｜ 总成本 Y = <b id="rTot">206000</b> 元
+        </div>
+      </div>
+      <div>
+        <svg id="chart" viewBox="0 0 620 400" role="img" aria-label="成本性态曲线图"></svg>
+        <div class="legend">
+          <span><i style="background:#2e7d32"></i>固定成本 y=a（水平线）</span>
+          <span><i style="background:#ef6c00"></i>变动成本 y=bX（过原点）</span>
+          <span><i style="background:#1565c0"></i>总成本 y=a+bX</span>
+        </div>
+      </div>
+    </div>
+    <p class="note">实验：拖动 a、b 观察三条曲线形态；固定成本线平行于 X 轴，变动成本线过原点，总成本线由固定成本线整体上移 bX。这就是成本性态的几何表达（知识点 2.1）。</p>
+  </section>
+
+  <!-- ========== 模块2：成本性态类型判定小游戏（原模块五，置于模块一之后） ========== -->
+  <section class="card">
+    <h2><span class="tag">模块二 · 2.1</span> 成本性态类型判定小游戏 🎮</h2>
+    <p class="small">判断下列水稻基地成本属于「固定成本 / 变动成本 / 混合成本」，系统即时判分并给出解析，共 8 题。</p>
+    <div class="flex" style="justify-content:space-between;">
+      <span class="badge" id="gameScore">得分 0 / 0</span>
+      <span class="small" id="gameProg"></span>
+    </div>
+    <div class="quiz-area" id="gameArea" style="margin-top:12px;"></div>
+    <div class="flex" style="margin-top:10px;">
+      <button class="btn" id="btnGameFixed">固定成本</button>
+      <button class="btn" id="btnGameVar" style="background:#ef6c00;">变动成本</button>
+      <button class="btn ghost" id="btnGameMixed" style="color:#1565c0;border-color:#1565c0;">混合成本</button>
+      <button class="btn ghost" id="btnGameNext" style="display:none;margin-left:auto;">下一题 →</button>
+      <button class="btn ghost" id="btnGameRestart" style="display:none;">重新开始</button>
+    </div>
+    <div id="gameFeedback" style="margin-top:10px;"></div>
+    <p class="note">判定口诀：总额不随业务量变→固定；随业务量正比例变→变动；既有固定底费又随业务量变→混合（知识点 2.1）。</p>
+  </section>
+
+  <!-- ========== 模块3：混合成本分解（原模块二） ========== -->
+  <section class="card">
+    <h2><span class="tag">模块三 · 2.2</span> 混合成本分解（高低点法 / 回归法）</h2>
+    <p class="small">下表为水稻基地 12 个月「种植面积 X（亩）— 混合总成本 Y（元）」原始数据，可直接修改后点击分解。</p>
+    <div style="max-height:240px; overflow:auto;">
+      <table id="dataTable">
+        <thead><tr><th>月份</th><th>面积 X（亩）</th><th>混合成本 Y（元）</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="radio-row">
+      <label><input type="radio" name="method" value="highlow" checked> 高低点法</label>
+      <label><input type="radio" name="method" value="regression"> 回归分析法</label>
+      <button class="btn" id="btnDecomp">分解混合成本</button>
+      <button class="btn ghost" id="btnResetData">恢复示例数据</button>
+    </div>
+    <div class="result" id="decompResult">
+      点击「分解混合成本」后，此处自动计算并填表：固定成本 a、单位变动成本 b。
+    </div>
+    <p class="note">高低点法只用最高/最低业务量两点，计算简便但受极端值影响；回归法利用全部 12 个月数据，结果更稳定（知识点 2.2）。</p>
+  </section>
+
+  <!-- ========== 模块4：随机出题（原模块四，置于模块三/混合成本之后） ========== -->
+  <section class="card">
+    <h2><span class="tag">模块四 · 2.2</span> 随机出题 · 估算 a、b</h2>
+    <p class="small">系统随机给出一组 X–Y 样本（含轻微扰动），请用任意方法估算固定成本 a 与单位变动成本 b；误差均 ≤5% 即判定「掌握」。</p>
+    <button class="btn" id="btnNewQuiz">🎲 生成新题</button>
+    <div class="quiz-area" id="quizArea" style="margin-top:12px;"></div>
+    <div class="flex" style="margin-top:10px;">
+      <div style="flex:1; min-width:160px;">
+        <label>你的估算 a（元）</label>
+        <input type="number" id="qA" placeholder="输入 a">
+      </div>
+      <div style="flex:1; min-width:160px;">
+        <label>你的估算 b（元/亩）</label>
+        <input type="number" id="qB" placeholder="输入 b">
+      </div>
+      <div style="align-self:flex-end;">
+        <button class="btn" id="btnCheck">提交判定</button>
+      </div>
+    </div>
+    <div id="quizFeedback" style="margin-top:10px;"></div>
+  </section>
+
+  <!-- ========== 模块5：变动成本法 vs 完全成本法 利润表（原模块三） ========== -->
+  <section class="card">
+    <h2><span class="tag">模块五 · 2.3/2.4</span> 变动成本法 / 完全成本法 利润表</h2>
+    <div class="flex" style="justify-content:space-between;">
+      <div class="switch" id="costSwitch">
+        <button class="on" data-mode="both">对照双表</button>
+        <button data-mode="vc">变动成本法</button>
+        <button data-mode="fc">完全成本法</button>
+      </div>
+      <span class="small">切换查看两种成本法的利润构成差异</span>
+    </div>
+    <div class="grid2">
+      <div>
+        <label>产量 P（亩当量 / 件）</label>
+        <input type="number" id="inP" value="500">
+        <label>销量 S（亩当量 / 件）</label>
+        <input type="number" id="inS" value="400">
+        <label>单价 p（元）</label>
+        <input type="number" id="inpPrice" value="900">
+        <label>单位变动生产成本 v（元）</label>
+        <input type="number" id="inv" value="560">
+        <label>固定制造费用 Fm（元）</label>
+        <input type="number" id="inFm" value="120000">
+        <label>单位变动销售管理费 vs（元）</label>
+        <input type="number" id="invs" value="40">
+        <label>固定销售管理费 Fs（元）</label>
+        <input type="number" id="inFs" value="30000">
+        <button class="btn" id="btnCalc">生成利润表</button>
+      </div>
+      <div id="profitOut"></div>
+      <div id="costCalcOut"></div>
+    </div>
+    <p class="note">两种成本法利润差额来自「固定制造费用是否随存货吸收」。当产量&gt;销量时，完全成本法把部分固定制造费用留在存货中，利润更高；差额恰等于 <code>存货吸收的固定制造费用 = Fm/产量 ×(产量−销量)</code>（知识点 2.4）。</p>
+  </section>
+
+  <!-- ========== 模块6：学生自主计算两种成本法利润与差异分析（新增，置于模块五之后） ========== -->
+  <section class="card">
+    <h2><span class="tag">模块六 · 2.3/2.4</span> 自主计算：两种成本法利润与差异分析</h2>
+    <p class="small">系统给出水稻基地本期已知数据，请分别用变动成本法与完全成本法计算营业利润，并解释利润差异来源。点击「提交计算」自动判分（计算误差 ≤1% 即正确）。</p>
+    <button class="btn" id="btnNewCalc">🎲 生成新题</button>
+    <div class="quiz-area" id="calcGiven" style="margin-top:12px;"></div>
+
+    <div class="grid2" style="margin-top:14px;">
+      <div>
+        <label>【变动成本法】贡献边际（元）</label>
+        <input type="number" id="stCM" placeholder="贡献边际">
+        <label>【变动成本法】营业利润（元）</label>
+        <input type="number" id="stOPvc" placeholder="营业利润（变动）">
+      </div>
+      <div>
+        <label>【完全成本法】单位产品成本（元/单位）</label>
+        <input type="number" id="stUnitFC" placeholder="单位完全成本">
+        <label>【完全成本法】毛利（元）</label>
+        <input type="number" id="stGross" placeholder="毛利">
+        <label>【完全成本法】营业利润（元）</label>
+        <input type="number" id="stOPfc" placeholder="营业利润（完全）">
+        <label>利润差额（完全 − 变动，元）</label>
+        <input type="number" id="stDiff" placeholder="利润差额">
+      </div>
+    </div>
+    <label>利润差异产生的主要原因</label>
+    <select id="stReason">
+      <option value="">— 请选择 —</option>
+      <option value="wrong1">两种方法对销售收入的确认口径不同</option>
+      <option value="right">固定制造费用是否计入产品成本并随存货流转（吸收/释放），使两种方法当期计入的固定制造费用不同</option>
+      <option value="wrong2">单位变动生产成本在两种方法下不同</option>
+      <option value="wrong3">销量在两种方法下不同</option>
+    </select>
+    <div class="flex" style="margin-top:10px;">
+      <button class="btn" id="btnSubmitCalc">提交计算</button>
+    </div>
+    <div id="calcFeedback" style="margin-top:10px;"></div>
+    <p class="note">提示：变动成本法将固定制造费用全额计入当期费用；完全成本法将其分摊进单位产品成本，随存货流转。当产量≠销量时，两种方法计入当期的固定制造费用不同，从而产生利润差异（知识点 2.4）。</p>
+  </section>
+
+  <footer>🌱 水稻基地成本性态沙盘 · 单文件交互课件 · 对应教材《管理会计学》第 2 章 · 纯前端原生实现</footer>
+</div>
+
+<script>
+/* =========================================================
+   模块1：成本性态曲线（SVG 实时绘制）— 知识点 2.1
+   ========================================================= */
+const SVGNS="http://www.w3.org/2000/svg";
+const chart=document.getElementById('chart');
+const Xmax=1000;                 // X 轴最大值（亩）
+const PL={l:65,r:600,t:25,b:355};// 绘图区边界
+const PW=PL.r-PL.l, PH=PL.b-PL.t;
+
+const inpA=document.getElementById('inpA'),
+      inpB=document.getElementById('inpB'),
+      inpX=document.getElementById('inpX');
+
+function xPx(x){return PL.l+(x/Xmax)*PW;}
+function yPx(y){return PL.b-(y/Ymax)*PH;}
+
+let Ymax=300000;
+function drawChart(){
+  const a=+inpA.value, b=+inpB.value, X=+inpX.value;
+  document.getElementById('outA').textContent=a.toLocaleString();
+  document.getElementById('outB').textContent=b;
+  document.getElementById('outX').textContent=X;
+  Ymax=Math.max(60000, Math.ceil((a+b*Xmax)/60000)*60000);
+
+  // 当前点坐标
+  const cx=xPx(X), cyFix=yPx(a), cyVar=yPx(b*X), cyTot=yPx(a+b*X);
+
+  let s='';
+  // 网格 + 坐标轴
+  s+=`<line x1="${PL.l}" y1="${PL.t}" x2="${PL.l}" y2="${PL.b}" stroke="#9ccc9c" stroke-width="1.5"/>`;
+  s+=`<line x1="${PL.l}" y1="${PL.b}" x2="${PL.r}" y2="${PL.b}" stroke="#9ccc9c" stroke-width="1.5"/>`;
+  // X 刻度
+  for(let i=0;i<=Xmax;i+=200){
+    const px=xPx(i);
+    s+=`<line x1="${px}" y1="${PL.b}" x2="${px}" y2="${PL.b+4}" stroke="#9ccc9c"/>`;
+    s+=`<text x="${px}" y="${PL.b+18}" font-size="11" fill="#5d705f" text-anchor="middle">${i}</text>`;
+  }
+  // Y 刻度
+  const stepY=Ymax/5;
+  for(let i=0;i<=5;i++){
+    const py=yPx(i*stepY);
+    s+=`<line x1="${PL.l-4}" y1="${py}" x2="${PL.l}" y2="${py}" stroke="#9ccc9c"/>`;
+    s+=`<text x="${PL.l-8}" y="${py+4}" font-size="11" fill="#5d705f" text-anchor="end">${(i*stepY/1000).toFixed(0)}k</text>`;
+  }
+  // 轴标题
+  s+=`<text x="${PL.r}" y="${PL.b+34}" font-size="12" fill="#1b5e20" text-anchor="end">种植面积 X（亩）</text>`;
+  s+=`<text x="${PL.l-8}" y="${PL.t-8}" font-size="12" fill="#1b5e20" text-anchor="end">成本 Y（元）</text>`;
+
+  // 固定成本线 y=a（绿色水平）
+  s+=`<line x1="${xPx(0)}" y1="${cyFix}" x2="${xPx(Xmax)}" y2="${cyFix}" stroke="#2e7d32" stroke-width="2.5"/>`;
+  // 变动成本线 y=bX（橙色过原点）
+  s+=`<line x1="${xPx(0)}" y1="${yPx(0)}" x2="${xPx(Xmax)}" y2="${yPx(b*Xmax)}" stroke="#ef6c00" stroke-width="2.5"/>`;
+  // 总成本线 y=a+bX（蓝色）
+  s+=`<line x1="${xPx(0)}" y1="${cyFix}" x2="${xPx(Xmax)}" y2="${yPx(a+b*Xmax)}" stroke="#1565c0" stroke-width="2.5"/>`;
+
+  // 当前点
+  s+=`<circle cx="${cx}" cy="${cyFix}" r="4" fill="#2e7d32"/>`;
+  s+=`<circle cx="${cx}" cy="${cyVar}" r="4" fill="#ef6c00"/>`;
+  s+=`<circle cx="${cx}" cy="${cyTot}" r="5" fill="#1565c0" stroke="#fff" stroke-width="1.5"/>`;
+  s+=`<line x1="${cx}" y1="${PL.b}" x2="${cx}" y2="${cyTot}" stroke="#90a4ae" stroke-dasharray="3 3"/>`;
+
+  // 标注 a、b
+  s+=`<text x="${PL.l+8}" y="${cyFix-6}" font-size="12" fill="#1b5e20" font-weight="bold">a=${a.toLocaleString()}</text>`;
+  s+=`<text x="${xPx(Xmax)-10}" y="${yPx(b*Xmax)-8}" font-size="12" fill="#ef6c00" font-weight="bold" text-anchor="end">b=${b} 元/亩</text>`;
+  s+=`<text x="${cx+8}" y="${cyTot-8}" font-size="12" fill="#1565c0" font-weight="bold">Y=a+bX</text>`;
+  // 当前点数值
+  s+=`<text x="${cx+8}" y="${cyTot+16}" font-size="11" fill="#1565c0">(${X}, ${(a+b*X).toLocaleString()})</text>`;
+
+  chart.innerHTML=s;
+
+  // 同步右侧结果
+  document.getElementById('rX').textContent=X;
+  document.getElementById('rFix').textContent=a.toLocaleString();
+  document.getElementById('rVar').textContent=(b*X).toLocaleString();
+  document.getElementById('rTot').textContent=(a+b*X).toLocaleString();
+}
+[inpA,inpB,inpX].forEach(el=>el.addEventListener('input',drawChart));
+drawChart();
+
+/* =========================================================
+   模块3：混合成本分解 — 知识点 2.2
+   ========================================================= */
+const baseData=[
+  {x:120,y:130800},{x:180,y:155200},{x:240,y:181300},{x:300,y:205500},
+  {x:360,y:231800},{x:420,y:255900},{x:480,y:282200},{x:360,y:230700},
+  {x:300,y:206600},{x:220,y:171900},{x:150,y:143500},{x:90, y:117300}
+];
+let curData=baseData.map(d=>({...d}));
+
+function renderTable(){
+  const tb=document.querySelector('#dataTable tbody');
+  tb.innerHTML=curData.map((d,i)=>
+    `<tr><td>${i+1}</td>
+     <td><input type="number" data-i="${i}" data-k="x" value="${d.x}"></td>
+     <td><input type="number" data-i="${i}" data-k="y" value="${d.y}"></td></tr>`).join('');
+  tb.querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('input',()=>{
+      const i=+inp.dataset.i, k=inp.dataset.k;
+      curData[i][k]=+inp.value||0;
+    });
+  });
+}
+renderTable();
+
+function decompose(){
+  const method=document.querySelector('input[name=method]:checked').value;
+  const n=curData.length;
+  let a,b;
+  if(method==='highlow'){
+    let hi=curData[0], lo=curData[0];
+    curData.forEach(d=>{if(d.x>hi.x)hi=d; if(d.x<lo.x)lo=d;});
+    b=(hi.y-lo.y)/(hi.x-lo.x);
+    a=hi.y-b*hi.x;
+  }else{
+    let sx=0,sy=0,sxy=0,sxx=0;
+    curData.forEach(d=>{sx+=d.x; sy+=d.y; sxy+=d.x*d.y; sxx+=d.x*d.x;});
+    b=(n*sxy-sx*sy)/(n*sxx-sx*sx);
+    a=(sy-b*sx)/n;
+  }
+  const name=method==='highlow'?'高低点法':'回归分析法';
+  document.getElementById('decompResult').innerHTML=
+    `已用 <b>${name}</b> 分解 12 个月混合成本：<br>
+     固定成本 <b>a = ${Math.round(a).toLocaleString()} 元</b> ｜
+     单位变动成本 <b>b = ${b.toFixed(2)} 元/亩</b><br>
+     <span class="small">即混合成本模型：Y = ${Math.round(a).toLocaleString()} + ${b.toFixed(2)}·X（元）</span>`;
+}
+document.getElementById('btnDecomp').addEventListener('click',decompose);
+document.getElementById('btnResetData').addEventListener('click',()=>{
+  curData=baseData.map(d=>({...d})); renderTable();
+  document.getElementById('decompResult').textContent='已恢复示例数据，可重新分解。';
+});
+
+/* =========================================================
+   模块5：变动成本法 / 完全成本法 利润表 + 计算明细 — 知识点 2.3/2.4
+   ========================================================= */
+const costSwitch=document.getElementById('costSwitch');
+let mode='both';
+costSwitch.querySelectorAll('button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    costSwitch.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on'); mode=btn.dataset.mode; calcProfit();
+  });
+});
+
+function stmtVC(P,S,p,v,Fm,vs,Fs){
+  const sales=S*p, vcProd=S*v, vcSell=S*vs;
+  const contrib=sales-vcProd-vcSell;
+  const op=contrib-Fm-Fs;
+  return {sales,vcProd,vcSell,contrib,Fm,Fs,op,
+    rows:[
+      ['销售收入',sales],['减：变动生产成本',-vcProd],['减：变动销售管理费',-vcSell],
+      ['贡献边际',contrib],['减：固定制造费用',-Fm],['减：固定销售管理费',-Fs],
+      ['营业利润（变动成本法）',op]
+    ]};
+}
+function stmtFC(P,S,p,v,Fm,vs,Fs){
+  const unitFull=v+Fm/P;
+  const sales=S*p, cogs=S*unitFull, gross=sales-cogs;
+  const sell=S*vs+Fs, op=gross-sell;
+  return {unitFull,sales,cogs,gross,sell,op,
+    rows:[
+      ['销售收入',sales],['减：销售成本('+unitFull.toFixed(2)+'元/单位)',-cogs],
+      ['毛利',gross],['减：销售管理费(变动+固定)',-sell],
+      ['营业利润（完全成本法）',op]
+    ]};
+}
+function fmt(n){return (n<0?'-':'')+Math.abs(Math.round(n)).toLocaleString()+' 元';}
+function buildTable(title,rows,hlIdx){
+  let h=`<table class="stmt"><caption>${title}</caption>`;
+  rows.forEach((r,i)=>{
+    const cls=(i===hlIdx)?' class="hl"':'';
+    h+=`<tr><td style="text-align:left;padding-left:10px;">${r[0]}</td><td${cls}>${fmt(r[1])}</td></tr>`;
+  });
+  return h+'</table>';
+}
+
+function calcProfit(){
+  const P=+document.getElementById('inP').value,
+        S=+document.getElementById('inS').value,
+        p=+document.getElementById('inpPrice').value,
+        v=+document.getElementById('inv').value,
+        Fm=+document.getElementById('inFm').value,
+        vs=+document.getElementById('invs').value,
+        Fs=+document.getElementById('inFs').value;
+  const vc=stmtVC(P,S,p,v,Fm,vs,Fs);
+  const fc=stmtFC(P,S,p,v,Fm,vs,Fs);
+  const diff=fc.op-vc.op;                 // 利润差额
+  const absorbed=Fm/P*(P-S);             // 存货吸收固定制造费用
+
+  let out='';
+  if(mode==='both'||mode==='vc') out+=buildTable('利润表（变动成本法）',vc.rows,-1);
+  if(mode==='both'||mode==='fc') out+=buildTable('利润表（完全成本法）',fc.rows,-1);
+
+  if(mode==='both'){
+    out+=`<div class="result">
+      <b>利润差额</b> = 完全 − 变动 = <b>${fmt(diff)}</b><br>
+      <span class="hl">存货吸收固定制造费用 = Fm/产量 ×(产量−销量) = ${Fm}/${P} ×(${P}−${S}) = ${fmt(absorbed)}</span>
+      ${Math.abs(diff-absorbed)<1?'<br>✅ 二者恒等，验证了知识点 2.4。':''}
+    </div>`;
+  }
+  document.getElementById('profitOut').innerHTML=out;
+
+  // —— 两种成本法「单位产品成本 & 存货吸收」计算明细（2.3/2.4）——
+  const unitVC=v;                       // 变动成本法：单位产品成本 = 单位变动生产成本
+  const unitFC=v+Fm/P;                  // 完全成本法：单位产品成本 = v + 单位固定制造费用
+  const invQty=P-S;                     // 期末存货量
+  const invVC=unitVC*invQty;            // 变动成本法下存货成本（不含固定制造费用）
+  const invFC=unitFC*invQty;            // 完全成本法下存货成本
+  const absorbedFC=Fm/P*invQty;         // 存货吸收的固定制造费用
+  const calc=`<div class="result">
+    <b>📐 两种成本法·单位产品成本与存货计算</b><br>
+    <table>
+      <tr><th>计算项目</th><th>变动成本法</th><th>完全成本法</th></tr>
+      <tr><td>单位固定制造费用</td><td>0 元</td><td>${(Fm/P).toFixed(2)} 元/单位</td></tr>
+      <tr><td>单位产品成本</td><td><b>${unitVC.toFixed(2)} 元</b></td><td><b>${unitFC.toFixed(2)} 元</b></td></tr>
+      <tr><td>期末存货量</td><td colspan="2" style="text-align:center;">${invQty} 单位</td></tr>
+      <tr><td>期末存货成本</td><td>${Math.round(invVC).toLocaleString()} 元</td><td>${Math.round(invFC).toLocaleString()} 元</td></tr>
+      <tr class="hl"><td>存货含固定制造费用</td><td>0 元</td><td>${Math.round(absorbedFC).toLocaleString()} 元</td></tr>
+    </table>
+    <span class="small">完全成本法单位成本比变动成本法多 <b>${(Fm/P).toFixed(2)} 元/单位</b>（即单位固定制造费用）；
+    期末存货多吸收的 <b>${Math.round(absorbedFC).toLocaleString()} 元</b> 正是「存货吸收的固定制造费用」，与上方面板利润差额完全相等。</span>
+  </div>`;
+  document.getElementById('costCalcOut').innerHTML=calc;
+}
+['inP','inS','inpPrice','inv','inFm','invs','inFs'].forEach(id=>
+  document.getElementById(id).addEventListener('input',calcProfit));
+document.getElementById('btnCalc').addEventListener('click',calcProfit);
+calcProfit();
+
+/* =========================================================
+   模块4：随机出题 — 自测 a、b 估算
+   ========================================================= */
+let quizTrue={a:0,b:0};
+function newQuiz(){
+  const ta=Math.floor(50000+Math.random()*70000);  // 5万~12万
+  const tb=Math.floor(200+Math.random()*400);        // 200~600
+  quizTrue={a:ta,b:tb};
+  // 生成 6 个样本点（含 ±2% 扰动）
+  const pts=[];
+  for(let i=0;i<6;i++){
+    const x=Math.floor(100+Math.random()*400);
+    const noise=1+(Math.random()*0.04-0.02);
+    const y=Math.round((ta+tb*x)*noise);
+    pts.push({x,y});
+  }
+  document.getElementById('quizArea').innerHTML=
+    `<table><thead><tr><th>样本</th>${pts.map((_,i)=>`<th>X${i+1}</th>`).join('')}</tr>
+     <tr><th>面积 X</th>${pts.map(d=>`<td>${d.x}</td>`).join('')}</tr>
+     <tr><th>成本 Y</th>${pts.map(d=>`<td>${d.y.toLocaleString()}</td>`).join('')}</tr></thead></table>
+     <span class="small">提示：可用高低点法（取最大/最小 X）快速估算，再用全部数据校核。</span>`;
+  document.getElementById('quizFeedback').innerHTML='';
+  document.getElementById('qA').value='';
+  document.getElementById('qB').value='';
+}
+function checkQuiz(){
+  const ea=+document.getElementById('qA').value, eb=+document.getElementById('qB').value;
+  if(!ea&&ea!==0||!eb&&eb!==0){document.getElementById('quizFeedback').innerHTML='<span class="badge no">请先填入 a、b 估算值</span>';return;}
+  const erA=Math.abs(ea-quizTrue.a)/quizTrue.a;
+  const erB=Math.abs(eb-quizTrue.b)/quizTrue.b;
+  const fb=document.getElementById('quizFeedback');
+  if(erA<=0.05&&erB<=0.05){
+    fb.innerHTML=`<span class="badge ok">✅ 掌握！</span> 你的 a=${ea.toLocaleString()}，b=${eb}；标准值 a=${quizTrue.a.toLocaleString()}，b=${quizTrue.b}（误差 ${ (erA*100).toFixed(1) }% / ${(erB*100).toFixed(1)}%）。`;
+  }else{
+    let tip=`a 误差 ${(erA*100).toFixed(1)}%`+(erA>0.05?' ⚠️':' ✅')+`；b 误差 ${(erB*100).toFixed(1)}%`+(erB>0.05?' ⚠️':' ✅');
+    fb.innerHTML=`<span class="badge no">🔁 再算一次</span> ${tip}。<br><span class="small">参考：b≈(Y最大−Y最小)/(X最大−X最小)；a≈Y最大−b·X最大。标准值 a=${quizTrue.a.toLocaleString()}，b=${quizTrue.b}。</span>`;
+  }
+}
+document.getElementById('btnNewQuiz').addEventListener('click',newQuiz);
+document.getElementById('btnCheck').addEventListener('click',checkQuiz);
+newQuiz();
+
+/* =========================================================
+   模块2：成本性态类型判定小游戏 — 知识点 2.1
+   ========================================================= */
+const gameItems=[
+  {txt:'基地土地年租金（与种植面积多少无关）',                 ans:'fixed', exp:'土地租金总额不随业务量变动 → 固定成本。'},
+  {txt:'水稻种子费（按实际播种亩数购买）',                   ans:'var',   exp:'随种植面积正比例变动 → 变动成本。'},
+  {txt:'灌溉水电费（每月固定底费 + 按用水量计价）',           ans:'mixed', exp:'含固定底费与按量部分 → 混合成本，需分解。'},
+  {txt:'拖拉机按直线法计提的年折旧',                         ans:'fixed', exp:'折旧额定期固定 → 固定成本。'},
+  {txt:'育秧临时工计件工资（按作业量计酬）',                 ans:'var',   exp:'随作业量（面积/产量）正比例变动 → 变动成本。'},
+  {txt:'农药与肥料（按亩施用）',                             ans:'var',   exp:'随种植面积变动 → 变动成本。'},
+  {txt:'基地管理人员月薪',                                   ans:'fixed', exp:'工资总额固定 → 固定成本。'},
+  {txt:'农机维修费（定期保养费 + 按作业小时耗材）',          ans:'mixed', exp:'保养为固定、耗材随使用变动 → 混合成本。'},
+  {txt:'按销量计提的稻谷销售佣金',                           ans:'var',   exp:'随销量变动 → 变动成本（销售端变动费用）。'},
+  {txt:'稻谷包装费（按销量箱数结算）',                       ans:'var',   exp:'随销量变动 → 变动成本。'},
+  {txt:'晒场租赁费（保底租金 + 超量加价）',                  ans:'mixed', exp:'保底为固定、超量为变动 → 混合成本。'},
+  {txt:'农业保险基础保费（固定缴纳）',                       ans:'fixed', exp:'基础保费固定 → 固定成本。'}
+];
+const GAME_TOTAL=8;
+let gameQueue=[], gameIdx=0, gameScore=0, gameLocked=false;
+const gameMap={fixed:'固定成本', var:'变动成本', mixed:'混合成本'};
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function gameStart(){
+  gameQueue=shuffle(gameItems).slice(0,GAME_TOTAL);
+  gameIdx=0; gameScore=0; gameLocked=false;
+  document.getElementById('btnGameRestart').style.display='none';
+  gameRender();
+}
+function gameRender(){
+  if(gameIdx>=gameQueue.length){
+    const rate=gameScore/GAME_TOTAL;
+    const tip = rate===1 ? '全部正确，成本性态分类已牢固掌握！👍'
+              : rate>=0.6 ? '基本掌握，再巩固「混合成本」的识别。'
+              : '建议回看 2.1 固定/变动/混合成本的定义。';
+    document.getElementById('gameArea').innerHTML=
+      `<div style="text-align:center;padding:14px;font-size:15px;">🎉 完成！最终得分 <b>${gameScore} / ${GAME_TOTAL}</b><br><span class="small">${tip}</span></div>`;
+    document.getElementById('gameProg').textContent='';
+    document.getElementById('btnGameNext').style.display='none';
+    document.getElementById('btnGameRestart').style.display='inline-block';
+    return;
+  }
+  gameLocked=false;
+  const it=gameQueue[gameIdx];
+  document.getElementById('gameArea').innerHTML=`<div style="font-size:15px;"><b>第 ${gameIdx+1} 题：</b>${it.txt}</div>`;
+  document.getElementById('gameScore').textContent=`得分 ${gameScore} / ${GAME_TOTAL}`;
+  document.getElementById('gameProg').textContent=`进度 ${gameIdx+1}/${GAME_TOTAL}`;
+  document.getElementById('gameFeedback').innerHTML='';
+  ['btnGameFixed','btnGameVar','btnGameMixed'].forEach(id=>document.getElementById(id).disabled=false);
+  document.getElementById('btnGameNext').style.display='none';
+}
+function gameAnswer(ans){
+  if(gameLocked) return;
+  gameLocked=true;
+  const it=gameQueue[gameIdx];
+  const correct = ans===it.ans;
+  if(correct) gameScore++;
+  document.getElementById('gameScore').textContent=`得分 ${gameScore} / ${GAME_TOTAL}`;
+  document.getElementById('gameFeedback').innerHTML=
+    `<span class="badge ${correct?'ok':'no'}">${correct?'✅ 正确':'❌ 正确应为 '+gameMap[it.ans]}</span> <span class="small">${it.exp}</span>`;
+  ['btnGameFixed','btnGameVar','btnGameMixed'].forEach(id=>document.getElementById(id).disabled=true);
+  document.getElementById('btnGameNext').style.display='inline-block';
+}
+document.getElementById('btnGameFixed').addEventListener('click',()=>gameAnswer('fixed'));
+document.getElementById('btnGameVar').addEventListener('click',()=>gameAnswer('var'));
+document.getElementById('btnGameMixed').addEventListener('click',()=>gameAnswer('mixed'));
+document.getElementById('btnGameNext').addEventListener('click',gameRender);
+document.getElementById('btnGameRestart').addEventListener('click',gameStart);
+gameStart();
+
+/* =========================================================
+   模块6：学生自主计算两种成本法利润与差异分析 — 知识点 2.3/2.4
+   ========================================================= */
+let calcTrue=null;
+function newCalc(){
+  // —— 拒绝采样：保证变动成本法利润为正且健康，并使完全成本法利润恒为正 ——
+  // 原理：当 销量 S < 产量 P 时，利润差额 Diff = Fm/产量×(产量−销量) > 0，
+  //       即 完全成本法利润 OPfc > 变动成本法利润 OPvc；因此只要 OPvc≥THRESH，
+  //       两种方法利润均为正。循环重投直到满足，最多 300 次。
+  const THRESH=25000;            // 利润下限（元）：确保经营状况健康而非临界为正
+  let P,S,p,v,Fm,vs,Fs,unitFC,sales,CM,OPvc,cogs,Gross,sell,OPfc,Diff;
+  for(let k=0;k<300;k++){
+    P =Math.floor(300+Math.random()*400);            // 产量 300~699
+    S =Math.round(P*(0.65+Math.random()*0.30));      // 销量≈产量的65%~95%（保持有存货，差异方向稳定为正）
+    p =Math.floor(700+Math.random()*500);            // 单价 700~1199
+    v =Math.floor(380+Math.random()*320);            // 单位变动生产成本 380~699
+    vs=Math.floor(30+Math.random()*50);              // 单位变动销售管理费 30~79
+    Fm=Math.floor(50000+Math.random()*70000);        // 固定制造费用 5万~12万
+    Fs=Math.floor(15000+Math.random()*25000);        // 固定销售管理费 1.5万~4万
+    unitFC=v+Fm/P;
+    sales =S*p;
+    CM    =sales - S*v - S*vs;
+    OPvc  =CM - Fm - Fs;
+    cogs  =S*unitFC;
+    Gross =sales - cogs;
+    sell  =S*vs+Fs;
+    OPfc  =Gross - sell;
+    Diff  =OPfc-OPvc;
+    if(OPvc>=THRESH && OPfc>0) break;                // 接受条件：变动法利润健康为正，完全法更高
+  }
+  calcTrue={P,S,p,v,Fm,vs,Fs,unitFC,CM,OPvc,Gross,OPfc,Diff};
+  document.getElementById('calcGiven').innerHTML=
+    `<table><thead><tr><th>已知数据</th><th>数值</th></tr></thead><tbody>
+      <tr><td>产量 P</td><td>${P} 单位</td></tr>
+      <tr><td>销量 S</td><td>${S} 单位</td></tr>
+      <tr><td>单价 p</td><td>${p} 元</td></tr>
+      <tr><td>单位变动生产成本 v</td><td>${v} 元</td></tr>
+      <tr><td>固定制造费用 Fm</td><td>${Fm.toLocaleString()} 元</td></tr>
+      <tr><td>单位变动销售管理费 vs</td><td>${vs} 元</td></tr>
+      <tr><td>固定销售管理费 Fs</td><td>${Fs.toLocaleString()} 元</td></tr>
+     </tbody></table>`;
+  ['stCM','stOPvc','stUnitFC','stGross','stOPfc','stDiff'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('stReason').value='';
+  document.getElementById('calcFeedback').innerHTML='';
+}
+function submitCalc(){
+  if(!calcTrue){document.getElementById('calcFeedback').innerHTML='<span class="badge no">请先生成题目</span>';return;}
+  const g=calcTrue;
+  const get=id=>+document.getElementById(id).value;
+  const tol=n=>Math.max(1, Math.abs(n)*0.01);   // 1% 容差
+  const checks={
+    CM:     Math.abs(get('stCM')-g.CM)<=tol(g.CM),
+    OPvc:   Math.abs(get('stOPvc')-g.OPvc)<=tol(g.OPvc),
+    unitFC: Math.abs(get('stUnitFC')-g.unitFC)<=0.5,
+    Gross:  Math.abs(get('stGross')-g.Gross)<=tol(g.Gross),
+    OPfc:   Math.abs(get('stOPfc')-g.OPfc)<=tol(g.OPfc),
+    Diff:   Math.abs(get('stDiff')-g.Diff)<=tol(g.Diff)
+  };
+  const reasonOK=document.getElementById('stReason').value==='right';
+  const allCalc=Object.values(checks).every(Boolean);
+  const fb=document.getElementById('calcFeedback');
+  if(allCalc && reasonOK){
+    fb.innerHTML=`<span class="badge ok">✅ 全部正确，掌握！</span><br>
+      <span class="small">变动成本法利润 ${Math.round(g.OPvc).toLocaleString()} 元；
+      完全成本法利润 ${Math.round(g.OPfc).toLocaleString()} 元；
+      利润差额 ${Math.round(g.Diff).toLocaleString()} 元 = 存货吸收固定制造费用 ${Math.round(g.Fm/g.P*(g.P-g.S)).toLocaleString()} 元。</span>`;
+  }else{
+    let msg='<span class="badge no">🔁 有错，请复核</span><ul class="small">';
+    if(!checks.CM)     msg+=`<li>贡献边际应为 ${Math.round(g.CM).toLocaleString()} 元（= 销量×单价 − 销量×v − 销量×vs）</li>`;
+    if(!checks.OPvc)   msg+=`<li>变动成本法营业利润应为 ${Math.round(g.OPvc).toLocaleString()} 元</li>`;
+    if(!checks.unitFC) msg+=`<li>完全成本法单位产品成本 = v + Fm/产量 = ${v} + ${Math.round(g.Fm/g.P)} = ${g.unitFC.toFixed(2)} 元</li>`;
+    if(!checks.Gross)  msg+=`<li>完全成本法毛利应为 ${Math.round(g.Gross).toLocaleString()} 元</li>`;
+    if(!checks.OPfc)   msg+=`<li>完全成本法营业利润应为 ${Math.round(g.OPfc).toLocaleString()} 元</li>`;
+    if(!checks.Diff)   msg+=`<li>利润差额应为 ${Math.round(g.Diff).toLocaleString()} 元</li>`;
+    if(!reasonOK)      msg+=`<li>差异原因选错：核心在于「固定制造费用是否计入产品成本并随存货流转（吸收/释放）」，使两种方法当期计入的固定制造费用不同</li>`;
+    msg+='</ul>';
+    fb.innerHTML=msg;
+  }
+}
+document.getElementById('btnNewCalc').addEventListener('click',newCalc);
+document.getElementById('btnSubmitCalc').addEventListener('click',submitCalc);
+newCalc();
+</script>
+</body>
+</html>

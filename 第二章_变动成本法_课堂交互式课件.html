@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理会计 · 第二章 课堂交互式课件</title>
+<style>
+  :root {
+    --primary: #1a3a5c;
+    --primary-light: #2c5f8a;
+    --accent: #e8792b;
+    --accent-light: #f5a623;
+    --success: #27ae60;
+    --danger: #e74c3c;
+    --warning: #f39c12;
+    --purple: #8e44ad;
+    --bg: #f0f2f5;
+    --card: #ffffff;
+    --text: #2c3e50;
+    --text-light: #7f8c8d;
+    --border: #e8ecf0;
+    --shadow: 0 4px 20px rgba(0,0,0,0.08);
+    --shadow-hover: 0 8px 30px rgba(0,0,0,0.12);
+    --radius: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* 顶部导航 */
+  .app-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white;
+    padding: 18px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 20px rgba(26,58,92,0.3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .app-header h1 { font-size: 22px; font-weight: 700; letter-spacing: 1px; }
+  .app-header .subtitle { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+  .header-badge {
+    background: rgba(255,255,255,0.15);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    backdrop-filter: blur(10px);
+  }
+
+  /* 标签导航 */
+  .nav-tabs {
+    display: flex;
+    background: var(--card);
+    border-bottom: 2px solid var(--border);
+    padding: 0 24px;
+    overflow-x: auto;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    position: sticky;
+    top: 68px;
+    z-index: 99;
+  }
+  .nav-tab {
+    padding: 14px 22px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-size: 14px;
+    color: var(--text-light);
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    white-space: nowrap;
+    font-family: inherit;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .nav-tab:hover { color: var(--primary-light); background: #f7f9fc; }
+  .nav-tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--accent);
+    font-weight: 700;
+  }
+  .nav-tab .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--border);
+    font-size: 11px;
+    font-weight: 700;
+    transition: all 0.3s;
+  }
+  .nav-tab.active .num { background: var(--accent); color: white; }
+
+  /* 模块容器 */
+  .module { display: none; padding: 28px 36px; max-width: 1280px; margin: 0 auto; animation: fadeIn 0.4s ease; }
+  .module.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .module-header { margin-bottom: 24px; }
+  .module-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .module-title .icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    box-shadow: 0 4px 12px rgba(232,121,43,0.3);
+  }
+  .module-desc { color: var(--text-light); font-size: 14px; max-width: 800px; }
+
+  /* 卡片 */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    transition: box-shadow 0.3s;
+  }
+  .card:hover { box-shadow: var(--shadow-hover); }
+  .card-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title::before {
+    content: '';
+    width: 4px;
+    height: 18px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  /* 按钮 */
+  .btn {
+    padding: 10px 22px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .btn:active { transform: translateY(0); }
+  .btn-primary { background: linear-gradient(135deg, var(--primary-light), var(--primary)); color: white; }
+  .btn-accent { background: linear-gradient(135deg, var(--accent), var(--accent-light)); color: white; }
+  .btn-success { background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; }
+  .btn-danger { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
+  .btn-outline { background: white; color: var(--primary); border: 2px solid var(--primary-light); }
+  .btn-outline:hover { background: var(--primary); color: white; }
+  .btn-group { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+
+  /* 成本分类卡片 */
+  .cost-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    margin: 8px 0;
+    background: #f8fafc;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+  .cost-item:hover { background: #eef5ff; transform: translateX(6px); border-color: var(--primary-light); }
+  .cost-item.revealed { cursor: default; transform: none; }
+  .cost-item.revealed.fixed { background: linear-gradient(90deg, #ebf5fb, #f8fafc); border-color: var(--primary-light); }
+  .cost-item.revealed.variable { background: linear-gradient(90deg, #eafaf1, #f8fafc); border-color: var(--success); }
+  .cost-item.revealed.mixed { background: linear-gradient(90deg, #fef5e7, #f8fafc); border-color: var(--accent); }
+  .cost-name { flex: 1; font-size: 15px; font-weight: 600; }
+  .cost-num {
+    width: 28px; height: 28px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+  .cost-answer {
+    font-size: 13px;
+    padding: 5px 14px;
+    border-radius: 14px;
+    color: white;
+    font-weight: 600;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.3s;
+  }
+  .cost-item.revealed .cost-answer { opacity: 1; transform: scale(1); }
+  .answer-fixed { background: var(--primary-light); }
+  .answer-variable { background: var(--success); }
+  .answer-mixed { background: var(--accent); }
+  .cost-explain {
+    display: none;
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: white;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #555;
+    border-left: 3px solid var(--accent);
+    animation: slideDown 0.3s ease;
+  }
+  .cost-item.revealed .cost-explain { display: block; }
+  @keyframes slideDown { from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 100px; } }
+
+  /* 图表容器 */
+  .chart-wrapper {
+    background: #fafbfc;
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  canvas { display: block; width: 100%; max-width: 560px; height: auto; }
+
+  /* 结果展示 */
+  .result-panel {
+    background: linear-gradient(135deg, #f0f7ff, #f8fafc);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #d6eaf8;
+    margin-top: 16px;
+  }
+  .result-panel .label { font-size: 13px; color: var(--text-light); margin-bottom: 4px; }
+  .result-panel .value { font-size: 20px; font-weight: 800; color: var(--primary); }
+  .result-formula {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    text-align: center;
+    padding: 14px;
+    background: white;
+    border-radius: 10px;
+    margin-top: 12px;
+    font-family: "Cambria Math", serif;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  /* R²仪表盘 */
+  .r2-gauge {
+    text-align: center;
+    padding: 24px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: 14px;
+    color: white;
+    margin-bottom: 16px;
+    box-shadow: 0 6px 20px rgba(26,58,92,0.25);
+  }
+  .r2-gauge .r2-label { font-size: 14px; opacity: 0.9; margin-bottom: 6px; }
+  .r2-gauge .r2-value { font-size: 48px; font-weight: 800; line-height: 1; }
+  .r2-gauge .r2-level {
+    display: inline-block;
+    padding: 4px 16px;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 10px;
+  }
+  .r2-high { background: rgba(39,174,96,0.9); }
+  .r2-mid { background: rgba(243,156,18,0.9); }
+  .r2-low { background: rgba(231,76,60,0.9); }
+
+  /* 滑块 */
+  .slider-group { margin: 14px 0; }
+  .slider-group label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .slider-group .val {
+    background: var(--accent);
+    color: white;
+    padding: 2px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .slider-group input[type="range"] {
+    width: 100%;
+    height: 6px;
+    -webkit-appearance: none;
+    background: linear-gradient(90deg, var(--accent), var(--accent-light));
+    border-radius: 3px;
+    outline: none;
+  }
+  .slider-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border: 3px solid var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+  }
+  .slider-group input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+  /* 模式切换 */
+  .mode-toggle {
+    display: inline-flex;
+    background: #e8ecf0;
+    padding: 4px;
+    border-radius: 10px;
+    gap: 4px;
+  }
+  .mode-btn {
+    padding: 8px 18px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 600;
+    color: var(--text-light);
+    transition: all 0.3s;
+  }
+  .mode-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(26,58,92,0.3); }
+
+  /* 警示框 */
+  .alert-box {
+    background: linear-gradient(135deg, #fdf0ef, #fef5f5);
+    border-left: 4px solid var(--danger);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-top: 16px;
+    display: none;
+    animation: shake 0.5s ease;
+  }
+  .alert-box.show { display: block; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+  .alert-box h4 { color: var(--danger); margin-bottom: 6px; font-size: 15px; }
+  .alert-box p { font-size: 13px; color: #666; }
+
+  /* 数据表格 */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 10px 0;
+  }
+  .data-table th, .data-table td {
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    text-align: center;
+  }
+  .data-table th { background: var(--primary); color: white; font-weight: 600; }
+  .data-table tr:nth-child(even) { background: #f8fafc; }
+  .data-table tr.highlight { background: #fef5e7; font-weight: 700; }
+  .data-table .tag {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+  }
+
+  /* 测验题 */
+  .quiz-q { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px dashed var(--border); }
+  .quiz-q:last-child { border-bottom: none; }
+  .quiz-q h4 { font-size: 15px; margin-bottom: 12px; color: var(--text); }
+  .quiz-opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 12px 18px;
+    margin: 6px 0;
+    background: #f8fafc;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.25s;
+  }
+  .quiz-opt:hover:not(.disabled) { border-color: var(--primary-light); background: #eef5ff; transform: translateX(4px); }
+  .quiz-opt.correct { border-color: var(--success); background: #eafaf1; }
+  .quiz-opt.wrong { border-color: var(--danger); background: #fdf0ef; }
+  .quiz-opt.disabled { cursor: default; }
+  .quiz-explain {
+    display: none;
+    margin-top: 10px;
+    padding: 12px 16px;
+    background: #eef5ff;
+    border-radius: 8px;
+    font-size: 13px;
+    border-left: 3px solid var(--primary-light);
+  }
+  .quiz-explain.show { display: block; animation: slideDown 0.3s ease; }
+
+  /* 两栏布局 */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* 类型画廊 */
+  .type-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 16px; }
+  .type-card {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+    text-align: center;
+  }
+  .type-card:hover { border-color: var(--primary-light); transform: translateY(-3px); box-shadow: var(--shadow); }
+  .type-card.active { border-color: var(--accent); background: #fef9f0; }
+  .type-card h4 { font-size: 15px; color: var(--primary); margin-bottom: 4px; }
+  .type-card p { font-size: 12px; color: var(--text-light); }
+  .type-detail {
+    background: #f0f7ff;
+    border-radius: 12px;
+    padding: 20px;
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+  .type-detail.show { display: block; }
+  .type-detail h4 { color: var(--primary); margin-bottom: 10px; font-size: 16px; }
+  .type-example {
+    background: white;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-size: 13px;
+    border-left: 3px solid var(--accent);
+  }
+
+  /* 方法对比表 */
+  .cmp-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .cmp-table th, .cmp-table td { border: 1px solid var(--border); padding: 12px 14px; text-align: left; }
+  .cmp-table th { background: var(--primary); color: white; font-weight: 600; }
+  .cmp-table tr:nth-child(even) { background: #f8fafc; }
+  .cmp-table .mname { font-weight: 700; color: var(--primary-light); cursor: pointer; }
+  .cmp-table .mname:hover { text-decoration: underline; }
+  .cmp-detail { display: none; }
+  .cmp-detail.show { display: table-row; }
+  .cmp-detail td { background: #f0f7ff !important; padding: 16px; font-size: 13px; line-height: 1.8; }
+
+  /* 随堂练习 */
+  .practice-box {
+    background: linear-gradient(135deg, #f0f7ff, #f8fafc);
+    border-radius: 12px;
+    padding: 20px;
+    border: 2px dashed var(--primary-light);
+    margin: 12px 0;
+  }
+  .practice-box h4 { color: var(--primary); margin-bottom: 10px; font-size: 15px; }
+  .practice-data {
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin: 10px 0;
+  }
+  .practice-answer {
+    display: none;
+    background: #eafaf1;
+    border-left: 4px solid var(--success);
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-top: 12px;
+  }
+  .practice-answer.show { display: block; animation: slideDown 0.4s ease; }
+  .practice-answer h5 { color: var(--success); margin-bottom: 8px; }
+
+  .score-panel {
+    text-align: center;
+    padding: 24px;
+    background: linear-gradient(135deg, var(--success), #2ecc71);
+    border-radius: 14px;
+    color: white;
+    margin-top: 20px;
+    display: none;
+    box-shadow: 0 6px 20px rgba(39,174,96,0.3);
+  }
+  .score-panel.show { display: block; animation: fadeIn 0.5s ease; }
+  .score-panel .score { font-size: 48px; font-weight: 800; }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+    font-size: 12px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+  .info-tag {
+    display: inline-block;
+    background: #e8f4fd;
+    color: var(--primary-light);
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div>
+    <h1>管理会计 · 第二章 课堂交互式课件</h1>
+    <div class="subtitle">变动成本法：成本性态与混合成本分解 | 教师大屏演示版 v2.0</div>
+  </div>
+  <div class="header-badge">湘农机械案例数据</div>
+</div>
+
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="switchModule(0)"><span class="num">1</span>成本分类挑战</button>
+  <button class="nav-tab" onclick="switchModule(1)"><span class="num">2</span>混合成本类型</button>
+  <button class="nav-tab" onclick="switchModule(2)"><span class="num">3</span>高低点法演示</button>
+  <button class="nav-tab" onclick="switchModule(3)"><span class="num">4</span>回归分析可视化</button>
+  <button class="nav-tab" onclick="switchModule(4)"><span class="num">5</span>方法对比表</button>
+  <button class="nav-tab" onclick="switchModule(5)"><span class="num">6</span>随堂计算练习</button>
+  <button class="nav-tab" onclick="switchModule(6)"><span class="num">7</span>随堂快测</button>
+</div>
+
+<!-- 模块一：成本分类大挑战 -->
+<div class="module active" id="mod-0">
+  <div class="module-header">
+    <div class="module-title"><span class="icon">📊</span>成本分类大挑战</div>
+    <div class="module-desc">蜜雪冰城门店成本项目分类练习。点击每个项目查看分类结果和解析。用于课堂开场互动，检验线上自主学习效果。</div>
+  </div>
+  <div class="card">
+    <div class="card-title">蜜雪冰城门店成本项目（点击查看分类）</div>
+    <div id="cost-list"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="revealAllCosts()">📋 全部显示</button>
+      <button class="btn btn-outline" onclick="resetCosts()">🔄 重新挑战</button>
+    </div>
+  </div>
+</div>
+
+<!-- 模块二：混合成本类型画廊 -->
+<div class="module" id="mod-1">
+  <div class="module-header">
+    <div class="module-title"><span class="icon">📈</span>混合成本类型画廊</div>
+    <div class="module-desc">四种混合成本类型的动态图像与生活实例。点击卡片查看详细图像。</div>
+  </div>
+  <div class="card">
+    <div class="type-grid">
+      <div class="type-card" onclick="showType(0)"><h4>半变动成本</h4><p>有初始基数，随业务量正比例变动</p></div>
+      <div class="type-card" onclick="showType(1)"><h4>半固定成本（阶梯式）</h4><p>一定范围内固定，超量跃升</p></div>
+      <div class="type-card" onclick="showType(2)"><h4>延期变动成本</h4><p>正常工时内固定，超时变动</p></div>
+      <div class="type-card" onclick="showType(3)"><h4>曲线变动成本</h4><p>随业务量呈曲线变化</p></div>
+    </div>
+    <div class="type-detail" id="type-detail">
+      <h4 id="type-title"></h4>
+      <canvas id="type-canvas" width="560" height="320"></canvas>
+      <div class="type-example" id="type-example"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 模块三：高低点法动态演示 -->
+<div class="module" id="mod-2">
+  <div class="module-header">
+    <div class="module-title"><span class="icon">📍</span>高低点法动态演示</div>
+    <div class="module-desc">湘农机械2025年1-12月电费与产量数据。<strong style="color:var(--danger)">注意：业务量最高为7月，但电费最高为8月（极端高温）；业务量最低为1月，但电费最低为2月（春节放假）。</strong>切换正确/错误选点方式，对比结果差异——错误选点甚至会得出负的固定成本！</div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">散点图与高低点连线</div>
+      <div class="mode-toggle" style="margin-bottom:14px;">
+        <button class="mode-btn active" id="mode-correct" onclick="setMode('correct')">✅ 正确选点（按业务量）</button>
+        <button class="mode-btn" id="mode-wrong" onclick="setMode('wrong')">❌ 错误选点（按成本）</button>
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="hl-canvas" width="560" height="400"></canvas>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#2c5f8a"></div>数据点</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div>最高点</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e8792b"></div>最低点</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#27ae60;height:3px;width:20px;border-radius:2px"></div>回归线</div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="selectHigh()">🔴 选最高点</button>
+        <button class="btn btn-accent" onclick="selectLow()">🟠 选最低点</button>
+        <button class="btn btn-success" onclick="drawHLine()">📏 连线计算</button>
+        <button class="btn btn-outline" onclick="resetHL()">🔄 重置</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">计算结果</div>
+      <div id="hl-result">
+        <p style="color:var(--text-light);text-align:center;padding:30px 0;">请先选择最高点和最低点，然后点击"连线计算"</p>
+      </div>
+      <div class="card-title" style="margin-top:20px;">原始数据</div>
+      <div style="max-height:280px;overflow-y:auto;border-radius:8px;">
+        <table class="data-table" id="hl-table"></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 模块四：回归分析可视化 -->
+<div class="module" id="mod-3">
+  <div class="module-header">
+    <div class="module-title"><span class="icon">🎯</span>回归分析可视化</div>
+    <div class="module-desc">核心模块！①拖动滑块观察数据离散程度和异常点对回归线、R²的影响；②点击"模拟数据篡改"，对比篡改前后两条回归线的偏移——仅一个数据点虚增20%，整个成本模型就被扭曲，直观理解"数据真实性是管理会计的生命线"。</div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">散点图与回归线</div>
+      <div class="chart-wrapper">
+        <canvas id="reg-canvas" width="560" height="400"></canvas>
+      </div>
+      <div class="slider-group">
+        <label>数据离散程度（噪声） <span class="val" id="noise-val">低</span></label>
+        <input type="range" id="noise-slider" min="0" max="100" value="8" oninput="updateReg()">
+      </div>
+      <div class="slider-group">
+        <label>剔除异常点数量 <span class="val" id="remove-val">0</span></label>
+        <input type="range" id="remove-slider" min="0" max="2" value="0" oninput="updateReg()">
+      </div>
+
+      <div style="margin:14px 0;">
+        <div onclick="toggleConcept('concept-dispersion')" style="cursor:pointer;padding:10px 14px;background:#f0f7ff;border-radius:8px;font-size:13px;font-weight:600;color:var(--primary-light);display:flex;justify-content:space-between;align-items:center;">
+          <span>💡 什么是数据离散程度？</span>
+          <span id="concept-dispersion-arrow">▼</span>
+        </div>
+        <div id="concept-dispersion" style="display:none;padding:12px 16px;background:#f8fafc;border-radius:0 0 8px 8px;font-size:13px;line-height:1.8;border-left:3px solid var(--primary-light);margin-top:-2px;">
+          <p><strong>数据离散程度</strong>：指各个数据点偏离回归线（整体趋势）的远近程度。</p>
+          <p style="margin-top:6px;">📊 <strong>离散程度低</strong>：数据点紧密围绕回归线，说明产量和电费的关系很稳定，R²接近1。比如湘农机械如果每月电费只受产量影响，不受气温、设备等因素干扰，离散程度就低。</p>
+          <p style="margin-top:6px;">📊 <strong>离散程度高</strong>：数据点散乱分布，说明除了产量外还有其他因素影响电费（如极端高温、设备故障、春节放假），R²较低。</p>
+          <p style="margin-top:6px;color:var(--accent);font-weight:600;">👉 拖动上方"数据离散程度"滑块，直观感受从低到高时散点从"集中"变"散乱"、R²从0.95降到0.4的过程。</p>
+        </div>
+      </div>
+
+      <div style="margin:14px 0;">
+        <div onclick="toggleConcept('concept-outlier')" style="cursor:pointer;padding:10px 14px;background:#fef5e7;border-radius:8px;font-size:13px;font-weight:600;color:var(--accent);display:flex;justify-content:space-between;align-items:center;">
+          <span>💡 什么是异常点？</span>
+          <span id="concept-outlier-arrow">▼</span>
+        </div>
+        <div id="concept-outlier" style="display:none;padding:12px 16px;background:#f8fafc;border-radius:0 0 8px 8px;font-size:13px;line-height:1.8;border-left:3px solid var(--accent);margin-top:-2px;">
+          <p><strong>异常点（Outlier）</strong>：指明显偏离整体数据趋势、与其他数据点"格格不入"的观测值。</p>
+          <p style="margin-top:6px;">🔴 <strong>湘农机械的两个异常点：</strong></p>
+          <p>• <strong>8月</strong>：产量1150件，但电费高达16800元（全年最高）——极端高温导致空调用电大增，电费偏离了"产量越高电费越高"的正常趋势。</p>
+          <p>• <strong>2月</strong>：产量850件，但电费仅11800元（全年最低）——春节放假，生产用电少，但基本电费照付，导致电费偏低。</p>
+          <p style="margin-top:6px;">⚠️ <strong>异常点的影响：</strong>会拉偏回归线，使计算出的固定成本a和单位变动成本b失真。剔除异常点后，模型更能反映正常经营状态下的成本规律。</p>
+          <p style="margin-top:6px;color:var(--accent);font-weight:600;">👉 拖动上方"剔除异常点数量"滑块：1=剔除8月，2=同时剔除8月和2月，观察R²和回归线的变化。</p>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-danger" onclick="tamperData()">⚠️ 模拟数据篡改（5月电费+20%）</button>
+        <button class="btn btn-primary" onclick="resetReg()">🔄 恢复原始数据</button>
+        <button class="btn btn-accent" onclick="toggleTarget()">🎯 打靶类比</button>
+      </div>
+      <div class="alert-box" id="tamper-alert">
+        <h4>⚠ 数据已被篡改！观察两条回归线的偏移</h4>
+        <p><strong>演示目的：</strong>假设财务人员将5月电费从14200元虚增至17040元（+20%），声称"五一后设备重启用电增加"。图中<span style="color:#e74c3c;font-weight:600;">红色虚线</span>是原始回归线，<span style="color:#e8792b;font-weight:600;">橙色实线</span>是篡改后的回归线——仅一个数据点的变动，就使整条回归线发生明显偏移，固定成本a和单位变动成本b都被扭曲。</p>
+        <p style="margin-top:6px;"><strong>教学启示：</strong>这就是"垃圾进、垃圾出"。会计数据真实性是一切分析的基础，一个数据点的偏差会导致成本预测、定价决策的系统性错误。<strong style="color:#c0392b;">不做假账，是会计人的职业底线。</strong></p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="r2-gauge">
+        <div class="r2-label">R² 决定系数（拟合优度）</div>
+        <div class="r2-value" id="r2-val">0.95</div>
+        <div class="r2-level r2-high" id="r2-level">线性关系强</div>
+      </div>
+      <div class="result-panel">
+        <div class="label">固定成本 a（Intercept）</div>
+        <div class="value" id="reg-a">2380 元</div>
+      </div>
+      <div class="result-panel" style="margin-top:10px;">
+        <div class="label">单位变动成本 b（X Variable）</div>
+        <div class="value" id="reg-b">12.1 元/件</div>
+      </div>
+      <div class="result-formula" id="reg-formula">y = 2380 + 12.1x</div>
+      <div id="target-box" style="display:none;margin-top:16px;">
+        <div class="card-title">打靶类比</div>
+        <div class="chart-wrapper" style="text-align:center;">
+          <canvas id="target-canvas" width="320" height="320"></canvas>
+        </div>
+        <p style="font-size:13px;color:var(--text-light);text-align:center;margin-top:8px;">把每个数据点想象成子弹，回归线是靶心。R²越接近1，子弹越集中在靶心附近。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 模块五：方法对比表 -->
+<div class="module" id="mod-4">
+  <div class="module-header">
+    <div class="module-title"><span class="icon">⚖️</span>三种混合成本分解方法对比</div>
+    <div class="module-desc">点击方法名称可展开详细说明。</div>
+  </div>
+  <div class="card">
+    <table class="cmp-table">
+      <tr><th width="16%">方法</th><th>基本原理</th><th>优点</th><th>缺点</th><th>适用条件</th><th>精确度</th></tr>
+      <tr>
+        <td class="mname" onclick="toggleCmp(0)">高低点法 ▸</td>
+        <td>选业务量最高最低两点，连线确定y=a+bx</td>
+        <td>计算简单，易于理解</td>
+        <td>仅用两点，代表性差</td>
+        <td>成本趋势稳定，数据少</td>
+        <td><span class="info-tag" style="background:#fde8e8;color:#c0392b;">较低</span></td>
+      </tr>
+      <tr class="cmp-detail" id="cmp-0">
+        <td colspan="6">
+          <strong>详细说明：</strong>高低点法是最基础的混合成本分解方法。<br>
+          <strong>步骤：</strong>①按业务量（不是成本！）选择最高点和最低点；②计算单位变动成本 b=(高成本-低成本)/(高业务量-低业务量)；③计算固定成本 a=高成本-b×高业务量；④建立成本模型 y=a+bx。<br>
+          <strong>湘农机械案例结果（正确选点）：</strong>高点(1200件,15800元)，低点(800件,12500元)，b=8.25元/件，a=5900元，模型 y=5900+8.25x。<br>
+          <strong>易错点：</strong>必须按业务量选点！湘农机械中按成本选点会得出 b≈16.67、a≈-2370（负固定成本，不合理！）。
+        </td>
+      </tr>
+      <tr>
+        <td class="mname" onclick="toggleCmp(1)">散布图法 ▸</td>
+        <td>全部数据点入坐标系，目测画线</td>
+        <td>考虑全部数据，直观</td>
+        <td>目测主观，因人而异</td>
+        <td>精度要求不高，快速估算</td>
+        <td><span class="info-tag" style="background:#fef5e7;color:#b7950b;">中等</span></td>
+      </tr>
+      <tr class="cmp-detail" id="cmp-1">
+        <td colspan="6">
+          <strong>详细说明：</strong>散布图法将全部历史数据点绘入坐标系，然后通过目测画一条最接近所有数据点的直线。直线与纵轴交点为固定成本a，斜率为单位变动成本b。<br>
+          <strong>优点：</strong>考虑全部数据点，比高低点法更全面；图形直观，便于发现异常值。<br>
+          <strong>缺点：</strong>画线依赖目测，主观性强，不同人画的线可能不同。<br>
+          <strong>实务中：</strong>常用于初步分析或数据探索阶段，正式决策一般用回归法。
+        </td>
+      </tr>
+      <tr>
+        <td class="mname" onclick="toggleCmp(2)">回归直线法 ▸</td>
+        <td>最小二乘法，误差平方和最小</td>
+        <td>理论最完善，结果最精确</td>
+        <td>计算复杂，需软件</td>
+        <td>数据量大，线性相关度高</td>
+        <td><span class="info-tag" style="background:#eafaf1;color:#27ae60;">较高</span></td>
+      </tr>
+      <tr class="cmp-detail" id="cmp-2">
+        <td colspan="6">
+          <strong>详细说明：</strong>回归直线法运用最小二乘法原理，使所有数据点到回归直线的误差平方和最小，从而确定唯一的最优直线。<br>
+          <strong>Excel操作：</strong>①加载"分析工具库"（文件→选项→加载项→转到→勾选）；②数据→数据分析→回归；③Y值选成本列，X值选业务量列；④查看输出。<br>
+          <strong>关键输出：</strong>Intercept=固定成本a；X Variable 1=单位变动成本b；R Square=拟合优度（越接近1越好）。<br>
+          <strong>湘农机械案例结果：</strong>a≈2380元，b≈12.1元/件，R²≈0.95（线性关系强）。<br>
+          <strong>注意：</strong>若R²&lt;0.5，说明线性关系弱，需考虑非线性模型或增加其他自变量（如气温、设备工时等）。
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- 模块六：随堂计算练习 -->
+<div class="module" id="mod-5">
+  <div class="module-header">
+    <div class="module-title"><span class="icon">✏️</span>随堂计算练习</div>
+    <div class="module-desc">学生用纸笔/计算器独立完成，完成后教师点击"显示答案"核对。共2道题，预计10分钟。</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">练习一：高低点法分解混合成本</div>
+    <div class="practice-box">
+      <h4>📝 题目</h4>
+      <p>某企业2025年上半年维修费与产量数据如下：</p>
+      <div class="practice-data">
+        <table class="data-table">
+          <tr><th>月份</th><th>1月</th><th>2月</th><th>3月</th><th>4月</th><th>5月</th><th>6月</th></tr>
+          <tr><td>产量(件)</td><td>100</td><td>120</td><td>150</td><td>180</td><td>200</td><td>160</td></tr>
+          <tr><td>维修费(元)</td><td>2200</td><td>2400</td><td>2700</td><td>3000</td><td>3200</td><td>2800</td></tr>
+        </table>
+      </div>
+      <p><strong>要求：</strong>用高低点法将维修费分解为固定成本和变动成本，建立成本模型，并预测产量为220件时的维修费总额。</p>
+      <p style="font-size:12px;color:var(--text-light);margin-top:8px;">💡 提示：先找业务量（产量）的最高点和最低点，注意不是按维修费选点！</p>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-success" onclick="toggleAnswer(0)">✅ 显示答案与解析</button>
+    </div>
+    <div class="practice-answer" id="ans-0">
+      <h5>✅ 答案与解析</h5>
+      <p><strong>第一步：选点（按产量）</strong></p>
+      <p>高点：5月，产量200件，维修费3200元</p>
+      <p>低点：1月，产量100件，维修费2200元</p>
+      <p style="margin-top:8px;"><strong>第二步：计算单位变动成本 b</strong></p>
+      <p>b = (3200 - 2200) / (200 - 100) = 1000 / 100 = <strong>10 元/件</strong></p>
+      <p style="margin-top:8px;"><strong>第三步：计算固定成本 a</strong></p>
+      <p>a = 3200 - 10×200 = 3200 - 2000 = <strong>1200 元</strong></p>
+      <p style="margin-top:8px;"><strong>第四步：建立成本模型</strong></p>
+      <p style="font-size:18px;font-weight:700;color:var(--accent);">y = 1200 + 10x</p>
+      <p style="margin-top:8px;"><strong>第五步：预测产量220件时的维修费</strong></p>
+      <p>y = 1200 + 10×220 = 1200 + 2200 = <strong>3400 元</strong></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">练习二：回归分析结果解读</div>
+    <div class="practice-box">
+      <h4>📝 题目</h4>
+      <p>某企业用Excel回归分析工具，得到电费（Y）与产量（X）的回归结果如下：</p>
+      <div class="practice-data">
+        <p>• Intercept（截距）= 3500</p>
+        <p>• X Variable 1（X系数）= 8.5</p>
+        <p>• R Square（决定系数）= 0.92</p>
+      </div>
+      <p><strong>要求：</strong>① 写出成本模型；② 解释R²=0.92的含义；③ 预测产量为500件时的电费。</p>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-success" onclick="toggleAnswer(1)">✅ 显示答案与解析</button>
+    </div>
+    <div class="practice-answer" id="ans-1">
+      <h5>✅ 答案与解析</h5>
+      <p><strong>① 成本模型</strong></p>
+      <p>固定成本 a = Intercept = 3500元</p>
+      <p>单位变动成本 b = X Variable 1 = 8.5元/件</p>
+      <p style="font-size:18px;font-weight:700;color:var(--accent);margin-top:6px;">y = 3500 + 8.5x</p>
+      <p style="margin-top:10px;"><strong>② R²=0.92的含义</strong></p>
+      <p>R²=0.92表示产量可以解释92%的电费变动，线性关系<strong>很强</strong>，回归结果可靠。剩余8%的电费变动由其他因素（如季节、设备老化等）解释。</p>
+      <p style="margin-top:10px;"><strong>③ 预测产量500件时的电费</strong></p>
+      <p>y = 3500 + 8.5×500 = 3500 + 4250 = <strong>7750 元</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- 模块七：随堂快测 -->
+<div class="module" id="mod-6">
+  <div class="module-header">
+    <div class="module-title"><span class="icon">📝</span>随堂快测</div>
+    <div class="module-desc">3道选择题，学生举手作答，教师点击显示答案和解析。</div>
+  </div>
+  <div class="card" id="quiz-container"></div>
+  <div class="btn-group">
+    <button class="btn btn-outline" onclick="resetQuiz()">🔄 重新测试</button>
+  </div>
+  <div class="score-panel" id="quiz-score">
+    <div class="score" id="score-num">0/3</div>
+    <div style="font-size:16px;margin-top:6px;">正确率</div>
+  </div>
+</div>
+
+<script>
+// ============ 数据 ============
+const months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+// 业务量最高=7月(1200)，成本最高=8月(16800,极端高温)
+// 业务量最低=1月(800)，成本最低=2月(11800,春节放假)
+const baseVol = [800, 850, 900, 950, 1000, 1100, 1200, 1150, 1050, 1000, 950, 900];
+const baseCost = [12500, 11800, 13000, 13600, 14200, 15400, 15800, 16800, 14800, 14100, 13400, 12800];
+
+let curVol = [...baseVol];
+let curCost = [...baseCost];
+let tampered = false;
+let tamperIdx = -1;
+let tamperPosInCur = -1;
+
+// ============ 高清Canvas ============
+// Canvas高清适配：只初始化一次，之后缓存context，重绘时不改动canvas尺寸避免布局抖动
+const _canvasCache = {};
+function setupCanvas(canvas) {
+  const id = canvas.id;
+  if (_canvasCache[id]) return _canvasCache[id];
+  const dpr = window.devicePixelRatio || 1;
+  const w = parseInt(canvas.getAttribute('width')) || 560;
+  const h = parseInt(canvas.getAttribute('height')) || 400;
+  canvas.style.aspectRatio = w + ' / ' + h;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  _canvasCache[id] = { ctx, w, h };
+  return _canvasCache[id];
+}
+
+// ============ 模块切换 ============
+function switchModule(idx) {
+  document.querySelectorAll('.module').forEach((m, i) => m.classList.toggle('active', i === idx));
+  document.querySelectorAll('.nav-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+  if (idx === 2) {
+    // 切换到高低点法模块时，重置为原始数据，避免回归模块的噪声/剔除/篡改污染
+    curVol = [...baseVol];
+    curCost = [...baseCost];
+    tampered = false; tamperIdx = -1; tamperPosInCur = -1;
+    setTimeout(drawHL, 80);
+  }
+  if (idx === 3) setTimeout(updateReg, 80);
+  if (idx === 1) setTimeout(() => { if (currentType >= 0) typeData[currentType].draw(); }, 80);
+}
+
+// ============ 模块一：成本分类 ============
+const costItems = [
+  { name: '门店房租（月付）', type: 'fixed', explain: '每月固定金额，不随销量变动。总额固定，销量越大每杯分摊越少。' },
+  { name: '柠檬、糖、杯子等原材料', type: 'variable', explain: '每做一杯都需要消耗，总额随销量正比例变动，单位成本基本固定。' },
+  { name: '店员基本工资', type: 'fixed', explain: '一定销量范围内店员人数不变，基本工资总额固定。销量大增需增员时会跃升（属半固定）。' },
+  { name: '水电费', type: 'mixed', explain: '有基础用电（照明、冷藏）=固定部分，制作产品用电=变动部分，属于半变动成本。' },
+  { name: '外卖平台佣金（按销售额比例）', type: 'variable', explain: '按销售额一定比例支付，总额随销量正比例变动。' },
+  { name: '设备折旧费（直线法）', type: 'fixed', explain: '按年限直线计提，每月折旧额固定，与销量无关。' },
+  { name: '店员加班费', type: 'mixed', explain: '正常工时内工资固定，超时部分按小时计算，属于延期变动成本。' },
+  { name: '加盟费摊销', type: 'fixed', explain: '一次性加盟费按期限摊销，每月摊销额固定。' },
+  { name: '包装费（杯、袋、吸管）', type: 'variable', explain: '每杯产品都需要包装，总额随销量正比例变动。' },
+  { name: '促销广告费（按月预算）', type: 'fixed', explain: '按月预算投放，属于酌量性固定成本，短期内不随销量变动。' }
+];
+
+function initCosts() {
+  const list = document.getElementById('cost-list');
+  list.innerHTML = costItems.map((item, i) => `
+    <div class="cost-item" onclick="revealCost(${i})" data-idx="${i}">
+      <span class="cost-num">${i+1}</span>
+      <span class="cost-name">${item.name}</span>
+      <span class="cost-answer answer-${item.type}">${item.type==='fixed'?'固定成本':item.type==='variable'?'变动成本':'混合成本'}</span>
+      <div class="cost-explain">💡 ${item.explain}</div>
+    </div>
+  `).join('');
+}
+function revealCost(i) {
+  const el = document.querySelector(`.cost-item[data-idx="${i}"]`);
+  if (!el.classList.contains('revealed')) el.classList.add('revealed', 'revealed-' + costItems[i].type);
+}
+function revealAllCosts() { costItems.forEach((_, i) => revealCost(i)); }
+function resetCosts() {
+  document.querySelectorAll('.cost-item').forEach(el => el.classList.remove('revealed','revealed-fixed','revealed-variable','revealed-mixed'));
+}
+
+// ============ 模块二：混合成本类型 ============
+let currentType = -1;
+const typeData = [
+  { title: '半变动成本', example: '<strong>生活实例：</strong>手机话费 = 月租（固定）+ 通话费（变动）。有一个初始基数，之后随业务量正比例增加。', draw: drawSemiVariable },
+  { title: '半固定成本（阶梯式）', example: '<strong>生活实例：</strong>质检员工资：产量0-1000件需1名质检员，1001-2000件需2名，以此类推。一定范围内固定，超量跃升。', draw: drawSemiFixed },
+  { title: '延期变动成本', example: '<strong>生活实例：</strong>员工工资 = 基本工资（正常工时内固定）+ 加班费（超时部分按小时计）。正常范围内固定，超出后变动。', draw: drawDeferred },
+  { title: '曲线变动成本', example: '<strong>生活实例：</strong>递增曲线：违约金、累进计件工资；递减曲线：折扣采购（量越大单价越低）。变化率不均匀。', draw: drawCurve }
+];
+
+function showType(i) {
+  currentType = i;
+  document.querySelectorAll('.type-card').forEach((c, idx) => c.classList.toggle('active', idx === i));
+  const d = document.getElementById('type-detail');
+  d.classList.add('show');
+  document.getElementById('type-title').textContent = typeData[i].title;
+  document.getElementById('type-example').innerHTML = typeData[i].example;
+  setTimeout(() => typeData[i].draw(), 50);
+}
+
+function drawAxes(ctx, w, h, xLabel, yLabel) {
+  const padL = 55, padR = 25, padT = 20, padB = 45;
+  ctx.clearRect(0, 0, w, h);
+  // 网格
+  ctx.strokeStyle = '#eef2f6';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = padT + (h-padT-padB) * i / 4;
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(w-padR, y); ctx.stroke();
+  }
+  // 坐标轴
+  ctx.strokeStyle = '#2c3e50';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(padL, padT); ctx.lineTo(padL, h-padB); ctx.lineTo(w-padR, h-padB);
+  ctx.stroke();
+  // 箭头
+  ctx.fillStyle = '#2c3e50';
+  ctx.beginPath(); ctx.moveTo(w-padR, h-padB); ctx.lineTo(w-padR-8, h-padB-5); ctx.lineTo(w-padR-8, h-padB+5); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(padL, padT); ctx.lineTo(padL-5, padT+8); ctx.lineTo(padL+5, padT+8); ctx.fill();
+  // 标签
+  ctx.fillStyle = '#555';
+  ctx.font = '13px "Microsoft YaHei"';
+  ctx.fillText(xLabel, w-70, h-15);
+  ctx.save(); ctx.translate(15, h/2); ctx.rotate(-Math.PI/2); ctx.fillText(yLabel, -30, 0); ctx.restore();
+  return { padL, padR, padT, padB, plotW: w-padL-padR, plotH: h-padT-padB };
+}
+
+function drawSemiVariable() {
+  const c = document.getElementById('type-canvas');
+  const { ctx, w, h } = setupCanvas(c);
+  const g = drawAxes(ctx, w, h, '业务量', '成本');
+  const x1 = g.padL, y1 = g.padT + g.plotH * 0.55;
+  const x2 = g.padL + g.plotW, y2 = g.padT + g.plotH * 0.15;
+  // 固定部分虚线
+  ctx.setLineDash([6, 4]);
+  ctx.strokeStyle = '#aaa';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x1, g.padT+g.plotH); ctx.stroke();
+  ctx.setLineDash([]);
+  // 主线
+  const grad = ctx.createLinearGradient(x1, y1, x2, y2);
+  grad.addColorStop(0, '#e8792b');
+  grad.addColorStop(1, '#f5a623');
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = 3.5;
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+  ctx.fillStyle = '#e8792b';
+  ctx.font = 'bold 13px "Microsoft YaHei"';
+  ctx.fillText('固定部分a', x1+8, y1-8);
+  ctx.fillText('y = a + bx', x2-80, y2-10);
+}
+
+function drawSemiFixed() {
+  const c = document.getElementById('type-canvas');
+  const { ctx, w, h } = setupCanvas(c);
+  const g = drawAxes(ctx, w, h, '业务量', '成本');
+  const steps = [
+    [g.padL, g.padT+g.plotH*0.7, g.padL+g.plotW*0.25, g.padT+g.plotH*0.7],
+    [g.padL+g.plotW*0.25, g.padT+g.plotH*0.7, g.padL+g.plotW*0.25, g.padT+g.plotH*0.5],
+    [g.padL+g.plotW*0.25, g.padT+g.plotH*0.5, g.padL+g.plotW*0.5, g.padT+g.plotH*0.5],
+    [g.padL+g.plotW*0.5, g.padT+g.plotH*0.5, g.padL+g.plotW*0.5, g.padT+g.plotH*0.3],
+    [g.padL+g.plotW*0.5, g.padT+g.plotH*0.3, g.padL+g.plotW*0.75, g.padT+g.plotH*0.3],
+    [g.padL+g.plotW*0.75, g.padT+g.plotH*0.3, g.padL+g.plotW*0.75, g.padT+g.plotH*0.12],
+    [g.padL+g.plotW*0.75, g.padT+g.plotH*0.12, g.padL+g.plotW, g.padT+g.plotH*0.12]
+  ];
+  ctx.strokeStyle = '#e8792b';
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.moveTo(steps[0][0], steps[0][1]);
+  steps.forEach(s => ctx.lineTo(s[2], s[3]));
+  ctx.stroke();
+  ctx.fillStyle = '#e8792b';
+  ctx.font = 'bold 13px "Microsoft YaHei"';
+  ctx.fillText('阶梯式跃升', g.padL+g.plotW*0.35, g.padT+g.plotH*0.4);
+}
+
+function drawDeferred() {
+  const c = document.getElementById('type-canvas');
+  const { ctx, w, h } = setupCanvas(c);
+  const g = drawAxes(ctx, w, h, '工时/业务量', '成本');
+  const x0 = g.padL + g.plotW * 0.4;
+  const y0 = g.padT + g.plotH * 0.5;
+  // 正常部分
+  ctx.strokeStyle = '#2c5f8a';
+  ctx.lineWidth = 3.5;
+  ctx.beginPath(); ctx.moveTo(g.padL, y0); ctx.lineTo(x0, y0); ctx.stroke();
+  // 延期部分
+  ctx.strokeStyle = '#e8792b';
+  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(g.padL+g.plotW, g.padT+g.plotH*0.15); ctx.stroke();
+  // 分界虚线
+  ctx.setLineDash([5, 4]);
+  ctx.strokeStyle = '#aaa';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, g.padT+g.plotH); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#2c5f8a';
+  ctx.font = 'bold 12px "Microsoft YaHei"';
+  ctx.fillText('正常工时内固定', g.padL+10, y0-10);
+  ctx.fillStyle = '#e8792b';
+  ctx.fillText('超时后变动', x0+30, y0-30);
+  ctx.fillStyle = '#888';
+  ctx.font = '11px "Microsoft YaHei"';
+  ctx.fillText('正常工时', x0-25, g.padT+g.plotH+18);
+}
+
+function drawCurve() {
+  const c = document.getElementById('type-canvas');
+  const { ctx, w, h } = setupCanvas(c);
+  const g = drawAxes(ctx, w, h, '业务量', '成本');
+  const grad = ctx.createLinearGradient(g.padL, g.padT+g.plotH, g.padL+g.plotW, g.padT);
+  grad.addColorStop(0, '#e8792b');
+  grad.addColorStop(1, '#c0392b');
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.moveTo(g.padL, g.padT+g.plotH*0.8);
+  ctx.bezierCurveTo(g.padL+g.plotW*0.2, g.padT+g.plotH*0.75, g.padL+g.plotW*0.4, g.padT+g.plotH*0.55, g.padL+g.plotW*0.55, g.padT+g.plotH*0.4);
+  ctx.bezierCurveTo(g.padL+g.plotW*0.7, g.padT+g.plotH*0.25, g.padL+g.plotW*0.85, g.padT+g.plotH*0.1, g.padL+g.plotW, g.padT+g.plotH*0.05);
+  ctx.stroke();
+  ctx.fillStyle = '#c0392b';
+  ctx.font = 'bold 13px "Microsoft YaHei"';
+  ctx.fillText('递增曲线（变化率递增）', g.padL+g.plotW*0.3, g.padT+g.plotH*0.35);
+}
+
+// ============ 模块三：高低点法 ============
+let hlMode = 'correct';
+let hlHigh = -1, hlLow = -1, hlDrawn = false;
+
+function setMode(m) {
+  hlMode = m;
+  document.getElementById('mode-correct').classList.toggle('active', m === 'correct');
+  document.getElementById('mode-wrong').classList.toggle('active', m === 'wrong');
+  resetHL();
+}
+
+function selectHigh() {
+  hlHigh = hlMode === 'correct' ? curVol.indexOf(Math.max(...curVol)) : curCost.indexOf(Math.max(...curCost));
+  hlDrawn = false;
+  drawHL();
+}
+function selectLow() {
+  hlLow = hlMode === 'correct' ? curVol.indexOf(Math.min(...curVol)) : curCost.indexOf(Math.min(...curCost));
+  hlDrawn = false;
+  drawHL();
+}
+function drawHLine() {
+  if (hlHigh < 0 || hlLow < 0) { alert('请先选择最高点和最低点！'); return; }
+  hlDrawn = true;
+  const b = (curCost[hlHigh]-curCost[hlLow])/(curVol[hlHigh]-curVol[hlLow]);
+  const a = curCost[hlHigh] - b*curVol[hlHigh];
+  const modeText = hlMode === 'correct' ? '<span style="color:#27ae60;font-weight:700;">✅ 正确选点（按业务量）</span>' : '<span style="color:#e74c3c;font-weight:700;">❌ 错误选点（按成本）</span>';
+  const warning = hlMode === 'wrong' ? '<p style="color:#e74c3c;margin-top:10px;font-weight:600;">⚠ 固定成本为负数，明显不合理！这就是按成本选点的错误后果。</p>' : '';
+  document.getElementById('hl-result').innerHTML = `
+    <p><strong>选点方式：</strong>${modeText}</p>
+    <p style="margin-top:6px;">高点：${months[hlHigh]}（产量${curVol[hlHigh]}件，电费${curCost[hlHigh]}元）</p>
+    <p>低点：${months[hlLow]}（产量${curVol[hlLow]}件，电费${curCost[hlLow]}元）</p>
+    <div class="result-panel" style="margin-top:12px;">
+      <div class="label">单位变动成本 b</div>
+      <div class="value">${b.toFixed(2)} 元/件</div>
+      <div style="font-size:12px;color:#888;margin-top:4px;">= (${curCost[hlHigh]}-${curCost[hlLow]})/(${curVol[hlHigh]}-${curVol[hlLow]})</div>
+    </div>
+    <div class="result-panel" style="margin-top:10px;">
+      <div class="label">固定成本 a</div>
+      <div class="value" style="color:${a<0?'#e74c3c':'var(--primary)'}">${a.toFixed(0)} 元</div>
+    </div>
+    <div class="result-formula">y = ${a.toFixed(0)} + ${b.toFixed(2)}x</div>
+    ${warning}
+  `;
+  drawHL();
+}
+function resetHL() {
+  hlHigh = -1; hlLow = -1; hlDrawn = false;
+  document.getElementById('hl-result').innerHTML = '<p style="color:var(--text-light);text-align:center;padding:30px 0;">请先选择最高点和最低点，然后点击"连线计算"</p>';
+  drawHL();
+}
+
+function drawHL() {
+  const c = document.getElementById('hl-canvas');
+  const { ctx, w, h } = setupCanvas(c);
+  const padL = 60, padR = 25, padT = 25, padB = 50;
+  const plotW = w-padL-padR, plotH = h-padT-padB;
+  ctx.clearRect(0,0,w,h);
+  // 网格
+  ctx.strokeStyle = '#eef2f6'; ctx.lineWidth = 1;
+  for (let i = 0; i <= 5; i++) {
+    const y = padT + plotH*i/5;
+    ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(w-padR,y); ctx.stroke();
+    const val = Math.max(...curCost)+500 - (Math.max(...curCost)+1000-Math.min(...curCost)+500)*i/5;
+    ctx.fillStyle = '#999'; ctx.font = '11px sans-serif';
+    ctx.fillText(Math.round(val), 5, y+4);
+  }
+  const vMin = Math.min(...curVol)-50, vMax = Math.max(...curVol)+50;
+  const cMin = Math.min(...curCost)-500, cMax = Math.max(...curCost)+500;
+  const sx = v => padL + (v-vMin)/(vMax-vMin)*plotW;
+  const sy = cost => h-padB - (cost-cMin)/(cMax-cMin)*plotH;
+  // 坐标轴
+  ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(padL,padT); ctx.lineTo(padL,h-padB); ctx.lineTo(w-padR,h-padB); ctx.stroke();
+  ctx.fillStyle = '#555'; ctx.font = '12px "Microsoft YaHei"';
+  ctx.fillText('产量(件)', w-60, h-15);
+  ctx.save(); ctx.translate(12,h/2); ctx.rotate(-Math.PI/2); ctx.fillText('电费(元)',0,0); ctx.restore();
+  // 回归线
+  if (hlDrawn && hlHigh>=0 && hlLow>=0) {
+    const b = (curCost[hlHigh]-curCost[hlLow])/(curVol[hlHigh]-curVol[hlLow]);
+    const a = curCost[hlHigh] - b*curVol[hlHigh];
+    ctx.strokeStyle = hlMode==='correct' ? '#27ae60' : '#e74c3c';
+    ctx.lineWidth = 3; ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(sx(vMin), sy(a+b*vMin));
+    ctx.lineTo(sx(vMax), sy(a+b*vMax));
+    ctx.stroke();
+  }
+  // 数据点
+  curVol.forEach((v, i) => {
+    let color = '#2c5f8a', size = 6;
+    if (i === hlHigh) { color = '#e74c3c'; size = 11; }
+    if (i === hlLow) { color = '#e8792b'; size = 11; }
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(sx(v), sy(curCost[i]), size, 0, Math.PI*2); ctx.fill();
+    if (i === hlHigh) { ctx.fillStyle = '#e74c3c'; ctx.font = 'bold 12px "Microsoft YaHei"'; ctx.fillText('高', sx(v)-7, sy(curCost[i])-14); }
+    if (i === hlLow) { ctx.fillStyle = '#e8792b'; ctx.font = 'bold 12px "Microsoft YaHei"'; ctx.fillText('低', sx(v)-7, sy(curCost[i])-14); }
+  });
+}
+
+function initHLTable() {
+  const vHighIdx = baseVol.indexOf(Math.max(...baseVol));
+  const vLowIdx = baseVol.indexOf(Math.min(...baseVol));
+  const cHighIdx = baseCost.indexOf(Math.max(...baseCost));
+  const cLowIdx = baseCost.indexOf(Math.min(...baseCost));
+  let html = '<tr><th>月份</th><th>产量(件)</th><th>电费(元)</th><th>备注</th></tr>';
+  baseVol.forEach((v, i) => {
+    let tags = [];
+    if (i === vHighIdx) tags.push('<span class="tag" style="background:#e74c3c;">业务量最高</span>');
+    if (i === vLowIdx) tags.push('<span class="tag" style="background:#e8792b;">业务量最低</span>');
+    if (i === cHighIdx) tags.push('<span class="tag" style="background:#8e44ad;">成本最高</span>');
+    if (i === cLowIdx) tags.push('<span class="tag" style="background:#27ae60;">成本最低</span>');
+    if (i === 7) tags.push('(极端高温)');
+    if (i === 1) tags.push('(春节放假)');
+    const hl = (i===vHighIdx||i===vLowIdx||i===cHighIdx||i===cLowIdx) ? 'highlight' : '';
+    html += `<tr class="${hl}"><td>${months[i]}</td><td>${v}</td><td>${baseCost[i]}</td><td style="font-size:11px;">${tags.join(' ')}</td></tr>`;
+  });
+  document.getElementById('hl-table').innerHTML = html;
+}
+
+// ============ 模块四：回归分析 ============
+function linearRegression(x, y) {
+  const n = x.length;
+  const sx = x.reduce((a,b)=>a+b,0), sy = y.reduce((a,b)=>a+b,0);
+  const sxy = x.reduce((s,xi,i)=>s+xi*y[i],0);
+  const sxx = x.reduce((s,xi)=>s+xi*xi,0);
+  const syy = y.reduce((s,yi)=>s+yi*yi,0);
+  const b = (n*sxy - sx*sy)/(n*sxx - sx*sx);
+  const a = (sy - b*sx)/n;
+  const yMean = sy/n;
+  const ssTot = y.reduce((s,yi)=>s+(yi-yMean)**2,0);
+  const ssRes = y.reduce((s,yi,i)=>s+(yi-(a+b*x[i]))**2,0);
+  return { a, b, r2: 1 - ssRes/ssTot };
+}
+
+function updateReg() {
+  const noise = parseInt(document.getElementById('noise-slider').value);
+  const removeN = parseInt(document.getElementById('remove-slider').value);
+  document.getElementById('noise-val').textContent = noise < 30 ? '低' : noise < 60 ? '中' : '高';
+  document.getElementById('remove-val').textContent = removeN;
+
+  curVol = []; curCost = []; let curBaseIdx = [];
+  for (let i = 0; i < baseVol.length; i++) {
+    if (removeN >= 1 && i === 7) continue; // 剔除8月异常高
+    if (removeN >= 2 && i === 1) continue; // 剔除2月异常低
+    curVol.push(baseVol[i]);
+    curBaseIdx.push(i);
+    const noiseAmt = (Math.random()-0.5) * noise * 35;
+    curCost.push(baseCost[i] + noiseAmt);
+  }
+  // 篡改前先计算原始回归结果用于对比
+  let regOrig = null;
+  tamperPosInCur = -1;
+  if (tampered && tamperIdx >= 0) {
+    const posInCur = curBaseIdx.indexOf(tamperIdx);
+    if (posInCur >= 0) {
+      tamperPosInCur = posInCur;
+      regOrig = linearRegression(curVol, curCost);
+      curCost[posInCur] *= 1.2; // 虚增20%，幅度看似合理波动，不易察觉但足以扭曲模型
+    }
+  }
+
+  const reg = linearRegression(curVol, curCost);
+  document.getElementById('r2-val').textContent = reg.r2.toFixed(3);
+  document.getElementById('reg-a').textContent = reg.a.toFixed(0) + ' 元';
+  document.getElementById('reg-b').textContent = reg.b.toFixed(2) + ' 元/件';
+  document.getElementById('reg-formula').textContent = `y = ${reg.a.toFixed(0)} + ${reg.b.toFixed(2)}x`;
+
+  const lvl = document.getElementById('r2-level');
+  if (reg.r2 >= 0.8) { lvl.textContent = '线性关系强'; lvl.className = 'r2-level r2-high'; }
+  else if (reg.r2 >= 0.5) { lvl.textContent = '线性关系中等'; lvl.className = 'r2-level r2-mid'; }
+  else { lvl.textContent = '线性关系弱'; lvl.className = 'r2-level r2-low'; }
+
+  // 篡改警示框：显示具体篡改信息和前后对比
+  if (tampered && regOrig) {
+    const origCost = baseCost[tamperIdx];
+    const tamperedCost = Math.round(origCost * 1.2);
+    document.getElementById('tamper-alert').innerHTML = `
+      <h4>⚠ 数据已被篡改！观察图中两条回归线的偏移</h4>
+      <p><strong>看图指引：</strong>图中<span style="color:#e74c3c;font-weight:600;">红色虚线</span>是原始回归线，<span style="color:#e8792b;font-weight:600;">橙色实线</span>是篡改后的回归线；紫色点是被篡改的数据点，灰色空心圆是它的原始位置。仅一个点上移，整条回归线就被拽偏了。</p>
+      <p style="margin-top:6px;"><strong>篡改位置：</strong>${months[tamperIdx]}（产量${baseVol[tamperIdx]}件），财务人员将电费从 <strong>${origCost}元</strong> 调整为 <strong style="color:#e74c3c">${tamperedCost}元</strong>（虚增20%），声称是"五一假期后设备重启用电增加"，但无对应维修记录。</p>
+      <p style="margin-top:6px;color:#666;font-size:12px;">💡 注意：20%的幅度看起来像是正常的业务波动，不像明显的造假，但它对回归结果的影响不容忽视——这正是财务造假的隐蔽之处。</p>
+      <p style="margin-top:8px;"><strong>篡改前后对比：</strong></p>
+      <table style="width:100%;font-size:12px;border-collapse:collapse;margin-top:4px;">
+        <tr style="background:#f0f0f0;"><th style="padding:4px;border:1px solid #ddd;">指标</th><th style="padding:4px;border:1px solid #ddd;">篡改前</th><th style="padding:4px;border:1px solid #ddd;">篡改后</th><th style="padding:4px;border:1px solid #ddd;">变化幅度</th></tr>
+        <tr><td style="padding:4px;border:1px solid #ddd;">固定成本a</td><td style="padding:4px;border:1px solid #ddd;">${regOrig.a.toFixed(0)}元</td><td style="padding:4px;border:1px solid #ddd;color:#e74c3c;">${reg.a.toFixed(0)}元</td><td style="padding:4px;border:1px solid #ddd;color:#e74c3c;">${((reg.a-regOrig.a)/regOrig.a*100).toFixed(1)}%</td></tr>
+        <tr><td style="padding:4px;border:1px solid #ddd;">单位变动成本b</td><td style="padding:4px;border:1px solid #ddd;">${regOrig.b.toFixed(2)}元/件</td><td style="padding:4px;border:1px solid #ddd;color:#e74c3c;">${reg.b.toFixed(2)}元/件</td><td style="padding:4px;border:1px solid #ddd;color:#e74c3c;">${((reg.b-regOrig.b)/regOrig.b*100).toFixed(1)}%</td></tr>
+        <tr><td style="padding:4px;border:1px solid #ddd;">R²拟合优度</td><td style="padding:4px;border:1px solid #ddd;">${regOrig.r2.toFixed(3)}</td><td style="padding:4px;border:1px solid #ddd;color:#e74c3c;">${reg.r2.toFixed(3)}</td><td style="padding:4px;border:1px solid #ddd;color:#e74c3c;">${((reg.r2-regOrig.r2)/regOrig.r2*100).toFixed(1)}%</td></tr>
+      </table>
+      <p style="margin-top:8px;">一个月的数据仅调整20%，固定成本和单位变动成本就发生了明显偏移，R²也下降了。如果基于这个被篡改的模型进行成本预测和定价决策，结果会系统性偏差。<strong>会计数据真实性是管理会计分析的生命线，不做假账是会计人的职业底线。</strong></p>
+    `;
+  }
+  document.getElementById('tamper-alert').classList.toggle('show', tampered);
+  drawReg(reg, regOrig);
+  if (document.getElementById('target-box').style.display !== 'none') drawTarget(reg.r2);
+}
+
+function drawReg(reg, regOrig) {
+  const c = document.getElementById('reg-canvas');
+  const { ctx, w, h } = setupCanvas(c);
+  const padL = 70, padR = 25, padT = 25, padB = 55;
+  const plotW = w-padL-padR, plotH = h-padT-padB;
+  ctx.clearRect(0,0,w,h);
+
+  // 固定坐标范围，便于篡改前后对比
+  const vMin = 750, vMax = 1250;
+  const cMin = 11000, cMax = 17500;
+  const sx = v => padL + (v-vMin)/(vMax-vMin)*plotW;
+  const sy = cost => h-padB - (cost-cMin)/(cMax-cMin)*plotH;
+
+  // 网格线 + Y轴刻度数值
+  ctx.strokeStyle = '#eef2f6'; ctx.lineWidth = 1;
+  ctx.fillStyle = '#666'; ctx.font = '11px "Microsoft YaHei"'; ctx.textAlign = 'right';
+  [11000, 12500, 14000, 15500, 17000].forEach(val => {
+    const y = sy(val);
+    ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(w-padR,y); ctx.stroke();
+    ctx.fillText(val.toLocaleString()+'元', padL-8, y+4);
+  });
+  // X轴刻度数值
+  ctx.textAlign = 'center';
+  [800, 900, 1000, 1100, 1200].forEach(val => {
+    const x = sx(val);
+    ctx.beginPath(); ctx.moveTo(x,padT); ctx.lineTo(x,h-padB); ctx.stroke();
+    ctx.fillText(val+'件', x, h-padB+18);
+  });
+
+  // 坐标轴
+  ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(padL,padT); ctx.lineTo(padL,h-padB); ctx.lineTo(w-padR,h-padB); ctx.stroke();
+  ctx.fillStyle = '#333'; ctx.font = 'bold 12px "Microsoft YaHei"';
+  ctx.textAlign = 'center'; ctx.fillText('产量(件)', w/2, h-8);
+  ctx.save(); ctx.translate(14,h/2); ctx.rotate(-Math.PI/2); ctx.fillText('电费(元)',0,0); ctx.restore();
+
+  // 篡改时：先画原始回归线（红色虚线）
+  if (tampered && regOrig) {
+    ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 2.5; ctx.setLineDash([8,5]);
+    ctx.beginPath();
+    ctx.moveTo(sx(vMin), sy(regOrig.a+regOrig.b*vMin));
+    ctx.lineTo(sx(vMax), sy(regOrig.a+regOrig.b*vMax));
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = '#e74c3c'; ctx.font = 'bold 11px "Microsoft YaHei"'; ctx.textAlign = 'left';
+    ctx.fillText(`原始: y=${regOrig.a.toFixed(0)}+${regOrig.b.toFixed(2)}x  R²=${regOrig.r2.toFixed(3)}`, padL+8, padT+16);
+  }
+
+  // 当前回归线（橙色实线）
+  const grad = ctx.createLinearGradient(padL, sy(reg.a+reg.b*vMin), w-padR, sy(reg.a+reg.b*vMax));
+  grad.addColorStop(0, '#e8792b'); grad.addColorStop(1, '#f5a623');
+  ctx.strokeStyle = grad; ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.moveTo(sx(vMin), sy(reg.a+reg.b*vMin));
+  ctx.lineTo(sx(vMax), sy(reg.a+reg.b*vMax));
+  ctx.stroke();
+  ctx.fillStyle = tampered ? '#e8792b' : '#2c5f8a'; ctx.font = 'bold 11px "Microsoft YaHei"'; ctx.textAlign = 'left';
+  ctx.fillText(`${tampered?'篡改后':'当前'}: y=${reg.a.toFixed(0)}+${reg.b.toFixed(2)}x  R²=${reg.r2.toFixed(3)}`, padL+8, tampered?padT+34:padT+16);
+
+  // 数据点
+  curVol.forEach((v, i) => {
+    const isTampered = tampered && i === tamperPosInCur;
+    if (isTampered) {
+      const origCost = baseCost[tamperIdx];
+      // 原始位置：灰色空心圆
+      ctx.strokeStyle = '#95a5a6'; ctx.lineWidth = 2; ctx.setLineDash([4,3]);
+      ctx.beginPath(); ctx.arc(sx(v), sy(origCost), 7, 0, Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = '#888'; ctx.font = '10px "Microsoft YaHei"'; ctx.textAlign = 'right';
+      ctx.fillText('原始'+origCost+'元', sx(v)-12, sy(origCost)-8);
+      // 箭头：原始→篡改后
+      ctx.strokeStyle = '#9b59b6'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(sx(v), sy(origCost)-8); ctx.lineTo(sx(v), sy(curCost[i])+10); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(sx(v)-5, sy(curCost[i])+6); ctx.lineTo(sx(v), sy(curCost[i])+12); ctx.lineTo(sx(v)+5, sy(curCost[i])+6); ctx.fillStyle='#9b59b6'; ctx.fill();
+      // 篡改后位置：紫色实心圆
+      ctx.fillStyle = '#9b59b6';
+      ctx.beginPath(); ctx.arc(sx(v), sy(curCost[i]), 9, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = '#9b59b6'; ctx.font = 'bold 12px "Microsoft YaHei"'; ctx.textAlign = 'left';
+      ctx.fillText(`5月篡改: ${curCost[i].toFixed(0)}元(+20%)`, sx(v)+14, sy(curCost[i])-6);
+    } else {
+      ctx.fillStyle = '#2c5f8a';
+      ctx.beginPath(); ctx.arc(sx(v), sy(curCost[i]), 6, 0, Math.PI*2); ctx.fill();
+    }
+  });
+
+  // 篡改时显示图例
+  if (tampered) {
+    const lx = w-padR-155, ly = h-padB-68;
+    ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fillRect(lx-8, ly-8, 150, 60);
+    ctx.strokeStyle = '#ddd'; ctx.lineWidth = 1; ctx.strokeRect(lx-8, ly-8, 150, 60);
+    ctx.fillStyle = '#333'; ctx.font = 'bold 11px "Microsoft YaHei"'; ctx.textAlign = 'left';
+    ctx.fillText('图例', lx, ly+6);
+    ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 2; ctx.setLineDash([6,4]);
+    ctx.beginPath(); ctx.moveTo(lx, ly+20); ctx.lineTo(lx+22, ly+20); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = '#555'; ctx.font = '10px "Microsoft YaHei"'; ctx.fillText('原始回归线', lx+28, ly+24);
+    ctx.strokeStyle = '#e8792b'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(lx, ly+36); ctx.lineTo(lx+22, ly+36); ctx.stroke();
+    ctx.fillText('篡改后回归线', lx+28, ly+40);
+    ctx.fillStyle = '#9b59b6'; ctx.beginPath(); ctx.arc(lx+11, ly+50, 5, 0, Math.PI*2); ctx.fill();
+    ctx.fillText('被篡改数据点', lx+28, ly+54);
+  }
+}
+
+function tamperData() {
+  tampered = true;
+  tamperIdx = 4; // 篡改5月（产量1000件，中间位置），虚增20%，看起来像合理波动但实际扭曲模型
+  updateReg();
+}
+function resetReg() {
+  tampered = false; tamperIdx = -1; tamperPosInCur = -1;
+  document.getElementById('noise-slider').value = 8;
+  document.getElementById('remove-slider').value = 0;
+  updateReg();
+}
+function toggleTarget() {
+  const box = document.getElementById('target-box');
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  if (box.style.display !== 'none') {
+    const reg = linearRegression(curVol, curCost);
+    drawTarget(reg.r2);
+  }
+}
+
+function drawTarget(r2) {
+  const c = document.getElementById('target-canvas');
+  const { ctx, w, h } = setupCanvas(c);
+  const cx = w/2, cy = h/2;
+  ctx.clearRect(0,0,w,h);
+  const rings = ['#e74c3c','#e8792b','#f5a623','#f1c40f','#27ae60','#2c5f8a'];
+  for (let i = 5; i >= 0; i--) {
+    ctx.fillStyle = rings[i];
+    ctx.beginPath(); ctx.arc(cx, cy, 22+i*22, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(cx, cy, 16, 0, Math.PI*2); ctx.fill();
+  // 子弹
+  const spread = (1-r2)*110 + 8;
+  for (let i = 0; i < 22; i++) {
+    const angle = Math.random()*Math.PI*2;
+    const dist = Math.random()*spread;
+    ctx.fillStyle = '#2c3e50';
+    ctx.beginPath(); ctx.arc(cx+Math.cos(angle)*dist, cy+Math.sin(angle)*dist, 4.5, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 14px "Microsoft YaHei"'; ctx.textAlign = 'center';
+  ctx.fillText(`R²=${r2.toFixed(2)} → ${r2>=0.8?'集中靶心':r2>=0.5?'较分散':'散乱'}`, cx, h-15);
+  ctx.textAlign = 'left';
+}
+
+// ============ 模块五：方法对比 ============
+function toggleConcept(id) {
+  const el = document.getElementById(id);
+  const arrow = document.getElementById(id + '-arrow');
+  if (el.style.display === 'none') {
+    el.style.display = 'block';
+    arrow.textContent = '▲';
+  } else {
+    el.style.display = 'none';
+    arrow.textContent = '▼';
+  }
+}
+
+function toggleCmp(i) {
+  document.getElementById('cmp-' + i).classList.toggle('show');
+}
+
+// ============ 模块六：随堂练习 ============
+function toggleAnswer(i) {
+  const el = document.getElementById('ans-' + i);
+  el.classList.toggle('show');
+}
+
+// ============ 模块七：随堂快测 ============
+const quizData = [
+  {
+    q: '1. 某企业电费每月有基本电费2000元，另外每生产一件产品耗电5元。该电费属于：',
+    opts: ['固定成本', '变动成本', '半变动成本', '半固定成本'],
+    ans: 2,
+    explain: '有初始固定基数（基本电费2000元），之后随产量正比例变动（每件5元），属于半变动成本，模型为 y=2000+5x。'
+  },
+  {
+    q: '2. 湘农机械数据：高点(1200件,15800元)，低点(800件,12500元)。用高低点法计算的单位变动成本b为：',
+    opts: ['8.25元/件', '10.00元/件', '12.00元/件', '16.67元/件'],
+    ans: 0,
+    explain: 'b=(15800-12500)/(1200-800)=3300/400=8.25元/件。注意：高低点必须按业务量（产量）选择，不能按成本金额选择！'
+  },
+  {
+    q: '3. 回归分析输出R²=0.35，以下说法正确的是：',
+    opts: ['线性关系很强，回归结果可靠', '线性关系中等，可以使用', '线性关系较弱，需考虑其他因素或非线性模型', 'R²与分析可靠性无关'],
+    ans: 2,
+    explain: 'R²=0.35说明业务量只能解释35%的成本变化，线性关系弱。可能存在其他影响因素（如季节、设备老化），应考虑增加自变量或使用非线性模型。'
+  }
+];
+let quizDone = [false,false,false];
+let quizCorrect = [false,false,false];
+
+function initQuiz() {
+  const box = document.getElementById('quiz-container');
+  box.innerHTML = quizData.map((q, qi) => `
+    <div class="quiz-q" id="q-${qi}">
+      <h4>${q.q}</h4>
+      ${q.opts.map((opt, oi) => `
+        <button class="quiz-opt" onclick="answerQuiz(${qi},${oi})">${String.fromCharCode(65+oi)}. ${opt}</button>
+      `).join('')}
+      <div class="quiz-explain" id="qe-${qi}"><strong>📖 解析：</strong>${q.explain}</div>
+    </div>
+  `).join('');
+  quizDone = [false,false,false];
+  quizCorrect = [false,false,false];
+  document.getElementById('quiz-score').classList.remove('show');
+}
+
+function answerQuiz(qi, oi) {
+  if (quizDone[qi]) return;
+  quizDone[qi] = true;
+  const qDiv = document.getElementById('q-' + qi);
+  const opts = qDiv.querySelectorAll('.quiz-opt');
+  opts.forEach((opt, i) => {
+    opt.classList.add('disabled');
+    if (i === quizData[qi].ans) opt.classList.add('correct');
+    if (i === oi && oi !== quizData[qi].ans) opt.classList.add('wrong');
+  });
+  quizCorrect[qi] = (oi === quizData[qi].ans);
+  document.getElementById('qe-' + qi).classList.add('show');
+  if (quizDone.every(d => d)) {
+    const score = quizCorrect.filter(c => c).length;
+    document.getElementById('score-num').textContent = score + '/3';
+    document.getElementById('quiz-score').classList.add('show');
+  }
+}
+function resetQuiz() { initQuiz(); }
+
+// ============ 初始化 ============
+initCosts();
+initHLTable();
+initQuiz();
+setTimeout(() => { drawHL(); updateReg(); }, 100);
+</script>
+</body>
+</html>

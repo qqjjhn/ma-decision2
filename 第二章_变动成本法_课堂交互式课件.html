@@ -656,7 +656,7 @@
 <div class="module" id="mod-3">
   <div class="module-header">
     <div class="module-title"><span class="icon">🎯</span>回归分析可视化</div>
-    <div class="module-desc">核心模块！①拖动滑块观察数据离散程度和异常点对回归线、R²的影响；②点击"模拟数据篡改"，对比篡改前后两条回归线的偏移——仅一个数据点虚增20%，整个成本模型就被扭曲，直观理解"数据真实性是管理会计的生命线"。</div>
+    <div class="module-desc">核心模块！①拖动滑块观察数据离散程度和异常点对回归线、R²的影响；②点击"异常点分析"，对比"包含8月"与"剔除8月"两条回归线——真实异常点（8月高温）对成本模型的影响，理解"异常点≠错误数据，剔除需要职业判断"。</div>
   </div>
   <div class="grid-2">
     <div class="card">
@@ -702,14 +702,14 @@
       </div>
 
       <div class="btn-group">
-        <button class="btn btn-danger" onclick="tamperData()">⚠️ 模拟数据篡改（5月电费+20%）</button>
+        <button class="btn btn-danger" onclick="tamperData()">🔍 异常点分析：8月高温数据</button>
         <button class="btn btn-primary" onclick="resetReg()">🔄 恢复原始数据</button>
         <button class="btn btn-accent" onclick="toggleTarget()">🎯 打靶类比</button>
       </div>
       <div class="alert-box" id="tamper-alert">
-        <h4>⚠ 数据已被篡改！观察两条回归线的偏移</h4>
-        <p><strong>演示目的：</strong>假设财务人员将5月电费从14200元虚增至17040元（+20%），声称"五一后设备重启用电增加"。图中<span style="color:#e74c3c;font-weight:600;">红色虚线</span>是原始回归线，<span style="color:#e8792b;font-weight:600;">橙色实线</span>是篡改后的回归线——仅一个数据点的变动，就使整条回归线发生明显偏移，固定成本a和单位变动成本b都被扭曲。</p>
-        <p style="margin-top:6px;"><strong>教学启示：</strong>这就是"垃圾进、垃圾出"。会计数据真实性是一切分析的基础，一个数据点的偏差会导致成本预测、定价决策的系统性错误。<strong style="color:#c0392b;">不做假账，是会计人的职业底线。</strong></p>
+        <h4>🔍 异常点分析：8月高温数据——能删吗？</h4>
+        <p><strong>案例事实：</strong>8月产量1150件（全年第3高），但电费16800元（全年最高）——极端高温导致空调和冷却设备用电激增。图中<span style="color:#e74c3c;font-weight:600;">红色虚线</span>是"包含8月"的回归线，<span style="color:#27ae60;font-weight:600;">绿色实线</span>是"剔除8月"的回归线——仅一个真实异常点，就使整条回归线发生明显偏移。</p>
+        <p style="margin-top:6px;"><strong>职业判断：</strong>8月高温是真实发生的业务事件，不是数据错误，<strong style="color:#c0392b;">不能随意剔除</strong>。正确做法：①加入"气温"作为控制变量；②在报告中单独标注8月为异常月份；③若预测正常月份电费，可分层建模。<strong>异常点处理不是技术问题，是职业判断问题。</strong></p>
       </div>
     </div>
     <div class="card">
@@ -1261,19 +1261,25 @@ function updateReg() {
     const noiseAmt = (Math.random()-0.5) * noise * 35;
     curCost.push(baseCost[i] + noiseAmt);
   }
-  // 篡改前先计算原始回归结果用于对比
+  // 异常点分析：保留所有数据点用于绘图，只在计算回归时排除8月
   let regOrig = null;
   tamperPosInCur = -1;
+  let reg;
   if (tampered && tamperIdx >= 0) {
     const posInCur = curBaseIdx.indexOf(tamperIdx);
     if (posInCur >= 0) {
       tamperPosInCur = posInCur;
-      regOrig = linearRegression(curVol, curCost);
-      curCost[posInCur] *= 1.2; // 虚增20%，幅度看似合理波动，不易察觉但足以扭曲模型
+      regOrig = linearRegression(curVol, curCost); // 包含8月的回归结果
+      // 计算剔除8月后的回归结果（不修改原数组，保留数据点用于绘图）
+      const volWithout = curVol.filter((_, i) => i !== posInCur);
+      const costWithout = curCost.filter((_, i) => i !== posInCur);
+      reg = linearRegression(volWithout, costWithout); // 剔除8月后的回归结果
+    } else {
+      reg = linearRegression(curVol, curCost);
     }
+  } else {
+    reg = linearRegression(curVol, curCost);
   }
-
-  const reg = linearRegression(curVol, curCost);
   document.getElementById('r2-val').textContent = reg.r2.toFixed(3);
   document.getElementById('reg-a').textContent = reg.a.toFixed(0) + ' 元';
   document.getElementById('reg-b').textContent = reg.b.toFixed(2) + ' 元/件';
@@ -1284,23 +1290,22 @@ function updateReg() {
   else if (reg.r2 >= 0.5) { lvl.textContent = '线性关系中等'; lvl.className = 'r2-level r2-mid'; }
   else { lvl.textContent = '线性关系弱'; lvl.className = 'r2-level r2-low'; }
 
-  // 篡改警示框：显示具体篡改信息和前后对比
+  // 异常点分析警示框：显示8月数据信息和前后对比
   if (tampered && regOrig) {
-    const origCost = baseCost[tamperIdx];
-    const tamperedCost = Math.round(origCost * 1.2);
+    const outlierCost = baseCost[tamperIdx];
+    const outlierVol = baseVol[tamperIdx];
     document.getElementById('tamper-alert').innerHTML = `
-      <h4>⚠ 数据已被篡改！观察图中两条回归线的偏移</h4>
-      <p><strong>看图指引：</strong>图中<span style="color:#e74c3c;font-weight:600;">红色虚线</span>是原始回归线，<span style="color:#e8792b;font-weight:600;">橙色实线</span>是篡改后的回归线；紫色点是被篡改的数据点，灰色空心圆是它的原始位置。仅一个点上移，整条回归线就被拽偏了。</p>
-      <p style="margin-top:6px;"><strong>篡改位置：</strong>${months[tamperIdx]}（产量${baseVol[tamperIdx]}件），财务人员将电费从 <strong>${origCost}元</strong> 调整为 <strong style="color:#e74c3c">${tamperedCost}元</strong>（虚增20%），声称是"五一假期后设备重启用电增加"，但无对应维修记录。</p>
-      <p style="margin-top:6px;color:#666;font-size:12px;">💡 注意：20%的幅度看起来像是正常的业务波动，不像明显的造假，但它对回归结果的影响不容忽视——这正是财务造假的隐蔽之处。</p>
-      <p style="margin-top:8px;"><strong>篡改前后对比：</strong></p>
+      <h4>🔍 异常点分析：8月高温数据——能删吗？</h4>
+      <p><strong>看图指引：</strong>图中<span style="color:#e74c3c;font-weight:600;">红色虚线</span>是"包含8月"的回归线，<span style="color:#27ae60;font-weight:600;">绿色实线</span>是"剔除8月"的回归线；<span style="color:#8e44ad;font-weight:600;">紫色点</span>是8月异常点。仅一个真实异常点，就使整条回归线发生明显偏移。</p>
+      <p style="margin-top:6px;"><strong>8月数据：</strong>产量${outlierVol}件（全年第3高），电费${outlierCost}元（全年最高）——极端高温导致空调和冷却设备用电激增。这是<strong style="color:#27ae60;">真实发生的业务事件</strong>，不是数据错误。</p>
+      <p style="margin-top:8px;"><strong>包含8月 vs 剔除8月：</strong></p>
       <table style="width:100%;font-size:12px;border-collapse:collapse;margin-top:4px;">
-        <tr style="background:#f0f0f0;"><th style="padding:4px;border:1px solid #ddd;">指标</th><th style="padding:4px;border:1px solid #ddd;">篡改前</th><th style="padding:4px;border:1px solid #ddd;">篡改后</th><th style="padding:4px;border:1px solid #ddd;">变化幅度</th></tr>
-        <tr><td style="padding:4px;border:1px solid #ddd;">固定成本a</td><td style="padding:4px;border:1px solid #ddd;">${regOrig.a.toFixed(0)}元</td><td style="padding:4px;border:1px solid #ddd;color:#e74c3c;">${reg.a.toFixed(0)}元</td><td style="padding:4px;border:1px solid #ddd;color:#e74c3c;">${((reg.a-regOrig.a)/regOrig.a*100).toFixed(1)}%</td></tr>
-        <tr><td style="padding:4px;border:1px solid #ddd;">单位变动成本b</td><td style="padding:4px;border:1px solid #ddd;">${regOrig.b.toFixed(2)}元/件</td><td style="padding:4px;border:1px solid #ddd;color:#e74c3c;">${reg.b.toFixed(2)}元/件</td><td style="padding:4px;border:1px solid #ddd;color:#e74c3c;">${((reg.b-regOrig.b)/regOrig.b*100).toFixed(1)}%</td></tr>
-        <tr><td style="padding:4px;border:1px solid #ddd;">R²拟合优度</td><td style="padding:4px;border:1px solid #ddd;">${regOrig.r2.toFixed(3)}</td><td style="padding:4px;border:1px solid #ddd;color:#e74c3c;">${reg.r2.toFixed(3)}</td><td style="padding:4px;border:1px solid #ddd;color:#e74c3c;">${((reg.r2-regOrig.r2)/regOrig.r2*100).toFixed(1)}%</td></tr>
+        <tr style="background:#f0f0f0;"><th style="padding:4px;border:1px solid #ddd;">指标</th><th style="padding:4px;border:1px solid #ddd;">包含8月</th><th style="padding:4px;border:1px solid #ddd;">剔除8月</th><th style="padding:4px;border:1px solid #ddd;">变化</th></tr>
+        <tr><td style="padding:4px;border:1px solid #ddd;">固定成本a</td><td style="padding:4px;border:1px solid #ddd;">${regOrig.a.toFixed(0)}元</td><td style="padding:4px;border:1px solid #ddd;color:#27ae60;">${reg.a.toFixed(0)}元</td><td style="padding:4px;border:1px solid #ddd;">${((reg.a-regOrig.a)/regOrig.a*100).toFixed(1)}%</td></tr>
+        <tr><td style="padding:4px;border:1px solid #ddd;">单位变动成本b</td><td style="padding:4px;border:1px solid #ddd;">${regOrig.b.toFixed(2)}元/件</td><td style="padding:4px;border:1px solid #ddd;color:#27ae60;">${reg.b.toFixed(2)}元/件</td><td style="padding:4px;border:1px solid #ddd;">${((reg.b-regOrig.b)/regOrig.b*100).toFixed(1)}%</td></tr>
+        <tr><td style="padding:4px;border:1px solid #ddd;">R²拟合优度</td><td style="padding:4px;border:1px solid #ddd;">${regOrig.r2.toFixed(3)}</td><td style="padding:4px;border:1px solid #ddd;color:#27ae60;">${reg.r2.toFixed(3)}</td><td style="padding:4px;border:1px solid #ddd;">${((reg.r2-regOrig.r2)/regOrig.r2*100).toFixed(1)}%</td></tr>
       </table>
-      <p style="margin-top:8px;">一个月的数据仅调整20%，固定成本和单位变动成本就发生了明显偏移，R²也下降了。如果基于这个被篡改的模型进行成本预测和定价决策，结果会系统性偏差。<strong>会计数据真实性是管理会计分析的生命线，不做假账是会计人的职业底线。</strong></p>
+      <p style="margin-top:8px;"><strong style="color:#c0392b;">职业判断：8月高温是真实业务事件，不能随意剔除！</strong>正确做法：①加入"气温"作为控制变量；②在报告中单独标注8月为异常月份；③若预测正常月份电费，可分层建模。<strong>异常点处理不是技术问题，是职业判断问题——数据真实性是会计的生命线。</strong></p>
     `;
   }
   document.getElementById('tamper-alert').classList.toggle('show', tampered);
@@ -1344,7 +1349,7 @@ function drawReg(reg, regOrig) {
   ctx.textAlign = 'center'; ctx.fillText('产量(件)', w/2, h-8);
   ctx.save(); ctx.translate(14,h/2); ctx.rotate(-Math.PI/2); ctx.fillText('电费(元)',0,0); ctx.restore();
 
-  // 篡改时：先画原始回归线（红色虚线）
+  // 异常点分析时：先画"包含8月"的回归线（红色虚线）
   if (tampered && regOrig) {
     ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 2.5; ctx.setLineDash([8,5]);
     ctx.beginPath();
@@ -1352,67 +1357,57 @@ function drawReg(reg, regOrig) {
     ctx.lineTo(sx(vMax), sy(regOrig.a+regOrig.b*vMax));
     ctx.stroke(); ctx.setLineDash([]);
     ctx.fillStyle = '#e74c3c'; ctx.font = 'bold 11px "Microsoft YaHei"'; ctx.textAlign = 'left';
-    ctx.fillText(`原始: y=${regOrig.a.toFixed(0)}+${regOrig.b.toFixed(2)}x  R²=${regOrig.r2.toFixed(3)}`, padL+8, padT+16);
+    ctx.fillText(`包含8月: y=${regOrig.a.toFixed(0)}+${regOrig.b.toFixed(2)}x  R²=${regOrig.r2.toFixed(3)}`, padL+8, padT+16);
   }
 
-  // 当前回归线（橙色实线）
+  // 剔除8月后回归线（绿色实线）
   const grad = ctx.createLinearGradient(padL, sy(reg.a+reg.b*vMin), w-padR, sy(reg.a+reg.b*vMax));
-  grad.addColorStop(0, '#e8792b'); grad.addColorStop(1, '#f5a623');
+  grad.addColorStop(0, '#27ae60'); grad.addColorStop(1, '#2ecc71');
   ctx.strokeStyle = grad; ctx.lineWidth = 3.5;
   ctx.beginPath();
   ctx.moveTo(sx(vMin), sy(reg.a+reg.b*vMin));
   ctx.lineTo(sx(vMax), sy(reg.a+reg.b*vMax));
   ctx.stroke();
-  ctx.fillStyle = tampered ? '#e8792b' : '#2c5f8a'; ctx.font = 'bold 11px "Microsoft YaHei"'; ctx.textAlign = 'left';
-  ctx.fillText(`${tampered?'篡改后':'当前'}: y=${reg.a.toFixed(0)}+${reg.b.toFixed(2)}x  R²=${reg.r2.toFixed(3)}`, padL+8, tampered?padT+34:padT+16);
+  ctx.fillStyle = tampered ? '#27ae60' : '#2c5f8a'; ctx.font = 'bold 11px "Microsoft YaHei"'; ctx.textAlign = 'left';
+  ctx.fillText(`${tampered?'剔除8月后':'当前'}: y=${reg.a.toFixed(0)}+${reg.b.toFixed(2)}x  R²=${reg.r2.toFixed(3)}`, padL+8, tampered?padT+34:padT+16);
 
   // 数据点
   curVol.forEach((v, i) => {
-    const isTampered = tampered && i === tamperPosInCur;
-    if (isTampered) {
-      const origCost = baseCost[tamperIdx];
-      // 原始位置：灰色空心圆
-      ctx.strokeStyle = '#95a5a6'; ctx.lineWidth = 2; ctx.setLineDash([4,3]);
-      ctx.beginPath(); ctx.arc(sx(v), sy(origCost), 7, 0, Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle = '#888'; ctx.font = '10px "Microsoft YaHei"'; ctx.textAlign = 'right';
-      ctx.fillText('原始'+origCost+'元', sx(v)-12, sy(origCost)-8);
-      // 箭头：原始→篡改后
-      ctx.strokeStyle = '#9b59b6'; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(sx(v), sy(origCost)-8); ctx.lineTo(sx(v), sy(curCost[i])+10); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(sx(v)-5, sy(curCost[i])+6); ctx.lineTo(sx(v), sy(curCost[i])+12); ctx.lineTo(sx(v)+5, sy(curCost[i])+6); ctx.fillStyle='#9b59b6'; ctx.fill();
-      // 篡改后位置：紫色实心圆
-      ctx.fillStyle = '#9b59b6';
+    const isOutlier = tampered && i === tamperPosInCur;
+    if (isOutlier) {
+      // 8月异常点：紫色大实心圆+标注
+      ctx.fillStyle = '#8e44ad';
       ctx.beginPath(); ctx.arc(sx(v), sy(curCost[i]), 9, 0, Math.PI*2); ctx.fill();
       ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
-      ctx.fillStyle = '#9b59b6'; ctx.font = 'bold 12px "Microsoft YaHei"'; ctx.textAlign = 'left';
-      ctx.fillText(`5月篡改: ${curCost[i].toFixed(0)}元(+20%)`, sx(v)+14, sy(curCost[i])-6);
+      ctx.fillStyle = '#8e44ad'; ctx.font = 'bold 12px "Microsoft YaHei"'; ctx.textAlign = 'left';
+      ctx.fillText(`8月异常: ${curCost[i].toFixed(0)}元(高温)`, sx(v)+14, sy(curCost[i])-6);
     } else {
       ctx.fillStyle = '#2c5f8a';
       ctx.beginPath(); ctx.arc(sx(v), sy(curCost[i]), 6, 0, Math.PI*2); ctx.fill();
     }
   });
 
-  // 篡改时显示图例
+  // 异常点分析时显示图例
   if (tampered) {
-    const lx = w-padR-155, ly = h-padB-68;
-    ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fillRect(lx-8, ly-8, 150, 60);
-    ctx.strokeStyle = '#ddd'; ctx.lineWidth = 1; ctx.strokeRect(lx-8, ly-8, 150, 60);
+    const lx = w-padR-165, ly = h-padB-68;
+    ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fillRect(lx-8, ly-8, 160, 60);
+    ctx.strokeStyle = '#ddd'; ctx.lineWidth = 1; ctx.strokeRect(lx-8, ly-8, 160, 60);
     ctx.fillStyle = '#333'; ctx.font = 'bold 11px "Microsoft YaHei"'; ctx.textAlign = 'left';
     ctx.fillText('图例', lx, ly+6);
     ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 2; ctx.setLineDash([6,4]);
     ctx.beginPath(); ctx.moveTo(lx, ly+20); ctx.lineTo(lx+22, ly+20); ctx.stroke(); ctx.setLineDash([]);
-    ctx.fillStyle = '#555'; ctx.font = '10px "Microsoft YaHei"'; ctx.fillText('原始回归线', lx+28, ly+24);
-    ctx.strokeStyle = '#e8792b'; ctx.lineWidth = 3;
+    ctx.fillStyle = '#555'; ctx.font = '10px "Microsoft YaHei"'; ctx.fillText('包含8月回归线', lx+28, ly+24);
+    ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 3;
     ctx.beginPath(); ctx.moveTo(lx, ly+36); ctx.lineTo(lx+22, ly+36); ctx.stroke();
-    ctx.fillText('篡改后回归线', lx+28, ly+40);
-    ctx.fillStyle = '#9b59b6'; ctx.beginPath(); ctx.arc(lx+11, ly+50, 5, 0, Math.PI*2); ctx.fill();
-    ctx.fillText('被篡改数据点', lx+28, ly+54);
+    ctx.fillText('剔除8月回归线', lx+28, ly+40);
+    ctx.fillStyle = '#8e44ad'; ctx.beginPath(); ctx.arc(lx+11, ly+50, 5, 0, Math.PI*2); ctx.fill();
+    ctx.fillText('8月异常点', lx+28, ly+54);
   }
 }
 
 function tamperData() {
   tampered = true;
-  tamperIdx = 4; // 篡改5月（产量1000件，中间位置），虚增20%，看起来像合理波动但实际扭曲模型
+  tamperIdx = 7; // 8月（索引7），产量1150件，电费16800元，极端高温导致的真实异常点
   updateReg();
 }
 function resetReg() {

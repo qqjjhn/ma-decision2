@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<!--
+================================================================================
+  《管理会计》第三章 本量利分析（CVP）—— 课堂交互式课件
+  主题：周二半价，电影院是傻还是精？
+--------------------------------------------------------------------------------
+ 使用说明：
+  1. 单文件 HTML，双击用浏览器（Chrome / Edge 推荐）打开即可离线使用，
+     无需联网、无需安装。教室演示按 F11 全屏，Alt+Tab 与 PPT 切换。
+  2. 顶部导航切换 5 个模块；全部操作为鼠标点击 / 拖动滑块，学生观看大屏。
+  3. 数据默认值取自教学设计 v3：湘农机械（讲方法）+ 长沙万达影城（解悬念）。
+  4. 推荐 1920×1080，最低 1366×768。
+================================================================================
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第三章 本量利分析 · 课堂交互式课件</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231a2744'/%3E%3Cpath d='M14 46 L32 18 L50 46' stroke='%23e87722' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --indigo:#1a2744; --indigo-2:#243459; --indigo-3:#2f4372;
+  --orange:#e87722; --orange-d:#b45014;
+  --green:#2e7d4f; --red:#c0392b; --blue:#3b82c4;
+  --gray:#6b7280; --ink:#1f2733; --paper:#f4f6fb; --card:#ffffff; --line:#dde3ee;
+  --radius:14px; --shadow:0 6px 22px rgba(20,35,70,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB",sans-serif;
+  background:var(--paper); color:var(--ink); -webkit-font-smoothing:antialiased; overflow:hidden;}
+button,input{font-family:inherit}
+
+/* ===== 顶部导航 ===== */
+#navbar{position:fixed;top:0;left:0;right:0;height:64px;z-index:100;background:var(--indigo);
+  color:#fff;display:flex;align-items:stretch;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+#navbar .brand{display:flex;align-items:center;gap:10px;padding:0 20px;border-right:1px solid rgba(255,255,255,.15);
+  white-space:nowrap;font-weight:700;font-size:15px;line-height:1.15}
+#navbar .brand .dot{width:12px;height:12px;border-radius:3px;background:var(--orange)}
+#navbar .brand small{display:block;font-weight:400;font-size:11px;color:#9fb0d4;margin-top:2px}
+#navtabs{display:flex;flex:1;overflow-x:auto;scrollbar-width:none}
+#navtabs::-webkit-scrollbar{display:none}
+.navtab{flex:1 0 auto;min-width:132px;padding:0 12px;border:none;background:transparent;color:#c6d0e6;
+  font-size:15px;font-weight:600;position:relative;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:2px;transition:.2s}
+.navtab .num{font-size:11px;color:#8ea0c4;font-weight:400}
+.navtab:hover{background:var(--indigo-2);color:#fff}
+.navtab.active{color:#fff;background:var(--indigo-3)}
+.navtab.active::after{content:"";position:absolute;left:18%;right:18%;bottom:0;height:4px;
+  background:var(--orange);border-radius:4px 4px 0 0}
+
+/* ===== 舞台与模块 ===== */
+#stage{position:fixed;top:64px;left:0;right:0;bottom:0;overflow:hidden}
+.module{position:absolute;inset:0;padding:22px 30px 26px;overflow-y:auto;opacity:0;visibility:hidden;
+  transform:translateY(8px);transition:opacity .35s ease,transform .35s ease,visibility .35s}
+.module.show{opacity:1;visibility:visible;transform:none}
+.m-head{margin-bottom:14px}
+.m-title{font-size:25px;font-weight:800;color:var(--indigo);display:flex;align-items:center;gap:12px}
+.m-title .bar{width:6px;height:26px;background:var(--orange);border-radius:3px}
+.m-hint{margin-top:6px;font-size:13.5px;color:#7a869e;padding-left:18px}
+
+.btn{border:none;border-radius:9px;padding:9px 18px;font-size:14px;font-weight:600;background:var(--indigo);
+  color:#fff;transition:.18s}
+.btn:hover{background:var(--indigo-3)}
+.btn.orange{background:var(--orange)}
+.btn.orange:hover{background:#d36a18}
+.btn.ghost{background:#fff;color:var(--indigo);border:1.5px solid var(--indigo)}
+.btn.ghost:hover{background:var(--indigo);color:#fff}
+.btn.sm{padding:6px 12px;font-size:13px}
+.btn.on{background:var(--orange);color:#fff;border-color:var(--orange)}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
+.tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:600}
+.mono{font-family:Consolas,"Courier New",monospace}
+
+/* ===== 双栏布局 ===== */
+.cols{display:grid;grid-template-columns:430px 1fr;gap:20px;align-items:start}
+.controls{display:flex;flex-direction:column;gap:14px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px}
+.panel h3{font-size:14px;color:var(--indigo);margin-bottom:12px;letter-spacing:.5px;display:flex;align-items:center;gap:8px}
+.panel h3::before{content:"";width:4px;height:14px;background:var(--orange);border-radius:2px}
+
+/* ===== 滑块 ===== */
+.slider-row{margin-bottom:14px}
+.slider-row:last-child{margin-bottom:0}
+.slider-label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;margin-bottom:6px}
+.slider-label .name{color:var(--ink);font-weight:600}
+.slider-label .val{font-family:Consolas,monospace;font-weight:700;color:var(--orange-d);font-size:17px}
+input[type=range]{width:100%;height:6px;-webkit-appearance:none;appearance:none;background:#e2e8f2;
+  border-radius:4px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;
+  border-radius:50%;background:var(--orange);cursor:pointer;border:3px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.3)}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--orange);
+  cursor:pointer;border:3px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.3)}
+.slider-scale{display:flex;justify-content:space-between;font-size:11px;color:#9aa5bb;margin-top:3px}
+
+/* ===== 指标卡 ===== */
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.metric{background:#f8fafd;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.metric .ml{font-size:12px;color:var(--gray)}
+.metric .mv{font-size:22px;font-weight:800;color:var(--indigo);font-family:Consolas,monospace;margin-top:2px}
+.metric .mv.small{font-size:18px}
+.metric.hl{background:#fff4ec;border-color:#f6cfae}
+.metric.hl .mv{color:var(--orange-d)}
+.metric.good{background:#ecf7f0;border-color:#bfe3cd}
+.metric.good .mv{color:var(--green)}
+.metric.bad{background:#fdecea;border-color:#f3c4bf}
+.metric.bad .mv{color:var(--red)}
+
+.chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:14px;display:flex;flex-direction:column}
+.chart-title{font-size:14px;font-weight:700;color:var(--indigo);margin-bottom:6px;padding-left:4px}
+svg.chart-svg{width:100%;height:auto;display:block}
+.two-charts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.two-charts .chart-title{margin-bottom:4px}
+
+.note{font-size:13px;color:#556;background:#eef2f9;border-left:4px solid var(--blue);padding:10px 14px;
+  border-radius:0 8px 8px 0;line-height:1.6}
+.note b{color:var(--indigo)}
+.formula{background:#1a2744;color:#fff;border-radius:10px;padding:12px 16px;font-family:Consolas,monospace;
+  font-size:16px;text-align:center;letter-spacing:.5px}
+.formula .em{color:#ffb877}
+
+/* ===== 开场悬念 ===== */
+.hero{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(135deg,#1a2744 0%,#243459 60%,#2f4372 100%);border-radius:18px;color:#fff;padding:30px}
+.hero .chap{font-size:18px;color:#ffb877;letter-spacing:4px;margin-bottom:10px}
+.hero h1{font-size:44px;font-weight:800;line-height:1.3;margin-bottom:18px}
+.hero h1 span{color:#ffb877}
+.hero .qbox{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:14px;
+  padding:20px 30px;max-width:880px;margin-bottom:22px}
+.hero .qbox p{font-size:17px;line-height:1.8;color:#e6ecfa}
+.hero .qbox .big{font-size:24px;font-weight:800;color:#fff;margin:8px 0}
+.poll{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.poll .opt{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.25);border-radius:12px;
+  padding:14px 26px;font-size:17px;cursor:pointer;transition:.2s}
+.poll .opt:hover{background:var(--orange);border-color:var(--orange);transform:translateY(-2px)}
+.hero .foot{margin-top:26px;font-size:14px;color:#9fb0d4}
+.hero .foot b{color:#ffb877}
+.poll .opt.picked{background:var(--orange);border-color:#fff}
+
+/* ===== 安全边际 gauge ===== */
+.gauge{margin-top:6px}
+.gauge-bar{position:relative;height:34px;border-radius:8px;display:flex;overflow:hidden}
+.gauge-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:700}
+.gauge-marker{position:absolute;top:-6px;width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;
+  border-top:12px solid var(--indigo);transform:translateX(-50%);transition:left .3s;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+.gauge-scale{display:flex;justify-content:space-between;font-size:11px;color:#8a94a8;margin-top:6px}
+.level-badge{display:inline-block;padding:6px 18px;border-radius:22px;font-size:18px;font-weight:800;color:#fff;margin-top:10px}
+
+.tabs-mini{display:flex;gap:8px;margin-bottom:12px}
+.tabs-mini .mbtn{flex:1;padding:10px;border:2px solid var(--line);background:#fff;border-radius:10px;
+  font-size:15px;font-weight:700;color:var(--gray);cursor:pointer;transition:.15s}
+.tabs-mini .mbtn.on{border-color:var(--orange);background:#fff4ec;color:var(--orange-d)}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+.compare-cell{border-radius:10px;padding:12px 14px}
+.compare-cell.xn{background:#ecf7f0;border:1.5px solid #bfe3cd}
+.compare-cell.dy{background:#fdecea;border:1.5px solid #f3c4bf}
+.compare-cell .ct{font-size:14px;font-weight:800;margin-bottom:6px}
+.compare-cell.xn .ct{color:var(--green)}
+.compare-cell.dy .ct{color:var(--red)}
+.compare-cell .cv{font-family:Consolas,monospace;font-size:26px;font-weight:800}
+.compare-cell .cd{font-size:12.5px;color:#556;margin-top:4px;line-height:1.5}
+.verdict{border-radius:12px;padding:14px 18px;font-size:18px;font-weight:800;text-align:center;margin-top:4px}
+.verdict.win{background:var(--green);color:#fff}
+.verdict.lose{background:var(--red);color:#fff}
+.up{color:var(--green)} .down{color:var(--red)}
+.formula-sm{font-size:13.5px;background:#f1f4fa;border-radius:8px;padding:8px 12px;font-family:Consolas,monospace;color:#33405c}
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="brand"><span class="dot"></span>
+    <div>第三章 · 本量利分析<small>周二半价，电影院是傻还是精？</small></div>
+  </div>
+  <div id="navtabs">
+    <button class="navtab active" data-mod="m0"><span class="num">00</span>开场悬念</button>
+    <button class="navtab" data-mod="m1"><span class="num">01</span>单品种保本</button>
+    <button class="navtab" data-mod="m2"><span class="num">02</span>本量利图</button>
+    <button class="navtab" data-mod="m4"><span class="num">03</span>安全边际</button>
+    <button class="navtab" data-mod="m5"><span class="num">04</span>降价促销决策</button>
+  </div>
+</nav>
+
+<div id="stage">
+
+<!-- ============ 模块0：开场悬念 ============ -->
+<section class="module show" id="m0">
+  <div class="hero">
+    <div class="chap">管 理 会 计 · 第 三 章</div>
+    <h1>本量利分析：<br>周二半价，电影院是<span>傻还是精</span>？</h1>
+    <div class="qbox">
+      <p>长沙一家万达影城，150 座标准厅，每月固定成本 <b style="color:#ffb877">36 万元</b>
+        ——平均每天一睁眼就是 1.2 万。现月均 <b style="color:#ffb877">1.2 万人次</b>，利润 3.6 万元。</p>
+      <p>现拟推“周二半价”：票价 45 → 35 元，预计人次增加 <b style="color:#ffb877">30%</b>（→1.56 万）。</p>
+      <div class="big">票价降了 10 块，人次多了 30%——利润会怎样？</div>
+    </div>
+    <div class="poll" id="poll0">
+      <div class="opt" data-pick="A">A · 票价降了，利润减少</div>
+      <div class="opt" data-pick="B">B · 票价降但量增，利润基本不变</div>
+      <div class="opt" data-pick="C">C · 利润反而大幅增加</div>
+    </div>
+    <div class="foot">先投票、记住你的直觉 → 学完今天的方法，第 60 分钟你<b>亲手</b>把这家电影院的账算出来，自己揭晓。</div>
+  </div>
+</section>
+
+<!-- ============ 模块1：单品种保本点动态调节器 ============ -->
+<section class="module" id="m1">
+  <div class="m-head">
+    <div class="m-title"><span class="bar"></span>模块一 · 单品种保本点动态调节器<span class="tag" style="background:#fff4ec;color:#b45014">环节三</span></div>
+    <div class="m-hint">拖动滑块改变「单价 / 单位变动成本 / 固定成本 / 目标利润」，实时看保本点在盈亏临界图上怎么移动。算例：湘农机械 · 配件 A。</div>
+  </div>
+  <div class="cols">
+    <div class="controls">
+      <div class="panel">
+        <h3>经营参数（拖动）</h3>
+        <div class="slider-row">
+          <div class="slider-label"><span class="name">单价 SP（元/件）</span><span class="val" id="vP">100</span></div>
+          <input type="range" id="sP" min="60" max="200" step="1" value="100">
+          <div class="slider-scale"><span>60</span><span>200</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label"><span class="name">单位变动成本 VC（元/件）</span><span class="val" id="vV">45</span></div>
+          <input type="range" id="sV" min="20" max="90" step="1" value="45">
+          <div class="slider-scale"><span>20</span><span>90</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label"><span class="name">固定成本 FC（元/月）</span><span class="val" id="vF">15000</span></div>
+          <input type="range" id="sF" min="5000" max="40000" step="500" value="15000">
+          <div class="slider-scale"><span>5千</span><span>4万</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label"><span class="name">目标利润 TP（元/月）</span><span class="val" id="vT">0</span></div>
+          <input type="range" id="sT" min="0" max="30000" step="500" value="0">
+          <div class="slider-scale"><span>0</span><span>3万</span></div>
+        </div>
+        <div style="margin-top:12px">
+          <button class="btn ghost sm" id="btnReset1">重置默认参数</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>实时指标</h3>
+        <div class="metrics">
+          <div class="metric"><div class="ml">单位边际贡献 cm=SP−VC</div><div class="mv" id="m_cm">55</div></div>
+          <div class="metric"><div class="ml">边际贡献率 cmR</div><div class="mv" id="m_cmR">55%</div></div>
+          <div class="metric hl"><div class="ml">保本量 V_BE=FC/cm</div><div class="mv" id="m_Q0">273</div></div>
+          <div class="metric hl"><div class="ml">保本额 S_BE=FC/cmR</div><div class="mv" id="m_S0">27273</div></div>
+          <div class="metric good"><div class="ml">保利量=(FC+TP)/cm</div><div class="mv" id="m_Q1">—</div></div>
+          <div class="metric"><div class="ml">变动成本率 bR</div><div class="mv small" id="m_bR">45%</div></div>
+        </div>
+      </div>
+      <div class="note"><b>口诀：</b>价升、本降 → 保本点降；固定成本升 → 保本点升。<br>
+        <b>填坑类比：</b>固定成本像“1.5 万元的坑”，每卖一件填 55 元（cm），卖 273 件刚好填满，之后每件净赚 55 元。</div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">传统式本量利关系图（盈亏临界图）—— 绿区盈利 / 红区亏损</div>
+      <svg class="chart-svg" id="chart1" viewBox="0 0 720 470" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 模块2：本量利分析图（基本式 + 贡献毛益式） ============ -->
+<section class="module" id="m2">
+  <div class="m-head">
+    <div class="m-title"><span class="bar"></span>模块二 · 本量利分析图：利润是怎么"画"出来的<span class="tag" style="background:#fff4ec;color:#b45014">环节三</span></div>
+    <div class="m-hint">用湘农配件 A 的固定数据（SP=100，VC=45，FC=15000）逐步绘制。左边"基本式"先画固定成本；右边"贡献毛益式"先画变动成本——重点看右图：利润到底从哪来。</div>
+  </div>
+  <div class="cols">
+    <div class="controls">
+      <div class="panel">
+        <h3>逐步绘制</h3>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <button class="btn orange" id="btnStep">下一步 →</button>
+          <button class="btn ghost sm" id="btnReset">重置</button>
+        </div>
+        <div style="font-size:13px;color:#7a869e;margin-bottom:6px">
+          步骤 <b id="stepNo" style="color:var(--orange-d)">1</b> / 5
+        </div>
+        <div class="note" id="stepText" style="margin-top:0"></div>
+      </div>
+      <div class="panel">
+        <h3>关键结论</h3>
+        <div class="formula" style="font-size:14px;padding:10px 12px">
+          贡献毛益 = 收入 − 变动成本<br>
+          <span class="em">P = 贡献毛益 − FC</span>
+        </div>
+        <div class="note" style="margin-top:10px">
+          <b>读法：</b>贡献毛益先去"填"固定成本 FC 这个坑，<b>填完之后还剩的，才是利润 P</b>。
+          保本点 V_BE 就是"刚好把 FC 填满"的业务量。
+        </div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <div class="tabs-mini">
+        <button class="mbtn on" id="tabBasic">① 基本式（先画固定成本 FC）</button>
+        <button class="mbtn" id="tabCM">② 贡献毛益式（先画变动成本 VC）</button>
+      </div>
+      <svg class="chart-svg" id="chartBig" viewBox="0 0 720 470" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 模块4：安全边际与利润联动 ============ -->
+<section class="module" id="m4">
+  <div class="m-head">
+    <div class="m-title"><span class="bar"></span>模块三 · 安全边际与利润联动演示<span class="tag" style="background:#fff4ec;color:#b45014">环节五</span></div>
+    <div class="m-hint">切换两个真实案例，拖动预计销量，实时看安全边际率与经营安全等级；湘农“很安全” vs 万达“危险”的强烈反差。</div>
+  </div>
+  <div class="cols">
+    <div class="controls">
+      <div class="tabs-mini">
+        <button class="mbtn on" id="tabXn">湘农机械（很安全？）</button>
+        <button class="mbtn" id="tabDy">万达影城（危险？）</button>
+      </div>
+      <div class="panel">
+        <h3>预计业务量（拖动）</h3>
+        <div class="slider-row">
+          <div class="slider-label"><span class="name" id="lblQ">预计销量 Q（件/月）</span><span class="val" id="vQ">500</span></div>
+          <input type="range" id="sQ" min="200" max="1200" step="10" value="500">
+          <div class="slider-scale" id="sQscale"></div>
+        </div>
+        <div class="metrics">
+          <div class="metric"><div class="ml">保本量 V_BE</div><div class="mv small" id="m_Q0s">273</div></div>
+          <div class="metric"><div class="ml">安全边际量 = Q−V_BE</div><div class="mv" id="m_SMq">227</div></div>
+          <div class="metric"><div class="ml">安全边际额</div><div class="mv small" id="m_SMs">22727</div></div>
+          <div class="metric hl"><div class="ml">安全边际率</div><div class="mv" id="m_SMr">45.4%</div></div>
+          <div class="metric"><div class="ml">月利润</div><div class="mv small" id="m_profit">12500</div></div>
+          <div class="metric"><div class="ml">销售利润率 = 安全边际率×cmR</div><div class="mv small" id="m_pmr">25.0%</div></div>
+        </div>
+      </div>
+      <div class="gauge">
+        <div class="gauge-bar">
+          <div class="gauge-seg" style="width:20%;background:#c0392b">危险 &lt;10%</div>
+          <div class="gauge-seg" style="width:20%;background:#e67e22">注意</div>
+          <div class="gauge-seg" style="width:20%;background:#d4ac0d">较安全</div>
+          <div class="gauge-seg" style="width:20%;background:#58a558">安全</div>
+          <div class="gauge-seg" style="width:20%;background:#1e8449">很安全 &gt;40%</div>
+        </div>
+        <div class="gauge-marker" id="gMarker" style="left:45%"></div>
+        <div class="gauge-scale"><span>0</span><span>10%</span><span>20%</span><span>30%</span><span>40%</span><span>50%+</span></div>
+        <div style="text-align:center"><span class="level-badge" id="lvlBadge">很安全</span></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">左：保本量底线 vs 预计销量（安全边际缓冲垫）　右：两案例安全边际率对照</div>
+      <svg class="chart-svg" id="chart3" viewBox="0 0 720 470" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 模块5：降价促销决策模拟器 ============ -->
+<section class="module" id="m5">
+  <div class="m-head">
+    <div class="m-title"><span class="bar"></span>模块四 · 降价促销决策模拟器<span class="tag" style="background:#fff4ec;color:#b45014">环节六 / 七</span></div>
+    <div class="m-hint">这就是开场的万达影城！拖动「票价」与「人次增幅」，实时算降价后利润并与原利润（3.6万）比高低，自动标出“划算”的临界增幅。</div>
+  </div>
+  <div class="cols">
+    <div class="controls">
+      <div class="panel">
+        <h3>促销参数（拖动）</h3>
+        <div class="slider-row">
+          <div class="slider-label"><span class="name">票价（元/张）</span><span class="val" id="vPx">35</span></div>
+          <input type="range" id="sPx" min="25" max="45" step="0.5" value="35">
+          <div class="slider-scale"><span>25</span><span>45（原价）</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label"><span class="name">人次增幅（相对原1.2万）</span><span class="val" id="vRx">30%</span></div>
+          <input type="range" id="sRx" min="0" max="60" step="1" value="30">
+          <div class="slider-scale"><span>0</span><span>60%</span></div>
+        </div>
+        <div class="formula-sm" id="fmX">人均收入=票价+15（卖品）；单位变动成本=票价×50%（片方分成）+4.5（卖品成本）</div>
+        <div style="margin-top:12px">
+          <button class="btn ghost sm" id="btnReset5">重置默认参数</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>算账对比</h3>
+        <div class="metrics">
+          <div class="metric"><div class="ml">新单位边际贡献</div><div class="mv small" id="m_cmN">28</div></div>
+          <div class="metric"><div class="ml">新人次（人/月）</div><div class="mv small" id="m_QN">15600</div></div>
+          <div class="metric"><div class="ml">原月利润（不促销）</div><div class="mv small" id="m_pOld">36000</div></div>
+          <div class="metric hl"><div class="ml">新月利润</div><div class="mv" id="m_pNew">76800</div></div>
+        </div>
+        <div style="margin-top:10px" class="formula-sm">
+          上座率 = 人次 / 18000 座 → <b id="m_occ">86.7%</b>　（&lt;100% 才坐得下）
+        </div>
+        <div class="verdict win" id="verdict">降价划算！利润 76800 &gt; 36000</div>
+      </div>
+      <div class="note"><b>临界增幅：</b>保持原利润 3.6 万所需的最低人次增幅 ≈ <b id="m_crit">17.9%</b>。
+        人次增幅跑赢它才划算；只增 15%（如 <span id="m_at15">26400</span>）反而亏本。
+        <b>两条底线：</b>① 新单位边际贡献 &gt; 0；② 人次增幅 ≥ 临界增幅。空座不可储存，淡季打折只要 cm 为正就值得。</div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">降价后利润 vs 人次增幅（橙线=当前票价），水平虚线=原利润3.6万，交点即临界增幅</div>
+      <svg class="chart-svg" id="chart4" viewBox="0 0 720 470" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+/* ================= 工具函数 ================= */
+const $ = id => document.getElementById(id);
+const fmt = n => Math.round(n).toLocaleString('zh-CN');
+const fmt1 = n => (Math.round(n*10)/10).toLocaleString('zh-CN');
+const fmtPct = n => (Math.round(n*1000)/10).toFixed(1)+'%';
+
+/* ================= 导航切换 ================= */
+document.querySelectorAll('.navtab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.navtab').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.module').forEach(m=>m.classList.remove('show'));
+    $(btn.dataset.mod).classList.add('show');
+  });
+});
+/* 开场投票 */
+document.querySelectorAll('#poll0 .opt').forEach(o=>{
+  o.addEventListener('click',()=>{
+    document.querySelectorAll('#poll0 .opt').forEach(x=>x.classList.remove('picked'));
+    o.classList.add('picked');
+  });
+});
+
+/* ================= 模块1：单品种 ================= */
+function calc1(){
+  const P=+$('sP').value, V=+$('sV').value, F=+$('sF').value, T=+$('sT').value;
+  $('vP').textContent=P; $('vV').textContent=V; $('vF').textContent=fmt(F); $('vT').textContent=fmt(T);
+  const cm=P-V, cmR=cm/P, bR=V/P;
+  const Q0=cm>0? F/cm : Infinity, S0=cmR>0? F/cmR : Infinity;
+  const Q1=cm>0? (F+T)/cm : Infinity;
+  $('m_cm').textContent=fmt(cm);
+  $('m_cmR').textContent=fmtPct(cmR);
+  $('m_bR').textContent=fmtPct(bR);
+  $('m_Q0').textContent=cm>0? fmt(Q0):'cm≤0!';
+  $('m_S0').textContent=cmR>0? fmt(S0):'cmR≤0!';
+  $('m_Q1').textContent= T>0? (cm>0? fmt(Q1):'cm≤0!'):'—';
+  drawChart1(P,V,F,T,cm,Q0,S0,Q1);
+}
+function drawChart1(P,V,F,T,cm,Q0,S0,Q1){
+  const W=720,H=470,pad={top:30,right:30,bottom:55,left:75};
+  const cw=W-pad.left-pad.right, ch=H-pad.top-pad.bottom;
+  // 固定坐标窗口：拖动滑块时坐标轴保持不动，只让对应线条运动。
+  // 拖单价 P → 绿色收入线绕原点旋转；拖单位变动成本 V → 橙色总成本线绕(0,F)旋转；拖固定成本 F → 橙色线上下平移。
+  const xMax=500, yMax=60000;
+  const xs=q=>pad.left+(q/xMax)*cw;
+  const ys=y=>pad.top+ch-(y/yMax)*ch;
+  let s=`<rect width="${W}" height="${H}" fill="#fff" rx="8"/>`;
+  // 纵向网格（x：0~500，每100件）
+  for(let q=0;q<=500;q+=100){const x=xs(q);
+    s+=`<line x1="${x}" y1="${pad.top}" x2="${x}" y2="${pad.top+ch}" stroke="#eef2f7"/>`;
+    s+=`<text x="${x}" y="${pad.top+ch+18}" text-anchor="middle" font-size="11" fill="#8a94a8">${q}</text>`;}
+  // 横向网格（y：0~60000，每1万元）
+  for(let v=0;v<=60000;v+=10000){const y=ys(v);
+    s+=`<line x1="${pad.left}" y1="${y}" x2="${pad.left+cw}" y2="${y}" stroke="#eef2f7"/>`;
+    s+=`<text x="${pad.left-8}" y="${y+4}" text-anchor="end" font-size="11" fill="#8a94a8">${fmt(v)}</text>`;}
+  s+=`<line x1="${pad.left}" y1="${pad.top}" x2="${pad.left}" y2="${pad.top+ch}" stroke="#37474f" stroke-width="1.5"/>`;
+  s+=`<line x1="${pad.left}" y1="${pad.top+ch}" x2="${pad.left+cw}" y2="${pad.top+ch}" stroke="#37474f" stroke-width="1.5"/>`;
+  s+=`<text x="${pad.left+cw/2}" y="${H-10}" text-anchor="middle" font-size="13" fill="#37474f" font-weight="600">销量 Q（件/月）</text>`;
+  s+=`<text x="20" y="${pad.top+ch/2}" text-anchor="middle" font-size="13" fill="#37474f" font-weight="600" transform="rotate(-90,20,${pad.top+ch/2})">金额（元）</text>`;
+  // 亏损区/盈利区
+  if(cm>0){
+    s+=`<path d="M${xs(0)} ${ys(F)} L${xs(Q0)} ${ys(S0)} L${xs(0)} ${ys(0)} Z" fill="#f8d0cb" opacity="0.6"/>`;
+    s+=`<path d="M${xs(Q0)} ${ys(S0)} L${xs(xMax)} ${ys(P*xMax)} L${xs(xMax)} ${ys(F+V*xMax)} L${xs(Q0)} ${ys(F+V*Q0)} Z" fill="#cde9d6" opacity="0.6"/>`;
+  }
+  // 固定成本线
+  s+=`<line x1="${xs(0)}" y1="${ys(F)}" x2="${xs(xMax)}" y2="${ys(F)}" stroke="#9aa5bb" stroke-width="1.2" stroke-dasharray="6,4"/>`;
+  s+=`<text x="${xs(xMax)-4}" y="${ys(F)-5}" text-anchor="end" font-size="10.5" fill="#7a869e">固定成本 FC=${fmt(F)}</text>`;
+  // 总成本线
+  s+=`<line x1="${xs(0)}" y1="${ys(F)}" x2="${xs(xMax)}" y2="${ys(F+V*xMax)}" stroke="#e87722" stroke-width="2.6"/>`;
+  s+=`<text x="${xs(xMax)-6}" y="${ys(F+V*xMax)-8}" text-anchor="end" font-size="12" fill="#b45014" font-weight="700">总成本 = FC+VC·Q</text>`;
+  // 收入线
+  s+=`<line x1="${xs(0)}" y1="${ys(0)}" x2="${xs(xMax)}" y2="${ys(P*xMax)}" stroke="#2e7d4f" stroke-width="2.6"/>`;
+  s+=`<text x="${xs(xMax)-6}" y="${ys(P*xMax)+18}" text-anchor="end" font-size="12" fill="#2e7d4f" font-weight="700">收入 = SP·Q</text>`;
+  // 保利线（目标利润）
+  if(T>0&&cm>0){
+    s+=`<line x1="${xs(0)}" y1="${ys(F+T)}" x2="${xs(xMax)}" y2="${ys(F+T+V*xMax)}" stroke="#3b82c4" stroke-width="1.6" stroke-dasharray="8,4"/>`;
+    const qx=xs(Q1),qy=ys(P*Q1);
+    s+=`<line x1="${qx}" y1="${qy}" x2="${qx}" y2="${pad.top+ch}" stroke="#3b82c4" stroke-dasharray="4,3" opacity=".6"/>`;
+    s+=`<circle cx="${qx}" cy="${qy}" r="7" fill="#3b82c4" stroke="#fff" stroke-width="2"/>`;
+    s+=`<rect x="${qx+10}" y="${qy-30}" width="120" height="24" rx="4" fill="#3b82c4"/>`;
+    s+=`<text x="${qx+70}" y="${qy-14}" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">保利量=${fmt(Q1)}件</text>`;
+  }
+  // 保本点
+  if(cm>0){
+    const qx=xs(Q0),qy=ys(S0);
+    s+=`<line x1="${qx}" y1="${qy}" x2="${qx}" y2="${pad.top+ch}" stroke="#e87722" stroke-dasharray="4,3" opacity=".7"/>`;
+    s+=`<circle cx="${qx}" cy="${qy}" r="9" fill="#e87722" stroke="#fff" stroke-width="2.5"/>`;
+    s+=`<circle cx="${qx}" cy="${qy}" r="14" fill="none" stroke="#e87722" opacity=".4"/>`;
+    const lx=qx>W*0.62?qx-150:qx+12;
+    s+=`<rect x="${lx}" y="${qy-42}" width="150" height="32" rx="5" fill="#e87722"/>`;
+    s+=`<text x="${lx+75}" y="${qy-25}" text-anchor="middle" font-size="11.5" fill="#fff" font-weight="700">保本点 V_BE=${fmt(Q0)}件</text>`;
+    s+=`<text x="${lx+75}" y="${qy-13}" text-anchor="middle" font-size="10.5" fill="#fff3e6">保本额 S_BE=${fmt(S0)}元</text>`;
+  }
+  s+=`<text x="${xs(Q0*0.4)}" y="${ys(F*0.55)}" text-anchor="middle" font-size="14" fill="#c0392b" font-weight="800" opacity=".65">亏损区</text>`;
+  s+=`<text x="${xs(xMax*0.88)}" y="${ys(P*xMax*0.82)}" text-anchor="middle" font-size="14" fill="#2e7d4f" font-weight="800" opacity=".65">盈利区</text>`;
+  $('chart1').innerHTML=s;
+}
+['sP','sV','sF','sT'].forEach(id=>$(id).addEventListener('input',calc1));
+$('btnReset1').addEventListener('click',()=>{
+  $('sP').value=100; $('sV').value=45; $('sF').value=15000; $('sT').value=0;
+  calc1();
+});
+
+/* ================= 模块3：安全边际 ================= */
+const CASES={
+  xn:{name:'湘农机械',unit:'件',P:100,V:45,F:15000,
+      qMin:200,qMax:1200,qDef:500,qStep:10,
+      scale:['200','600','1000+']},
+  dy:{name:'万达影城',unit:'人',P:60,V:27,F:360000,
+      qMin:6000,qMax:20000,qDef:12000,qStep:200,
+      scale:['6千','1.3万','2万']}
+};
+let curCase='xn';
+function calc3(){
+  const c=CASES[curCase];
+  const cm=c.P-c.V, Q0=c.F/cm;
+  let Q=+$('sQ').value;
+  // slider 范围随案例
+  Q=Math.max(c.qMin,Math.min(c.qMax,Q));
+  $('vQ').textContent=fmt(Q);
+  $('lblQ').textContent=`预计${c.name} Q（${c.unit}/月）`;
+  $('m_Q0s').textContent=fmt(Q0);
+  const SMq=Q-Q0, SMs=SMq*c.P, SMr=SMq/Q;
+  const profit=cm*Q-c.F, pmr=profit/(c.P*Q);
+  $('m_SMq').textContent=fmt(SMq);
+  $('m_SMs').textContent=fmt(SMs);
+  $('m_SMr').textContent=fmtPct(SMr);
+  $('m_profit').textContent=fmt(profit);
+  $('m_pmr').textContent=fmtPct(pmr);
+  // gauge: 0~50% 映射到 0~100% 宽
+  const pct=Math.max(0,Math.min(50,SMr*100));
+  $('gMarker').style.left=(pct/50*100)+'%';
+  let lvl,color;
+  if(SMr<0.10){lvl='危险';color='#c0392b';}
+  else if(SMr<0.20){lvl='值得注意';color='#e67e22';}
+  else if(SMr<0.30){lvl='较安全';color='#d4ac0d';}
+  else if(SMr<0.40){lvl='安全';color='#58a558';}
+  else {lvl='很安全';color='#1e8449';}
+  const badge=$('lvlBadge'); badge.textContent=lvl; badge.style.background=color;
+  drawChart3(c,cm,Q0,Q,SMr);
+}
+function drawChart3(c,cm,Q0,Q,SMr){
+  const W=720,H=470,pad={top:36,right:260,bottom:50,left:70};
+  const cw=W-pad.left-pad.right, ch=H-pad.top-pad.bottom;
+  let s=`<rect width="${W}" height="${H}" fill="#fff" rx="8"/>`;
+  // 左：横条 保本 vs 预计
+  const qMax=c.qMax*1.05;
+  const xs=q=>pad.left+(q/qMax)*cw;
+  s+=`<text x="${pad.left+cw/2}" y="${pad.top-12}" text-anchor="middle" font-size="13" fill="#1a2744" font-weight="700">保本底线 vs 预计业务量</text>`;
+  // 轴
+  s+=`<line x1="${pad.left}" y1="${pad.top+ch}" x2="${pad.left+cw}" y2="${pad.top+ch}" stroke="#37474f"/>`;
+  // 亏损段 0~Q0 红
+  s+=`<rect x="${xs(0)}" y="${pad.top+40}" width="${xs(Q0)-xs(0)}" height="40" fill="#f8d0cb" rx="6"/>`;
+  // 安全边际 Q0~Q 绿
+  const qEnd=Math.min(Q,qMax);
+  s+=`<rect x="${xs(Q0)}" y="${pad.top+40}" width="${xs(qEnd)-xs(Q0)}" height="40" fill="#cde9d6" rx="6"/>`;
+  // Q0 竖线
+  s+=`<line x1="${xs(Q0)}" y1="${pad.top+20}" x2="${xs(Q0)}" y2="${pad.top+ch+6}" stroke="#e87722" stroke-width="2" stroke-dasharray="5,3"/>`;
+  s+=`<text x="${xs(Q0)}" y="${pad.top+14}" text-anchor="middle" font-size="11.5" fill="#b45014" font-weight="700">保本 ${fmt(Q0)}${c.unit}</text>`;
+  // Q 标记
+  s+=`<line x1="${xs(qEnd)}" y1="${pad.top+30}" x2="${xs(qEnd)}" y2="${pad.top+ch+6}" stroke="#1a2744" stroke-width="2.5"/>`;
+  s+=`<circle cx="${xs(qEnd)}" cy="${pad.top+60}" r="6" fill="#1a2744"/>`;
+  s+=`<text x="${xs(qEnd)}" y="${pad.top+ch+20}" text-anchor="middle" font-size="11.5" fill="#1a2744" font-weight="700">预计 ${fmt(Q)}${c.unit}</text>`;
+  s+=`<text x="${(xs(Q0)+xs(qEnd))/2}" y="${pad.top+65}" text-anchor="middle" font-size="11.5" fill="#1e8449" font-weight="700">安全边际</text>`;
+  s+=`<text x="${(xs(0)+xs(Q0))/2}" y="${pad.top+65}" text-anchor="middle" font-size="11.5" fill="#c0392b" font-weight="700">亏损区</text>`;
+  // x 刻度
+  for(let i=0;i<=4;i++){const q=qMax*i/4;
+    s+=`<text x="${xs(q)}" y="${pad.top+ch+36}" text-anchor="middle" font-size="10.5" fill="#8a94a8">${fmt(q)}</text>`;}
+  // 右：两案例安全边际率对照
+  const rx0=pad.left+cw+40, rw=pad.right-10;
+  s+=`<text x="${rx0+rw/2}" y="${pad.top-12}" text-anchor="middle" font-size="13" fill="#1a2744" font-weight="700">两案例安全边际率对照</text>`;
+  // 湘农 45.4% vs 万达 9.1%
+  const rateOf=c=>{const cm=c.P-c.V,Q0=c.F/cm;return ((c.qDef-Q0)/c.qDef)*100;};
+  const rxn=rateOf(CASES.xn), rdy=rateOf(CASES.dy);
+  const barH=46, gap=40;
+  const drawRateBar=(y,val,name,color)=>{
+    const bw=Math.min(val/50,1)*rw;
+    s+=`<text x="${rx0}" y="${y-8}" font-size="12" fill="#37474f" font-weight="600">${name}</text>`;
+    s+=`<rect x="${rx0}" y="${y}" width="${rw}" height="${barH}" fill="#eef2f7" rx="6"/>`;
+    s+=`<rect x="${rx0}" y="${y}" width="${bw}" height="${barH}" fill="${color}" rx="6"/>`;
+    s+=`<text x="${rx0+bw+8}" y="${y+barH/2+5}" font-size="14" fill="#1f2733" font-weight="800">${val.toFixed(1)}%</text>`;
+  };
+  drawRateBar(pad.top+10,rxn,'湘农机械（很安全）','#1e8449');
+  drawRateBar(pad.top+10+barH+gap,rdy,'万达影城（危险）','#c0392b');
+  // 10% 警戒线
+  const warnX=rx0+(10/50)*rw;
+  s+=`<line x1="${warnX}" y1="${pad.top}" x2="${warnX}" y2="${pad.top+ch}" stroke="#e87722" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+  s+=`<text x="${warnX}" y="${pad.top+ch+16}" text-anchor="middle" font-size="10.5" fill="#b45014" font-weight="700">危险线10%</text>`;
+  $('chart3').innerHTML=s;
+}
+function setCase(k){
+  curCase=k;
+  $('tabXn').classList.toggle('on',k==='xn');
+  $('tabDy').classList.toggle('on',k==='dy');
+  const c=CASES[k];
+  $('sQ').min=c.qMin; $('sQ').max=c.qMax; $('sQ').step=c.qStep; $('sQ').value=c.qDef;
+  $('sQscale').innerHTML=`<span>${c.scale[0]}</span><span>${c.scale[1]}</span><span>${c.scale[2]}</span>`;
+  calc3();
+}
+$('tabXn').addEventListener('click',()=>setCase('xn'));
+$('tabDy').addEventListener('click',()=>setCase('dy'));
+$('sQ').addEventListener('input',calc3);
+/* ================= 模块2：本量利图（基本式 + 贡献毛益式） ================= */
+const SP_D=100, VC_D=45, FC_D=15000;
+const cmD=SP_D-VC_D;
+const VBE=FC_D/cmD;
+const SBE=SP_D*VBE;
+let drawStep=1, curChart='basic';
+const STEP_TXT=[
+ "",
+ "<b>第1步</b>：基本式——先画一条水平的<b>固定成本线 FC=15000</b>（灰色虚线，不随销量变化）。<br>贡献毛益式——先画从原点出发的<b>变动成本线 VC·Q</b>（每卖一件增加45元）。点右上角 tab 可切换两种画法。",
+ "<b>第2步</b>：基本式——在 FC 之上叠加变动成本，得到总成本线。<br>贡献毛益式——把变动成本线整体向上平移 FC=15000，得到总成本线；两线之间夹的固定高度就是 FC。",
+ "<b>第3步</b>：两图都画<b>收入线 SP·Q=100·Q</b>（从原点出发，比总成本线更陡，绿色）。",
+ "<b>第4步</b>：收入线与总成本线的交点才是保本点：<b>V_BE=FC/cm=15000/55≈273件，S_BE=SP·V_BE≈27273元</b>。交点左侧亏损、右侧盈利。",
+ "<b>第5步（关键）</b>：切到贡献毛益式看——收入线与变动成本线之间张开的浅黄色区域就是<b>贡献毛益</b>。它先用来填 FC 这个坑：到保本点刚好填平；<b>超过保本点后，贡献毛益高出 FC 的部分，才是利润 P</b>！这就是利润的产生过程。"
+];
+function g2d(){
+  const W=720,H=470,pad={top:30,right:30,bottom:55,left:75};
+  const cw=W-pad.left-pad.right, ch=H-pad.top-pad.bottom;
+  return {W,H,pad,cw,ch,
+    xs:q=>pad.left+(q/500)*cw,
+    ys:v=>pad.top+ch-(v/60000)*ch};
+}
+function drawGrid(g){
+  let s=`<rect width="720" height="470" fill="#fff" rx="8"/>`;
+  for(let q=0;q<=500;q+=100){const x=g.xs(q);
+    s+=`<line x1="${x}" y1="${g.pad.top}" x2="${x}" y2="${g.pad.top+g.ch}" stroke="#eef2f7"/>`;
+    s+=`<text x="${x}" y="${g.pad.top+g.ch+18}" text-anchor="middle" font-size="11" fill="#8a94a8">${q}</text>`;}
+  for(let v=10000;v<=60000;v+=10000){const y=g.ys(v);
+    s+=`<line x1="${g.pad.left}" y1="${y}" x2="${g.pad.left+g.cw}" y2="${y}" stroke="#eef2f7"/>`;
+    s+=`<text x="${g.pad.left-8}" y="${y+4}" text-anchor="end" font-size="11" fill="#8a94a8">${fmt(v)}</text>`;}
+  s+=`<line x1="${g.pad.left}" y1="${g.pad.top}" x2="${g.pad.left}" y2="${g.pad.top+g.ch}" stroke="#37474f" stroke-width="1.5"/>`;
+  s+=`<line x1="${g.pad.left}" y1="${g.pad.top+g.ch}" x2="${g.pad.left+g.cw}" y2="${g.pad.top+g.ch}" stroke="#37474f" stroke-width="1.5"/>`;
+  s+=`<text x="${g.pad.left+g.cw/2}" y="458" text-anchor="middle" font-size="13" fill="#37474f" font-weight="600">销量 Q（件/月）</text>`;
+  s+=`<text x="22" y="${g.pad.top+g.ch/2}" text-anchor="middle" font-size="13" fill="#37474f" font-weight="600" transform="rotate(-90,22,${g.pad.top+g.ch/2})">金额（元）</text>`;
+  return s;
+}
+function drawBasic(){
+  const g=g2d(); let s=drawGrid(g);
+  const {xs,ys}=g;
+  if(drawStep>=1){
+    s+=`<line x1="${xs(0)}" y1="${ys(FC_D)}" x2="${xs(500)}" y2="${ys(FC_D)}" stroke="#9aa5bb" stroke-width="1.2" stroke-dasharray="6,4"/>`;
+    s+=`<text x="${xs(500)-6}" y="${ys(FC_D)-6}" text-anchor="end" font-size="12" fill="#7a869e">固定成本 FC=15000</text>`;
+  }
+  if(drawStep>=2){
+    s+=`<line x1="${xs(0)}" y1="${ys(FC_D)}" x2="${xs(500)}" y2="${ys(FC_D+VC_D*500)}" stroke="#e87722" stroke-width="2.8"/>`;
+    s+=`<text x="${xs(500)-8}" y="${ys(FC_D+VC_D*500)-10}" text-anchor="end" font-size="12.5" fill="#b45014" font-weight="700">总成本 = FC+VC·Q</text>`;
+  }
+  if(drawStep>=3){
+    s+=`<line x1="${xs(0)}" y1="${ys(0)}" x2="${xs(500)}" y2="${ys(SP_D*500)}" stroke="#2e7d4f" stroke-width="2.8"/>`;
+    s+=`<text x="${xs(500)-8}" y="${ys(SP_D*500)+22}" text-anchor="end" font-size="12.5" fill="#2e7d4f" font-weight="700">收入 = SP·Q</text>`;
+  }
+  if(drawStep>=4){
+    s+=`<line x1="${xs(VBE)}" y1="${ys(SBE)}" x2="${xs(VBE)}" y2="${ys(0)}" stroke="#e87722" stroke-dasharray="4,3" opacity=".7"/>`;
+    s+=`<circle cx="${xs(VBE)}" cy="${ys(SBE)}" r="9" fill="#e87722" stroke="#fff" stroke-width="2.5"/>`;
+    s+=`<circle cx="${xs(VBE)}" cy="${ys(SBE)}" r="14" fill="none" stroke="#e87722" opacity=".4"/>`;
+    const lx=xs(VBE)>520?xs(VBE)-160:xs(VBE)+14;
+    s+=`<rect x="${lx}" y="${ys(SBE)-46}" width="150" height="34" rx="5" fill="#e87722"/>`;
+    s+=`<text x="${lx+75}" y="${ys(SBE)-28}" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">保本点 V_BE≈273件</text>`;
+    s+=`<text x="${lx+75}" y="${ys(SBE)-15}" text-anchor="middle" font-size="10.5" fill="#fff3e6">S_BE≈27273元</text>`;
+  }
+  if(drawStep>=5){
+    s+=`<path d="M${xs(0)} ${ys(FC_D)} L${xs(VBE)} ${ys(SBE)} L${xs(0)} ${ys(0)} Z" fill="#f8d0cb" opacity="0.55"/>`;
+    s+=`<path d="M${xs(VBE)} ${ys(SBE)} L${xs(500)} ${ys(SP_D*500)} L${xs(500)} ${ys(FC_D+VC_D*500)} Z" fill="#cde9d6" opacity="0.55"/>`;
+    s+=`<text x="${xs(110)}" y="${ys(8000)}" text-anchor="middle" font-size="15" fill="#c0392b" font-weight="800" opacity=".7">亏损区</text>`;
+    s+=`<text x="${xs(410)}" y="${ys(42000)}" text-anchor="middle" font-size="15" fill="#2e7d4f" font-weight="800" opacity=".7">盈利区</text>`;
+  }
+  $('chartBig').innerHTML=s;
+}
+function drawCM(){
+  const g=g2d(); let s=drawGrid(g);
+  const {xs,ys}=g;
+  if(drawStep>=1){
+    s+=`<line x1="${xs(0)}" y1="${ys(0)}" x2="${xs(500)}" y2="${ys(VC_D*500)}" stroke="#e87722" stroke-width="2" opacity="0.55"/>`;
+    s+=`<text x="${xs(500)-8}" y="${ys(VC_D*500)-8}" text-anchor="end" font-size="12.5" fill="#b45014" font-weight="700">变动成本 = VC·Q</text>`;
+  }
+  if(drawStep>=2){
+    s+=`<line x1="${xs(0)}" y1="${ys(FC_D)}" x2="${xs(500)}" y2="${ys(FC_D)}" stroke="#9aa5bb" stroke-width="1.2" stroke-dasharray="6,4"/>`;
+    s+=`<text x="${xs(0)+6}" y="${ys(FC_D)-6}" text-anchor="start" font-size="12" fill="#7a869e">固定成本 FC=15000</text>`;
+    s+=`<line x1="${xs(0)}" y1="${ys(FC_D)}" x2="${xs(500)}" y2="${ys(FC_D+VC_D*500)}" stroke="#e87722" stroke-width="2.8"/>`;
+    s+=`<text x="${xs(500)-8}" y="${ys(FC_D+VC_D*500)-10}" text-anchor="end" font-size="12.5" fill="#b45014" font-weight="700">总成本 = 变动成本+FC</text>`;
+  }
+  if(drawStep>=3){
+    s+=`<line x1="${xs(0)}" y1="${ys(0)}" x2="${xs(500)}" y2="${ys(SP_D*500)}" stroke="#2e7d4f" stroke-width="2.8"/>`;
+    s+=`<text x="${xs(500)-8}" y="${ys(SP_D*500)+22}" text-anchor="end" font-size="12.5" fill="#2e7d4f" font-weight="700">收入 = SP·Q</text>`;
+  }
+  if(drawStep>=4){
+    s+=`<line x1="${xs(VBE)}" y1="${ys(SBE)}" x2="${xs(VBE)}" y2="${ys(0)}" stroke="#e87722" stroke-dasharray="4,3" opacity=".7"/>`;
+    s+=`<circle cx="${xs(VBE)}" cy="${ys(SBE)}" r="9" fill="#e87722" stroke="#fff" stroke-width="2.5"/>`;
+    s+=`<circle cx="${xs(VBE)}" cy="${ys(SBE)}" r="14" fill="none" stroke="#e87722" opacity=".4"/>`;
+    const lx=xs(VBE)>520?xs(VBE)-160:xs(VBE)+14;
+    s+=`<rect x="${lx}" y="${ys(SBE)-46}" width="150" height="34" rx="5" fill="#e87722"/>`;
+    s+=`<text x="${lx+75}" y="${ys(SBE)-28}" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">保本点 V_BE≈273件</text>`;
+    s+=`<text x="${lx+75}" y="${ys(SBE)-15}" text-anchor="middle" font-size="10.5" fill="#fff3e6">S_BE≈27273元</text>`;
+  }
+  if(drawStep>=5){
+    s+=`<path d="M${xs(0)} ${ys(0)} L${xs(500)} ${ys(SP_D*500)} L${xs(500)} ${ys(VC_D*500)} Z" fill="#fde9b8" opacity="0.65"/>`;
+    s+=`<path d="M${xs(0)} ${ys(FC_D)} L${xs(VBE)} ${ys(SBE)} L${xs(0)} ${ys(0)} Z" fill="#f8d0cb" opacity="0.7"/>`;
+    s+=`<path d="M${xs(VBE)} ${ys(SBE)} L${xs(500)} ${ys(SP_D*500)} L${xs(500)} ${ys(FC_D+VC_D*500)} Z" fill="#cde9d6" opacity="0.8"/>`;
+    s+=`<text x="${xs(220)}" y="${ys(16000)}" text-anchor="middle" font-size="15" fill="#b8860b" font-weight="800">贡献毛益</text>`;
+    s+=`<text x="${xs(430)}" y="${ys((SP_D*500+FC_D+VC_D*500)/2)}" text-anchor="middle" font-size="15" fill="#1e8449" font-weight="800">利润 P</text>`;
+    s+=`<text x="${xs(110)}" y="${ys(8000)}" text-anchor="middle" font-size="15" fill="#c0392b" font-weight="800" opacity=".7">亏损区</text>`;
+    s+=`<text x="${xs(430)}" y="${ys(13000)}" text-anchor="middle" font-size="11.5" fill="#556" font-weight="600">贡献毛益到这里刚好=FC</text>`;
+  }
+  $('chartBig').innerHTML=s;
+}
+function renderDraw(){
+  $('stepNo').textContent=drawStep;
+  $('stepText').innerHTML=STEP_TXT[drawStep];
+  if(curChart==='basic') drawBasic(); else drawCM();
+  $('btnStep').textContent = drawStep>=5 ? '重新演示 ↻' : '下一步 →';
+}
+function setChart(k){
+  curChart=k;
+  $('tabBasic').classList.toggle('on',k==='basic');
+  $('tabCM').classList.toggle('on',k==='cm');
+  renderDraw();
+}
+$('tabBasic').addEventListener('click',()=>setChart('basic'));
+$('tabCM').addEventListener('click',()=>setChart('cm'));
+$('btnStep').addEventListener('click',()=>{ drawStep = drawStep>=5 ? 1 : drawStep+1; renderDraw(); });
+$('btnReset').addEventListener('click',()=>{ drawStep=1; renderDraw(); });
+
+
+/* ================= 模块4：降价促销决策 ================= */
+const Qold=12000, Fold=360000, concessions=15; // 原人均人次、固定成本、卖品人均
+const cmOld=33; // 原价单位边际贡献
+const pOld=cmOld*Qold-Fold; // 36000
+function calc4(){
+  const Px=+$('sPx').value, Rx=+$('sRx').value/100;
+  $('vPx').textContent=Px.toFixed(1);
+  $('vRx').textContent=(Rx*100).toFixed(0)+'%';
+  // 人均收入 = 票价+卖品15；单位变动成本 = 票价*50% + 15*30%
+  const rev=Px+concessions;
+  const vc=Px*0.5+concessions*0.3;
+  const cmN=rev-vc;
+  const QN=Qold*(1+Rx);
+  const pNew=cmN*QN-Fold;
+  const occ=QN/18000*100;
+  $('m_cmN').textContent=fmt1(cmN);
+  $('m_QN').textContent=fmt(QN);
+  $('m_pOld').textContent=fmt(pOld);
+  $('m_pNew').textContent=fmt(pNew);
+  $('m_occ').textContent=occ.toFixed(1)+'%';
+  // 临界增幅（保持 pOld）
+  const critQ=(Fold+pOld)/cmN;
+  const critR=(critQ-Qold)/Qold*100;
+  $('m_crit').textContent=critR.toFixed(1)+'%';
+  // 增15%时利润
+  const p15=cmN*Qold*1.15-Fold;
+  $('m_at15').textContent=fmt(p15);
+  // 判定
+  const vd=$('verdict');
+  if(pNew>pOld && cmN>0){
+    vd.className='verdict win';
+    vd.textContent=`降价划算！利润 ${fmt(pNew)} > 原 ${fmt(pOld)}`;
+  } else if(cmN<=0){
+    vd.className='verdict lose';
+    vd.textContent=`单位边际贡献≤0，卖得越多亏得越多，绝不能降！`;
+  } else {
+    vd.className='verdict lose';
+    vd.textContent=`不划算：利润 ${fmt(pNew)} ≤ 原 ${fmt(pOld)}（增幅没跑赢临界 ${critR.toFixed(1)}%）`;
+  }
+  drawChart4(Px,cmN,Rx,critR,pOld);
+}
+function drawChart4(Px,cmN,Rx,critR,pOld){
+  const W=720,H=470,pad={top:36,right:30,bottom:55,left:80};
+  const cw=W-pad.left-pad.right, ch=H-pad.top-pad.bottom;
+  let s=`<rect width="${W}" height="${H}" fill="#fff" rx="8"/>`;
+  const rMin=0, rMax=60; // %
+  const pAt=(r)=>cmN*Qold*(1+r/100)-Fold;
+  const yMax=Math.max(pAt(rMax),pOld*1.2,1)*1.12;
+  const yMin=Math.min(0,pAt(rMin))*1.15;
+  const xs=r=>pad.left+(r-rMin)/(rMax-rMin)*cw;
+  const ys=v=>pad.top+ch-(v-yMin)/(yMax-yMin)*ch;
+  // 盈利区/亏损区底色：以 y=0 为界，线上淡绿=盈利，线下淡红=亏损
+  const y0=ys(0);
+  s+=`<rect x="${pad.left}" y="${pad.top}" width="${cw}" height="${y0-pad.top}" fill="#cde9d6" opacity="0.35"/>`;
+  s+=`<rect x="${pad.left}" y="${y0}" width="${cw}" height="${pad.top+ch-y0}" fill="#f8d0cb" opacity="0.35"/>`;
+  s+=`<text x="${pad.left+cw-12}" y="${pad.top+18}" text-anchor="end" font-size="13" fill="#2e7d4f" font-weight="800" opacity=".7">盈利区（利润&gt;0）</text>`;
+  s+=`<text x="${pad.left+cw-12}" y="${pad.top+ch-10}" text-anchor="end" font-size="13" fill="#c0392b" font-weight="800" opacity=".7">亏损区（利润&lt;0）</text>`;
+  // 网格 + y 轴
+  for(let i=0;i<=5;i++){const v=yMin+i/5*(yMax-yMin),y=ys(v);
+    s+=`<line x1="${pad.left}" y1="${y}" x2="${pad.left+cw}" y2="${y}" stroke="#eef2f7"/>`;
+    s+=`<text x="${pad.left-8}" y="${y+4}" text-anchor="end" font-size="10.5" fill="#8a94a8">${fmt(v)}</text>`;}
+  s+=`<line x1="${pad.left}" y1="${pad.top}" x2="${pad.left}" y2="${pad.top+ch}" stroke="#37474f" stroke-width="1.5"/>`;
+  s+=`<line x1="${pad.left}" y1="${ys(0)}" x2="${pad.left+cw}" y2="${ys(0)}" stroke="#37474f" stroke-width="1.5"/>`;
+  // x 刻度
+  for(let r=0;r<=60;r+=10){
+    s+=`<text x="${xs(r)}" y="${pad.top+ch+18}" text-anchor="middle" font-size="10.5" fill="#8a94a8">${r}%</text>`;}
+  s+=`<text x="${pad.left+cw/2}" y="${H-12}" text-anchor="middle" font-size="13" fill="#37474f" font-weight="600">人次增幅（%）</text>`;
+  s+=`<text x="22" y="${pad.top+ch/2}" text-anchor="middle" font-size="13" fill="#37474f" font-weight="600" transform="rotate(-90,22,${pad.top+ch/2})">月利润（元）</text>`;
+  // 原利润水平线
+  s+=`<line x1="${pad.left}" y1="${ys(pOld)}" x2="${pad.left+cw}" y2="${ys(pOld)}" stroke="#3b82c4" stroke-width="1.8" stroke-dasharray="8,5"/>`;
+  s+=`<text x="${pad.left+cw-4}" y="${ys(pOld)-6}" text-anchor="end" font-size="11.5" fill="#3b82c4" font-weight="700">原利润 ${fmt(pOld)}</text>`;
+  // 利润线（随 r）
+  let path='';
+  for(let r=rMin;r<=rMax;r+=1){
+    const p=cmN*Qold*(1+r/100)-Fold;
+    path+=(r===rMin?'M':'L')+xs(r)+','+ys(p);
+  }
+  s+=`<path d="${path}" fill="none" stroke="#e87722" stroke-width="3"/>`;
+  // 临界增幅交点
+  const cr=Math.max(0,Math.min(60,critR));
+  s+=`<line x1="${xs(cr)}" y1="${ys(pOld)}" x2="${xs(cr)}" y2="${pad.top+ch}" stroke="#c0392b" stroke-width="1.6" stroke-dasharray="5,3"/>`;
+  s+=`<circle cx="${xs(cr)}" cy="${ys(pOld)}" r="7" fill="#c0392b" stroke="#fff" stroke-width="2"/>`;
+  s+=`<rect x="${Math.min(xs(cr)+8,W-150)}" y="${ys(pOld)-34}" width="138" height="26" rx="4" fill="#c0392b"/>`;
+  s+=`<text x="${Math.min(xs(cr)+8,W-150)+69}" y="${ys(pOld)-16}" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">临界增幅≈${cr.toFixed(1)}%</text>`;
+  // 当前点
+  const pCur=cmN*Qold*(1+Rx)-Fold;
+  s+=`<circle cx="${xs(Rx*100)}" cy="${ys(pCur)}" r="9" fill="#1a2744" stroke="#ffb877" stroke-width="3"/>`;
+  s+=`<text x="${xs(Rx*100)}" y="${ys(pCur)-16}" text-anchor="middle" font-size="12.5" fill="#1a2744" font-weight="800">当前 ${fmt(pCur)}</text>`;
+  $('chart4').innerHTML=s;
+}
+$('sPx').addEventListener('input',calc4);
+$('sRx').addEventListener('input',calc4);
+$('btnReset5').addEventListener('click',()=>{
+  $('sPx').value=35; $('sRx').value=30; calc4();
+});
+
+/* ================= 初始化 ================= */
+calc1(); setCase('xn'); calc4(); renderDraw();
+</script>
+</body>
+</html>

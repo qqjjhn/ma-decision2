@@ -59,7 +59,7 @@ td,th{padding:6px 8px}
 </div>
 <p class="note" id="msg2"></p>
 <canvas id="cv2" width="1000" height="470"></canvas>
-<p class="note">图中<b>白色曲线</b>是"利润＝0"临界线：组合落在左下即亏损。临界增幅：降价5%时销量须增<b>10%</b>才回到12,500元。</p>
+<p class="note">三条<b>等利润线</b>：白虚线＝利润0（保本临界），<b style="color:#E8722A">橙实线＝利润12,500（基准·耦合线）</b>，蓝虚线＝利润15,000（厂长目标）。沿橙线看耦合关系：单价降5%，销量须增10%才守住基准。<b>鼠标在图上移动</b>可读取任意组合的利润。</p>
 </div></div><div id="m3" class="panel" style="display:none">
 <div class="card"><div class="row">
 <b>输入四数：</b>
@@ -160,6 +160,7 @@ function draw1(){
 
 // ====== 模块二 ======
 const profit2=(dp,dv)=>(100*(1+dp/100)-45)*500*(1+dv/100)-15000;
+let hover2=null;
 function draw2(){
   const dp=+$('dp').value, dv=+$('dv').value;
   $('dpv').textContent=(dp>0?'+':'−')+Math.abs(dp)+'%';
@@ -184,22 +185,62 @@ function draw2(){
     g.fillRect(L+i*cellW,T+(39-j)*cellH,cellW+1,cellH+1);
   }
   const px=d=>L+(d+20)/40*(W-L-R), py=d=>T+(20-d)/40*(H-T-B);
-  g.strokeStyle='#fff'; g.lineWidth=3; g.setLineDash([8,5]); g.beginPath();
-  let started=false;
-  for(let d2=-20;d2<=20;d2+=0.5){
-    const dvv=30/(55+d2)*100-100;
-    if(dvv<-20||dvv>20){started=false;continue;}
-    started?g.lineTo(px(d2),py(dvv)):(g.moveTo(px(d2),py(dvv)),started=true);
-  }
-  g.stroke(); g.setLineDash([]);
-  g.fillStyle='#fff'; g.font='bold 15px sans-serif'; g.fillText('利润＝0 临界线', L+14, py(-19)+18);
-  g.strokeStyle='#E8722A'; g.lineWidth=2;
+  // —— 等利润线：P=0（白虚线）／P=12500基准（橙实线·耦合线）／P=15000目标（蓝虚线） ——
+  const iso=(P0,color,dash,wd)=>{
+    g.strokeStyle=color; g.lineWidth=wd; g.setLineDash(dash); g.beginPath();
+    let st=false;
+    for(let d2=-20;d2<=20;d2+=0.5){
+      const dvv=(P0+15000)/(500*(55+d2))*100-100;
+      if(dvv<-20||dvv>20){st=false;continue;}
+      st?g.lineTo(px(d2),py(dvv)):(g.moveTo(px(d2),py(dvv)),st=true);
+    }
+    g.stroke(); g.setLineDash([]);
+  };
+  iso(0,'#ffffff',[8,5],3);
+  iso(12500,'#E8722A',[],4);
+  iso(15000,'#8ea9ff',[5,4],2.5);
+  g.font='bold 14px sans-serif';
+  g.fillStyle='#fff'; g.fillText('利润＝0（保本临界）', L+14, py(-19)+18);
+  g.fillStyle='#E8722A';
+  g.fillText('利润＝12,500（基准·耦合线）', px(-19.5), py(55/(55-19.5)*100-100)-8);
+  g.fillStyle='#8ea9ff';
+  g.fillText('利润＝15,000（厂长目标）', px(2), py(60/57*100-100)+16<py(0)?py(60/57*100-100)+16:T+150);
+  // —— 教学点：降价5% ↔ 销量+10% 守住基准 ——
+  g.fillStyle='#E8722A'; g.strokeStyle='#fff'; g.lineWidth=2.5;
+  g.beginPath(); g.arc(px(-5),py(10),7,0,7); g.fill(); g.stroke();
+  g.fillStyle='#1F3864'; g.font='bold 14px sans-serif';
+  g.fillText('教学点：降价5% ↔ 销量＋10%（利润回到基准）', px(-5)+12, py(10)-10);
+  // —— 滑块当前组合 ——
+  g.strokeStyle='#1F3864'; g.lineWidth=2;
   g.beginPath(); g.moveTo(px(dp),T); g.lineTo(px(dp),H-B); g.stroke();
   g.beginPath(); g.moveTo(L,py(dv)); g.lineTo(W-R,py(dv)); g.stroke();
-  g.fillStyle='#fff'; g.strokeStyle='#E8722A'; g.lineWidth=4;
+  g.fillStyle='#fff'; g.strokeStyle='#1F3864'; g.lineWidth=4;
   g.beginPath(); g.arc(px(dp),py(dv),10,0,7); g.fill(); g.stroke();
   g.fillStyle='#1F3864'; g.font='bold 16px sans-serif';
   g.fillText('当前组合：'+fmt(ex)+' 元', Math.min(px(dp)+16,W-240), Math.max(py(dv)-14,60));
+  // —— 鼠标悬停读数 ——
+  if(hover2){
+    const mx=hover2.mx, my=hover2.my;
+    if(mx>L&&mx<W-R&&my>T&&my<H-B){
+      const hdp=(mx-L)/(W-L-R)*40-20, hdv=20-(my-T)/(H-T-B)*40;
+      const hp=profit2(hdp,hdv), diff=hp-12500;
+      g.strokeStyle='#fff'; g.lineWidth=1.5; g.setLineDash([4,4]);
+      g.beginPath(); g.moveTo(mx,T); g.lineTo(mx,H-B); g.stroke();
+      g.beginPath(); g.moveTo(L,my); g.lineTo(W-R,my); g.stroke(); g.setLineDash([]);
+      g.fillStyle='#fff'; g.strokeStyle='#1F3864'; g.lineWidth=3;
+      g.beginPath(); g.arc(mx,my,5,0,7); g.fill(); g.stroke();
+      const lines=['单价 '+(hdp>0?'+':'')+hdp.toFixed(0)+'% ｜ 销量 '+(hdv>0?'+':'')+hdv.toFixed(0)+'%',
+        '利润 '+fmt(hp)+' 元（'+(diff>=0?'+':'−')+fmt(Math.abs(diff))+' vs 基准）',
+        Math.abs(hp)<80?'● 恰好保本临界':(Math.abs(hp-12500)<80?'● 恰好回到基准利润':'')];
+      const bw=330, bh=20+lines.filter(s=>s).length*22;
+      const bx=Math.min(mx+16,W-R-bw-6), by=Math.max(my-bh-10,T+6);
+      g.fillStyle='rgba(255,255,255,.95)'; g.strokeStyle='#1F3864'; g.lineWidth=2;
+      g.beginPath(); g.rect(bx,by,bw,bh); g.fill(); g.stroke();
+      g.fillStyle='#1F3864'; g.font='bold 15px sans-serif';
+      lines.filter(s=>s).forEach((s,i)=>g.fillText(s,bx+12,by+24+i*22));
+    }
+  }
+  // 轴与图例
   g.fillStyle='#5a6b8c'; g.font='14px sans-serif';
   for(let d=-20;d<=20;d+=10){ g.fillText((d>0?'+':'')+d+'%',px(d)-16,H-B+24); g.fillText((d>0?'+':'')+d+'%',28,py(d)+5); }
   g.fillStyle='#1F3864'; g.font='bold 15px sans-serif';
@@ -208,6 +249,18 @@ function draw2(){
   for(let k=0;k<=4;k++){ const p=vmin+(vmax-vmin)*k/4; g.fillStyle=cmap(p); g.fillRect(W-R-150+k*30,T-30,30,14); }
   g.fillStyle='#5a6b8c'; g.font='13px sans-serif'; g.fillText('亏损',W-R-178,T-18); g.fillText('盈利',W-R-26,T-18);
 }
+$('cv2').addEventListener('mousemove',ev=>{
+  const r=$('cv2').getBoundingClientRect();
+  hover2={mx:(ev.clientX-r.left)*($('cv2').width/r.width), my:(ev.clientY-r.top)*($('cv2').height/r.height)};
+  draw2();
+});
+$('cv2').addEventListener('mouseleave',()=>{hover2=null;draw2();});
+$('cv2').addEventListener('touchmove',ev=>{
+  const t=ev.touches[0], r=$('cv2').getBoundingClientRect();
+  hover2={mx:(t.clientX-r.left)*($('cv2').width/r.width), my:(t.clientY-r.top)*($('cv2').height/r.height)};
+  draw2();
+},{passive:true});
+$('cv2').addEventListener('touchend',()=>{hover2=null;draw2();});
 ['dp','dv'].forEach(id=>$(id).addEventListener('input',draw2));
 
 // ====== 模块三 ======

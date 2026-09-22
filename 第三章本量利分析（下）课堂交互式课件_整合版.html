@@ -1,0 +1,317 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8"><title>课堂交互式课件 · 本量利分析（下）</title><style>
+body{font-family:"Microsoft YaHei","PingFang SC",sans-serif;background:#f4f6fb;color:#1F3864;margin:0;padding:16px 20px;max-width:1120px;margin:0 auto}
+h1{font-size:24px;border-left:8px solid #E8722A;padding-left:12px;margin:6px 0}
+.tag{display:inline-block;background:#1F3864;color:#fff;border-radius:6px;padding:2px 12px;font-size:13px}
+.tabs{position:sticky;top:0;z-index:9;background:#f4f6fb;padding:10px 0;display:flex;gap:10px;border-bottom:3px solid #1F3864}
+.tab{flex:1;background:#fff;border:2px solid #1F3864;color:#1F3864;border-radius:10px 10px 0 0;padding:10px 6px;font-size:16px;font-weight:700;cursor:pointer}
+.tab.active{background:#1F3864;color:#fff;border-bottom-color:#E8722A}
+.card{background:#fff;border-radius:12px;box-shadow:0 2px 10px rgba(31,56,100,.08);padding:14px 20px;margin:14px 0}
+.row{display:flex;align-items:center;gap:14px;margin:10px 0;font-size:17px;flex-wrap:wrap}
+input[type=range]{flex:1;min-width:220px;accent-color:#E8722A;height:26px}
+input[type=number]{font-size:18px;padding:4px 6px;border:1.5px solid #b9c4da;border-radius:6px}
+.val{min-width:96px;font-weight:800;color:#E8722A;font-size:21px;text-align:right}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.kpi{background:#eef2fb;border-radius:10px;padding:10px 14px;text-align:center}
+.kpi .lab{font-size:14px;color:#5a6b8c}
+.kpi .num{font-size:36px;font-weight:800}
+.neg{color:#c0392b}.pos{color:#1F3864}.org{color:#E8722A}
+.note{font-size:15px;color:#5a6b8c;margin:8px 0}
+canvas{display:block;background:#fff;border:1px solid #dde3f0;border-radius:8px;margin-top:6px;max-width:100%}
+button{background:#1F3864;color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:16px;cursor:pointer}
+table{border-collapse:collapse}
+td,th{padding:6px 8px}
+</style></head><body><h1>课堂交互式课件 · 本量利分析（下） <span class="tag">湘农机械 × 万达影城</span></h1>
+<div class="tabs">
+<button class="tab active" onclick="show(1)">① 因素—利润联动</button>
+<button class="tab" onclick="show(2)">② 双因素热力图</button>
+<button class="tab" onclick="show(3)">③ 敏感系数计算器</button>
+<button class="tab" onclick="show(4)">④ 经营杠杆演示</button>
+</div><div id="m1" class="panel">
+<div class="card">
+<div class="row"><b style="width:180px">销售单价 SP（元）</b><input id="sp" type="range" min="60" max="130" step="1" value="100"><span class="val" id="spv">100</span></div>
+<div class="row"><b style="width:180px">单位变动成本 VC（元）</b><input id="vc" type="range" min="30" max="60" step="1" value="45"><span class="val" id="vcv">45</span></div>
+<div class="row"><b style="width:180px">固定成本 FC（元/月）</b><input id="fc" type="range" min="5000" max="25000" step="500" value="15000"><span class="val" id="fcv">15,000</span></div>
+<div class="row"><b style="width:180px">销售量 V（件/月）</b><input id="v" type="range" min="0" max="1000" step="10" value="500"><span class="val" id="vv">500</span></div>
+</div>
+<div class="card"><div class="grid">
+<div class="kpi"><div class="lab">单位边际贡献</div><div class="num" id="cm">55</div></div>
+<div class="kpi"><div class="lab">边际贡献总额</div><div class="num" id="tcm">27,500</div></div>
+<div class="kpi"><div class="lab">营业利润 P</div><div class="num pos" id="p">12,500</div></div>
+<div class="kpi"><div class="lab">保本量</div><div class="num org" id="bep">273 件</div></div>
+</div>
+<p class="note">拖动滑块，盯住橙色圆点：每个因素让图"动"的方式不一样。</p>
+<canvas id="cv1" width="1000" height="400"></canvas>
+<div class="grid" style="grid-template-columns:1fr 1fr 1fr;font-size:15px">
+<div style="background:#eef2fb;border-radius:8px;padding:10px"><b style="color:#1F3864">调 FC</b>：整条线<b>上下平移</b>，斜率不变——固定成本是利润的"门槛"。</div>
+<div style="background:#eef2fb;border-radius:8px;padding:10px"><b style="color:#1F3864">调 V</b>：线不动，<b>点在线上滑动</b>。</div>
+<div style="background:#eef2fb;border-radius:8px;padding:10px"><b style="color:#1F3864">调 SP／VC</b>：线的<b>斜率改变</b>——"线越陡越敏感"的直觉来源。</div>
+</div>
+</div></div><div id="m2" class="panel" style="display:none">
+<div class="card">
+<div class="row"><b style="width:200px">销售单价变动（SP）</b><input id="dp" type="range" min="-20" max="20" step="1" value="-5"><span class="val" id="dpv">−5%</span></div>
+<div class="row"><b style="width:200px">销售量变动（V）</b><input id="dv" type="range" min="-20" max="20" step="1" value="20"><span class="val" id="dvv">＋20%</span></div>
+<p class="note">固定基准：SP＝100元，VC＝45元，FC＝15,000元/月，V＝500件，基准利润12,500元。</p>
+</div>
+<div class="card"><div class="grid" style="grid-template-columns:1fr 1fr 1fr">
+<div class="kpi"><div class="lab">精确利润（两因素同变）</div><div class="num pos" id="exact">15,000</div></div>
+<div class="kpi"><div class="lab">简单相加（分算后加总）</div><div class="num org" id="naive">15,500</div></div>
+<div class="kpi"><div class="lab">差额＝交叉项 ΔSP×ΔV</div><div class="num neg" id="cross">−500</div></div>
+</div>
+<p class="note" id="msg2"></p>
+<canvas id="cv2" width="1000" height="470"></canvas>
+<p class="note">图中<b>白色曲线</b>是"利润＝0"临界线：组合落在左下即亏损。临界增幅：降价5%时销量须增<b>10%</b>才回到12,500元。</p>
+</div></div><div id="m3" class="panel" style="display:none">
+<div class="card"><div class="row">
+<b>输入四数：</b>
+<label>SP <input id="sp3" type="number" value="100" style="width:76px"></label>
+<label>VC <input id="vc3" type="number" value="45" style="width:76px"></label>
+<label>FC <input id="fc3" type="number" value="15000" style="width:96px"></label>
+<label>V <input id="v3" type="number" value="500" style="width:86px"></label>
+<button onclick="preset3()">载入湘农机械预设</button>
+</div>
+<div class="grid">
+<div class="kpi"><div class="lab">单位边际贡献</div><div class="num" id="cm3">55</div></div>
+<div class="kpi"><div class="lab">营业利润 P</div><div class="num" id="p3">12,500</div></div>
+<div class="kpi"><div class="lab">保本量</div><div class="num" id="bep3">273 件</div></div>
+<div class="kpi"><div class="lab">安全边际率 / DOL</div><div class="num org" id="msr">45.4% / 2.2</div></div>
+</div></div>
+<div class="card"><h3 style="margin:4px 0">四个因素的临界值与敏感系数</h3>
+<table id="tbl" style="width:100%;font-size:16px"></table>
+<div id="bars" style="margin-top:10px"></div>
+<p class="note">临界变动幅度＝1÷|敏感系数|（如价格可降25%＝1÷4.0）。</p></div>
+<div class="card"><h3 style="margin:4px 0">敏感分析表：单因素变动下营业利润（元）</h3>
+<table id="tbl5" style="width:100%;font-size:15px"></table></div>
+<div class="card"><h3 style="margin:4px 0">敏感分析图（线越陡越敏感）</h3>
+<canvas id="cv3" width="1000" height="400"></canvas></div></div><div id="m4" class="panel" style="display:none">
+<div class="card">
+<div class="row"><b style="width:220px">销量变动（两企业同步）</b><input id="d4" type="range" min="-25" max="35" step="1" value="0"><span class="val" id="dv4">0%</span></div>
+<p class="note">湘农机械：SP＝100，VC＝45，FC＝15,000/月，V＝500件（DOL＝2.2）｜长沙万达影城：人均60元，VC＝27元，FC＝36万/月，12,000人次（DOL＝11.0）</p>
+</div>
+<div class="card"><div class="grid" style="grid-template-columns:1fr 1fr">
+<div class="kpi" style="border-top:6px solid #1F3864"><div class="lab">湘农机械 · 安全边际率45.4%</div>
+<div class="num" id="xprof">12,500</div><div class="note" id="xdol">DOL＝2.2｜利润变动 0%</div></div>
+<div class="kpi" style="border-top:6px solid #c0392b"><div class="lab">万达影城 · 安全边际率9.1%</div>
+<div class="num neg" id="wprof">36,000</div><div class="note" id="wdol">DOL＝11.0｜利润变动 0%</div></div>
+</div>
+<p class="note" id="msg4">销量向下滑动：万达的亏损来得又快又狠——<b>重资产行业高固定成本＝高经营杠杆＝高风险</b>。</p>
+<canvas id="cv4" width="1000" height="420"></canvas>
+<p class="note">图中直线斜率＝DOL：湘农2.2（平缓），万达11.0（陡峭）。万达销量下滑9.1%即跌至保本点，下滑10%即亏损3,600元。</p>
+</div></div><script>
+const $=id=>document.getElementById(id);
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+function show(n){
+  for(let i=1;i<=4;i++){ $('m'+i).style.display=(i===n?'block':'none'); }
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i+1===n));
+}
+
+// ====== 模块一 ======
+const YMIN=-25000, YMAX=45000, XMAX=1000;
+function draw1(){
+  const SP=+$('sp').value, VC=+$('vc').value, FC=+$('fc').value, V=+$('v').value;
+  $('spv').textContent=SP; $('vcv').textContent=VC; $('fcv').textContent=fmt(FC); $('vv').textContent=V;
+  const cm=SP-VC, tcm=cm*V, P=tcm-FC;
+  $('cm').textContent=fmt(cm); $('tcm').textContent=fmt(tcm);
+  const pe=$('p'); pe.textContent=fmt(P); pe.className='num '+(P<0?'neg':'pos');
+  const bep=cm>0?FC/cm:null;
+  $('bep').innerHTML=(bep===null?'—（VC≥SP）':Math.round(bep)+' 件 <span style="font-size:16px">'+(bep>273.5?'→ 右移·更难保本':(bep<272.5?'→ 左移·更易保本':'·基准'))+'</span>');
+  const cv=$('cv1'), g=cv.getContext('2d'), W=cv.width, H=cv.height, L=64,R=16,T=18,B=44;
+  g.clearRect(0,0,W,H);
+  const px=x=>L+x/XMAX*(W-L-R), py=y=>H-B-(y-YMIN)/(YMAX-YMIN)*(H-T-B);
+  // 不裁剪：轴线＋网格＋刻度（刻度必须可见！）
+  g.strokeStyle='#8a97b5'; g.lineWidth=2;
+  g.beginPath(); g.moveTo(L,T); g.lineTo(L,H-B); g.lineTo(W-R,H-B); g.stroke();
+  g.strokeStyle='#d5dce9'; g.lineWidth=1;
+  g.fillStyle='#5a6b8c'; g.font='13px sans-serif';
+  for(let y=Math.ceil(YMIN/10000)*10000;y<=YMAX;y+=10000){
+    if(y===0) continue;
+    g.beginPath(); g.moveTo(L,py(y)); g.lineTo(W-R,py(y)); g.stroke();
+    g.fillText(fmt(y),10,py(y)+4);
+  }
+  for(let x=0;x<=XMAX;x+=200){ g.fillText(x,px(x)-12,H-B+24); }
+  // 裁剪区：数据元素
+  g.save(); g.beginPath(); g.rect(L,T,W-L-R,H-T-B); g.clip();
+  g.fillStyle='#1F3864'; g.font='bold 14px sans-serif';
+  g.fillText('利润线 P＝(SP−VC)·V−FC',L+10,T+18);
+  g.strokeStyle='#c0392b'; g.setLineDash([6,4]); g.lineWidth=1.5; g.beginPath(); g.moveTo(L,py(0)); g.lineTo(W-R,py(0)); g.stroke(); g.setLineDash([]);
+  g.fillStyle='#c0392b'; g.fillText('利润＝0',W-70,py(0)-6);
+  g.strokeStyle='#1F3864'; g.lineWidth=3; g.beginPath();
+  for(let x=0;x<=XMAX;x+=4){ const y=cm*x-FC; x===0?g.moveTo(px(x),py(y)):g.lineTo(px(x),py(y)); }
+  g.stroke();
+  if(bep!==null && bep<=XMAX){
+    g.strokeStyle='#1F3864'; g.setLineDash([4,4]); g.lineWidth=1.5; g.beginPath(); g.moveTo(px(bep),H-B); g.lineTo(px(bep),py(0)); g.stroke(); g.setLineDash([]);
+    g.fillStyle='#1F3864'; g.font='bold 13px sans-serif'; g.fillText('保本点 '+Math.round(bep)+' 件',Math.min(px(bep)+6,W-120),H-B-8);
+  }
+  const inY=P>=YMIN&&P<=YMAX;
+  const cy=inY?py(P):(P>YMAX?T+8:H-B-8);
+  g.fillStyle='#E8722A'; g.strokeStyle='#fff'; g.lineWidth=3;
+  g.beginPath(); g.arc(px(V),cy,9,0,7); g.fill(); g.stroke();
+  g.strokeStyle='#E8722A'; g.setLineDash([5,4]); g.lineWidth=1.5; g.beginPath(); g.moveTo(px(V),H-B); g.lineTo(px(V),cy); g.stroke(); g.setLineDash([]);
+  g.fillStyle='#E8722A'; g.font='bold 16px sans-serif';
+  g.fillText('V＝'+V+' 件，P＝'+fmt(P)+' 元', Math.min(px(V)+14,W-250), Math.max(cy-14,34));
+  if(!inY){ g.fillStyle='#c0392b'; g.font='bold 14px sans-serif';
+    g.fillText('（超出显示范围，真实值 '+fmt(P)+' 元）', L+8, P>YMAX?T+40:H-B-16); }
+  g.restore();
+  // 轴标题
+  g.fillStyle='#1F3864'; g.font='bold 15px sans-serif';
+  g.save(); g.translate(22,(T+H-B)/2); g.rotate(-Math.PI/2); g.fillText('利润 P（元） →',-52,5); g.restore();
+  g.fillText('销售量 V（件） →',(L+W-R)/2-72,H-8);
+}
+['sp','vc','fc','v'].forEach(id=>$(id).addEventListener('input',draw1));
+
+// ====== 模块二 ======
+const profit2=(dp,dv)=>(100*(1+dp/100)-45)*500*(1+dv/100)-15000;
+function draw2(){
+  const dp=+$('dp').value, dv=+$('dv').value;
+  $('dpv').textContent=(dp>0?'+':'−')+Math.abs(dp)+'%';
+  $('dvv').textContent=(dv>0?'+':'−')+Math.abs(dv)+'%';
+  const ex=profit2(dp,dv), nv=12500+500*dp+275*dv, cr=ex-nv;
+  const e=$('exact'); e.textContent=fmt(ex); e.className='num '+(ex<0?'neg':'pos');
+  const nv2=$('naive'); nv2.textContent=fmt(nv); nv2.className='num '+(nv<0?'neg':'org');
+  $('cross').textContent=(cr>0?'+':'−')+fmt(Math.abs(cr));
+  $('msg2').innerHTML='结论：<b>利润面不是平面</b>——多因素同时变动必须整体重算，简单相加会'+(cr<0?'高估':'低估')+'利润 '+fmt(Math.abs(cr))+' 元（交叉项 ΔSP×ΔV）。';
+  const cv=$('cv2'), g=cv.getContext('2d'), W=cv.width, H=cv.height, L=70,R=20,T=46,B=56;
+  g.clearRect(0,0,W,H);
+  const corners=[profit2(-20,-20),profit2(20,-20),profit2(-20,20),profit2(20,20)];
+  const vmin=Math.min(-10000,Math.min(...corners)), vmax=Math.max(10000,Math.max(...corners));
+  const cellW=(W-L-R)/40, cellH=(H-T-B)/40;
+  const cmap=p=>{ let r,gc,b;
+    if(p>=0){ const t=Math.min(1,p/vmax); r=Math.round(0x1F+(0x6b-0x1F)*t); gc=Math.round(0x38+(0xd9-0x38)*t); b=Math.round(0x64+(0x8e-0x64)*t); }
+    else { const t=Math.min(1,p/vmin); r=Math.round(0x1F+(0xc0-0x1F)*t); gc=Math.round(0x38+(0x39-0x38)*t); b=Math.round(0x64+(0x2b-0x64)*t); }
+    return 'rgb('+r+','+gc+','+b+')'; };
+  for(let i=0;i<40;i++)for(let j=0;j<40;j++){
+    const dp2=-20+(i+.5), dv2=-20+(j+.5);
+    g.fillStyle=cmap(profit2(dp2,dv2));
+    g.fillRect(L+i*cellW,T+(39-j)*cellH,cellW+1,cellH+1);
+  }
+  const px=d=>L+(d+20)/40*(W-L-R), py=d=>T+(20-d)/40*(H-T-B);
+  g.strokeStyle='#fff'; g.lineWidth=3; g.setLineDash([8,5]); g.beginPath();
+  let started=false;
+  for(let d2=-20;d2<=20;d2+=0.5){
+    const dvv=30/(55+d2)*100-100;
+    if(dvv<-20||dvv>20){started=false;continue;}
+    started?g.lineTo(px(d2),py(dvv)):(g.moveTo(px(d2),py(dvv)),started=true);
+  }
+  g.stroke(); g.setLineDash([]);
+  g.fillStyle='#fff'; g.font='bold 15px sans-serif'; g.fillText('利润＝0 临界线', L+14, py(-19)+18);
+  g.strokeStyle='#E8722A'; g.lineWidth=2;
+  g.beginPath(); g.moveTo(px(dp),T); g.lineTo(px(dp),H-B); g.stroke();
+  g.beginPath(); g.moveTo(L,py(dv)); g.lineTo(W-R,py(dv)); g.stroke();
+  g.fillStyle='#fff'; g.strokeStyle='#E8722A'; g.lineWidth=4;
+  g.beginPath(); g.arc(px(dp),py(dv),10,0,7); g.fill(); g.stroke();
+  g.fillStyle='#1F3864'; g.font='bold 16px sans-serif';
+  g.fillText('当前组合：'+fmt(ex)+' 元', Math.min(px(dp)+16,W-240), Math.max(py(dv)-14,60));
+  g.fillStyle='#5a6b8c'; g.font='14px sans-serif';
+  for(let d=-20;d<=20;d+=10){ g.fillText((d>0?'+':'')+d+'%',px(d)-16,H-B+24); g.fillText((d>0?'+':'')+d+'%',28,py(d)+5); }
+  g.fillStyle='#1F3864'; g.font='bold 15px sans-serif';
+  g.fillText('销售单价变动 →',W/2-60,H-12);
+  g.save(); g.translate(20,H/2); g.rotate(-Math.PI/2); g.fillText('销售量变动 →',-60,0); g.restore();
+  for(let k=0;k<=4;k++){ const p=vmin+(vmax-vmin)*k/4; g.fillStyle=cmap(p); g.fillRect(W-R-150+k*30,T-30,30,14); }
+  g.fillStyle='#5a6b8c'; g.font='13px sans-serif'; g.fillText('亏损',W-R-178,T-18); g.fillText('盈利',W-R-26,T-18);
+}
+['dp','dv'].forEach(id=>$(id).addEventListener('input',draw2));
+
+// ====== 模块三 ======
+function calc3(){
+  const SP=+$('sp3').value,VC=+$('vc3').value,FC=+$('fc3').value,V=+$('v3').value;
+  const cm=SP-VC,tcm=cm*V,P=tcm-FC,bep=FC/cm,msr=(V-bep)/V*100;
+  $('cm3').textContent=fmt(cm); const pe=$('p3'); pe.textContent=fmt(P); pe.className='num '+(P<0?'neg':'pos');
+  $('bep3').textContent=Math.round(bep)+' 件'; $('msr').textContent=msr.toFixed(1)+'% / '+(tcm/P).toFixed(1);
+  const rows=[
+    {n:'销售单价 SP',crit:VC+FC/V,cf:SP*V/P,color:'#E8722A',amp:'可降'},
+    {n:'销售量 V',crit:bep,cf:tcm/P,color:'#1F3864',amp:'可降',unit:' 件'},
+    {n:'单位变动成本 VC',crit:SP-FC/V,cf:-VC*V/P,color:'#2e75b6',amp:'可升'},
+    {n:'固定成本 FC',crit:tcm,cf:-FC/P,color:'#8496b0',amp:'可升'}];
+  const sym=['SP·V÷P','(SP−VC)·V÷P','−VC·V÷P','−FC÷P'];
+  let h='<tr style="background:#1F3864;color:#fff"><th>因素</th><th>临界值</th><th>临界幅度</th><th>敏感系数</th><th>化简算式</th></tr>';
+  rows.forEach((r,i)=>{
+    const amp=(1/Math.abs(r.cf)*100).toFixed(1);
+    h+='<tr style="text-align:center;border-bottom:1px solid #dde3f0"><td style="text-align:left"><b style="color:'+r.color+'">'+r.n+'</b></td><td>'+fmt(r.crit)+(r.unit||' 元')+'</td><td>'+r.amp+amp+'%</td><td><b>'+(r.cf>0?'+':'')+r.cf.toFixed(1)+'</b></td><td>'+sym[i]+'</td></tr>';
+  });
+  $('tbl').innerHTML=h;
+  const sorted=[...rows].sort((a,b)=>Math.abs(b.cf)-Math.abs(a.cf)), mx=Math.abs(sorted[0].cf);
+  $('bars').innerHTML=sorted.map(r=>{
+    const w=Math.abs(r.cf)/mx*100, neg=r.cf<0;
+    return '<div style="display:flex;align-items:center;gap:10px;margin:6px 0;font-size:16px"><b style="width:180px">'+r.n+'</b><div style="flex:1;background:#eef2fb;border-radius:6px;height:24px;position:relative"><div style="position:absolute;'+(neg?'right:50%;':'left:50%;')+'width:'+(w/2)+'%;height:24px;background:'+r.color+';border-radius:6px"></div></div><b style="width:56px;color:'+r.color+'">'+(r.cf>0?'+':'')+r.cf.toFixed(1)+'</b></div>';
+  }).join('');
+  const levels=[-20,-10,0,10,20];
+  let h5='<tr style="background:#1F3864;color:#fff"><th>因素＼变动</th>'+levels.map(l=>'<th>'+(l>0?'+':'')+l+'%</th>').join('')+'</tr>';
+  rows.forEach(r=>{
+    h5+='<tr style="text-align:center;border-bottom:1px solid #dde3f0"><td style="text-align:left"><b style="color:'+r.color+'">'+r.n+'</b></td>'
+      +levels.map(l=>{const profit=P+(r.cf*P/100)*l;
+        return '<td style="color:'+(profit<0?'#c0392b':'inherit')+'">'+fmt(profit)+'</td>';}).join('')+'</tr>';
+  });
+  $('tbl5').innerHTML=h5;
+  const cv=$('cv3'),g=cv.getContext('2d'),W=cv.width,H=cv.height,L=70,R=20,T=30,B=50;
+  g.clearRect(0,0,W,H);
+  let ymax=Math.max(...rows.flatMap(r=>levels.map(l=>P+r.cf*P/100*l)),P)*1.1;
+  let ymin=Math.min(...rows.flatMap(r=>levels.map(l=>P+r.cf*P/100*l)),P)*1.1;
+  ymax=Math.max(ymax,1000); ymin=Math.min(ymin,-1000);
+  const px=d=>L+(d+25)/50*(W-L-R), py=y=>H-B-(y-ymin)/(ymax-ymin)*(H-T-B);
+  g.strokeStyle='#8a97b5'; g.lineWidth=2; g.beginPath(); g.moveTo(L,T); g.lineTo(L,H-B); g.lineTo(W-R,H-B); g.stroke();
+  g.strokeStyle='#d5dce9'; g.lineWidth=1; g.fillStyle='#5a6b8c'; g.font='13px sans-serif';
+  for(let y=Math.ceil(ymin/5000)*5000;y<=ymax;y+=5000){g.beginPath();g.moveTo(L,py(y));g.lineTo(W-R,py(y));g.stroke();g.fillText(fmt(y),10,py(y)+4);}
+  for(let d=-20;d<=20;d+=10){g.fillText((d>0?'+':'')+d+'%',px(d)-16,H-B+22);}
+  g.fillStyle='#1F3864'; g.font='bold 15px sans-serif'; g.fillText('因素变动百分比 →',W/2-70,H-8);
+  g.save(); g.translate(24,(T+H-B)/2); g.rotate(-Math.PI/2); g.fillText('营业利润 P（元） →',-70,5); g.restore();
+  g.strokeStyle='#c0392b'; g.setLineDash([6,4]); g.beginPath(); g.moveTo(L,py(0)); g.lineTo(W-R,py(0)); g.stroke(); g.setLineDash([]);
+  g.fillStyle='#c0392b'; g.fillText('利润＝0',W-70,py(0)-6);
+  const ext=[-25,-20,-10,0,10,20,25];
+  rows.forEach(r=>{
+    g.strokeStyle=r.color; g.lineWidth=3; g.beginPath();
+    for(let k=0;k<ext.length;k++){const l=ext[k],y=P+r.cf*P/100*l;
+      k===0?g.moveTo(px(l),py(y)):g.lineTo(px(l),py(y));}
+    g.stroke();
+    g.fillStyle=r.color; g.font='bold 14px sans-serif';
+    g.fillText(r.n+' '+(r.cf>0?'+':'')+r.cf.toFixed(1), px(25)-92, py(P+r.cf*P/100*25)+(r.cf>0?-8:18));
+  });
+  g.fillStyle='#1F3864'; g.beginPath(); g.arc(px(0),py(P),6,0,7); g.fill();
+  g.fillText('基准 ('+fmt(P)+')',px(0)-40,py(P)-12);
+}
+function preset3(){$('sp3').value=100;$('vc3').value=45;$('fc3').value=15000;$('v3').value=500;calc3();}
+['sp3','vc3','fc3','v3'].forEach(id=>$(id).addEventListener('input',calc3));
+
+// ====== 模块四 ======
+function draw4(){
+  const d=+$('d4').value;
+  $('dv4').textContent=(d>0?'+':'−')+Math.abs(d)+'%';
+  const xv=500*(1+d/100), xp=55*xv-15000, xd=(xp-12500)/12500*100;
+  const wv=12000*(1+d/100), wp=33*wv-360000, wd=(wp-36000)/36000*100;
+  const xe=$('xprof'); xe.textContent=fmt(xp); xe.className='num '+(xp<0?'neg':'pos');
+  $('xdol').textContent=(xp>0?('DOL＝'+(55*xv/xp).toFixed(1)):('DOL＝∞（已越过保本点）'))+'｜销量 '+fmt(xv)+' 件｜利润变动 '+(xd>0?'+':'')+xd.toFixed(0)+'%';
+  const we=$('wprof'); we.textContent=fmt(wp); we.className='num '+(wp<0?'neg':'pos');
+  $('wdol').textContent=(wp>0?('DOL＝'+(33*wv/wp).toFixed(1)):('DOL＝∞（已越过保本点）'))+'｜观影 '+fmt(wv)+' 人次｜利润变动 '+(wd>0?'+':'')+wd.toFixed(0)+'%';
+  $('msg4').innerHTML = d<=-9 ? '万达已越过保本点（下滑9.1%即保本）——影院、航空、酒店等高固定成本行业的经营风险直观可见。' :
+    d<0 ? '同样销量下滑 '+Math.abs(d)+'%：湘农利润仅降 '+(2.2*d).toFixed(0)+'%，万达却降 '+(11*d).toFixed(0)+'%——杠杆放大的是波动。' :
+    d===0 ? '销量向下滑动：万达的亏损来得又快又狠——重资产行业高固定成本＝高经营杠杆＝高风险。' :
+    '同样销量上升 '+d+'%：万达利润＋'+(11*d).toFixed(0)+'%——高风险与高收益同源，都是固定成本这个"支点"放大的。';
+  const cv=$('cv4'),g=cv.getContext('2d'),W=cv.width,H=cv.height,L=80,R=30,T=36,B=56;
+  g.clearRect(0,0,W,H);
+  const dmin=-25,dmax=35, ymin=Math.min(2.2*dmin,11*dmin,-15), ymax=Math.max(2.2*dmax,11*dmax,20);
+  const px=x=>L+(x-dmin)/(dmax-dmin)*(W-L-R), py=y=>H-B-(y-ymin)/(ymax-ymin)*(H-T-B);
+  g.strokeStyle='#8a97b5'; g.lineWidth=2; g.beginPath(); g.moveTo(L,T); g.lineTo(L,H-B); g.lineTo(W-R,H-B); g.stroke();
+  g.strokeStyle='#d5dce9'; g.lineWidth=1; g.fillStyle='#5a6b8c'; g.font='13px sans-serif';
+  for(let y=Math.ceil(ymin/50)*50;y<=ymax;y+=50){g.beginPath();g.moveTo(L,py(y));g.lineTo(W-R,py(y));g.stroke();g.fillText((y>0?'+':'')+y+'%',14,py(y)+4);}
+  for(let x=Math.ceil(dmin/5)*5;x<=dmax;x+=5){g.fillText((x>0?'+':'')+x+'%',px(x)-14,H-B+22);}
+  g.fillStyle='#1F3864'; g.font='bold 15px sans-serif'; g.fillText('销量变动% →',W/2-60,H-10);
+  g.save(); g.translate(28,H/2); g.rotate(-Math.PI/2); g.fillText('利润变动% →',-52,5); g.restore();
+  g.strokeStyle='#c0392b'; g.setLineDash([6,4]); g.beginPath(); g.moveTo(L,py(0)); g.lineTo(W-R,py(0)); g.stroke(); g.setLineDash([]);
+  g.fillStyle='#c0392b'; g.fillText('利润＝0（基准）',W-118,py(0)-6);
+  [[-9.1,'#c0392b','万达保本点 −9.1%']].forEach(([x,c,lab])=>{
+    g.strokeStyle=c; g.setLineDash([4,4]); g.beginPath(); g.moveTo(px(x),T); g.lineTo(px(x),H-B); g.stroke(); g.setLineDash([]);
+    g.fillStyle=c; g.fillText(lab,px(x)+6,T+16); });
+  g.lineWidth=3.5;
+  g.strokeStyle='#1F3864'; g.beginPath(); g.moveTo(px(dmin),py(2.2*dmin)); g.lineTo(px(dmax),py(2.2*dmax)); g.stroke();
+  g.strokeStyle='#c0392b'; g.beginPath(); g.moveTo(px(dmin),py(11*dmin)); g.lineTo(px(dmax),py(11*dmax)); g.stroke();
+  g.fillStyle='#1F3864'; g.font='bold 15px sans-serif'; g.fillText('湘农 DOL＝2.2',px(dmax)-150,py(2.2*dmax)-8);
+  g.fillStyle='#c0392b'; g.fillText('万达 DOL＝11.0',px(dmax)-158,py(11*dmax)-8);
+  if(d>=dmin){
+    g.fillStyle='#1F3864'; g.beginPath(); g.arc(px(d),py(2.2*d),7,0,7); g.fill();
+    g.fillStyle='#c0392b'; g.beginPath(); g.arc(px(d),py(11*d),7,0,7); g.fill();
+    g.strokeStyle='#E8722A'; g.setLineDash([5,4]); g.beginPath(); g.moveTo(px(d),T); g.lineTo(px(d),H-B); g.stroke(); g.setLineDash([]);
+    g.fillStyle='#E8722A'; g.fillText('当前 '+(d>0?'+':'')+d+'%',px(d)+6,H-B-8);
+  }
+}
+$('d4').addEventListener('input',draw4);
+
+draw1(); draw2(); calc3(); draw4();
+</script></body></html>

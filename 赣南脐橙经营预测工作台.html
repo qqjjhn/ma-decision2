@@ -1,0 +1,1927 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>经营预测·脐橙销量建模 | 管理会计（第4章）</title>
+<!--
+  赣南脐橙经营预测工作台 —— 教材第4章「经营预测」虚拟仿真课件
+  自包含单文件：无外部依赖，SVG 绘图 + 原生 JavaScript
+  模块：①时间序列预测 ②因果预测 ③资金预测（销售百分比法）④预测精度评价（MAPE）⑤课堂自测
+  知识点注释见文末 4.1–4.4
+-->
+<style>
+:root{
+  --green:#2e7d32; --green-d:#1b5e20; --green-l:#e8f4e9; --green-ll:#f4faf4;
+  --line:#dde8de; --ink:#1e2a22; --ink2:#53614f; --ink3:#7f8c82;
+  --bg:#f2f7f2; --card:#ffffff;
+  --amber:#ef6c00; --blue:#1565c0; --purple:#6a1b9a; --red:#c62828;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB","Helvetica Neue",system-ui,sans-serif;
+  font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+svg{display:block;width:100%;height:auto}
+
+/* ===== 顶栏 ===== */
+.topbar{
+  background:linear-gradient(120deg,#2e7d32 0%,#3f8f43 55%,#5aa45c 100%);
+  color:#fff; padding:18px 0 20px; box-shadow:0 2px 10px rgba(46,125,50,.22);
+}
+.topbar .wrap{padding-bottom:0}
+.tb-head{display:flex;align-items:center;gap:16px}
+.tb-orange{width:92px;height:auto;flex:0 0 auto;filter:drop-shadow(0 3px 6px rgba(0,0,0,.18))}
+@media(max-width:560px){
+  .tb-head{flex-direction:row;gap:10px;align-items:flex-start}
+  .tb-orange{width:66px}
+  .tb-title{font-size:19px}
+}
+.tb-title{font-size:23px;font-weight:700;letter-spacing:.5px;margin:0}
+.tb-sub{font-size:13px;opacity:.92;margin-top:4px}
+.tb-tags{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px}
+.tb-tag{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);
+  border-radius:999px;padding:2px 11px;font-size:12px}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+main.wrap{padding-top:18px;padding-bottom:40px}
+
+/* ===== 卡片 ===== */
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:18px 20px 20px;margin-bottom:18px;box-shadow:0 1px 3px rgba(30,42,34,.05)}
+.card>h2{margin:0 0 4px;font-size:18px;color:var(--green-d);display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.card>h2 .no{background:var(--green);color:#fff;font-size:13px;border-radius:6px;
+  padding:1px 9px;font-weight:600}
+.card>.lead{margin:0 0 14px;color:var(--ink2);font-size:13.5px}
+.hint{font-size:12.5px;color:var(--ink3);margin:8px 0 0}
+
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) 322px;gap:18px;align-items:start}
+.grid2b{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:18px;align-items:start}
+@media(max-width:920px){.grid2,.grid2b{grid-template-columns:1fr}}
+
+/* ===== 控件 ===== */
+.panel{background:var(--green-ll);border:1px solid var(--line);border-radius:10px;padding:14px 15px}
+.panel h3{margin:0 0 10px;font-size:14px;color:var(--green-d)}
+.field{margin-bottom:13px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:13px;color:var(--ink2);margin-bottom:5px;font-weight:600}
+.field label .v{float:right;color:var(--green);font-weight:700;font-variant-numeric:tabular-nums}
+select,input[type=number]{
+  width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;
+  font-size:14px;background:#fff;color:var(--ink);font-family:inherit}
+select:focus,input:focus{outline:2px solid rgba(46,125,50,.35);border-color:var(--green)}
+input[type=range]{width:100%;accent-color:#2e7d32;margin:2px 0}
+.rng-row{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink3);
+  font-variant-numeric:tabular-nums;margin-top:-2px}
+
+.btn{background:var(--green);color:#fff;border:0;border-radius:7px;padding:8px 14px;
+  font-size:13.5px;cursor:pointer;font-family:inherit}
+.btn:hover{background:var(--green-d)}
+.btn.ghost{background:#fff;color:var(--green);border:1px solid var(--green)}
+.btn.ghost:hover{background:var(--green-l)}
+.btn.sm{padding:5px 11px;font-size:12.5px}
+.rowbtn{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+
+.switch{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;
+  padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:#fff}
+.switch input{width:18px;height:18px;accent-color:#2e7d32;cursor:pointer;margin:0}
+.switch span{font-size:13.5px;color:var(--ink2);font-weight:600}
+
+/* ===== 数据/结果 ===== */
+table.dt{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+table.dt th,table.dt td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:right;white-space:nowrap}
+table.dt th:first-child,table.dt td:first-child{text-align:left}
+table.dt thead th{background:var(--green-l);color:var(--green-d);font-weight:600}
+table.dt tbody tr:hover{background:var(--green-ll)}
+table.dt tr.hl td{background:#fff8e1}
+table.dt tr.best td{background:var(--green-l);font-weight:600;color:var(--green-d)}
+table.dt td.mono{font-family:Consolas,"Courier New",monospace;font-size:12.5px;color:var(--ink2)}
+.scrollx{overflow-x:auto}
+
+.w-box{display:flex;gap:6px;flex-wrap:wrap}
+.w-box .wi{flex:1 1 56px;min-width:56px;background:#fff;border:1px solid var(--line);border-radius:7px;padding:4px 5px;text-align:center}
+.w-box .wi i{display:block;font-style:normal;font-size:11px;color:var(--ink3)}
+.w-box .wi input{width:100%;padding:3px 2px;border:1px solid var(--line);border-radius:5px;text-align:center;font-size:13.5px;font-family:Consolas,monospace}
+.w-box .wi input:focus{outline:2px solid rgba(46,125,50,.35);border-color:var(--green)}
+.w-box .wi em.wn{display:block;font-style:normal;font-size:10.5px;line-height:1.35;color:var(--green);margin-top:3px}
+.w-note{font-family:Consolas,monospace;font-size:12.5px;color:var(--ink2);background:#fff;border:1px dashed var(--line);border-radius:7px;padding:6px 9px;margin-top:7px}
+
+/* 资金模块：第一步 —— 资产负债表与敏感项目判定 */
+.stepbox{border:1px solid var(--line);border-radius:10px;background:var(--green-ll);padding:13px 16px 15px;margin-bottom:4px}
+.step-h{font-size:15px;font-weight:700;color:var(--green-d);display:flex;align-items:center;gap:9px;margin:16px 0 10px}
+.step-h:first-child{margin-top:0}
+.stepno{background:var(--green);color:#fff;font-size:12.5px;border-radius:6px;padding:2px 9px;font-weight:600}
+table.dt td.why{text-align:left;white-space:normal;color:var(--ink2);font-size:12.3px;min-width:230px}
+table.dt td.mid{text-align:center}
+table.dt tr.grp td{background:var(--green-l);color:var(--green-d);font-weight:600;text-align:left}
+table.dt tr.sum td{background:#fdfaf1;color:#7a5a00;font-weight:700}
+table.dt tr.row-a td.sens{background:#eef7ef}
+.sw2{display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-size:12.5px;color:var(--ink2);white-space:nowrap}
+.sw2 input{width:15px;height:15px;accent-color:#2e7d32;margin:0;cursor:pointer}
+.diffbar{background:#fff8e1;border:1px solid #f0dfa8;color:#7a5a00;border-radius:7px;
+  padding:6px 10px;font-size:12.5px;margin-top:8px}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0 0}
+.kpi{background:var(--green-ll);border:1px solid var(--line);border-left:3px solid var(--green);
+  border-radius:8px;padding:9px 12px}
+.kpi .k{font-size:12px;color:var(--ink3)}
+.kpi .v{font-size:19px;font-weight:700;color:var(--green-d);font-variant-numeric:tabular-nums;line-height:1.3}
+.kpi .u{font-size:12px;color:var(--ink3);font-weight:400;margin-left:2px}
+.kpi.warn{border-left-color:var(--red);background:#fdf3f3}.kpi.warn .v{color:var(--red)}
+.kpi.info{border-left-color:var(--blue);background:#f2f7fd}.kpi.info .v{color:var(--blue)}
+.kpi.amb{border-left-color:var(--amber);background:#fff8ee}.kpi.amb .v{color:var(--amber)}
+
+.callout{border-radius:9px;padding:10px 13px;font-size:13.5px;margin-top:12px;border:1px solid}
+.callout.ok{background:var(--green-l);border-color:#bcd9be;color:var(--green-d)}
+.callout.tip{background:#fff8e1;border-color:#f0dfa8;color:#7a5a00}
+.callout.warn{background:#fdecec;border-color:#f3c3c3;color:#8a1f1f}
+.callout b{font-weight:700}
+
+.formula{background:#fbfdfb;border:1px dashed var(--line);border-radius:8px;padding:9px 12px;
+  font-family:Consolas,"Courier New",monospace;font-size:13px;color:var(--ink2);margin:10px 0}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12.5px;color:var(--ink2);margin-top:8px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.legend .dot{width:9px;height:9px;border-radius:50%}
+
+/* ===== 算给你看（逐步计算过程） ===== */
+details.calc{border:1px solid var(--line);border-radius:10px;margin-top:18px;background:#fffdf7;overflow:hidden}
+details.calc>summary{cursor:pointer;padding:10px 15px;font-weight:700;color:var(--green-d);font-size:14.5px;
+  list-style:none;background:var(--green-l);border-bottom:1px solid var(--line)}
+details.calc>summary::-webkit-details-marker{display:none}
+details.calc>summary::before{content:"▸ ";color:var(--green)}
+details.calc[open]>summary::before{content:"▾ "}
+details.calc>summary .tip{font-weight:400;color:var(--ink3);font-size:12.5px;margin-left:8px}
+details.calc .cb{padding:12px 16px 16px;font-size:13.5px}
+.cs{font-family:Consolas,"Courier New",monospace;font-size:13px;line-height:1.95;color:var(--ink2);
+  background:#fbfdfb;border:1px dashed var(--line);border-radius:7px;padding:6px 11px;margin:7px 0;
+  word-break:break-word}
+.cs b{color:var(--ink);font-weight:700}
+.cs .eq{color:var(--green);font-weight:700;font-size:13.5px}
+.cs.why{background:#f3f9f3;border:1px solid #d8e9da;color:var(--ink2);font-family:inherit;font-size:13px;line-height:1.8}
+.cs.why b{color:var(--green-d)}
+table.calc-t{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums;
+  font-family:Consolas,"Courier New",monospace;margin:8px 0}
+table.calc-t th,table.calc-t td{border:1px solid var(--line);padding:4px 8px;text-align:right;white-space:nowrap}
+table.calc-t thead th{background:var(--green-l);color:var(--green-d);font-weight:600;text-align:center;white-space:normal}
+table.calc-t th.l,table.calc-t td.l{text-align:left}
+table.calc-t td.w{white-space:normal;min-width:200px}
+table.calc-t tr.tot td{background:#fff8e1;font-weight:700;color:var(--green-d)}
+table.calc-t tr.last td{background:var(--green-l);font-weight:700;color:var(--green-d)}
+table.calc-t tr.last td b{color:var(--green-d)}
+table.calc-t tr.cs{background:transparent;border:0;margin:0;padding:0}
+@media(max-width:920px){.cs{font-size:12.5px}table.calc-t{font-size:12px}}
+
+/* ===== 自测 ===== */
+.quiz{border:1px solid var(--line);border-radius:10px;padding:13px 15px;margin-bottom:12px;background:var(--green-ll)}
+.quiz .q{font-weight:600;font-size:14px;margin-bottom:8px;color:var(--ink)}
+.quiz .opts{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.quiz input[type=number]{width:130px}
+.fb{margin-top:9px;font-size:13px;padding:8px 11px;border-radius:7px;display:none}
+.fb.good{display:block;background:var(--green-l);color:var(--green-d)}
+.fb.bad{display:block;background:#fdecec;color:#8a1f1f}
+
+/* ===== 知识点 ===== */
+details.kn{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:var(--green-ll);overflow:hidden}
+details.kn>summary{cursor:pointer;padding:11px 15px;font-weight:700;color:var(--green-d);font-size:14.5px;list-style:none}
+details.kn>summary::-webkit-details-marker{display:none}
+details.kn>summary::before{content:"▸ ";color:var(--green)}
+details.kn[open]>summary::before{content:"▾ "}
+details.kn[open]>summary{border-bottom:1px solid var(--line);background:var(--green-l)}
+details.kn .body{padding:12px 16px 14px;background:#fff;font-size:13.8px;color:var(--ink2)}
+details.kn .body h4{margin:14px 0 6px;font-size:14px;color:var(--green-d)}
+details.kn .body h4:first-child{margin-top:0}
+details.kn .body ul{margin:6px 0;padding-left:20px}
+details.kn .body li{margin:3px 0}
+details.kn .body code{background:#f1f5f1;border-radius:4px;padding:1px 5px;
+  font-family:Consolas,monospace;font-size:12.8px;color:var(--green-d)}
+footer{text-align:center;color:var(--ink3);font-size:12.5px;padding:14px 0 30px}
+.badge{display:inline-block;background:var(--green-l);color:var(--green-d);border:1px solid #bcd9be;
+  border-radius:999px;padding:1px 10px;font-size:12px;font-weight:600}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="tb-head">
+      <!-- 脐橙图标：纯 SVG 绘制，与草莓园课件同一套手绘风格 -->
+      <svg class="tb-orange" viewBox="0 0 120 100" role="img" aria-label="赣南脐橙图标">
+        <defs>
+          <radialGradient id="gO1" cx="36%" cy="30%" r="72%">
+            <stop offset="0%" stop-color="#FFCC80"/>
+            <stop offset="45%" stop-color="#FCA32B"/>
+            <stop offset="100%" stop-color="#E0700F"/>
+          </radialGradient>
+          <radialGradient id="gO2" cx="38%" cy="32%" r="70%">
+            <stop offset="0%" stop-color="#FFB365"/>
+            <stop offset="60%" stop-color="#EF8B22"/>
+            <stop offset="100%" stop-color="#C9640C"/>
+          </radialGradient>
+          <linearGradient id="gLeaf" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#5FA85F"/>
+            <stop offset="100%" stop-color="#1B5E20"/>
+          </linearGradient>
+        </defs>
+        <!-- 后侧小果 -->
+        <g transform="translate(0,6)">
+          <circle cx="82" cy="62" r="24" fill="url(#gO2)"/>
+          <ellipse cx="74" cy="52" rx="7" ry="5" fill="#fff" opacity=".28" transform="rotate(-35 74 52)"/>
+          <path d="M82 38c1-6 5-9 10-10-1 6-4 9-10 10z" fill="url(#gLeaf)"/>
+        </g>
+        <!-- 主果实 -->
+        <circle cx="46" cy="58" r="32" fill="url(#gO1)"/>
+        <circle cx="46" cy="58" r="32" fill="none" stroke="#B85C07" stroke-width="1.4" opacity=".55"/>
+        <!-- 果皮凹点与纹理 -->
+        <g fill="#B85C07" opacity=".30">
+          <circle cx="36" cy="70" r="1.3"/><circle cx="46" cy="76" r="1.1"/>
+          <circle cx="57" cy="69" r="1.3"/><circle cx="64" cy="58" r="1.1"/>
+          <circle cx="52" cy="47" r="1.2"/><circle cx="38" cy="50" r="1.1"/>
+          <circle cx="30" cy="60" r="1.2"/><circle cx="60" cy="80" r="1"/>
+        </g>
+        <!-- 脐部（赣南脐橙的"脐"） -->
+        <g transform="translate(46,58)">
+          <circle cx="0" cy="6" r="5.5" fill="#D2751A" opacity=".55"/>
+          <circle cx="0" cy="6.5" r="2.6" fill="#C2620F" opacity=".65"/>
+        </g>
+        <!-- 高光 -->
+        <ellipse cx="34" cy="46" rx="10" ry="6.5" fill="#fff" opacity=".34" transform="rotate(-30 34 46)"/>
+        <!-- 果柄与叶 -->
+        <path d="M46 26c0-5 1-8 2-10" stroke="#6D4C41" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M48 20c-9-11-21-12-27-11 3 10 15 15 27 11z" fill="url(#gLeaf)"/>
+        <path d="M48 20c9-9 20-9 25-6-4 9-15 12-25 6z" fill="url(#gLeaf)" opacity=".92"/>
+        <path d="M48 20c-4-9-3-18-1-22" stroke="#1B5E20" stroke-width="1.3" fill="none" opacity=".55"/>
+      </svg>
+      <div>
+        <h1 class="tb-title">经营预测·脐橙销量建模</h1>
+        <div class="tb-sub">管理会计 · 第4章 经营预测 —— 赣南某脐橙专业合作社虚拟仿真工作台</div>
+      </div>
+    </div>
+    <div class="tb-tags">
+      <span class="tb-tag">时间序列法</span>
+      <span class="tb-tag">加权平均法</span>
+      <span class="tb-tag">因果回归预测</span>
+      <span class="tb-tag">销售百分比法</span>
+      <span class="tb-tag">MAPE 精度评价</span>
+      <span class="tb-tag">2026 年预测</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ===================== 1 场景与数据 ===================== -->
+<section class="card">
+  <h2><span class="no">情境</span>某赣南脐橙专业合作社 2018—2025 年经营数据</h2>
+  <p class="lead">
+    该合作社主产赣南脐橙，近 8 年持续投入<b>电商推广费</b>（直播带货、平台流量投放），销量整体上升；
+    2025 年因花期低温与木虱防控偏晚出现小幅回落。请依次完成<b>销售预测</b>与<b>资金需要量预测</b>。
+  </p>
+  <div class="grid2b">
+    <div>
+      <div class="scrollx">
+        <table class="dt" id="tblData">
+          <thead><tr><th>年度</th><th>期数 t</th><th>销量 Y（吨）</th><th>推广费 X（万元）</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="hint">说明：销量单位吨，推广费单位万元；第 8 期（2025 年）在评价模块中被保留为<b>验证集</b>，不参与方法比较中的模型训练。</p>
+    </div>
+    <div>
+      <div class="kpis" id="dataKpi"></div>
+      <div class="callout tip">
+        <b>建模路线：</b>先做<b>时间序列</b>外推（只看 Y 自身的历史），再引入<b>因果变量</b> X（推广费）建立回归，
+        最后把销量折成销售收入，用<b>销售百分比法</b>测算为达成目标收入所需的外部筹资额。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 2 时间序列预测 ===================== -->
+<section class="card">
+  <h2><span class="no">4.2</span>时间序列预测：历史销量外推</h2>
+  <p class="lead">选择预测方法并调节参数，观察拟合线与 <b id="lblNext">2026</b> 年预测值的变化。</p>
+
+  <div class="grid2">
+    <div>
+      <svg id="chartMain" viewBox="0 0 760 400" role="img" aria-label="销量时间序列散点图与预测线"></svg>
+      <div class="legend">
+        <span><i class="dot" style="background:#2e7d32"></i>实际销量（散点）</span>
+        <span><i style="background:#9aa89d"></i>实际销量连线</span>
+        <span><i id="lgMethod" style="background:#7b1fa2"></i><span id="lgMethodTxt">所选方法拟合/预测线</span></span>
+        <span><i class="dot" style="background:#fff;border:2px solid #c62828"></i>验证期（第8期）该方法预测值</span>
+      </div>
+      <div class="callout tip" id="tsNote"></div>
+    </div>
+
+    <div class="panel">
+      <h3>方法参数</h3>
+      <div class="field">
+        <label for="selMethod">预测方法</label>
+        <select id="selMethod">
+          <option value="avg">算术平均法</option>
+          <option value="ma" selected>加权平均法（可调期数与权重）</option>
+          <option value="es">指数平滑法（可调 α）</option>
+          <option value="lr">一元线性回归（时间趋势）</option>
+        </select>
+      </div>
+      <div class="field" id="fldMaN">
+        <label for="rngMaN">参与加权的期数 n <span class="v" id="valMaN">3</span></label>
+        <input type="range" id="rngMaN" min="2" max="6" step="1" value="3"/>
+        <div class="rng-row"><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+      </div>
+      <div class="field" id="fldW">
+        <label>最近 n 期各期权重（远期 → 近期，整数仅作相对比例）<span class="v" id="valWSum">Σ权数(归一化) = 1.000</span></label>
+        <div id="wInputs" class="w-box"></div>
+        <div class="rowbtn" style="margin-top:8px">
+          <button class="btn ghost sm" id="btnWincr">近大远小 1,2,…</button>
+          <button class="btn ghost sm" id="btnWeq">等权重</button>
+          <button class="btn ghost sm" id="btnWdecr">远大近小 …,2,1</button>
+        </div>
+        <p class="hint" id="hintW"></p>
+      </div>
+      <div class="field" id="fldAlpha">
+        <label for="rngAlpha">平滑系数 α <span class="v" id="valAlpha">0.60</span></label>
+        <input type="range" id="rngAlpha" min="0.1" max="0.95" step="0.05" value="0.6"/>
+        <div class="rng-row"><span>0.10</span><span>0.50</span><span>0.95</span></div>
+      </div>
+      <div class="kpis" style="grid-template-columns:1fr">
+        <div class="kpi"><div class="k">2026 年销量预测值</div>
+          <div class="v" id="kpiPred">—<span class="u">吨</span></div></div>
+      </div>
+      <div class="kpis" id="kpiTs"></div>
+      <p class="hint" id="hintMethod"></p>
+    </div>
+  </div>
+  <div id="calcTs"></div>
+</section>
+
+<!-- ===================== 3 因果预测 ===================== -->
+<section class="card">
+  <h2><span class="no">4.3</span>因果预测：以电商推广费解释销量</h2>
+  <p class="lead">开关打开后，以推广费 X 为自变量、销量 Y 为因变量做一元线性回归（最小二乘法）。</p>
+
+  <div class="grid2">
+    <div>
+      <svg id="chartCausal" viewBox="0 0 760 400" role="img" aria-label="推广费与销量回归散点图"></svg>
+      <div class="legend">
+        <span><i class="dot" style="background:#2e7d32"></i>观测点（X, Y）</span>
+        <span><i style="background:#c62828"></i>回归直线 ŷ = a + bx</span>
+      </div>
+    </div>
+    <div class="panel">
+      <label class="switch" for="chkCausal">
+        <input type="checkbox" id="chkCausal"/>
+        <span>启用因果预测（一元线性回归）</span>
+      </label>
+      <div id="causalBody" style="margin-top:12px">
+        <div class="field">
+          <label for="rngAd">2026 年计划推广费 X <span class="v" id="valAd">90</span> 万元</label>
+          <input type="range" id="rngAd" min="40" max="120" step="2" value="90"/>
+          <div class="rng-row"><span>40</span><span>80</span><span>120</span></div>
+        </div>
+        <div class="kpis" id="kpiCausal"></div>
+        <div class="formula" id="causalEq"></div>
+        <div class="callout tip" id="causalNote"></div>
+      </div>
+    </div>
+  </div>
+  <div id="calcCausal"></div>
+</section>
+
+<!-- ===================== 4 资金预测 ===================== -->
+<section class="card">
+  <h2><span class="no">4.4</span>资金预测：销售百分比法</h2>
+  <p class="lead">先<b>确认敏感项目</b>，再按销售百分比法测算<b>外部资金需要量</b>。目标收入滑块一动，结果实时联动。</p>
+
+  <div class="stepbox">
+    <div class="step-h"><span class="stepno">第一步</span>确认敏感资产与敏感负债（必须先做）</div>
+    <p class="lead" style="margin-bottom:10px">
+      销售百分比法的起点不是公式，而是<b>判断哪些项目会随销售收入同比例变动</b>。
+      下表为合作社 2025 年 12 月 31 日的简化资产负债表，
+      基期销售收入 S₀ = 1850 吨 × 8 元/kg = <b>1480 万元</b>。
+      请逐行判断：若明年销售增加，该项目会不会<b>自动地、同比例地</b>跟着增加？勾选「敏感」，右侧百分比实时汇总。
+    </p>
+    <div class="scrollx">
+      <table class="dt" id="tblBS">
+        <thead><tr><th>项目</th><th>基期金额（万元）</th><th>占基期收入</th><th>是否敏感</th><th>判断依据（点开可见）</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="rowbtn">
+      <button class="btn ghost sm" id="btnBSstd">恢复教材口径</button>
+      <button class="btn ghost sm" id="btnBSclear">全部清空，我自己判断</button>
+    </div>
+    <div class="kpis" id="kpiBS"></div>
+    <div class="callout" id="bsNote"></div>
+  </div>
+
+  <div class="step-h"><span class="stepno">第二步</span>按销售百分比法测算外部资金需要量</div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3>参数设定</h3>
+      <div class="field">
+        <label for="rngSales">2026 年目标销售收入 S₁ <span class="v" id="valSales">1800</span> 万元</label>
+        <input type="range" id="rngSales" min="1400" max="2400" step="10" value="1800"/>
+        <div class="rng-row"><span>1400</span><span>1900</span><span>2400</span></div>
+      </div>
+      <div class="field">
+        <label for="rngPrice">2026 计划单价 <span class="v" id="valPrice">8.0</span> 元/kg</label>
+        <input type="range" id="rngPrice" min="5" max="12" step="0.2" value="8"/>
+        <button class="btn ghost sm" id="btnFromQty" style="margin-top:7px">用“2026 预测销量 × 计划单价”反算 S₁</button>
+        <p class="hint" id="hintFromQty"></p>
+      </div>
+      <div class="field">
+        <label for="rngAsset">敏感资产占比 A% <span class="v" id="valAsset">65</span>%</label>
+        <input type="range" id="rngAsset" min="30" max="90" step="1" value="65"/>
+        <p class="hint">该项由<b>第一步的资产负债表</b>自动汇总得出；也可拖动做情景模拟（此时会标记为手工设定）。</p>
+      </div>
+      <div class="field">
+        <label for="rngLiab">敏感负债占比 L% <span class="v" id="valLiab">20</span>%</label>
+        <input type="range" id="rngLiab" min="5" max="50" step="1" value="20"/>
+        <p class="hint">同上，源于第一步对应付账款等自发负债项目的判定。</p>
+        <div class="diffbar" id="handBar" style="display:none">
+          <span id="handTxt"></span>
+          <button class="btn ghost sm" id="btnHandBack" style="margin-left:8px">按表口径回填</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="rngPm">销售净利率 PM <span class="v" id="valPm">8.0</span>%</label>
+        <input type="range" id="rngPm" min="2" max="20" step="0.5" value="8"/>
+      </div>
+      <div class="field">
+        <label for="rngRet">留存收益率 b <span class="v" id="valRet">60</span>%</label>
+        <input type="range" id="rngRet" min="0" max="100" step="5" value="60"/>
+      </div>
+      <div class="rowbtn">
+        <button class="btn ghost sm" id="btnReset">恢复默认参数</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="kpis" id="kpiFund"></div>
+      <svg id="chartFund" viewBox="0 0 760 250" style="margin-top:14px" role="img" aria-label="外部资金需要量随目标收入变化的曲线"></svg>
+      <div class="legend"><span><i style="background:#2e7d32"></i>外部资金需要量 EFN(S₁)</span>
+        <span><i style="background:#9aa89d"></i>EFN = 0 基准线</span></div>
+      <svg id="chartFall" viewBox="0 0 760 290" style="margin-top:14px" role="img" aria-label="资金缺口构成瀑布图"></svg>
+      <div class="scrollx" style="margin-top:14px">
+        <table class="dt" id="tblFund">
+          <thead><tr><th>项目</th><th>计算过程</th><th>金额（万元）</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="callout" id="fundNote"></div>
+    </div>
+  </div>
+  <div id="calcFund"></div>
+</section>
+
+<!-- ===================== 5 精度评价 ===================== -->
+<section class="card">
+  <h2><span class="no">评价</span>预测精度比较：保留最后一期作为验证集</h2>
+  <p class="lead">用前 7 期（2018—2024）训练模型，预测第 8 期（2025 年，实际 <b id="lblAct8">—</b> 吨），与实际值比较计算 MAPE。</p>
+
+  <div class="grid2">
+    <div>
+      <div class="scrollx">
+        <table class="dt" id="tblEval">
+          <thead><tr><th>预测方法</th><th>参数</th><th>2025 预测值</th><th>绝对误差</th><th>MAPE 算式（照着复算）</th><th>MAPE</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="formula">MAPE = | 实际值 − 预测值 | ÷ 实际值 × 100%　（本期验证集仅 1 期，MAPE 即该期绝对百分比误差）</div>
+      <div class="callout tip" style="background:var(--green-l);border-color:#bcd9be;color:var(--green-d)" id="evalNote"></div>
+    </div>
+    <div>
+      <svg id="chartMape" viewBox="0 0 360 330" role="img" aria-label="各方法 MAPE 对比条形图"></svg>
+      <div class="kpis" style="grid-template-columns:1fr">
+        <div class="kpi"><div class="k">当前最优方法</div><div class="v" id="kpiBest" style="font-size:17px">—</div></div>
+      </div>
+    </div>
+  </div>
+  <div id="calcEval"></div>
+</section>
+
+<!-- ===================== 6 课堂自测 ===================== -->
+<section class="card">
+  <h2><span class="no">自测</span>课堂小练（默认参数作答）</h2>
+  <p class="lead">以下各题按<b>系统默认参数</b>计算：加权平均 n=3（权重 1,2,3）、平滑系数 α=0.6（初始值取第 1 期实际值）、目标收入 1800 万元、单价 8 元/kg、A%=65%、L%=20%、PM=8%、b=60%。</p>
+  <div id="quizBox"></div>
+  <div class="rowbtn"><button class="btn sm" id="btnQuizAll">一键核对全部</button>
+    <button class="btn ghost sm" id="btnQuizReset">清空重做</button>
+    <span id="quizScore" style="font-size:13.5px;color:var(--green-d);font-weight:700;align-self:center"></span>
+  </div>
+</section>
+
+<!-- ===================== 7 知识点 ===================== -->
+<section class="card">
+  <h2><span class="no">注释</span>知识点注释 4.1 — 4.4</h2>
+  <p class="lead">与孙茂竹《管理会计学》（第10版，中国人民大学出版社，2024）第 4 章「经营预测」对应。</p>
+
+  <details class="kn">
+    <summary>4.1 预测分析概述</summary>
+    <div class="body">
+      <h4>（一）预测的意义与程序</h4>
+      <ul>
+        <li>预测是决策的前提：管理会计中的<b>销售预测</b>决定生产预算，<b>资金预测</b>决定筹资安排，二者构成全面预算的起点。</li>
+        <li>基本程序：确定预测目标 → 收集整理资料 → 选择预测方法 → 建立模型预测 → 分析预测误差并修正 → 输出预测结果。</li>
+      </ul>
+      <h4>（二）方法分类</h4>
+      <ul>
+        <li><b>定量预测</b>：时间序列法（算术平均、加权平均、移动平均、指数平滑、趋势回归等）、因果分析法（一元／多元回归）。</li>
+        <li><b>定性预测</b>：德尔菲法、专家会议法、销售人员意见法等，用于资料不足或格局突变时。</li>
+      </ul>
+      <h4>（三）预测的两条铁律</h4>
+      <ul>
+        <li><b>越远越不可靠</b>：预测期越长，误差累积越大，宜滚动预测。</li>
+        <li><b>模型外推有边界</b>：历史趋势的前提（政策、技术、产能、气候）若改变，外推失效——本工作台 2025 年的回落即是例证。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="kn">
+    <summary>4.2 时间序列预测法</summary>
+    <div class="body">
+      <h4>（一）算术平均法</h4>
+      <p><code>ŷ(n+1) = (y₁+y₂+…+yₙ) / n</code>　把全部历史一视同仁，只适用于<b>无明显趋势、随机波动</b>的序列。存在趋势时，预测值系统性偏低（本例会低于实际）或偏高。</p>
+      <h4>（二）简单移动平均与加权平均法</h4>
+      <p><b>简单移动平均</b>：<code>ŷ(n+1) = (y(n−m+1)+…+yₙ) / m</code>　只取最近 m 期作算术平均，
+      本质是「各期权数均为 1」的等权处理。<b>m 越大越平滑、滞后越明显；m 越小越敏感、越易受偶然因素影响</b>。</p>
+      <p><b>加权平均法</b>（本工作台采用）：<code>ŷ(n+1) = Σ(wᵢ·yᵢ) ÷ Σwᵢ</code>，其中 i 取最近 n 期，
+      通常<b>越是接近预测期的数据权重越大</b>（如由远到近取 1、2、3）。</p>
+      <ul>
+        <li>换算到「归一化权重」更易理解：<code>权重 ÷ 权重之和</code>，各期归一化权重之和恒为 1，预测值就是各期的加权算术平均。</li>
+        <li><b>三者关系</b>：全部历史等权 ⇒ 算术平均法；最近 n 期等权 ⇒ 简单移动平均法；最近 n 期不等权 ⇒ 加权平均法。</li>
+        <li>权重怎么定没有标准答案：可按经验（近期更能反映当下态势）设定，也可用「试算法」比较不同权重组合的历史误差
+        （如本工作台的 MAPE 排行）择优。</li>
+      </ul>
+      <h4>（三）指数平滑法</h4>
+      <p><code>Sₜ = α·yₜ + (1−α)·S₍ₜ₋₁₎</code>，下期预测值 <code>ŷ₍ₜ₊₁₎ = Sₜ</code>。等价于对全部历史做<b>递减加权平均</b>，权重为 <code>α(1−α)^k</code>，无需保存全部历史数据。</p>
+      <ul>
+        <li>α 越接近 1：越是倚重新近观察到的实际值，反应快但易受偶然因素影响；α 越接近 0：越平滑、滞后越大。</li>
+        <li>初始值通常取第 1 期实际值或前若干期均值；样本少时初始值影响较大。</li>
+      </ul>
+      <h4>（四）趋势（回归）外延法</h4>
+      <p>以时期 t 为自变量做 <code>ŷ = a + b·t</code>，最小二乘法估计：<code>b = Σ(t−t̄)(y−ȳ) / Σ(t−t̄)²</code>，<code>a = ȳ − b·t̄</code>。
+      适合稳定线性趋势；对<b>转折点</b>反应迟钝，且外推过远风险大。</p>
+      <h4>（五）方法选择要点</h4>
+      <ul>
+        <li>先看数据形态（散点图是第一件事）：有无趋势、有无周期、有无异常值。</li>
+        <li>再看误差指标：本工作台用 MAPE 比较，实践中还可看 MSE、MAD。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="kn">
+    <summary>4.3 因果预测分析法</summary>
+    <div class="body">
+      <h4>（一）基本思想</h4>
+      <p>若事物之间存在明确的因果联系（如推广费→销量），可用<b>自变量</b> X 的已知（或可计划）值去推算<b>因变量</b> Y，比单纯外推更有解释力。</p>
+      <h4>（二）一元线性回归模型</h4>
+      <p><code>ŷ = a + b·x</code>，最小二乘估计：</p>
+      <ul>
+        <li><code>b = Σ(x−x̄)(y−ȳ) / Σ(x−x̄)²</code>　—— 回归系数，本例单位含义为「每增加 1 万元推广费带来的销量增量（吨）」。</li>
+        <li><code>a = ȳ − b·x̄</code>　—— 截距。</li>
+      </ul>
+      <h4>（三）拟合优度与显著性</h4>
+      <ul>
+        <li><b>判定系数 R²</b> = 已解释变差 / 总变差 = <code>1 − Σ(y−ŷ)² / Σ(y−ȳ)²</code>，取值 [0,1]，越接近 1 说明直线拟合越好。</li>
+        <li><b>相关系数 r</b>：一元情形下 <code>R² = r²</code>，符号由 r 给出。</li>
+        <li><b>注意事项</b>：两个同时存在时间趋势的变量容易得到虚高的 R²（伪相关），须结合业务逻辑判断；回归线不宜外推到样本区间之外。</li>
+      </ul>
+      <h4>（四）本工作台的处理</h4>
+      <p>因果模型使用全部 8 期样本估计 a、b；预测 2026 年销量时，需要<b>先计划 X（推广费）</b>的数值——这正是因果预测相对时间外推的额外成本。</p>
+    </div>
+  </details>
+
+  <details class="kn">
+    <summary>4.4 资金需要量预测（销售百分比法）</summary>
+    <div class="body">
+      <h4>（一）敏感项目</h4>
+      <ul>
+        <li><b>敏感资产</b>：与销售收入同比例变动的资产，通常包括库存现金、应收账款、存货。</li>
+        <li><b>敏感负债</b>：随销售自发增加的负债，主要是应付账款、应付费用（不含短期借款等筹资性负债）。</li>
+        <li>固定资产等长期资产在未满负荷时不一定敏感，需逐项判断。</li>
+      </ul>
+      <h4>（二）基本公式</h4>
+      <div class="formula">外部资金需要量 EFN = (A% × ΔS) − (L% × ΔS) − S₁ × PM × b</div>
+      <p>其中：A% 为敏感资产销售百分比，L% 为敏感负债销售百分比，ΔS = S₁ − S₀ 为销售增加额，
+      S₁ 为目标期销售收入，PM 为销售净利率，b 为留存收益率（= 1 − 股利支付率）。</p>
+      <ul>
+        <li>第一项 <code>A%·ΔS</code> —— 销售扩张带来的<b>资金占用</b>；</li>
+        <li>第二项 <code>L%·ΔS</code> —— 自发负债提供的<b>资金来源</b>；</li>
+        <li>第三项 <code>S₁·PM·b</code> —— 留存收益提供的<b>内部资金来源</b>。</li>
+        <li>余缺即为<b>外部融资额</b>；若结果为负，说明内部资金有余，可考虑偿还借款或对外投资。</li>
+      </ul>
+      <h4>（三）方法的局限性</h4>
+      <ul>
+        <li>假定「敏感项目与销售严格同比例」，忽略<b>规模经济</b>与批量阶梯投产的影响。</li>
+        <li>假定目标收入可实现且资金可得，未考虑融资约束与资本结构。</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+</main>
+
+<footer>管理会计 第4章 · 经营预测 · 赣南脐橙虚拟仿真工作台　|　单文件 HTML，可直接拷贝离线使用</footer>
+
+<script>
+(function(){
+'use strict';
+
+/* =====================================================================
+   0  工具函数
+   ===================================================================== */
+var NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){
+  var e=document.createElementNS(NS,tag);
+  if(attrs){for(var k in attrs){if(attrs[k]!==null&&attrs[k]!==undefined)e.setAttribute(k,attrs[k]);}}
+  if(parent)parent.appendChild(e);
+  return e;
+}
+function txt(x,y,s,parent,attrs){
+  var a={x:x,y:y};
+  if(attrs){for(var k in attrs)a[k]=attrs[k];}
+  var t=el('text',a,parent);
+  t.textContent=s;
+  return t;
+}
+function clear(node){while(node&&node.firstChild)node.removeChild(node.firstChild);}
+function $(id){return document.getElementById(id);}
+function fmt(v,d){
+  if(d===undefined)d=1;
+  if(v===null||v===undefined||!isFinite(v))return '—';
+  return v.toLocaleString('zh-CN',{minimumFractionDigits:d,maximumFractionDigits:d});
+}
+function pct(v,d){d=(d===undefined?2:d);return fmt(v,d)+'%';}
+function mean(a){var s=0;for(var i=0;i<a.length;i++)s+=a[i];return s/a.length;}
+function clamp(v,lo,hi){return v<lo?lo:(v>hi?hi:v);}
+
+/* 坐标轴刻度：取整、好看 */
+function niceScale(lo,hi,count){
+  count=count||6;
+  if(hi-lo<1e-9){hi=lo+1;}
+  var raw=(hi-lo)/count, mag=Math.pow(10,Math.floor(Math.log10(raw))), norm=raw/mag, step;
+  if(norm<=1)step=1; else if(norm<=2)step=2; else if(norm<=2.5)step=2.5;
+  else if(norm<=5)step=5; else step=10;
+  step*=mag;
+  var mn=Math.floor(lo/step)*step, mx=Math.ceil(hi/step)*step, ticks=[];
+  for(var v=mn;v<=mx+step*1e-6;v+=step)ticks.push(Math.round(v*1e6)/1e6);
+  return {min:mn,max:mx,ticks:ticks,step:step};
+}
+/* 线性映射 */
+function scale(d0,d1,r0,r1){return function(v){return r0+(v-d0)*(r1-r0)/((d1-d0)||1);};}
+
+/* =====================================================================
+   1  基础数据：赣南某脐橙专业合作社 2018—2025
+   ===================================================================== */
+var DATA=[
+  {yr:2018,qty:1200,ad:30},
+  {yr:2019,qty:1290,ad:38},
+  {yr:2020,qty:1450,ad:45},
+  {yr:2021,qty:1500,ad:52},
+  {yr:2022,qty:1680,ad:58},
+  {yr:2023,qty:1720,ad:68},
+  {yr:2024,qty:1900,ad:75},
+  {yr:2025,qty:1850,ad:84}
+];
+var N=DATA.length;                 // 8
+var YEAR=DATA.map(function(d){return d.yr;});
+var Y=DATA.map(function(d){return d.qty;});
+var X=DATA.map(function(d){return d.ad;});
+var TRAIN=Y.slice(0,N-1);          // 前 7 期：训练集
+var TRAINX=X.slice(0,N-1);
+var ACT8=Y[N-1];                   // 第 8 期实际值：验证集
+var NEXTYEAR=DATA[N-1].yr+1;       // 2026
+
+/* =====================================================================
+   2  预测算法
+   ===================================================================== */
+/* 一元线性回归（自变量为序号 1..n） */
+function linreg(a){
+  var n=a.length, tb=(n+1)/2, yb=mean(a);
+  var sxy=0,sxx=0,syy=0;
+  for(var i=0;i<n;i++){
+    var dx=(i+1)-tb, dy=a[i]-yb;
+    sxy+=dx*dy; sxx+=dx*dx; syy+=dy*dy;
+  }
+  var b=sxx===0?0:sxy/sxx, A=yb-b*tb;
+  return {a:A,b:b,r2:(syy===0?1:(sxy*sxy)/(sxx*syy))};
+}
+/* 一般一元线性回归（自变量为外部数组 xs） */
+function xyreg(xs,ys){
+  var n=xs.length, xb=mean(xs), yb=mean(ys), sxy=0,sxx=0,syy=0;
+  for(var i=0;i<n;i++){
+    var dx=xs[i]-xb, dy=ys[i]-yb;
+    sxy+=dx*dy; sxx+=dx*dx; syy+=dy*dy;
+  }
+  var b=sxx===0?0:sxy/sxx, A=yb-b*xb;
+  return {a:A,b:b,r2:(syy===0?1:(sxy*sxy)/(sxx*syy)),xb:xb,yb:yb};
+}
+
+var P={maN:3,weights:[1,2,3],alpha:0.6,causal:true,
+       ad90:90,sales:1800,price:8,asset:65,liab:20,pm:8,ret:60,hand:false};
+var DEF=JSON.parse(JSON.stringify(P));
+
+/* 取当前权重（长度对齐到参与期数 n，不足补 1；负数按 0 处理） */
+function wVec(n){
+  var w=[];
+  for(var i=0;i<n;i++){
+    var v=(i<P.weights.length)?parseFloat(P.weights[i]):1;
+    if(!isFinite(v)||v<0)v=0;
+    w.push(v);
+  }
+  return w;
+}
+/* 加权平均的核心：ŷ = Σ(wᵢ·yᵢ) / Σwᵢ，ys 为按时间由远到近排列的最近 n 期 */
+function wCore(n,w,ys){
+  var sw=0,num=0,terms=[];
+  for(var i=0;i<n;i++){
+    sw+=w[i]; num+=w[i]*ys[i];
+    terms.push({w:w[i],y:ys[i],p:w[i]*ys[i]});
+  }
+  return {n:n,w:w,ys:ys,sw:sw,num:num,terms:terms,
+          value:(sw===0)?mean(ys):num/sw,
+          norm:w.map(function(v){return sw===0?0:v/sw;})};
+}
+/* 从数组 a（由远到近）取最近 n 期做加权平均 */
+function wCalc(a){
+  var m=Math.min(P.maN,a.length);
+  return wCore(m,wVec(m),a.slice(-m));
+}
+/* 指数平滑：递推序列与预测值（抽成函数，便于步骤区按任意 α 复算） */
+function esSeries(a,al){
+  var out=[],f=a[0]; out.push(f);
+  for(var i=0;i<a.length-1;i++){ f=al*a[i]+(1-al)*f; out.push(f); }
+  return out;
+}
+function esPred(a,al){
+  var f=a[0];
+  for(var i=0;i<a.length;i++){ f=al*a[i]+(1-al)*f; }
+  return f;
+}
+
+var METHODS={
+  avg:{
+    name:'算术平均法', color:'#7b1fa2', param:function(){return '全部历史';},
+    tip:'把全部历史数据一视同仁地平均。适用于无趋势、随机波动的序列；本例销量持续上升，均值会系统性滞后。',
+    series:function(a){var m=mean(a);return a.map(function(){return m;});},
+    pred:function(a){return mean(a);}
+  },
+  ma:{
+    name:'加权平均法', color:'#1565c0',
+    param:function(){var w=wVec(P.maN),sw=w.reduce(function(a,b){return a+b;},0);return 'n='+P.maN+'，权数='+w.map(function(v){return fmt(sw===0?1/P.maN:v/sw,3);}).join(',');},
+    tip:'ŷ = Σ(wᵢ·yᵢ) ÷ Σwᵢ，只取最近 n 期。权重可按「近大远小」设定；各期权数相等时即退化为简单移动平均。'+
+        '本期数越少、近期权重越高，越贴合近期变化但也越容易受偶然因素影响。',
+    series:function(a){
+      var m=Math.min(P.maN,a.length), w=wVec(m);
+      return a.map(function(_,i){
+        if(i<m)return null;
+        return wCore(m,w,a.slice(i-m,i)).value;
+      });
+    },
+    pred:function(a){return wCalc(a).value;}
+  },
+  es:{
+    name:'指数平滑法', color:'#ef6c00',
+    param:function(){return 'α='+P.alpha.toFixed(2);},
+    tip:'Sₜ=α·yₜ+(1−α)·S₍ₜ₋₁₎，预测值取本期平滑值。α 越大越看重近期实际；初始值取第 1 期实际值。',
+    series:function(a){return esSeries(a,P.alpha);},
+    pred:function(a){return esPred(a,P.alpha);}
+  },
+  lr:{
+    name:'趋势回归法', color:'#2e7d32',
+    param:function(){return 'ŷ=a+b·t';},
+    tip:'以时期 t 为自变量做最小二乘直线。拟合长期趋势效果好，但对转折（如 2025 年回落）反应迟钝。',
+    series:function(a){var m=linreg(a);return a.map(function(_,i){return m.a+m.b*(i+1);});},
+    pred:function(a){var m=linreg(a);return m.a+m.b*(a.length+1);}
+  }
+};
+var ORDER=['avg','ma','es','lr'];
+
+function curKey(){return $('selMethod').value;}
+function curMethod(){return METHODS[curKey()];}
+
+/* =====================================================================
+   3  静态渲染：数据表
+   ===================================================================== */
+function renderTable(){
+  var tb=$('tblData').querySelector('tbody');
+  tb.innerHTML='';
+  for(var i=0;i<N;i++){
+    var tr=document.createElement('tr');
+    if(i===N-1)tr.className='hl';
+    tr.innerHTML='<td>'+DATA[i].yr+'</td><td>t='+(i+1)+'</td><td>'+fmt(DATA[i].qty,0)+
+                 '</td><td>'+fmt(DATA[i].ad,0)+'</td>';
+    tb.appendChild(tr);
+  }
+  $('lblAct8').textContent=fmt(ACT8,0);
+  $('lblNext').textContent=NEXTYEAR;
+
+  var box=$('dataKpi');
+  var ryg=(ACT8-Y[N-2])/Y[N-2]*100;
+  box.innerHTML='';
+  function kpi(k,v,u,cls){
+    var d=document.createElement('div');
+    d.className='kpi'+(cls?' '+cls:'');
+    d.innerHTML='<div class="k">'+k+'</div><div class="v">'+v+'<span class="u">'+u+'</span></div>';
+    box.appendChild(d);
+  }
+  kpi('2025 年销量（基期）',fmt(ACT8,0),'吨');
+  kpi('8 年累计销量',fmt(Y.reduce(function(a,b){return a+b;},0),0),'吨');
+  kpi('年均增长率',pct((Math.pow(ACT8/Y[0],1/(N-1))-1)*100,2),'');
+  kpi('2025 同比',pct(ryg,2),'',ryg<0?'warn':'');
+  kpi('2025 推广费',fmt(X[N-1],0),'万元');
+}
+
+/* =====================================================================
+   4  时间序列主图
+   ===================================================================== */
+function drawMain(){
+  var svg=$('chartMain'); clear(svg);
+  var W=760,H=400,L=62,R=28,T=26,B=52;
+  var pw=W-L-R, ph=H-T-B;
+
+  var key=curKey(), M=METHODS[key];
+  var serFull=M.series(Y);          // 第1..8期的模型值（可能为 null）
+  var predFull=M.pred(Y);           // 第9期预测
+  var pred8=M.pred(TRAIN);          // 用前7期训练时对第8期的预测（验证误差）
+
+  var vals=Y.slice();
+  serFull.forEach(function(v){if(v!==null)vals.push(v);});
+  vals.push(predFull,pred8);
+  var lo=Math.min.apply(null,vals), hi=Math.max.apply(null,vals);
+  var pad=(hi-lo)*0.18||100;
+  var ys=niceScale(lo-pad,hi+pad,6);
+
+  var XLO=0.5, XHI=N+1.5;           // 时期横轴：1..9
+  var sx=scale(XLO,XHI,L,L+pw);
+  var sy=scale(ys.min,ys.max,T+ph,T);
+
+  /* 背景：预测区 */
+  el('rect',{x:sx(N+0.5),y:T,width:L+pw-sx(N+0.5),height:ph,fill:'#eef7ef'},svg);
+  el('line',{x1:sx(N+0.5),y1:T,x2:sx(N+0.5),y2:T+ph,stroke:'#cfe3d1','stroke-width':1,'stroke-dasharray':'4 4'},svg);
+  txt(sx(N+0.5)+6,T+14,'预测区',svg,{fill:'#7f8c82','font-size':11.5});
+
+  /* 网格 + 纵轴刻度 */
+  ys.ticks.forEach(function(v){
+    var y=sy(v);
+    el('line',{x1:L,y1:y,x2:L+pw,y2:y,stroke:'#e8efe9','stroke-width':1},svg);
+    txt(L-8,y+4,fmt(v,0),svg,{'text-anchor':'end','font-size':11.5,fill:'#7f8c82'});
+  });
+  /* 横轴刻度 + 年份 */
+  for(var t=1;t<=N+1;t++){
+    var x=sx(t);
+    txt(x,T+ph+18,(t<=N?DATA[t-1].yr:NEXTYEAR)+'',svg,{'text-anchor':'middle','font-size':11.5,fill:'#7f8c82'});
+    txt(x,T+ph+33,'t='+t,svg,{'text-anchor':'middle','font-size':10.5,fill:'#a9b3ac'});
+  }
+  el('line',{x1:L,y1:T,x2:L,y2:T+ph,stroke:'#c4d0c6','stroke-width':1.2},svg);
+  el('line',{x1:L,y1:T+ph,x2:L+pw,y2:T+ph,stroke:'#c4d0c6','stroke-width':1.2},svg);
+  txt(L-8,T-8,'销量（吨）',svg,{'text-anchor':'end','font-size':11.5,fill:'#7f8c82'});
+
+  /* 实际值连线（虚线） */
+  el('polyline',{points:Y.map(function(v,i){return sx(i+1)+','+sy(v);}).join(' '),
+    fill:'none',stroke:'#9aa89d','stroke-width':1.6,'stroke-dasharray':'5 4'},svg);
+
+  /* 所选方法的拟合线（跳过 null） */
+  var pts=[];
+  serFull.forEach(function(v,i){if(v!==null)pts.push([sx(i+1),sy(v)]);});
+  pts.push([sx(N+1),sy(predFull)]);
+  el('polyline',{points:pts.map(function(p){return p[0]+','+p[1];}).join(' '),
+    fill:'none',stroke:M.color,'stroke-width':2.6,'stroke-linejoin':'round'},svg);
+
+  /* 实际散点 */
+  Y.forEach(function(v,i){
+    var c=el('circle',{cx:sx(i+1),cy:sy(v),r:5,fill:i===N-1?'#f9e0e0':'#fff',
+      stroke:i===N-1?'#c62828':'#2e7d32','stroke-width':2.2},svg);
+    var tip=el('title',{},c); tip.textContent=DATA[i].yr+' 年　实际 '+fmt(v,0)+' 吨　推广费 '+fmt(DATA[i].ad,0)+' 万元';
+  });
+
+  /* 验证期：该方法用前 7 期作出的预测 vs 实际 */
+  el('line',{x1:sx(N),y1:sy(ACT8),x2:sx(N),y2:sy(pred8),stroke:'#c62828','stroke-width':1.2,'stroke-dasharray':'3 3'},svg);
+  var m8=el('rect',{x:sx(N)-4.5,y:sy(pred8)-4.5,width:9,height:9,fill:'#fff',stroke:'#c62828','stroke-width':2},svg);
+  var t8=el('title',{},m8);
+  var e8=Math.abs(ACT8-pred8)/ACT8*100;
+  t8.textContent='验证：'+M.name+'预测 '+fmt(pred8,1)+' 吨，实际 '+fmt(ACT8,0)+' 吨，MAPE '+pct(e8,2);
+
+  /* 预测点标记 */
+  var px=sx(N+1), py=sy(predFull);
+  el('polygon',{points:(px)+','+(py-8)+' '+(px+8)+','+py+' '+(px)+','+(py+8)+' '+(px-8)+','+py,
+    fill:M.color,stroke:'#fff','stroke-width':1.5},svg);
+  var bwid=150, bx=clamp(px-bwid/2,L+2,W-R-bwid-2);
+  var bp=el('rect',{x:bx,y:py-40,width:bwid,height:22,rx:6,fill:'#fff',stroke:M.color,'stroke-width':1.2},svg);
+  txt(bx+bwid/2,py-25,NEXTYEAR+' 预测 '+fmt(predFull,1)+' 吨',svg,
+    {'text-anchor':'middle','font-size':12.5,'font-weight':'700',fill:M.color});
+
+  /* 标题 */
+  txt(L,T+ph+48,'注：横虚线右侧为预测区；第 8 期方框为该模型「只用前 7 期数据」时对 2025 年的预测，用于计算 MAPE。',
+      svg,{'font-size':10.5,fill:'#a0aa9f'});
+
+  /* 侧栏 KPI */
+  $('kpiPred').innerHTML=fmt(predFull,1)+'<span class="u">吨</span>';
+  $('lgMethod').style.background=M.color;
+  $('lgMethodTxt').textContent=M.name+'拟合/预测线（'+M.param()+'）';
+  $('tsNote').innerHTML='<b>'+M.name+'：</b>'+M.tip;
+  $('hintMethod').textContent='当前参数：'+M.param();
+
+  var dd=[];
+  var vs=DATA[N-1].qty;
+  dd.push(['较 2025 年增减',pct((predFull-vs)/vs*100,2),(predFull>=vs?'':'warn')]);
+  dd.push(['趋势法对照预测',fmt(METHODS.lr.pred(Y),1)+' 吨','amb']);
+  dd.push(['验证期 MAPE',pct(e8,2),e8<5?'':'info']);
+  var kx=$('kpiTs'); kx.innerHTML='';
+  dd.forEach(function(d){
+    var dv=document.createElement('div');
+    dv.className='kpi'+(d[2]?' '+d[2]:'');
+    dv.innerHTML='<div class="k">'+d[0]+'</div><div class="v" style="font-size:16px">'+d[1]+'</div>';
+    kx.appendChild(dv);
+  });
+}
+
+/* =====================================================================
+   5  因果预测图
+   ===================================================================== */
+function drawCausal(){
+  var svg=$('chartCausal'); clear(svg);
+  var W=760,H=400,L=64,R=28,T=26,B=54;
+  var pw=W-L-R, ph=H-T-B;
+  var on=P.causal;
+  var reg=xyreg(X,Y);
+  var px=P.ad90;
+  var py=reg.a+reg.b*px;
+
+  var xlo=Math.min.apply(null,X.concat([px])), xhi=Math.max.apply(null,X.concat([px]));
+  var xs=niceScale(xlo-(xhi-xlo)*0.12,xhi+(xhi-xlo)*0.12,6);
+  var ylo=Math.min.apply(null,Y.concat([py])), yhi=Math.max.apply(null,Y.concat([py]));
+  var ys=niceScale(ylo-(yhi-ylo)*0.14,yhi+(yhi-ylo)*0.14,6);
+  var sx=scale(xs.min,xs.max,L,L+pw), sy=scale(ys.min,ys.max,T+ph,T);
+
+  /* 网格 */
+  ys.ticks.forEach(function(v){
+    var y=sy(v);
+    el('line',{x1:L,y1:y,x2:L+pw,y2:y,stroke:'#e8efe9','stroke-width':1},svg);
+    txt(L-8,y+4,fmt(v,0),svg,{'text-anchor':'end','font-size':11.5,fill:'#7f8c82'});
+  });
+  xs.ticks.forEach(function(v){
+    var x=sx(v);
+    el('line',{x1:x,y1:T,x2:x,y2:T+ph,stroke:'#f0f5f0','stroke-width':1},svg);
+    txt(x,T+ph+18,fmt(v,0),svg,{'text-anchor':'middle','font-size':11.5,fill:'#7f8c82'});
+  });
+  el('line',{x1:L,y1:T,x2:L,y2:T+ph,stroke:'#c4d0c6','stroke-width':1.2},svg);
+  el('line',{x1:L,y1:T+ph,x2:L+pw,y2:T+ph,stroke:'#c4d0c6','stroke-width':1.2},svg);
+  txt(L-8,T-8,'销量 Y（吨）',svg,{'text-anchor':'end','font-size':11.5,fill:'#7f8c82'});
+  txt(L+pw,T+ph+38,'电商推广费 X（万元）',svg,{'text-anchor':'end','font-size':11.5,fill:'#7f8c82'});
+
+  /* 回归直线 */
+  if(on){
+    el('line',{x1:sx(xs.min),y1:sy(reg.a+reg.b*xs.min),x2:sx(xs.max),y2:sy(reg.a+reg.b*xs.max),
+      stroke:'#c62828','stroke-width':2.6},svg);
+    /* 残差线 */
+    X.forEach(function(xv,i){
+      el('line',{x1:sx(xv),y1:sy(Y[i]),x2:sx(xv),y2:sy(reg.a+reg.b*xv),
+        stroke:'#f0b8b8','stroke-width':1.2,'stroke-dasharray':'3 3'},svg);
+    });
+    /* 预测点 */
+    el('line',{x1:sx(px),y1:T,x2:sx(px),y2:sy(py),stroke:'#ef6c00','stroke-width':1.4,'stroke-dasharray':'5 4'},svg);
+    el('circle',{cx:sx(px),cy:sy(py),r:8,fill:'#fff',stroke:'#ef6c00','stroke-width':2.6},svg);
+    var cwid=176, cx0=clamp(sx(px)-cwid/2,L+2,W-R-cwid-2);
+    var pb=el('rect',{x:cx0,y:sy(py)-42,width:cwid,height:24,rx:6,fill:'#fff8ee',stroke:'#ef6c00','stroke-width':1.2},svg);
+    txt(cx0+cwid/2,sy(py)-25,px+' 万元 → '+fmt(py,1)+' 吨',svg,
+      {'text-anchor':'middle','font-size':12.5,'font-weight':'700',fill:'#b35c00'});
+  }
+
+  /* 散点 */
+  X.forEach(function(xv,i){
+    var c=el('circle',{cx:sx(xv),cy:sy(Y[i]),r:5.5,fill:on?'#dff0e1':'#fff',stroke:'#2e7d32','stroke-width':2.2},svg);
+    var t=el('title',{},c);
+    t.textContent=DATA[i].yr+' 年　X='+fmt(xv,0)+' 万元　Y='+fmt(Y[i],0)+' 吨　拟合值 '+fmt(reg.a+reg.b*xv,1)+' 吨';
+  });
+
+  $('causalEq').textContent='ŷ = '+fmt(reg.a,2)+' + '+fmt(reg.b,4)+'·x';
+  var box=$('kpiCausal'); box.innerHTML='';
+  function ck(k,v,u,cls){
+    var d=document.createElement('div');
+    d.className='kpi'+(cls?' '+cls:'');
+    d.innerHTML='<div class="k">'+k+'</div><div class="v" style="font-size:'+(v.length>9?'15px':'18px')+'">'+v+'<span class="u">'+u+'</span></div>';
+    box.appendChild(d);
+  }
+  ck('回归系数 b',fmt(reg.b,3),'吨/万元');
+  ck('截距 a',fmt(reg.a,1),'吨');
+  ck('判定系数 R²',fmt(reg.r2,4),'');
+  ck(NEXTYEAR+' 预测销量',on?fmt(py,1):'—',on?'吨':'',on?'amb':'');
+
+  $('causalNote').innerHTML= on
+    ? '<b>方程含义：</b>推广费每增加 1 万元，销量平均增加约 '+fmt(reg.b,2)+' 吨；'+
+      'R²='+fmt(reg.r2,4)+'，说明直线解释了销量变动的 '+pct(reg.r2*100,2)+'。'+
+      '<br><b>提醒：</b>X、Y 同具时间趋势，R² 偏高可能包含「共同趋势」，须结合业务判断；且 x 不应外推过远。'
+    : '<b>因果预测未启用。</b>打开左上方开关后，系统将以推广费 X 为自变量建立回归方程 ŷ=a+bx，并允许你先计划 '+NEXTYEAR+' 年推广费，再倒推销量。';
+}
+
+/* =====================================================================
+   5.5 基期资产负债表：用于"自行确认"敏感资产与敏感负债
+   ===================================================================== */
+var BS={
+  S0:1480,                                   // 基期销售收入：1850 吨 × 8 元/kg
+  asset:[
+    {n:'货币资金',       v:118,sens:true, why:'日常周转所需的现金会随销售规模扩大而增加；但闲置/超额储备部分应当剔除，不属于敏感资产。'},
+    {n:'应收账款',       v:444,sens:true, why:'赊销随销售扩大同步增加，是最典型的敏感资产。'},
+    {n:'存货',           v:400,sens:true, why:'为支撑销售而保有的库存随销售增加而增加。'},
+    {n:'固定资产净值',   v:620,sens:false,why:'取决于产能利用率：尚有闲置产能时，短期不随销售增加而增加；已满负荷则需追加投资。'},
+    {n:'无形资产及其他', v:130,sens:false,why:'与短期销售之间没有稳定的比例关系，通常不敏感。'}
+  ],
+  liab:[
+    {n:'应付账款',       v:296,sens:true, why:'采购随销售扩大而增加，应付账款自发形成，是最典型的敏感负债。'},
+    {n:'短期借款',       v:350,sens:false,why:'筹资性负债，由融资决策决定，不随销售自发增加。'},
+    {n:'长期借款',       v:300,sens:false,why:'同属筹资安排的结果，不随销售自发变动。'},
+    {n:'实收资本',       v:500,sens:false,why:'所有者投入，源于筹资决策而非经营自发形成。'},
+    {n:'留存收益',       v:266,sens:false,why:'虽会增加，但其本期增加额已在 EFN 公式第三项（S₁×PM×b）单独扣除，此处再列为敏感负债会重复计算资金来源。'}
+  ]
+};
+function bsSum(arr){return arr.reduce(function(s,x){return s+x.v;},0);}
+var bsPick={                                  // 当前勾选状态，true＝判为敏感
+  asset:BS.asset.map(function(x){return x.sens;}),
+  liab:BS.liab.map(function(x){return x.sens;})
+};
+function bsCalc(){
+  var sa=0,sl=0;
+  BS.asset.forEach(function(x,i){if(bsPick.asset[i])sa+=x.v;});
+  BS.liab.forEach(function(x,i){if(bsPick.liab[i])sl+=x.v;});
+  var at=bsSum(BS.asset), lt=bsSum(BS.liab);
+  return {sa:sa,sl:sl,at:at,lt:lt,
+          ap:sa/BS.S0*100, lp:sl/BS.S0*100,
+          balance:Math.abs(at-lt)<1e-9};
+}
+/* 与教材标准口径不一致的行 */
+function bsDiff(){
+  var d=[];
+  BS.asset.forEach(function(x,i){if(bsPick.asset[i]!==x.sens)d.push(('资产：'+x.n));});
+  BS.liab.forEach(function(x,i){if(bsPick.liab[i]!==x.sens)d.push(('负债：'+x.n));});
+  return d;
+}
+function renderBS(){
+  var tb=$('tblBS').querySelector('tbody'); tb.innerHTML='';
+  function addRow(cls,cells){
+    var tr=document.createElement('tr');
+    if(cls)tr.className=cls;
+    tr.innerHTML=cells;
+    tb.appendChild(tr);
+  }
+  function rowsOf(kind,arr,pick){
+    arr.forEach(function(x,i){
+      var ratio=x.v/BS.S0*100;
+      var tr=document.createElement('tr');
+      tr.className='row-a'+(pick[i]?'':'');
+      tr.innerHTML='<td style="text-align:left">'+x.n+'</td>'+
+        '<td>'+fmt(x.v,0)+'</td>'+
+        '<td>'+pct(ratio,2)+'</td>'+
+        '<td class="mid sens"><label class="sw2"><input type="checkbox" data-k="'+kind+'" data-i="'+i+'"'+
+            (pick[i]?' checked':'')+'><span>敏感</span></label></td>'+
+        '<td class="why">'+(pick[i]?'敏感判定：':'不敏感判定：')+x.why+'</td>';
+      tr.querySelector('input').addEventListener('change',function(){
+        bsPick[kind][i]=this.checked;
+        P.hand=false;                        // 改判定后清除手工标记
+        var c=bsCalc();
+        P.asset=Math.round(c.ap); P.liab=Math.round(c.lp);
+        $('rngAsset').value=P.asset; $('rngLiab').value=P.liab;
+        renderBS(); renderFund(); renderEval(); renderCalc();
+      });
+      tb.appendChild(tr);
+    });
+  }
+  addRow('grp',['<td colspan="5">资产项目（基期 2025-12-31）　　单位：万元</td>']);
+  rowsOf('asset',BS.asset,bsPick.asset);
+  addRow('sum',['<td style="text-align:left">资产总计</td><td>'+fmt(bsSum(BS.asset),0)+'</td><td>'+
+    pct(bsSum(BS.asset)/BS.S0*100,2)+'</td><td class="mid">—</td><td class="why">其中被你判为敏感的部分，才是随销售增加的资金占用。</td>']);
+  addRow('grp',['<td colspan="5">负债及所有者权益项目（基期 2025-12-31）　　单位：万元</td>']);
+  rowsOf('liab',BS.liab,bsPick.liab);
+  addRow('sum',['<td style="text-align:left">负债及所有者权益总计</td><td>'+fmt(bsSum(BS.liab),0)+'</td><td>'+
+    pct(bsSum(BS.liab)/BS.S0*100,2)+'</td><td class="mid">—</td><td class="why">应当等于资产总计（勾稽平衡）。</td>']);
+
+  var c=bsCalc();
+  var box=$('kpiBS'); box.innerHTML='';
+  function bk(k,v,u,cls){
+    var d=document.createElement('div');
+    d.className='kpi'+(cls?' '+cls:'');
+    d.innerHTML='<div class="k">'+k+'</div><div class="v">'+v+'<span class="u">'+u+'</span></div>';
+    box.appendChild(d);
+  }
+  bk('你判定的敏感资产合计',fmt(c.sa,0),'万元');
+  bk('⇒ 敏感资产占比 A%',fmt(c.ap,2),'%','amb');
+  bk('你判定的敏感负债合计',fmt(c.sl,0),'万元');
+  bk('⇒ 敏感负债占比 L%',fmt(c.lp,2),'%','info');
+  bk('资金占用系数 A%−L%',fmt(c.ap-c.lp,2),'%');
+  bk('勾稽校验',c.balance?('平衡 '+fmt(c.at,0)):('差额 '+fmt(c.at-c.lt,0)),c.balance?'':'warn');
+
+  var diff=bsDiff(), n=$('bsNote');
+  if(!diff.length){
+    n.className='callout ok';
+    n.innerHTML='<b>勾稽通过：</b>你的判定与教材口径一致。敏感资产 = 货币资金 + 应收账款 + 存货 = '+
+      fmt(c.sa,0)+' 万元 ⇒ A% = '+fmt(c.sa,0)+' ÷ 1480 = <b>'+pct(c.ap,2)+'</b>；'+
+      '敏感负债 = 应付账款 = '+fmt(c.sl,0)+' 万元 ⇒ L% = '+fmt(c.sl,0)+' ÷ 1480 = <b>'+pct(c.lp,2)+'</b>。'+
+      '<br>注意<b>留存收益不列入敏感负债</b>：它本期能增加多少，已在 EFN 公式第三项单独扣除，若此处再算一次会重复。';
+  }else{
+    n.className='callout warn';
+    n.innerHTML='<b>与教材口径存在差异（'+diff.length+' 处）：'+diff.join('、')+'</b>。'+
+      '销售百分比法按<b>你的判定</b>照算不误——这就是「职业判断」的影响：同样的目标增长率，'+
+      '判得越"敏感"，所需外部资金越多。想看标准结果可点「恢复教材口径」。';
+  }
+}
+
+/* =====================================================================
+   6  资金需要量预测（销售百分比法）
+   ===================================================================== */
+function fundCalc(){
+  var S0=BS.S0;   // 基期已实现销售收入 1480 万元（＝1850 吨 × 8 元/kg），来源见第一步资产负债表
+  var S1=P.sales;
+  var dS=S1-S0;
+  var A=P.asset/100, L=P.liab/100, PM=P.pm/100, b=P.ret/100;
+  var use=A*dS;            // 敏感资产增加（资金占用）
+  var src=L*dS;            // 敏感负债增加（自发来源）
+  var ret=S1*PM*b;         // 留存收益增加（内部来源）
+  var efn=use-src-ret;     // 外部资金需要量
+  /* 由销量预测反推的目标收入：2026 预测销量（吨）× 计划单价（元/kg）÷ 10 → 万元 */
+  var qty=METHODS[curKey()].pred(Y);
+  var S1auto=clamp(Math.round(qty*P.price/10/10)*10,1400,2400);
+  return {S0:S0,S1:S1,dS:dS,use:use,src:src,ret:ret,efn:efn,
+          A:A,L:L,PM:PM,b:b,qty:qty,S1auto:S1auto};
+}
+function fundAt(S1,base){   // 给定目标收入时的 EFN（用于曲线）
+  var A=base.A,L=base.L,PM=base.PM,b=base.b;
+  return A*(S1-base.S0)-L*(S1-base.S0)-S1*PM*b;
+}
+
+function renderFund(){
+  var r=fundCalc();
+
+  var box=$('kpiFund'); box.innerHTML='';
+  function fk(k,v,u,cls){
+    var d=document.createElement('div');
+    d.className='kpi'+(cls?' '+cls:'');
+    d.innerHTML='<div class="k">'+k+'</div><div class="v">'+v+'<span class="u">'+u+'</span></div>';
+    box.appendChild(d);
+  }
+  fk('基期销售收入 S₀',fmt(r.S0,1),'万元','info');
+  fk('销售增加额 ΔS',fmt(r.dS,1),'万元',r.dS<0?'warn':'');
+  fk('外部资金需要量',fmt(r.efn,1),'万元',r.efn>0?'warn':'');
+
+  /* 手工模式提示（拖动 A%/L% 滑块后离开第一步的判定口径） */
+  var hb=$('handBar');
+  if(P.hand){
+    var c0=bsCalc();
+    hb.style.display='';
+    $('handTxt').innerHTML='<b>已改为手工设定</b>：A%='+fmt(P.asset,2)+'%、L%='+fmt(P.liab,2)+
+      '%；按第一步资产负债表应为 '+pct(c0.ap,2)+' ／ '+pct(c0.lp,2)+'。';
+  }else{
+    hb.style.display='none';
+  }
+
+  /* 明细表 */
+  var tb=$('tblFund').querySelector('tbody'); tb.innerHTML='';
+  var rows=[
+    ['基期销售收入 S₀','2025 年实际：'+fmt(ACT8,0)+' 吨 × 8 元/kg',fmt(r.S0,1)],
+    ['目标销售收入 S₁',P.hand?'滑块设定（手工）':'滑块设定'+(Math.abs(r.S1-r.S1auto)<0.6?'（已按预测销量反算）':''),fmt(r.S1,0)],
+    ['销售增加额 ΔS','S₁ − S₀ = '+fmt(r.S1,0)+' − '+fmt(r.S0,1),fmt(r.dS,1)],
+    ['敏感资产增加','A% × ΔS = '+fmt(P.asset,2)+'% × '+fmt(r.dS,1)+'　（A% 源于第一步判定）',fmt(r.use,1)],
+    ['减：敏感负债增加','L% × ΔS = '+fmt(P.liab,2)+'% × '+fmt(r.dS,1),fmt(-r.src,1)],
+    ['减：留存收益增加','S₁ × '+fmt(P.pm,1)+'% × '+fmt(P.ret,0)+'% = '+fmt(r.S1,0)+' × '+fmt(r.PM*r.b,4),fmt(-r.ret,1)],
+    ['外部资金需要量','① − ② − ③',fmt(r.efn,1)]
+  ];
+  rows.forEach(function(row,i){
+    var tr=document.createElement('tr');
+    if(i===rows.length-1)tr.className=r.efn>0?'hl':'best';
+    tr.innerHTML='<td style="text-align:left">'+row[0]+'</td><td class="mono" style="text-align:left">'+row[1]+'</td><td>'+row[2]+'</td>';
+    tb.appendChild(tr);
+  });
+
+  var note;
+  var cls='tip';
+  if(r.efn>0.001){
+    note='目标收入 '+fmt(r.S1,0)+' 万元超出内部积累能力，需对外筹资 <b>'+fmt(r.efn,1)+' 万元</b>'+
+         '（约占目标收入 '+pct(r.efn/r.S1*100,2)+'）。可提高净利率、降低股利支付率，或压缩敏感资产占用。';
+    cls='warn';
+  }else{
+    note='内部资金来源足以支撑 '+fmt(r.S1,0)+' 万元的目标收入，资金剩余 <b>'+fmt(-r.efn,1)+' 万元</b>'+
+         '，可用于归还借款、技改投入或扩大推广费。';
+    cls='ok';
+  }
+  note+='　|　局限：销售百分比法假定敏感项目与收入<b>严格同比例</b>变动，未考虑阶梯投产与规模经济。';
+  var n=$('fundNote'); n.className='callout '+cls; n.innerHTML=note;
+
+  drawFundCurve(r);
+  drawFundFall(r);
+}
+
+/* EFN — 目标收入曲线 */
+function drawFundCurve(r){
+  var svg=$('chartFund'); clear(svg);
+  var W=760,H=250,L=64,R=26,T=22,B=42;
+  var pw=W-L-R, ph=H-T-B;
+  var minS=$('rngSales').min*1, maxS=$('rngSales').max*1;
+  var step=10, samples=[];
+  for(var s=minS;s<=maxS+0.001;s+=step)samples.push({x:s,y:fundAt(s,r)});
+  var hi=Math.max.apply(null,samples.map(function(p){return p.y;}));
+  var lo=Math.min.apply(null,samples.map(function(p){return p.y;}));
+  var pad=(hi-lo)*0.15||10;
+  var ys=niceScale(lo-pad,hi+pad,5);
+  var xs=niceScale(minS,maxS,6);
+  var sx=scale(xs.min,xs.max,L,L+pw), sy=scale(ys.min,ys.max,T+ph,T);
+
+  ys.ticks.forEach(function(v){
+    var y=sy(v);
+    el('line',{x1:L,y1:y,x2:L+pw,y2:y,stroke:'#e8efe9','stroke-width':1},svg);
+    txt(L-8,y+4,fmt(v,0),svg,{'text-anchor':'end','font-size':11.5,fill:'#7f8c82'});
+  });
+  xs.ticks.forEach(function(v){
+    txt(sx(v),T+ph+18,fmt(v,0),svg,{'text-anchor':'middle','font-size':11.5,fill:'#7f8c82'});
+  });
+  /* 0 线 */
+  var y0=sy(0);
+  if(y0>T-1&&y0<T+ph+1){
+    el('line',{x1:L,y1:y0,x2:L+pw,y2:y0,stroke:'#9aa89d','stroke-width':1.4},svg);
+    txt(L+pw+2,y0-4,'EFN=0',svg,{'text-anchor':'end','font-size':11,fill:'#7f8c82'});
+  }
+  el('line',{x1:L,y1:T,x2:L,y2:T+ph,stroke:'#c4d0c6','stroke-width':1.2},svg);
+  el('line',{x1:L,y1:T+ph,x2:L+pw,y2:T+ph,stroke:'#c4d0c6','stroke-width':1.2},svg);
+  txt(L-8,T-6,'外部资金需要量（万元）',svg,{'text-anchor':'end','font-size':11.5,fill:'#7f8c82'});
+  txt(L+pw,T+ph+34,'目标销售收入 S₁（万元）',svg,{'text-anchor':'end','font-size':11.5,fill:'#7f8c82'});
+
+  /* 曲线 */
+  el('polyline',{points:samples.map(function(p){return sx(p.x)+','+clamp(sy(p.y),T-40,T+ph+40);}).join(' '),
+    fill:'none',stroke:'#2e7d32','stroke-width':2.6},svg);
+
+  /* 当前点 */
+  el('circle',{cx:sx(r.S1),cy:sy(r.efn),r:6,fill:'#fff',stroke:'#2e7d32','stroke-width':2.6},svg);
+  var fwid=200, fx=clamp(sx(r.S1)-fwid/2,L+2,W-R-fwid-2);
+  var bb=el('rect',{x:fx,y:sy(r.efn)-34,width:fwid,height:23,rx:6,fill:'#eaf5ea',stroke:'#2e7d32','stroke-width':1.1},svg);
+  txt(fx+fwid/2,sy(r.efn)-18,'S₁='+fmt(r.S1,0)+' 万元　EFN='+fmt(r.efn,1)+' 万元',svg,
+    {'text-anchor':'middle','font-size':12,'font-weight':'700',fill:'#1b5e20'});
+}
+
+/* 资金缺口瀑布图 */
+function drawFundFall(r){
+  var svg=$('chartFall'); clear(svg);
+  var W=760,H=290,L=58,R=20,T=26,B=62;
+  var pw=W-L-R, ph=H-T-B;
+
+  var items=[
+    {n:'① 资金占用\n敏感资产增加',v:r.use,c:'#ef6c00'},
+    {n:'② 自发来源\n敏感负债增加',v:-r.src,c:'#1565c0'},
+    {n:'③ 内部来源\n留存收益增加',v:-r.ret,c:'#2e7d32'},
+    {n:'④ 余缺\n外部融资',v:-r.efn,c:r.efn>0?'#6a1b9a':'#00897b'}
+  ];
+  var cum=[0,r.use,r.use-r.src,r.efn,0];
+  var allVals=[0,r.use,r.use-r.src,r.efn].concat([-r.efn,r.ret,r.src]);
+  var lo=Math.min.apply(null,allVals), hi=Math.max.apply(null,allVals);
+  var pad=(hi-lo)*0.18||10;
+  var ys=niceScale(lo-pad,hi+pad,5);
+  var sy=scale(ys.min,ys.max,T+ph,T);
+
+  ys.ticks.forEach(function(v){
+    var y=sy(v);
+    el('line',{x1:L,y1:y,x2:L+pw,y2:y,stroke:'#e8efe9','stroke-width':1},svg);
+    txt(L-8,y+4,fmt(v,0),svg,{'text-anchor':'end','font-size':11.5,fill:'#7f8c82'});
+  });
+  el('line',{x1:L,y1:T+ph,x2:L+pw,y2:T+ph,stroke:'#c4d0c6','stroke-width':1.2},svg);
+  el('line',{x1:L,y1:T,x2:L,y2:T+ph,stroke:'#c4d0c6','stroke-width':1.2},svg);
+  txt(L-8,T-6,'金额（万元）',svg,{'text-anchor':'end','font-size':11.5,fill:'#7f8c82'});
+
+  var bw=pw/items.length*0.5, gap=pw/items.length;
+  for(var i=0;i<items.length;i++){
+    var cx=L+gap*i+gap/2;
+    var y1=sy(cum[i]), y2=sy(cum[i+1]);
+    var top=Math.min(y1,y2), h=Math.max(Math.abs(y2-y1),1.5);
+    var rect=el('rect',{x:cx-bw/2,y:top,width:bw,height:h,fill:items[i].c,opacity:0.88,rx:2},svg);
+    var tt=el('title',{},rect);
+    tt.textContent=items[i].n.replace('\n',' ')+'：'+fmt(items[i].v,1)+' 万元';
+    var lbl=(items[i].v>=0?'+':'')+fmt(items[i].v,1);
+    txt(cx,top-6,lbl,svg,{'text-anchor':'middle','font-size':12,'font-weight':'700',fill:items[i].c});
+    if(i<items.length-1){
+      el('line',{x1:cx+bw/2,y1:sy(cum[i+1]),x2:cx-bw/2+gap,y2:sy(cum[i+1]),
+        stroke:'#b0bdb2','stroke-width':1,'stroke-dasharray':'3 3'},svg);
+    }
+    items[i].n.split('\n').forEach(function(s,k){
+      txt(cx,T+ph+18+k*14,s,svg,{'text-anchor':'middle','font-size':11.5,fill:k===0?'#42503f':'#7f8c82'});
+    });
+  }
+  txt(L,T+ph+52,'瀑布逻辑：资金占用 = 敏感资产增加 − 敏感负债增加 − 留存收益增加 − 外部融资',
+      svg,{'font-size':10.5,fill:'#a0aa9f'});
+}
+
+/* =====================================================================
+   7  精度评价（MAPE）
+   ===================================================================== */
+function evalRows(){
+  var rows=ORDER.map(function(k){
+    var M=METHODS[k];
+    var f=M.pred(TRAIN);
+    return {key:k,name:M.name,param:M.param(),pred:f,err:f-ACT8,
+            ape:Math.abs(ACT8-f)/ACT8*100,color:M.color};
+  });
+  /* 追加因果回归：用前7期估参，代入第8期推广费 */
+  var cr=xyreg(TRAINX,TRAIN);
+  var cf=cr.a+cr.b*X[N-1];
+  rows.push({key:'cr',name:'因果回归·推广费',param:'x='+X[N-1]+' 万元',pred:cf,err:cf-ACT8,
+             ape:Math.abs(ACT8-cf)/ACT8*100,color:'#00838f'});
+  return rows;
+}
+function renderEval(){
+  var rows=evalRows().sort(function(a,b){return a.ape-b.ape;});
+  var tb=$('tblEval').querySelector('tbody'); tb.innerHTML='';
+  rows.forEach(function(r,i){
+    var tr=document.createElement('tr');
+    if(i===0)tr.className='best';
+    tr.innerHTML='<td><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+
+      r.color+';margin-right:6px"></span>'+r.name+'</td>'+
+      '<td class="mono">'+r.param+'</td>'+
+      '<td>'+fmt(r.pred,1)+'</td>'+
+      '<td>'+fmt(r.err,1)+'</td>'+
+      '<td class="mono" style="text-align:left;white-space:normal;min-width:220px">'+apeExpr(r.pred)+'</td>'+
+      '<td><b>'+pct(r.ape,2)+'</b></td>';
+    tb.appendChild(tr);
+  });
+  var best=rows[0], worst=rows[rows.length-1];
+  $('kpiBest').textContent=best.name+'　（MAPE '+pct(best.ape,2)+'）';
+
+  var n=$('evalNote');
+  n.innerHTML='<b>最优方法：'+best.name+'</b>（MAPE '+pct(best.ape,2)+'）；当前误差最大的是 '+worst.name+
+    '（MAPE '+pct(worst.ape,2)+'）。'+
+    '<br><b>为什么？</b>2025 年因花期低温销量回落至 '+fmt(ACT8,0)+' 吨，属于趋势转折：'+
+    '趋势回归（以及因果回归）按既有斜率继续外推，反应迟钝；而越是贴近近期数据的方法——'+
+    '指数平滑的 α 越大、加权平均给最近一期的权重越高——预测值就越贴近近期实际水平。'+
+    '<br><b>试一试：</b>把 α 调到 0.75 附近、或把 n 调到 2，MAPE 会明显下降——这不是凑巧，'+
+    '而是「给近期数据更高权重」在转折点附近更贴近真实。<b>没有永远最优的方法，只有相对于数据形态合适的方法</b>，'+
+    '因此滚动预测与事后误差追踪是必要动作。';
+
+  drawMape(rows);
+}
+function drawMape(rows){
+  var svg=$('chartMape'); clear(svg);
+  var W=362,H=330,L=132,R=54,T=16,B=12;
+  var pw=W-L-R, ph=H-T-B;
+  var max=Math.max.apply(null,rows.map(function(r){return r.ape;}))||1;
+  var bh=ph/rows.length*0.62, gap=ph/rows.length;
+  rows.forEach(function(r,i){
+    var y=T+gap*i+(gap-bh)/2;
+    var w=pw*(r.ape/(max*1.18));
+    txt(L-8,y+bh/2+4,r.name,svg,{'text-anchor':'end','font-size':11.5,fill:'#42503f'});
+    el('rect',{x:L,y:y,width:pw,height:bh,fill:'#f1f6f1',rx:3},svg);
+    var bar=el('rect',{x:L,y:y,width:Math.max(w,2),height:bh,fill:r.color,opacity:i===0?1:0.75,rx:3},svg);
+    var t=el('title',{},bar);
+    t.textContent=r.name+'　'+r.param+'　预测 '+fmt(r.pred,1)+' 吨，实际 '+fmt(ACT8,0)+' 吨，MAPE '+pct(r.ape,2);
+    txt(L+Math.max(w,2)+6,y+bh/2+4,pct(r.ape,2),svg,{'font-size':11.5,'font-weight':'700',fill:r.color});
+  });
+  txt(L,T+ph+8,'MAPE（越小越好）',svg,{'font-size':10.5,fill:'#a0aa9f'});
+}
+
+/* =====================================================================
+   8  课堂自测
+   ===================================================================== */
+var QUIZ=[
+  {ask:'用<b>算术平均法</b>（全部 8 期）预测 '+NEXTYEAR+' 年销量（吨）？',
+   ans:function(){return METHODS.avg.pred(Y);},tol:1,unit:'吨',
+   exp:'把 8 期销量算术平均即可，结果代表「无趋势假设」下的期望水平。'},
+  {ask:'用<b>加权平均法</b>（n=3，权重由远到近 1、2、3，全部 8 期）预测 '+NEXTYEAR+' 年销量（吨）？',
+   ans:function(){return METHODS.ma.pred(Y);},tol:1,unit:'吨',
+   exp:'ŷ = (1×'+DATA[N-3].qty+' + 2×'+DATA[N-2].qty+' + 3×'+DATA[N-1].qty+') ÷ (1+2+3)，'+
+       '分子分母都要算对：先加权求和，再除以权重之和。'},
+  {ask:'用<b>指数平滑法</b>（α=0.6，初始值取第 1 期实际值）预测 '+NEXTYEAR+' 年销量（吨）？',
+   ans:function(){return METHODS.es.pred(Y);},tol:2,unit:'吨',
+   exp:'递推 Sₜ=α·yₜ+(1−α)·S₍ₜ₋₁₎，逐期算到第 8 期，其平滑值 S₈ 即为 '+NEXTYEAR+' 年预测值。'},
+  {ask:'目标收入 1800 万元、单价 8 元/kg、A%=65%、L%=20%、PM=8%、b=60% 时的<b>外部资金需要量</b>（万元）？',
+   ans:function(){
+     var S0=1850*(8/10);   // 1850 吨 × 8 元/kg = 1480 万元（吨×单价/10 换算为万元）
+     return 0.65*(1800-S0)-0.20*(1800-S0)-1800*0.08*0.60;
+   },
+   tol:0.5,unit:'万元',
+   exp:'EFN=(A%−L%)·ΔS − S₁·PM·b，其中 S₀=1850×1000×8÷10000=1480 万元。注意 ΔS 用 S₁−S₀。'},
+  {ask:'以推广费为 X、销量为 Y（全部 8 期），回归方程的<b>判定系数 R²</b> 约是多少？',
+   ans:function(){return xyreg(X,Y).r2;},tol:0.01,unit:'',
+   exp:'R² = Σ(x−x̄)(y−ȳ)² ÷ [Σ(x−x̄)²·Σ(y−ȳ)²]，越接近 1 拟合越好。'}
+];
+function renderQuiz(){
+  var box=$('quizBox'); box.innerHTML='';
+  QUIZ.forEach(function(q,i){
+    var d=document.createElement('div');
+    d.className='quiz';
+    d.innerHTML='<div class="q">'+(i+1)+'. '+q.ask+'</div>'+
+      '<div class="opts"><input type="number" step="0.01" id="q'+i+'" placeholder="填写数值"/>'+
+      '<span style="font-size:13px;color:var(--ink3)">'+q.unit+'</span>'+
+      '<button class="btn sm" data-chk="'+i+'">核对</button></div>'+
+      '<div class="fb" id="fb'+i+'"></div>';
+    box.appendChild(d);
+  });
+  var score=$('quizScore'); score.textContent='';
+  box.addEventListener('click',function(e){
+    var b=e.target.closest ? e.target.closest('[data-chk]') : null;
+    if(b)checkOne(parseInt(b.getAttribute('data-chk'),10));
+  });
+}
+function checkOne(i){
+  var q=QUIZ[i], inp=$('q'+i), fb=$('fb'+i);
+  var v=parseFloat(inp.value);
+  if(!isFinite(v)){fb.className='fb bad';fb.innerHTML='请先填写数值。';return;}
+  var a=q.ans(), ok=Math.abs(v-a)<=q.tol;
+  fb.className='fb '+(ok?'good':'bad');
+  fb.innerHTML=(ok?'✔ 正确！':'✘ 不正确。')+' 参考答案 <b>'+fmt(a,2)+' '+q.unit+'</b>（容差 ±'+q.tol+'）。<br>'+q.exp;
+  tally();
+}
+function tally(){
+  var ok=0,tot=0;
+  QUIZ.forEach(function(q,i){
+    var inp=$('q'+i); if(!inp)return;
+    var v=parseFloat(inp.value);
+    if(isFinite(v)){tot++; if(Math.abs(v-q.ans())<=q.tol)ok++;}
+  });
+  $('quizScore').textContent=tot?('已核对 '+ok+' / '+tot+' 题'+(tot===QUIZ.length?'　'+(ok===tot?'全部正确！':'继续加油！'):'')):'';
+}
+
+/* =====================================================================
+   9  事件绑定
+   ===================================================================== */
+/* ===== 加权平均：权重输入框 ===== */
+function buildWInputs(){
+  var n=P.maN, box=$('wInputs'); box.innerHTML='';
+  var w=wVec(n), sw=w.reduce(function(a,b){return a+b;},0);
+  for(var i=0;i<n;i++){
+    var yr=YEAR[YEAR.length-n+i];           // 最近 n 期，由远到近
+    var wn=(sw===0)?0:w[i]/sw;
+    var sp=document.createElement('span');
+    sp.className='wi';
+    sp.innerHTML='<i>'+yr+'</i><input type="number" min="0" max="99" step="0.5" value="'+w[i]+'" data-wi="'+i+'">'+
+      '<em class="wn">权数 '+fmt(wn,3)+'</em>';
+    var inp=sp.querySelector('input');
+    inp.addEventListener('input',function(){
+      var idx=parseInt(this.getAttribute('data-wi'),10);
+      var v=parseFloat(this.value);
+      P.weights[idx]=(isFinite(v)&&v>=0)?v:0;
+      syncWSum();
+      renderAll();
+    });
+    box.appendChild(sp);
+  }
+  syncWSum();
+}
+function syncWSum(){
+  var n=P.maN, w=wVec(n), sw=w.reduce(function(a,b){return a+b;},0);
+  $('valWSum').innerHTML='Σ权数(归一化) = <b>'+fmt(sw===0?0:1,3)+'</b>　（相对权重 Σ = '+fmt(sw,1)+'）';
+  var eq=w.every(function(v){return Math.abs(v-w[0])<1e-9;});
+  var h=$('hintW');
+  if(sw===0){
+    h.innerHTML='<b>相对权重之和为 0</b>，无法加权，系统已自动退回等权（简单平均），请至少给一个权重赋正值。';
+  }else if(eq){
+    h.innerHTML='各期权数相等 ⇒ 加权平均<b>退化为简单移动平均</b>（这正是教材中「移动平均法」的特例）。可试着把最后一期的权数调大看看效果。';
+  }else{
+    h.innerHTML='相对权重由远到近为 '+w.join(' , ')+'；归一化后即<b>权数</b>（wᵢ ÷ Σw）为 '+
+      w.map(function(v){return fmt(v/sw,3);}).join(' + ')+' = 1。近期权数越大，预测越贴近最近一期。';
+  }
+}
+function setWeights(w){
+  P.weights=w.slice(0,P.maN);
+  while(P.weights.length<P.maN)P.weights.push(1);
+  buildWInputs();
+  renderAll();
+}
+
+/* =====================================================================
+   8.5  算给你看：逐步计算过程
+        所有数字均由当前参数实时算出，不写死任何常量；拖动控件即同步刷新
+   ===================================================================== */
+/* 步骤文本专用数字格式：不加千分位、去掉多余的 0，便于照抄进计算器 */
+function nn(v,d){
+  if(d===undefined)d=2;
+  if(v===null||v===undefined||!isFinite(v))return '—';
+  var s=v.toFixed(d);
+  if(s.indexOf('.')>=0)s=s.replace(/0+$/,'').replace(/\.$/,'');
+  return s;
+}
+/* 转下标字符，用于 y₁、Sₜ₋₁ 之类 */
+var SUBMAP={'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉',
+            '+':'₊','-':'₋','−':'₋','=':'₌','(':'₍',')':'₎',
+            'i':'ᵢ','n':'ₙ','t':'ₜ','a':'ₐ','e':'ₑ','o':'ₒ','x':'ₓ'};
+function sub(n){
+  var s=''+n, o='';
+  for(var i=0;i<s.length;i++){
+    var c=s.charAt(i);
+    o+=(SUBMAP[c]!==undefined)?SUBMAP[c]:c;
+  }
+  return o;
+}
+function csLine(s){return '<div class="cs">'+s+'</div>';}
+function csWhy(s){return '<div class="cs why"><b>为什么：</b>'+s+'</div>';}
+function csTbl(id,heads){
+  var s='<div class="scrollx"><table class="calc-t" id="'+id+'"><thead><tr>';
+  for(var i=0;i<heads.length;i++)s+='<th'+(heads[i].l?' class="l"':'')+'>'+heads[i].t+'</th>';
+  return s+'</tr></thead><tbody>';
+}
+function csTr(cells,cls){
+  var s='<tr class="cs'+(cls?' '+cls:'')+'">';
+  for(var i=0;i<cells.length;i++){
+    var c=cells[i], cl=[];
+    if(c.l)cl.push('l');
+    if(c.w)cl.push('w');
+    s+='<td'+(cl.length?' class="'+cl.join(' ')+'"':'')+'>'+(c.b?'<b>'+c.t+'</b>':c.t)+'</td>';
+  }
+  return s+'</tr>';
+}
+function putCalc(host,title,html){
+  if(!host)return;
+  host.innerHTML='';
+  var d=document.createElement('details');
+  d.className='calc'; d.setAttribute('open','open');
+  var sm=document.createElement('summary'); sm.innerHTML=title;
+  var bd=document.createElement('div'); bd.className='cb'; bd.innerHTML=html;
+  d.appendChild(sm); d.appendChild(bd); host.appendChild(d);
+}
+
+/* ---------- ①算术平均法 ---------- */
+function calcAvg(){
+  var sum=0,i; for(i=0;i<N;i++)sum+=Y[i];
+  var v=sum/N;
+  var h='';
+  h+=csLine('<b>公式</b>　ŷ = ( y'+sub(1)+' + y'+sub(2)+' + … + y'+sub(N)+' ) ÷ n　　本例 n = '+N+'（'+DATA[0].yr+'—'+DATA[N-1].yr+' 共 '+N+' 期）');
+  h+=csLine('<b>第 1 步　把 '+N+' 期销量逐个列出：</b>'+Y.map(function(y){return nn(y,0);}).join(' + '));
+  h+=csLine('<b>第 2 步　求和：</b>Σy = '+Y.map(function(y){return nn(y,0);}).join(' + ')+' = <span class="eq">'+nn(sum,2)+'</span> 吨');
+  h+=csLine('<b>第 3 步　除以期数：</b>ŷ = '+nn(sum,2)+' ÷ '+N+' = <span class="eq">'+nn(v,2)+'</span> 吨');
+  h+=csLine('<b>结论：</b>'+NEXTYEAR+' 年销量预测值 = <span class="eq">'+nn(v,2)+' 吨</span>');
+  h+=csWhy('本例销量从 '+nn(Y[0],0)+' 吨一路升到 '+nn(Y[N-1],0)+' 吨，是持续上升的序列。把 '+N+' 期一视同仁地平均，'+
+    '等于用「'+N+' 年的平均水平」代表 '+NEXTYEAR+' 年：预测值 '+nn(v,2)+' 吨比 2025 年实际 '+nn(ACT8,0)+' 吨低 '+nn(ACT8-v,2)+
+    ' 吨（约 '+nn((v-ACT8)/ACT8*100,2)+'%），<b>系统性偏低</b>。所以算术平均法只适用于无明显趋势、随机波动的序列。');
+  return h;
+}
+
+/* ---------- ②加权平均法 ---------- */
+function calcMa(){
+  var m=Math.min(P.maN,Y.length),i;
+  var w=wVec(m), sw=0; for(i=0;i<m;i++)sw+=w[i];
+  var sw0=(sw===0);
+  var we=[],swe=0;
+  for(i=0;i<m;i++){we.push(sw0?1:w[i]);swe+=we[i];}
+  var h='';
+  h+=csLine('<b>公式</b>　ŷ = Σ( w̃ᵢ × yᵢ )，其中 <b>w̃ᵢ = wᵢ ÷ Σwᵢ</b> 为<b>权数</b>（归一化权重），恒有 Σw̃ᵢ = 1；i 取最近 n 期，按「远期 → 近期」排列。');
+  h+=csLine('<b>当前设定</b>　参与加权的期数 n = '+m+'；相对权重 w = ( '+we.map(function(v){return nn(v,2);}).join(' , ')+
+    ' )，Σw = '+nn(swe,2)+'；对应的<b>权数</b> w̃ = ( '+we.map(function(v){return nn(v/swe,3);}).join(' , ')+
+    ' )，Σw̃ = 1'+(sw0?'　<span class="eq">注意：相对权重之和为 0，系统已自动退回等权（简单平均）</span>':''));
+  h+=csLine('<b>做法</b>　让窗口沿时间轴往前滚：每次取最近 n 期，将各期权数（已归一化、合计为 1）分别乘当期销量后求和，即为预测值。');
+
+  var t=csTbl('tblWStep',[{t:'预测目标期',l:1},{t:'参与加权的 '+m+' 期（远期 → 近期）：Σ( w̃ᵢ × yᵢ ) 的展开',l:1,w:1},
+                          {t:'Σ( w̃ᵢ × yᵢ )'},{t:'Σw̃ᵢ'},{t:'ŷ = Σ( w̃ᵢ × yᵢ )'}]);
+  for(i=m;i<N;i++){
+    var c=wCore(m,we,Y.slice(i-m,i));
+    t+=csTr([{t:'t = '+(i+1)+'（'+DATA[i].yr+' 年）',l:1},
+             {t:c.terms.map(function(x){return nn(x.w/swe,3)+' × '+nn(x.y,0);}).join(' + '),l:1,w:1},
+             {t:nn(c.num/swe,3)},{t:'1.000'},{'t':nn(c.value,2)}]);
+  }
+  var fin=wCore(m,we,Y.slice(-m));
+  t+=csTr([{t:'t = '+(N+1)+'（'+NEXTYEAR+' 年）',l:1,b:1},
+           {t:fin.terms.map(function(x){return nn(x.w/swe,3)+' × '+nn(x.y,0);}).join(' + '),l:1,w:1,b:1},
+           {t:nn(fin.num/swe,3),b:1},{t:'1.000',b:1},{t:nn(fin.value,2)+' 吨',b:1}],'last');
+  t+='</tbody></table></div>';
+  h+=t;
+  h+=csLine('<b>结论（最后一期窗口）：</b>（ '+fin.terms.map(function(x){return nn(x.w/swe,3)+' × '+nn(x.y,0);}).join(' + ')+
+    ' ）= '+nn(fin.num/swe,3)+
+    ' = <span class="eq">'+nn(fin.value,2)+' 吨</span>　—— 这就是 '+NEXTYEAR+' 年预测值（权数已归一化、合计为 1，直接相加即预测值）。');
+
+  var tn=csTbl('tblWNorm',[{t:'年份',l:1},{t:'期数',l:1},{t:'销量 yᵢ（吨）'},{t:'权重 wᵢ'},{t:'归一化 wᵢ ÷ Σw'},{t:'归一化 × yᵢ'}]);
+  var sumN=0,sumC=0;
+  for(i=0;i<m;i++){
+    var yi=Y[N-m+i], nw=we[i]/swe, cj=nw*yi;
+    sumN+=nw; sumC+=cj;
+    tn+=csTr([{t:DATA[N-m+i].yr+' 年',l:1},{t:'t = '+(N-m+i+1),l:1},{t:nn(yi,0)},{t:nn(we[i],2)},{t:nn(nw,3)},{t:nn(cj,2)}]);
+  }
+  tn+=csTr([{t:'合计',l:1,b:1},{t:'—',l:1},{t:'—'},{t:'Σw = '+nn(swe,2),b:1},
+            {t:nn(sumN,3)+'　← 合计恒为 1',b:1},{t:nn(sumC,2)+' 吨',b:1}],'tot');
+  tn+='</tbody></table></div>';
+  h+=csLine('<b>换个角度看：归一化权重</b>　每个权重除以权重之和，得到一组合计为 1 的比例；预测值就是各期销量按这组比例的加权算术平均。');
+  h+=tn;
+  h+=csLine('<b>三种平均法的关系</b>　<b>全部历史等权 ⇒ 算术平均法</b>；<b>最近 n 期等权 ⇒ 简单移动平均法</b>；'+
+    '<b>最近 n 期不等权 ⇒ 加权平均法</b>。把权重全部改成同一个数（如 '+we.map(function(){return '1';}).join(',')+
+    '），本模块立刻退化成移动平均，预测值变为 '+nn(mean(Y.slice(-m)),2)+' 吨。');
+  h+=csWhy('本例 2025 年因花期低温回落到 '+nn(ACT8,0)+' 吨，属于趋势转折。等权处理时最近一期只占 1 ÷ '+m+' = '+nn(1/m,3)+
+    '，预测 '+nn(mean(Y.slice(-m)),2)+' 吨；改成近大远小（'+we.map(function(v){return nn(v,2);}).join(' , ')+
+    '）后最近一期占到 '+nn(we[m-1]/swe,3)+'，预测 '+nn(fin.value,2)+' 吨，明显更贴近实际。'+
+    '<b>越贴近当下的信息，在转折期越值钱</b>；代价是对偶然波动也更敏感，所以权重该定多大，要靠 MAPE 这类误差指标来试。');
+  return h;
+}
+
+/* ---------- ③指数平滑法 ---------- */
+function calcEs(){
+  var al=P.alpha, be=1-al, i, h='';
+  h+=csLine('<b>公式</b>　Sₜ = α × yₜ + ( 1 − α ) × S'+sub('t−1')+'　　本期平滑值即为下期预测值：ŷ'+sub('t+1')+' = Sₜ');
+  h+=csLine('<b>当前设定</b>　α = '+nn(al,2)+'，( 1 − α ) = '+nn(be,2)+'。<b>初值假定</b>：S'+sub(1)+' 取第 1 期实际值 '+
+    nn(Y[0],0)+' 吨（另一种常见取法是前几期均值，本工作台统一取第 1 期实际值）。');
+  var t=csTbl('tblEsStep',[{t:'期数',l:1},{t:'年份',l:1},{t:'实际 yₜ（吨）'},{t:'上期平滑 S'+sub('t−1')},
+                           {t:'递推展开：Sₜ = α × yₜ + ( 1 − α ) × S'+sub('t−1'),l:1,w:1},{t:'本期平滑 Sₜ'}]);
+  var f=Y[0];
+  for(i=0;i<N;i++){
+    if(i===0){
+      t+=csTr([{t:'t = 1',l:1},{t:DATA[0].yr+' 年',l:1},{t:nn(Y[0],0)},{t:'—（起点）'},
+               {t:'S'+sub(1)+' = y'+sub(1)+' = '+nn(Y[0],0)+'　（初值假定）',l:1,w:1},{t:nn(f,2)}]);
+    }else{
+      var p1=al*Y[i], p2=be*f, nv=p1+p2;
+      t+=csTr([{t:'t = '+(i+1),l:1},{t:DATA[i].yr+' 年',l:1},{t:nn(Y[i],0)},{t:nn(f,2)},
+               {t:'S'+sub(i+1)+' = '+nn(al,2)+' × '+nn(Y[i],0)+' + '+nn(be,2)+' × '+nn(f,2)+
+                  ' = '+nn(p1,2)+' + '+nn(p2,2)+' = '+nn(nv,2),l:1,w:1},{t:nn(nv,2)}]);
+      f=nv;
+    }
+  }
+  t+='</tbody></table></div>';
+  h+=t;
+  h+=csLine('<b>结论：</b>第 '+N+' 期（'+DATA[N-1].yr+' 年）的平滑值 S'+sub(N)+' = <span class="eq">'+nn(f,2)+
+    ' 吨</span>，直接作为 '+NEXTYEAR+' 年预测值。');
+  var mNow=Math.abs(ACT8-esPred(TRAIN,al))/ACT8*100;
+  var m75=Math.abs(ACT8-esPred(TRAIN,0.75))/ACT8*100;
+  h+=csWhy('α 越大，越倚重最近一期的实际值，反应快但易受偶然波动影响；α 越小，越平滑、滞后越大。'+
+    '本例 2025 年销量回落，是转折点：当前 α = '+nn(al,2)+' 时验证期 MAPE 为 '+nn(mNow,2)+'%，'+
+    '而把 α 调到 0.75 时 MAPE 约为 '+nn(m75,2)+'%——加大 α 与「给近期更大权重」是同一个道理，'+
+    '和加权平均法的结论可以互相印证。');
+  return h;
+}
+
+/* ---------- ④趋势回归法 ---------- */
+function calcLr(){
+  var n=N,i,st=0,sy=0,st2=0,sty=0;
+  for(i=0;i<n;i++){var tt=i+1; st+=tt; sy+=Y[i]; st2+=tt*tt; sty+=tt*Y[i];}
+  var tb=st/n, yb=sy/n, m=linreg(Y);
+  var num=sty-n*tb*yb, den=st2-n*tb*tb, b=m.b, a=m.a, y9=a+b*(n+1);
+  var h='';
+  h+=csLine('<b>模型</b>　ŷ = a + b × t　　t 为期数：'+DATA[0].yr+' 年 t = 1 …… '+DATA[n-1].yr+' 年 t = '+n+
+    '，'+NEXTYEAR+' 年 t = '+(n+1));
+  h+=csLine('<b>第 1 步　列中间量：</b>n = '+n+'，Σt = '+nn(st,0)+'，Σy = '+nn(sy,0)+'，Σt² = '+nn(st2,0)+
+    '，Σ( t × y ) = '+nn(sty,0)+'；t̄ = Σt ÷ n = '+nn(st,0)+' ÷ '+n+' = '+nn(tb,2)+'，ȳ = Σy ÷ n = '+nn(sy,0)+' ÷ '+n+' = '+nn(yb,2));
+  h+=csLine('<b>第 2 步　求斜率 b：</b>b = [ Σ( t × y ) − n × t̄ × ȳ ] ÷ [ Σt² − n × t̄² ] = [ '+nn(sty,0)+' − '+n+
+    ' × '+nn(tb,2)+' × '+nn(yb,2)+' ] ÷ [ '+nn(st2,0)+' − '+n+' × '+nn(tb*tb,4)+' ] = '+nn(num,2)+' ÷ '+nn(den,2)+
+    ' = <span class="eq">'+nn(b,4)+'</span> 吨 / 期');
+  h+=csLine('<b>第 3 步　求截距 a：</b>a = ȳ − b × t̄ = '+nn(yb,2)+' − '+nn(b,4)+' × '+nn(tb,2)+
+    ' = <span class="eq">'+nn(a,4)+'</span> 吨');
+  h+=csLine('<b>第 4 步　外推到 '+NEXTYEAR+' 年（ t = '+(n+1)+' ）：</b>ŷ'+sub(n+1)+' = '+nn(a,4)+' + '+nn(b,4)+' × '+(n+1)+
+    ' = '+nn(a,4)+' + '+nn(b*(n+1),4)+' = <span class="eq">'+nn(y9,2)+' 吨</span>');
+  var sse=0, sumE=0;
+  var t=csTbl('tblLrRes',[{t:'年份',l:1},{t:'期数 t'},{t:'实际 y（吨）'},{t:'拟合 ŷ = a + b × t（吨）'},{t:'残差 e = y − ŷ'},{t:'残差平方 e²'}]);
+  for(i=0;i<n;i++){
+    var fit=a+b*(i+1), e=Y[i]-fit; sse+=e*e; sumE+=e;
+    t+=csTr([{t:DATA[i].yr+' 年',l:1},{t:'t = '+(i+1)},{t:nn(Y[i],0)},{t:nn(fit,2)},{t:nn(e,2)},{t:nn(e*e,2)}]);
+  }
+  t+=csTr([{t:'合计',l:1,b:1},{t:'—'},{t:'Σy = '+nn(sy,0)},{t:'—'},{t:'Σe = '+nn(sumE,2)+'（≈ 0）',b:1},{t:'Σe² = '+nn(sse,2),b:1}],'tot');
+  t+='</tbody></table></div>';
+  h+=csLine('<b>残差表</b>（最小二乘的目标就是让下面这个 Σe² 尽可能小）：');
+  h+=t;
+  h+=csWhy('最小二乘法在所有可能的直线中，挑的是「离全部观测点总体最近」的那一条，判断标准就是残差平方和 Σe² = '+nn(sse,2)+
+    ' 最小。但直线只认整体斜率：2025 年销量已经回落，回归线仍按 '+nn(b,2)+' 吨 / 期的斜率继续外推，'+NEXTYEAR+' 年预测 '+
+    nn(y9,2)+' 吨，明显高于 2025 年实际 '+nn(ACT8,0)+' 吨——这就是趋势法对<b>转折点反应迟钝</b>的典型表现。');
+  return h;
+}
+
+/* ---------- ⑤因果回归：推广费 X → 销量 Y ---------- */
+function calcCr(){
+  var n=N,i,sx=0,sy=0,sxx=0,sxy=0;
+  for(i=0;i<n;i++){sx+=X[i]; sy+=Y[i]; sxx+=X[i]*X[i]; sxy+=X[i]*Y[i];}
+  var xb=sx/n, yb=sy/n, m=xyreg(X,Y);
+  var num=sxy-n*xb*yb, den=sxx-n*xb*xb, b=m.b, a=m.a;
+  var x0=P.ad90, y0=a+b*x0, sse=0, sst=0, h='';
+  h+=csLine('<b>模型</b>　ŷ = a + b × x　　x 为电商推广费（万元），y 为销量（吨），用最小二乘法估计 a、b');
+  h+=csLine('<b>第 1 步　列中间量：</b>n = '+n+'，Σx = '+nn(sx,0)+'，Σy = '+nn(sy,0)+'，Σx² = '+nn(sxx,0)+
+    '，Σ( x × y ) = '+nn(sxy,0)+'；x̄ = Σx ÷ n = '+nn(sx,0)+' ÷ '+n+' = '+nn(xb,2)+'，ȳ = Σy ÷ n = '+nn(sy,0)+' ÷ '+n+' = '+nn(yb,2));
+  h+=csLine('<b>第 2 步　求回归系数 b：</b>b = [ Σ( x × y ) − n × x̄ × ȳ ] ÷ [ Σx² − n × x̄² ] = [ '+nn(sxy,0)+' − '+n+
+    ' × '+nn(xb,2)+' × '+nn(yb,2)+' ] ÷ [ '+nn(sxx,0)+' − '+n+' × '+nn(xb*xb,4)+' ] = '+nn(num,4)+' ÷ '+nn(den,2)+
+    ' = <span class="eq">'+nn(b,4)+'</span> 吨 / 万元');
+  h+=csLine('<b>第 3 步　求截距 a：</b>a = ȳ − b × x̄ = '+nn(yb,2)+' − '+nn(b,4)+' × '+nn(xb,2)+' = <span class="eq">'+nn(a,4)+'</span> 吨');
+  h+=csLine('<b>第 4 步　代入 '+NEXTYEAR+' 年计划推广费 x = '+nn(x0,0)+' 万元：</b>ŷ = '+nn(a,4)+' + '+nn(b,4)+' × '+nn(x0,0)+
+    ' = '+nn(a,4)+' + '+nn(b*x0,4)+' = <span class="eq">'+nn(y0,2)+' 吨</span>');
+  var t=csTbl('tblCrRes',[{t:'年份',l:1},{t:'推广费 x（万元）'},{t:'实际 y（吨）'},{t:'拟合 ŷ = a + b × x（吨）'},{t:'残差 e = y − ŷ'},{t:'残差平方 e²'}]);
+  for(i=0;i<n;i++){
+    var fit=a+b*X[i], e=Y[i]-fit; sse+=e*e; sst+=(Y[i]-yb)*(Y[i]-yb);
+    t+=csTr([{t:DATA[i].yr+' 年',l:1},{t:nn(X[i],0)},{t:nn(Y[i],0)},{t:nn(fit,2)},{t:nn(e,2)},{t:nn(e*e,2)}]);
+  }
+  t+=csTr([{t:'合计',l:1,b:1},{t:'Σx = '+nn(sx,0)},{t:'Σy = '+nn(sy,0)},{t:'—'},{t:'—',b:1},
+           {t:'SSE = '+nn(sse,2),b:1}],'tot');
+  t+='</tbody></table></div>';
+  h+=t;
+  h+=csLine('<b>第 5 步　算判定系数 R²：</b>SSE = Σ( y − ŷ )² = '+nn(sse,2)+'，SST = Σ( y − ȳ )² = '+nn(sst,2)+
+    '，R² = 1 − SSE ÷ SST = 1 − '+nn(sse,2)+' ÷ '+nn(sst,2)+' = 1 − '+nn(sse/sst,4)+' = <span class="eq">'+nn(m.r2,4)+'</span>');
+  h+=csWhy('b = '+nn(b,3)+' 吨 / 万元的含义是「推广费每多投 1 万元，销量平均多 '+nn(b,2)+' 吨」；R² = '+nn(m.r2,4)+
+    ' 说明这条直线解释了销量变动的 '+nn(m.r2*100,2)+'%。但有两点要当心：'+
+    '一是 x 与 y 都带时间趋势，偏高的 R² 里可能混有「共同趋势」（伪相关），必须结合业务判断；'+
+    '二是回归线同样只认整体斜率，2025 年回落它也反应迟钝，所以因果预测同样要配合误差追踪，'+
+    '并且不宜把 x 外推到样本区间（'+nn(Math.min.apply(null,X),0)+'—'+nn(Math.max.apply(null,X),0)+' 万元）之外太远。');
+  return h;
+}
+
+/* ---------- ⑥销售百分比法资金预测 ---------- */
+function calcFund(){
+  var r=fundCalc(), h='';
+  var A=r.A, L=r.L, PM=r.PM, bb=r.b;
+  var p0=BS.S0/ACT8*10;                    // 基期实际单价（元/kg），由基期收入与基期销量倒推
+  h+=csLine('<b>第 1 步　把基期销量折成销售收入：</b>S₀ = '+nn(ACT8,0)+' 吨 × '+nn(p0,2)+' 元/kg = '+
+    nn(ACT8,0)+' × 1000 × '+nn(p0,2)+' ÷ 10000 = <span class="eq">'+nn(r.S0,2)+' 万元</span>'+
+    '（吨 × 1000 化为公斤，× 单价得元，÷ 10000 化为万元）');
+  if(Math.abs(P.price-p0)>1e-9){
+    h+=csLine('<b>注意</b>　S₀ 是<b>已实现</b>的基期收入，按基期实际单价 '+nn(p0,2)+' 元/kg 折算，不随单价滑块变动；'+
+      '单价滑块（'+nn(P.price,2)+' 元/kg）影响的是由预测销量反算的<b>目标</b>收入 S₁。');
+  }
+  h+=csLine('<b>第 2 步　算销售增加额：</b>ΔS = S₁ − S₀ = '+nn(r.S1,0)+' − '+nn(r.S0,2)+' = <span class="eq">'+nn(r.dS,2)+' 万元</span>');
+  h+=csLine('<b>第 3 步　敏感资产增加（资金占用）：</b>A% × ΔS = '+nn(P.asset,0)+'% × '+nn(r.dS,2)+
+    ' = '+nn(A,4)+' × '+nn(r.dS,2)+' = <span class="eq">'+nn(r.use,2)+' 万元</span>');
+  h+=csLine('<b>第 4 步　敏感负债增加（自发来源，减项）：</b>L% × ΔS = '+nn(P.liab,0)+'% × '+nn(r.dS,2)+
+    ' = '+nn(L,4)+' × '+nn(r.dS,2)+' = <span class="eq">'+nn(r.src,2)+' 万元</span>');
+  if(P.hand){
+    var c0=bsCalc();
+    h+=csLine('<b>提示</b>　当前 A% = '+nn(P.asset,2)+'%、L% = '+nn(P.liab,2)+'% 是你手工拖动滑块设定的，'+
+      '已脱离第一步资产负债表的判定口径（那里应为 '+nn(c0.ap,2)+'% ／ '+nn(c0.lp,2)+'%）；'+
+      '这也说明：敏感项目判定不同，资金缺口就会不同。');
+  }
+  h+=csLine('<b>第 5 步　留存收益增加（内部来源，减项）：</b>S₁ × PM × b = '+nn(r.S1,0)+' × '+nn(P.pm,1)+'% × '+nn(P.ret,0)+
+    '% = '+nn(r.S1,0)+' × '+nn(PM*bb,4)+' = <span class="eq">'+nn(r.ret,2)+' 万元</span>');
+  h+=csLine('<b>第 6 步　求外部资金需要量：</b>EFN = A% × ΔS − L% × ΔS − S₁ × PM × b = '+nn(r.use,2)+' − '+nn(r.src,2)+
+    ' − '+nn(r.ret,2)+' = <span class="eq">'+nn(r.efn,2)+' 万元</span>');
+  h+=csLine(r.efn>0
+    ? '<b>结论：</b>目标收入 '+nn(r.S1,0)+' 万元超出内部积累能力，<b>需对外筹资 '+nn(r.efn,2)+' 万元</b>（约占目标收入 '+nn(r.efn/r.S1*100,2)+'%）。'
+    : '<b>结论：</b>内部资金来源足以支撑 '+nn(r.S1,0)+' 万元的目标收入，<b>资金剩余 '+nn(-r.efn,2)+' 万元</b>，可用于归还借款、技改投入或扩大推广费。');
+  h+=csWhy('销售百分比法的逻辑是：<b>销售扩张先占用资金，再找钱来补</b>。第一项 A% × ΔS 是必须追加的资产占用，'+
+    '第二项 L% × ΔS 是随销售自发产生的负债（不用去借），第三项 S₁ × PM × b 是赚来的钱里留下来的部分；'+
+    '三项轧差后仍缺的部分，才需要向外部筹措。'+
+    '<b>局限：</b>该法假定敏感项目与收入严格同比例变动，忽略规模经济与阶梯式投产，也未考虑融资约束。');
+  return h;
+}
+
+/* ---------- ⑦MAPE 精度评价 ---------- */
+function apeExpr(f){
+  var d=Math.abs(ACT8-f);
+  return '| '+nn(ACT8,0)+' − '+nn(f,2)+' | ÷ '+nn(ACT8,0)+' × 100% = '+nn(d,2)+' ÷ '+nn(ACT8,0)+
+         ' × 100% = '+nn(d/ACT8*100,2)+'%';
+}
+function calcEval(){
+  var rows=evalRows().sort(function(a,b){return a.ape-b.ape;});
+  var h='';
+  h+=csLine('<b>公式</b>　MAPE = | 实际值 − 预测值 | ÷ 实际值 × 100%。本例验证集只有 1 期（'+DATA[N-1].yr+
+    ' 年，实际 '+nn(ACT8,0)+' 吨），所以 MAPE 就是这一期的绝对百分比误差，越小越好。');
+  rows.forEach(function(r){
+    h+=csLine('<b>'+r.name+'（'+r.param+'）：</b>'+apeExpr(r.pred));
+  });
+  var best=rows[0], worst=rows[rows.length-1], by={};
+  rows.forEach(function(r){by[r.key]=r;});
+  h+=csWhy('2025 年销量回落属于趋势转折。按既有斜率外推的<b>'+by.lr.name+'（'+nn(by.lr.ape,2)+'%）</b>与<b>'+
+    by.cr.name+'（'+nn(by.cr.ape,2)+'%）</b>都明显偏慢——它们「看不见」转折点；把全部历史一视同仁的 <b>'+
+    by.avg.name+'（'+nn(by.avg.ape,2)+'%）</b>误差更大，因为它连趋势本身都没用上；'+
+    '而贴近近期数据的方法——把指数平滑的 α 调大、或给加权平均的近期更高权重——预测值更接近 '+nn(ACT8,0)+' 吨，'+
+    '当前误差最小的是 <b>'+best.name+'（'+nn(best.ape,2)+'%）</b>，最大的是 '+worst.name+'（'+nn(worst.ape,2)+'%）。'+
+    '<b>没有永远最优的方法，只有相对于当前数据形态合适的方法</b>，这正是要做滚动预测与事后误差追踪的原因。');
+  return h;
+}
+
+/* ---------- 汇总渲染 ---------- */
+function renderCalc(){
+  var k=curKey(), M=METHODS[k], html;
+  if(k==='avg')html=calcAvg();
+  else if(k==='ma')html=calcMa();
+  else if(k==='es')html=calcEs();
+  else html=calcLr();
+  putCalc($('calcTs'),'算给你看 —— '+M.name+'（'+M.param()+'）　<span class="tip">拖动上方参数，下面每一步都会同步刷新</span>',html);
+  putCalc($('calcCausal'),'算给你看 —— 因果回归（推广费 → 销量）　<span class="tip">改变计划推广费，代入过程同步刷新</span>',calcCr());
+  putCalc($('calcFund'),'算给你看 —— 销售百分比法资金预测　<span class="tip">拖动任一资金滑块，代入过程同步刷新</span>',calcFund());
+  putCalc($('calcEval'),'算给你看 —— 预测精度评价（MAPE）　<span class="tip">参数一变，各方法误差同步重算</span>',calcEval());
+}
+
+function syncUI(){
+  $('valMaN').textContent=P.maN;
+  $('valAlpha').textContent=P.alpha.toFixed(2);
+  $('valAd').textContent=P.ad90;
+  $('valSales').textContent=P.sales;
+  $('valPrice').textContent=P.price.toFixed(1);
+  $('valAsset').textContent=P.asset;
+  $('valLiab').textContent=P.liab;
+  $('valPm').textContent=P.pm.toFixed(1);
+  $('valRet').textContent=P.ret;
+  var k=curKey();
+  $('fldMaN').style.display=(k==='ma')?'':'none';
+  $('fldW').style.display=(k==='ma')?'':'none';
+  $('fldAlpha').style.display=(k==='es')?'':'none';
+}
+function renderAll(){
+  syncUI();
+  drawMain();
+  drawCausal();
+  renderBS();
+  renderFund();
+  renderEval();
+  renderCalc();
+}
+
+function bindRange(id,key,cast){
+  var node=$(id);
+  var handler=function(){ P[key]=cast(node.value); renderAll(); };
+  node.addEventListener('input',handler);
+  node.addEventListener('change',handler);
+}
+function init(){
+  renderTable();
+  renderQuiz();
+  buildWInputs();
+  renderBS();
+
+  $('selMethod').addEventListener('change',function(){renderAll();});
+  /* A% / L% 一旦被手动拖动，即标记为"手工设定"，与资产负债表的判定相区分 */
+  ['rngAsset','rngLiab'].forEach(function(id){
+    [('input'),('change')].forEach(function(ev){
+      $(id).addEventListener(ev,function(){P.hand=true;});
+    });
+  });
+  $('btnBSstd').addEventListener('click',function(){
+    bsPick.asset=BS.asset.map(function(x){return x.sens;});
+    bsPick.liab=BS.liab.map(function(x){return x.sens;});
+    P.hand=false;
+    var c=bsCalc();
+    P.asset=Math.round(c.ap); P.liab=Math.round(c.lp);
+    $('rngAsset').value=P.asset; $('rngLiab').value=P.liab;
+    renderBS(); renderFund(); renderCalc();
+  });
+  $('btnBSclear').addEventListener('click',function(){
+    bsPick.asset=BS.asset.map(function(){return false;});
+    bsPick.liab=BS.liab.map(function(){return false;});
+    P.hand=false; P.asset=0; P.liab=0;
+    $('rngAsset').value=30; $('rngLiab').value=5;      // 滑块下限，实际计算用 0
+    renderBS(); renderFund(); renderCalc();
+  });
+  $('btnHandBack').addEventListener('click',function(){
+    var c=bsCalc();
+    P.asset=Math.round(c.ap); P.liab=Math.round(c.lp);
+    $('rngAsset').value=P.asset;     $('rngLiab').value=P.liab;
+    P.hand=false;
+    renderFund(); renderCalc();
+  });
+  /* 用销量预测 × 计划单价反算目标收入 S₁ */
+  $('btnFromQty').addEventListener('click',function(){
+    var r=fundCalc();
+    P.sales=r.S1auto;
+    $('rngSales').value=r.S1auto;
+    $('hintFromQty').innerHTML='按<b>'+METHODS[curKey()].name+'</b>预测 '+fmt(r.qty,1)+' 吨，'+
+      '× '+fmt(P.price,1)+' 元/kg ÷ 10 = <b>'+fmt(r.qty*P.price/10,1)+' 万元</b>'+
+      '（已按 10 万元取整为 '+fmt(r.S1auto,0)+' 万元并回填滑块）。';
+    renderFund(); renderCalc();
+  });
+  /* 期数变化时重建权重输入框（其余情况只更新合计，避免输入被打断） */
+  $('rngMaN').addEventListener('input',function(){
+    var n=parseInt(this.value,10);
+    if(n!==P.maN){ P.maN=n; buildWInputs(); }
+    renderAll();
+  });
+  /* 权重预设 */
+  $('btnWincr').addEventListener('click',function(){
+    var w=[];for(var i=1;i<=P.maN;i++)w.push(i); setWeights(w);
+  });
+  $('btnWeq').addEventListener('click',function(){
+    var w=[];for(var i=0;i<P.maN;i++)w.push(1); setWeights(w);
+  });
+  $('btnWdecr').addEventListener('click',function(){
+    var w=[];for(var i=P.maN;i>=1;i--)w.push(i); setWeights(w);
+  });
+  bindRange('rngAlpha','alpha',function(v){return parseFloat(v);});
+  bindRange('rngAd','ad90',function(v){return parseFloat(v);});
+  bindRange('rngSales','sales',function(v){return parseFloat(v);});
+  bindRange('rngPrice','price',function(v){return parseFloat(v);});
+  bindRange('rngAsset','asset',function(v){return parseInt(v,10);});
+  bindRange('rngLiab','liab',function(v){return parseInt(v,10);});
+  bindRange('rngPm','pm',function(v){return parseFloat(v);});
+  bindRange('rngRet','ret',function(v){return parseInt(v,10);});
+
+  $('chkCausal').addEventListener('change',function(){
+    P.causal=this.checked; drawCausal();
+  });
+
+  $('btnReset').addEventListener('click',function(){
+    P.sales=DEF.sales;P.price=DEF.price;P.asset=DEF.asset;P.liab=DEF.liab;P.pm=DEF.pm;P.ret=DEF.ret;
+    P.maN=DEF.maN;P.alpha=DEF.alpha;P.ad90=DEF.ad90;
+    P.weights=DEF.weights.slice(0);
+    $('rngSales').value=DEF.sales;$('rngPrice').value=DEF.price;$('rngAsset').value=DEF.asset;
+    $('rngLiab').value=DEF.liab;$('rngPm').value=DEF.pm;$('rngRet').value=DEF.ret;
+    $('rngMaN').value=DEF.maN;$('rngAlpha').value=DEF.alpha;$('rngAd').value=DEF.ad90;
+    buildWInputs();
+    renderAll();
+  });
+  $('btnQuizAll').addEventListener('click',function(){QUIZ.forEach(function(_,i){checkOne(i);});});
+  $('btnQuizReset').addEventListener('click',function(){
+    QUIZ.forEach(function(_,i){$('q'+i).value='';$('fb'+i).className='fb';$('fb'+i).innerHTML='';});
+    $('quizScore').textContent='';
+  });
+
+  /* 默认启用因果预测，便于进入页面即可看到回归结果；取消勾选可回到"只看历史"的对照状态 */
+  $('chkCausal').checked=true; P.causal=true;
+
+  renderAll();
+
+  /* 自适应：窄屏时收敛 SVG 留白（依赖 viewBox，无需重绘） */
+  window.addEventListener('resize',function(){/* SVG 自身等比缩放 */});
+}
+
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}
+else{init();}
+
+/* 暴露少量接口，便于控制台核对计算结果 */
+window.__MA4={DATA:DATA,METHODS:METHODS,P:P,linreg:linreg,xyreg:xyreg,
+              wCalc:wCalc,wVec:wVec,fundCalc:fundCalc,evalRows:evalRows};
+})();
+</script>
+</body>
+</html>

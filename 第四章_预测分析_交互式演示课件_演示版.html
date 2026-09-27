@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>管理会计 第四章 预测分析 · 交互演示课件（演示版）</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#2e7d32; --green-d:#1b5e20; --green-l:#eaf4ea; --green-b:#cfe6d1;
+  --gold:#b8860b; --gold-l:#fff6df; --gold-b:#f0d89a;
+  --blue:#1f3c88; --blue-l:#eaf0fb; --blue-b:#c9d6f0;
+  --red:#c62828; --red-l:#fdeceb; --red-b:#f3c9c6;
+  --ink:#17251a; --ink2:#4a5b4d; --ink3:#7a8a7c;
+  --line:#dbe4da; --bg:#f2f6f1; --card:#ffffff;
+  --fs: clamp(15px, 1.12vw, 27px);
+  --nav-h: 64px; --foot-h: 56px;
+}
+html.proj{ --fs: clamp(19px, 1.5vw, 34px); --nav-h: 58px; --foot-h: 52px; }
+html.proj .card{ padding:.5rem .6rem; border-width:2px }
+html.proj .sim{ gap:1rem }
+html.proj .pg-tip{ font-size:calc(var(--fs)*.78) }
+html.hc{ --bg:#ffffff; --line:#7d8c7e; --ink:#000; --ink2:#20301f; --card:#fff }
+html.hc .card{ border:2px solid #37503a; box-shadow:none }
+body{
+  font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB","Heiti SC",sans-serif;
+  background:var(--bg); color:var(--ink); font-size:var(--fs);
+  line-height:1.7; -webkit-font-smoothing:antialiased;
+}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+
+/* ---------- 布局 ---------- */
+#app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+#top{display:flex;align-items:center;gap:.6rem;height:var(--nav-h);flex-shrink:0;
+  padding:0 .9rem;background:linear-gradient(180deg,#ffffff 0%,#f7faf6 100%);
+  border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(20,50,25,.06);z-index:50}
+#brand{display:flex;flex-direction:column;line-height:1.25;min-width:10.5rem;flex-shrink:0}
+#brand .b1{font-size:calc(var(--fs)*.62);color:var(--ink3);letter-spacing:.02em}
+#brand .b2{font-size:calc(var(--fs)*.98);font-weight:800;color:var(--green-d);white-space:nowrap}
+#tabs{display:flex;gap:.35rem;flex:1;min-width:0;overflow-x:auto}
+.tab{
+  flex:1;min-width:7.2rem;white-space:nowrap;border:1px solid var(--line);border-radius:9px;
+  background:#fbfdfa;color:var(--ink2);cursor:pointer;padding:.4rem .5rem;font-family:inherit;
+  font-size:calc(var(--fs)*.66);font-weight:700;transition:.16s;display:flex;flex-direction:column;align-items:center;gap:.05rem;
+}
+.tab .tn{font-size:calc(var(--fs)*.55);color:var(--ink3)}
+.tab:hover{border-color:var(--green);color:var(--green-d)}
+.tab.on{background:var(--green);color:#fff;border-color:var(--green)}
+.tab.on .tn{color:#d9efda}
+#top .r{display:flex;gap:.35rem;flex-shrink:0}
+.tbtn{border:1px solid var(--line);background:#fff;color:var(--ink2);border-radius:8px;
+  padding:.3rem .55rem;font-size:calc(var(--fs)*.62);cursor:pointer;font-family:inherit}
+.tbtn:hover{border-color:var(--green);color:var(--green-d);background:var(--green-l)}
+.tbtn.on{background:var(--green);color:#fff;border-color:var(--green)}
+
+#stage{flex:1;min-height:0;overflow:auto;padding:.9rem 1.4rem 1rem}
+#stage::-webkit-scrollbar{width:9px} #stage::-webkit-scrollbar-thumb{background:#c8d6c8;border-radius:4px}
+.mod{display:none}
+.mod.act{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.pg-tip{background:var(--gold-l);border-left:4px solid var(--gold);border-radius:0 9px 9px 0;
+  padding:.4rem .7rem;font-size:calc(var(--fs)*.78);color:#7a5a06;margin-bottom:.7rem;line-height:1.6}
+.pg-tip b{color:#8a6206}
+
+/* ---------- 通用组件（沿用原课件视觉） ---------- */
+.row{display:flex;gap:.7rem;flex-wrap:wrap}
+.row>*{flex:1;min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:.7rem .85rem;box-shadow:0 1px 3px rgba(25,60,30,.05)}
+.card.hl{border-color:var(--green);background:linear-gradient(180deg,#fbfefb,#f2f9f3)}
+.card.gold{border-color:var(--gold-b);background:var(--gold-l)}
+.card.red{border-color:var(--red-b);background:var(--red-l)}
+.card.blue{border-color:var(--blue-b);background:var(--blue-l)}
+.ct{font-size:calc(var(--fs)*.82);font-weight:800;margin-bottom:.3rem;display:flex;align-items:center;gap:.35rem}
+.ct.g{color:var(--green-d)} .ct.r{color:var(--red)} .ct.b{color:var(--blue)} .ct.y{color:#8a6206}
+.sm{font-size:calc(var(--fs)*.74);color:var(--ink2);line-height:1.6}
+.sm.mute{color:var(--ink3)}
+ul.li{margin:.25rem 0 .25rem 1.15rem;font-size:calc(var(--fs)*.82);line-height:1.7}
+ul.li li{margin-bottom:.12rem}
+.big{font-size:calc(var(--fs)*2.35);font-weight:800;line-height:1.15;color:var(--green-d)}
+.big.r{color:var(--red)} .big.y{color:#8a6206} .big.b{color:var(--blue)}
+.bigwrap{text-align:center;padding:.35rem 0}
+.bigwrap .lb{font-size:calc(var(--fs)*.72);color:var(--ink2);margin-top:.1rem}
+.eq{font-family:Consolas,"Courier New",monospace;background:#f4f8f4;border-left:4px solid var(--green);
+  padding:.35rem .6rem;border-radius:0 8px 8px 0;font-size:calc(var(--fs)*.88);margin:.3rem 0;white-space:nowrap;overflow-x:auto}
+.eq.gold{border-left-color:var(--gold);background:var(--gold-l)}
+.eq.red{border-left-color:var(--red);background:var(--red-l)}
+table.tb{width:100%;border-collapse:collapse;font-size:calc(var(--fs)*.76);margin:.3rem 0}
+table.tb th,table.tb td{border:1px solid var(--line);padding:.24rem .45rem;text-align:center;line-height:1.5}
+table.tb th{background:var(--green-l);color:var(--green-d);font-weight:800}
+table.tb td.l,table.tb th.l{text-align:left}
+table.tb tr.tot td{background:#f6faf6;font-weight:800}
+table.tb td.g{background:var(--green-l);font-weight:700;color:var(--green-d)}
+table.tb td.r{background:var(--red-l);font-weight:700;color:var(--red)}
+table.tb td.y{background:var(--gold-l);font-weight:700;color:#7a5a06}
+table.tb td.b{background:var(--blue-l)}
+table.tb td.dim{color:var(--ink3)}
+.chip{display:inline-block;font-size:calc(var(--fs)*.68);padding:.05rem .5rem;border-radius:14px;
+  background:var(--green-l);color:var(--green-d);font-weight:700;border:1px solid var(--green-b);margin:.08rem .18rem .08rem 0}
+.chip.y{background:var(--gold-l);color:#7a5a06;border-color:var(--gold-b)}
+.chip.r{background:var(--red-l);color:var(--red);border-color:var(--red-b)}
+.chip.b{background:var(--blue-l);color:var(--blue);border-color:var(--blue-b)}
+.chip.gray{background:#f0f2ef;color:var(--ink2);border-color:var(--line)}
+.note{border-left:4px solid var(--gold);background:var(--gold-l);padding:.35rem .6rem;
+  border-radius:0 8px 8px 0;font-size:calc(var(--fs)*.78);margin:.35rem 0;line-height:1.6}
+.note.r{border-left-color:var(--red);background:var(--red-l)}
+.note.g{border-left-color:var(--green);background:var(--green-l)}
+.note.b{border-left-color:var(--blue);background:var(--blue-l)}
+.kv{display:flex;gap:.35rem;flex-wrap:wrap;margin:.25rem 0}
+.kv .k{font-size:calc(var(--fs)*.72);color:var(--ink2)}
+.kv .v{font-size:calc(var(--fs)*.84);font-weight:800;color:var(--green-d)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
+@media (max-width:900px){.grid4{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
+.qmark{font-size:calc(var(--fs)*2.6);color:var(--red);font-weight:800;line-height:1}
+
+/* 模拟控件 */
+.sim{display:grid;grid-template-columns:minmax(240px,300px) 1fr;gap:.85rem;align-items:start}
+@media (max-width:1000px){.sim{grid-template-columns:1fr}}
+.ctl{margin-bottom:.7rem}
+.ctl label{display:flex;justify-content:space-between;font-size:calc(var(--fs)*.74);color:var(--ink2);margin-bottom:.12rem}
+.ctl label b{color:var(--green-d);font-size:calc(var(--fs)*.86)}
+input[type=range]{width:100%;height:1.5rem;-webkit-appearance:none;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:.42rem;background:#dfe8de;border-radius:.3rem}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:1.35rem;height:1.35rem;border-radius:50%;background:var(--green);margin-top:-.46rem;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-track{height:.42rem;background:#dfe8de;border-radius:.3rem}
+input[type=range]::-moz-range-thumb{width:1.35rem;height:1.35rem;border-radius:50%;background:var(--green);border:3px solid #fff}
+.out{display:grid;grid-template-columns:repeat(2,1fr);gap:.45rem;margin-top:.3rem}
+@media (max-width:760px){.out{grid-template-columns:1fr}}
+.ob{border:1px solid var(--line);border-radius:10px;padding:.35rem .55rem;background:#fff}
+.ob .ol{font-size:calc(var(--fs)*.68);color:var(--ink2);line-height:1.35}
+.ob .ov{font-size:calc(var(--fs)*1.28);font-weight:800;color:var(--green-d);line-height:1.25}
+.ob.r .ov{color:var(--red)} .ob.y .ov{color:#8a6206} .ob.b .ov{color:var(--blue)}
+.ob.r{border-color:var(--red-b);background:var(--red-l)}
+.ob.y{border-color:var(--gold-b);background:var(--gold-l)}
+.ob.g{border-color:var(--green-b);background:var(--green-l)}
+.legend{font-size:calc(var(--fs)*.68);color:var(--ink2);margin-top:.25rem;display:flex;gap:.7rem;flex-wrap:wrap}
+.legend i{display:inline-block;width:.7rem;height:.7rem;border-radius:3px;margin-right:.2rem}
+.draghint{font-size:calc(var(--fs)*.72);color:var(--ink3);margin-bottom:.4rem;background:var(--green-l);
+  border:1px dashed var(--green-b);border-radius:8px;padding:.3rem .5rem}
+svg{display:block;max-width:100%}
+.btn{font-family:inherit;font-size:calc(var(--fs)*.74);padding:.3rem .7rem;border-radius:9px;
+  border:1px solid var(--green);background:var(--green);color:#fff;cursor:pointer}
+.btn:hover{background:var(--green-d)}
+.btn.ghost{background:#fff;color:var(--green-d)}
+.btn.ghost:hover{background:var(--green-l)}
+.btn.red{background:var(--red);border-color:var(--red)}
+.btn.red:hover{background:#a01f1f}
+
+/* 模块头卡 */
+.mod-head{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.5rem}
+.mod-no{font-size:calc(var(--fs)*.66);font-weight:800;color:#fff;background:var(--green);
+  border-radius:20px;padding:.1rem .7rem;white-space:nowrap}
+.mod-no.act1{background:var(--gold);color:#4a3800}
+.mod-h{font-size:calc(var(--fs)*1.32);font-weight:800;color:var(--green-d);line-height:1.3;flex:1;min-width:8rem}
+.mod-fn{font-size:calc(var(--fs)*.78);color:var(--ink2);background:#fff;border:1px solid var(--line);
+  border-radius:9px;padding:.5rem .7rem;margin-bottom:.6rem;line-height:1.6}
+.mod-fn b{color:var(--green-d)}
+.mod-tip{font-size:calc(var(--fs)*.74);color:#7a5a06;background:var(--gold-l);border:1px solid var(--gold-b);
+  border-radius:9px;padding:.45rem .7rem;margin-bottom:.7rem;line-height:1.6}
+.mod-tip b{color:#8a6206}
+
+/* ---------- 底部工具条 ---------- */
+#foot{display:flex;align-items:center;gap:.5rem;height:var(--foot-h);flex-shrink:0;
+  padding:0 .9rem;background:#fff;border-top:1px solid var(--line);z-index:50}
+#foot .hint{font-size:calc(var(--fs)*.62);color:var(--ink3);margin-right:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#foot .hint kbd{background:#f0f3ef;border:1px solid var(--line);border-radius:5px;padding:0 .3rem;font-family:inherit}
+#tools{display:flex;gap:.35rem}
+
+/* ---------- 浮层 ---------- */
+.overlay{position:fixed;inset:0;background:rgba(16,32,18,.55);z-index:90;display:none;
+  align-items:center;justify-content:center;padding:1.2rem;backdrop-filter:blur(2px)}
+.overlay.on{display:flex}
+.panel{background:#fff;border-radius:16px;max-width:min(1100px,96vw);max-height:92vh;overflow:auto;
+  box-shadow:0 18px 50px rgba(10,30,15,.35);padding:1.1rem 1.3rem;width:100%}
+.panel h3{font-size:calc(var(--fs)*1.15);color:var(--green-d);margin-bottom:.5rem}
+.panel .ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
+.xbtn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:.2rem .6rem;cursor:pointer;font-family:inherit;font-size:calc(var(--fs)*.75)}
+.xbtn:hover{background:var(--red-l);border-color:var(--red);color:var(--red)}
+
+/* 倒计时浮层 */
+#cdOv{background:rgba(10,20,12,.9);flex-direction:column;color:#fff}
+#cdNum{font-size:min(30vw,26vh);font-weight:800;line-height:1;letter-spacing:.02em}
+#cdNum.warn{color:#ffca28} #cdNum.over{color:#ff6b6b;animation:blink .8s infinite}
+#cdTip{font-size:min(4vw,30px);color:#cfe6d1;margin-top:.6rem;text-align:center}
+#cdCtl{margin-top:1rem;display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center}
+#cdCtl button{font-family:inherit;font-size:min(2.2vw,20px);padding:.35rem .9rem;border-radius:10px;
+  border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
+#cdCtl button:hover{background:rgba(255,255,255,.24)}
+@keyframes blink{50%{opacity:.45}}
+
+/* 投票 */
+.vote-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:.55rem;margin:.4rem 0}
+.vb{border:2px solid var(--line);background:#fff;border-radius:12px;padding:.5rem;text-align:center;cursor:pointer;transition:.15s}
+.vb:hover{border-color:var(--green);background:var(--green-l)}
+.vb .vk{font-size:calc(var(--fs)*1.15);font-weight:800;color:var(--green-d)}
+.vb .vd{font-size:calc(var(--fs)*.72);color:var(--ink2);line-height:1.45;margin:.1rem 0}
+.vb .vn{font-size:calc(var(--fs)*1.5);font-weight:800;color:var(--red)}
+.vb.res{border-color:var(--gold);background:var(--gold-l)}
+.vb.win{border-color:var(--green);background:var(--green-l);box-shadow:0 0 0 3px rgba(46,125,50,.2)}
+.vbar{height:.42rem;background:#eef2ed;border-radius:.3rem;overflow:hidden;margin-top:.2rem}
+.vbar i{display:block;height:100%;background:var(--green);width:0;transition:width .3s}
+
+/* 随机点名 */
+.bigwrap .big.num{font-size:calc(var(--fs)*3.4)}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- 顶部：品牌 + 模块标签 + 投影/全屏 -->
+  <div id="top">
+    <div id="brand">
+      <div class="b1">管理会计 · B422L02000 · 2026秋</div>
+      <div class="b2">第四章 预测分析 · 交互演示</div>
+    </div>
+    <div id="tabs"></div>
+    <div class="r">
+      <button class="tbtn" id="btnProj" title="投影模式（M）">投影 M</button>
+      <button class="tbtn" id="btnFull" title="全屏（F）">全屏 F</button>
+      <button class="tbtn" id="btnHelp" title="模块说明与快捷键（?）">说明 ?</button>
+    </div>
+  </div>
+
+  <!-- 主体：五个交互模块 -->
+  <div id="stage">
+
+    <!-- 模块一 -->
+    <section class="mod" data-mod="0">
+      <div class="mod-head">
+        <span class="mod-no">模块一</span>
+        <h2 class="mod-h">定量预测方法对比器</h2>
+      </div>
+      <div class="mod-fn"><b>功能：</b>拖动「期数 n / 三个移动权数 / α」滑块，四条预测曲线（算术平均、移动加权、指数平滑、回归直线）与两条基准线（2026 实际 1,800、综合确定 1,900）实时联动；下方输出四法数值、四法均值与极差，直观呈现「赋权哲学不同 → 预测值不同」。</div>
+      <div class="mod-tip"><b>教师提示：</b>先用教材取值（n=3，权数 0.1／0.3／0.6，α=0.6）让学生看到四个数，再用「规律口诀」解释极差从哪来——越倚重近期实测、越倚重趋势，预测值越高。</div>
+      <div class="pg-tip"><b>本课定位：</b>六个方法里四个定量法的「同台竞技」，挂在「销量怎么定」这一问上；定性三法（推销员 1,834／德尔菲 1,900）作对照。</div>
+      <div class="sim"><div><div class="ctl"><label>算术平均期数 n（年） <b><span id="cpNv">3</span></b></label><input type="range" id="cpN" min="2" max="6" step="1" value="3"></div><div class="ctl"><label>移动加权 · 最远年权数 <b><span id="cpW1v">0.10</span></b></label><input type="range" id="cpW1" min="0" max="100" step="5" value="10"></div><div class="ctl"><label>移动加权 · 中间年权数 <b><span id="cpW2v">0.30</span></b></label><input type="range" id="cpW2" min="0" max="100" step="5" value="30"></div><div class="ctl"><label>移动加权 · 最近年权数 <b><span id="cpW3v">0.60</span></b></label><input type="range" id="cpW3" min="0" max="100" step="5" value="60"></div><div class="ctl"><label>平滑系数 α <b><span id="cpAv">0.60</span></b></label><input type="range" id="cpA" min="5" max="95" step="1" value="60"></div><div style="margin-top:.4rem"><button class="btn ghost" id="cpReset">恢复教材取值</button></div></div><div><div id="cpSvg"></div><div class="out" id="cpOut" style="margin-top:.4rem"></div></div></div>
+    </section>
+
+    <!-- 模块二 -->
+    <section class="mod" data-mod="1">
+      <div class="mod-head">
+        <span class="mod-no">模块二</span>
+        <h2 class="mod-h">回归直线法动态拟合器</h2>
+      </div>
+      <div class="mod-fn"><b>功能：</b>拖动任一圆点改变某年销量，回归直线与 2027 年外推值（t＝7）实时重算，并显示截距 a、斜率 b、残差平方和 SSE；配套「恢复原始数据」「把 2026 年拉低到 1,500 吨」两个对比按钮。</div>
+      <div class="mod-tip"><b>教师提示：</b>让学生亲手把 2026 年拉低，看整条线倾斜、外推值被放大，体会最小二乘「牵一发动全身」；Σt＝0 编码下 a、b 一步可算。</div>
+      <div class="pg-tip"><b>本课定位：</b>四个定量法里最宜作中长期外推的一个，2027 年对应 t＝7，预测值 y＝1,500＋64×7＝1,948 吨（被否决的上限）。</div>
+      <div class="sim"><div><div class="draghint">拖动图中任一圆点（改变该年销量），回归直线与 2027 年外推值实时重算。</div><div class="out"><div class="ob g"><div class="ol">2027 年外推值（t＝7）</div><div class="ov num" id="rgY">1,948</div></div><div class="ob"><div class="ol">截距 a＝Σy÷n</div><div class="ov num" id="rgA">1,500</div></div><div class="ob"><div class="ol">斜率 b＝Σty÷Σt²</div><div class="ov num" id="rgB">64</div></div><div class="ob y"><div class="ol">残差平方和 SSE</div><div class="ov num" id="rgS">0</div></div></div><div class="note g" style="margin-top:.4rem">Σt＝0 的编码不变（−5…5），因此 a、b 一步可算；拖动时请观察：一个点抬起，整条线跟着倾斜，外推值被放大。</div><div style="margin-top:.4rem"><button class="btn ghost" id="rgReset">恢复原始数据</button> <button class="btn ghost" id="rgFlat">把 2026 年拉低到 1,500 吨</button></div></div><div><div id="rgSvg"></div></div></div>
+    </section>
+
+    <!-- 模块三 -->
+    <section class="mod" data-mod="2">
+      <div class="mod-head">
+        <span class="mod-no act1">模块三</span>
+        <h2 class="mod-h">α 灵敏度扫描条</h2>
+      </div>
+      <div class="mod-fn"><b>功能：</b>拖动 α 滑块（0.05–0.95），实时画出 F2027＝α·A2026＋(1−α)·F2026 的直线，标出 α＝0.6 与 α＝0.3 两个锚点和当前红点，并给出「α 偏大／偏小／常用区间」的判断文案。</div>
+      <div class="mod-tip"><b>教师提示：</b>配合环节四讲解 α 取值规律——α→1 几乎只信最近一期实测（反应快、易被偶然波动误导），α→0 几乎只信历史预测（平稳、迟钝）；实务常用 0.3–0.7。</div>
+      <div class="pg-tip"><b>本课定位：</b>指数平滑法的「灵魂旋钮」，解释为什么同一组历史数据、换个 α 预测值就变。</div>
+      <div class="sim"><div><div class="ctl"><label>平滑系数 α <b><span id="alV">0.60</span></b></label><input type="range" id="alA" min="5" max="95" step="1" value="60"></div><div class="ctl"><label>上期实际 A<sub>2026</sub>（吨） <b><span id="alAv">1,800</span></b></label><input type="range" id="alAt" min="1500" max="2100" step="10" value="1800"></div><div class="ctl"><label>上期预测 F<sub>2026</sub>（吨） <b><span id="alFv">1,700</span></b></label><input type="range" id="alFt" min="1500" max="2100" step="10" value="1700"></div><div class="out"><div class="ob g"><div class="ol">预测值 F2027</div><div class="ov num" id="alOut">1,760</div></div><div class="ob"><div class="ol">倚重近期实测 α</div><div class="ov num" id="alW">60%</div></div></div><div class="legend"><span><i style="background:#2e7d32"></i>α＝0.6 → 1,760 吨</span><span><i style="background:#b8860b"></i>α＝0.3 → 1,730 吨</span><span><i style="background:#c62828"></i>当前取值</span></div><div class="note" style="margin-top:.4rem" id="alNote"></div></div><div><div id="alSvg"></div></div></div>
+    </section>
+
+    <!-- 模块四 -->
+    <section class="mod" data-mod="3">
+      <div class="mod-head">
+        <span class="mod-no">模块四</span>
+        <h2 class="mod-h">目标成本倒推器</h2>
+      </div>
+      <div class="mod-fn"><b>功能：</b>拖动「目标利润／固定成本／预测销量／现行单位变动成本」四滑块，按教材原式逐步倒推：① 单位目标利润 → ② 单位产品目标成本（全成本口径）→ ③ 单位固定成本 → ④ 单位目标变动成本（车间可控）→ ⑤ 与现行比需降低额及降幅；实时校验达标并给出口径警示。</div>
+      <div class="mod-tip"><b>教师提示：</b>重点演示「全成本口径 → 减单位固定成本 → 车间口径」这一步换算，根除「错误一：口径不对位」；出现「已可实现／降幅&gt;10%」红字即停，讨论目标可行性。</div>
+      <div class="pg-tip"><b>本课定位：</b>挂在「缺口怎么补」这一问上——把 38 万元缺口翻译成每吨 200 元这个车间听得懂的口径（教材原式优先，派生口径显式命名）。</div>
+      <div class="sim"><div><div class="ctl"><label>目标利润总额（万元） <b><span id="tgPv">260</span></b></label><input type="range" id="tgP" min="150" max="340" step="5" value="260"></div><div class="ctl"><label>年固定成本（万元） <b><span id="tgFv">120</span></b></label><input type="range" id="tgF" min="80" max="180" step="5" value="120"></div><div class="ctl"><label>预测销售量（吨） <b><span id="tgQv">1,900</span></b></label><input type="range" id="tgQ" min="1500" max="2300" step="10" value="1900"></div><div class="ctl"><label>现行单位变动成本（元/吨） <b><span id="tgCv">4,200</span></b></label><input type="range" id="tgC" min="3800" max="4600" step="20" value="4200"></div><div style="margin-top:.4rem"><button class="btn ghost" id="tgReset">恢复教材算例</button></div></div><div><div class="out"><div class="ob g"><div class="ol">① 单位目标利润＝目标利润÷销量（教材原式）</div><div class="ov num" id="tgU1">1,368.42</div></div><div class="ob y"><div class="ol">② 单位产品目标成本＝售价−单位目标利润（全成本口径）</div><div class="ov num" id="tgU2">4,631.58</div></div><div class="ob"><div class="ol">③ 单位固定成本＝固定成本÷销量</div><div class="ov num" id="tgU3">631.58</div></div><div class="ob g"><div class="ol">④ 单位目标变动成本＝②−③（车间可控口径）</div><div class="ov num" id="tgU4">4,000.00</div></div><div class="ob r"><div class="ol">⑤ 需比现行降低（元/吨）</div><div class="ov num" id="tgU5">200.00</div></div><div class="ob"><div class="ol">降幅</div><div class="ov num" id="tgU6">4.76%</div></div></div><div id="tgWarn" style="margin-top:.4rem"></div><div class="note" style="margin-top:.3rem"><b>达标验证：</b><span id="tgChk">1,900×(6,000−4,000)−1,200,000＝2,600,000 元＝260 万元 ✓</span></div><div id="tgSvg" style="margin-top:.3rem"></div></div></div>
+    </section>
+
+    <!-- 模块五 -->
+    <section class="mod" data-mod="4">
+      <div class="mod-head">
+        <span class="mod-no">模块五</span>
+        <h2 class="mod-h">销售百分比法动态模型</h2>
+      </div>
+      <div class="mod-fn"><b>功能：</b>拖动「2027 销量／技改投资／股利支付率／预计利润」四滑块，实时算出销售增长额、营运资金追加、留存收益、外部融资需求，并画出「融资需求—股利政策」权衡曲线与临界支付率。</div>
+      <div class="mod-tip"><b>教师提示：</b>先用教材算例（1,900 吨／80 万／80%／260 万）得到 44 万元，再拖动股利支付率看红线降到 0 的临界点，讲清管理层看的是「第二层」资金结构——营运资金追加只是其中一小块。</div>
+      <div class="pg-tip"><b>本课定位：</b>挂在「钱够不够」这一问上，回答最后也是最现实的一问——这套降本动作要花多少钱、钱从哪来。</div>
+      <div class="sim"><div><div class="ctl"><label>2027 年销量（吨） <b><span id="fdQv">1,900</span></b></label><input type="range" id="fdQ" min="1800" max="2100" step="10" value="1900"></div><div class="ctl"><label>出米率技改投资（万元） <b><span id="fdIv">80</span></b></label><input type="range" id="fdI" min="0" max="140" step="5" value="80"></div><div class="ctl"><label>股利支付率 <b><span id="fdDv">80%</span></b></label><input type="range" id="fdD" min="0" max="100" step="5" value="80"></div><div class="ctl"><label>预计利润总额（万元） <b><span id="fdPv">260</span></b></label><input type="range" id="fdP" min="200" max="320" step="5" value="260"></div><div style="margin-top:.4rem"><button class="btn ghost" id="fdReset">恢复教材算例</button></div></div><div><div class="out"><div class="ob y"><div class="ol">销售增长额（万元）</div><div class="ov num" id="fdG">60</div></div><div class="ob"><div class="ol">营运资金追加（万元）</div><div class="ov num" id="fdW">15.0</div></div><div class="ob g"><div class="ol">留存收益增加（万元）</div><div class="ov num" id="fdR">39.0</div></div><div class="ob r"><div class="ol">外部融资需求（万元）</div><div class="ov num" id="fdE">44.0</div></div></div><div id="fdWarn" style="margin-top:.4rem"></div><div class="note" style="margin-top:.3rem"><b>分界线：</b><span id="fdLine">在其他参数不变时，股利支付率降到约 57.4%，外部融资需求即降为 0。</span></div><div id="fdSvg" style="margin-top:.3rem"></div></div></div>
+    </section>
+
+  </div>
+
+  <!-- 底部：实时互动工具条 -->
+  <div id="foot">
+    <div class="hint">与 PPT 切换：<kbd>Alt</kbd>+<kbd>Tab</kbd> 切到本窗口 · 模块切换 <kbd>1</kbd>–<kbd>5</kbd> / <kbd>←</kbd><kbd>→</kbd></div>
+    <div id="tools">
+      <button class="tbtn" id="btnVote">投票 V</button>
+      <button class="tbtn" id="btnTimer">倒计时 C</button>
+      <button class="tbtn" id="btnRoll">点名 R</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- 投票浮层 -->
+<div class="overlay" id="ovVote"><div class="panel" style="max-width:min(900px,95vw)">
+  <div class="ph"><h3>课堂投票 · 四选一（开场四选一）</h3><button class="xbtn" data-close="ovVote">关闭</button></div>
+  <div class="sm" style="margin-bottom:.4rem">学生举手，教师点击对应选项计数；结果实时显示条形图。答案默认隐藏，揭晓时再点「显示／隐藏答案」。</div>
+  <div class="vote-btns" id="voteBtns"></div>
+  <div style="display:flex;gap:.4rem;margin-top:.4rem;flex-wrap:wrap;align-items:center">
+    <button class="btn ghost" id="vClear">清零</button>
+    <button class="btn ghost" id="vAns">显示／隐藏答案</button>
+    <span class="sm" id="vAnsTxt"></span>
+  </div>
+</div></div>
+
+<!-- 随机点名浮层 -->
+<div class="overlay" id="ovRoll"><div class="panel" style="max-width:min(700px,95vw)">
+  <div class="ph"><h3>随机点名</h3><button class="xbtn" data-close="ovRoll">关闭</button></div>
+  <div class="row" style="margin-bottom:.5rem">
+    <div><div class="sm">学号范围</div>
+      <input id="rA" type="number" value="1" style="width:5rem;font-size:calc(var(--fs)*.85);padding:.15rem">
+      <span class="sm"> – </span>
+      <input id="rB" type="number" value="45" style="width:5rem;font-size:calc(var(--fs)*.85);padding:.15rem">
+    </div>
+    <div><div class="sm">已点过（自动回避，抽完自动清空）</div><div class="sm" id="rHist" style="min-height:1.6em">—</div></div>
+  </div>
+  <div class="bigwrap"><div class="big num" id="rNum">—</div><div class="lb">按「开始」滚动，再按「停」定人</div></div>
+  <div style="display:flex;gap:.4rem;justify-content:center;margin-top:.5rem">
+    <button class="btn" id="rGo">开始</button><button class="btn red" id="rStop">停</button><button class="btn ghost" id="rClr">清空记录</button>
+  </div>
+</div></div>
+
+<!-- 倒计时浮层 -->
+<div class="overlay" id="ovTimer"><div class="panel" style="max-width:min(760px,95vw)">
+  <div class="ph"><h3>环节倒计时</h3><button class="xbtn" data-close="ovTimer">关闭</button></div>
+  <div class="sm">预设：讨论 5 分钟 / 实训 6 分钟，也可自定义。点「全屏倒计时」在大屏上显示。</div>
+  <div class="row" style="margin-top:.5rem">
+    <button class="btn ghost" data-min="1">1 分钟</button>
+    <button class="btn ghost" data-min="3">3 分钟</button>
+    <button class="btn" data-min="5">讨论 5 分钟</button>
+    <button class="btn" data-min="6">实训 6 分钟</button>
+  </div>
+  <div class="row" style="margin-top:.4rem;align-items:flex-end">
+    <div><div class="sm">自定义（分钟）</div>
+      <input id="custMin" type="number" value="4" min="1" max="30" style="width:5rem;font-size:calc(var(--fs)*.85);padding:.15rem"></div>
+    <button class="btn ghost" id="custGo">开始自定义</button>
+  </div>
+</div></div>
+
+<!-- 全屏倒计时 -->
+<div class="overlay" id="cdOv">
+  <div id="cdNum" class="num">05:00</div>
+  <div id="cdTip">四人小组讨论 · 请给出你们的数字</div>
+  <div id="cdCtl">
+    <button data-cd="pause">暂停</button><button data-cd="resume">继续</button>
+    <button data-cd="plus">+30 秒</button><button data-cd="minus">−30 秒</button>
+    <button data-cd="reset">重置</button><button data-cd="close">结束</button>
+  </div>
+</div>
+
+<!-- 说明浮层 -->
+<div class="overlay" id="ovHelp"><div class="panel" style="max-width:min(820px,95vw)">
+  <div class="ph"><h3>模块说明与快捷键</h3><button class="xbtn" data-close="ovHelp">关闭 Esc</button></div>
+  <div class="sm" style="line-height:1.8">
+    <b>五个抽取自教学设计第九部分的交互模块：</b>
+    <ul class="li">
+      <li><b>① 定量预测方法对比器</b>——四法（算术平均／移动加权／指数平滑／回归直线）同台，滑块联动，看赋权差异如何影响预测值。</li>
+      <li><b>② 回归直线法动态拟合器</b>——拖点改数据，回归线与 2027 外推值实时重算，体会最小二乘。</li>
+      <li><b>③ α 灵敏度扫描条</b>——扫 α，看指数平滑预测值如何随平滑系数变化，定位常用区间。</li>
+      <li><b>④ 目标成本倒推器</b>——按教材原式逐步倒推单位目标变动成本，演示全成本口径→车间口径换算。</li>
+      <li><b>⑤ 销售百分比法动态模型</b>——拖销量／投资／股利／利润，实时算外部融资需求与临界支付率。</li>
+    </ul>
+    <b>课堂实时互动：</b>底部「投票 / 倒计时 / 点名」三个工具，对应开场四选一、小组讨论与随机提问。<br>
+    <b>与 PPT 配合：</b>本课件专司核心动态演示，PPT 司框架性内容；上课时用 <kbd>Alt</kbd>+<kbd>Tab</kbd> 在两窗口间切换即可。<br>
+    <b>快捷键：</b><kbd>1</kbd>–<kbd>5</kbd> 切模块 · <kbd>←</kbd><kbd>→</kbd> 上/下一模块 · <kbd>V</kbd> 投票 · <kbd>C</kbd> 倒计时 · <kbd>R</kbd> 点名 · <kbd>M</kbd> 投影 · <kbd>F</kbd> 全屏 · <kbd>?</kbd> 本说明 · <kbd>Esc</kbd> 关浮层。
+  </div>
+</div></div>
+
+<script>
+/* =======================================================================
+   交互模块（教师大屏操作）—— 抽取自原课堂交互式课件
+   模块一 定量预测方法对比器 / 模块二 回归直线法动态拟合器
+   模块三 α 灵敏度扫描条 / 模块四 目标成本倒推器 / 模块五 销售百分比法动态模型
+   ======================================================================= */
+(function(){
+  'use strict';
+  var Y0 = [1200,1278,1426,1574,1722,1800];
+  var TT = [-5,-3,-1,1,3,5];
+  var PRICE = 6000;
+
+  function q(s,r){ return (r||document).querySelector(s); }
+  function n2(v){ return (Math.round(v*100)/100).toFixed(2); }
+  function n1(v){ return (Math.round(v*10)/10).toFixed(1); }
+  function grp(v){ return String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function svgTxt(x,y,t,o){ o=o||{};
+    var halo = o.halo ? ' stroke="#ffffff" stroke-width="3.4" stroke-linejoin="round" paint-order="stroke"' : '';
+    return '<text x="'+x+'" y="'+y+'" font-size="'+(o.fs||13)+'" fill="'+(o.c||'#4a5b4d')+'"'+
+      (o.anchor?' text-anchor="'+o.anchor+'"':'')+(o.bold?' font-weight="700"':'')+halo+'>'+t+'</text>';
+  }
+
+  /* ---------------- 模块三：α 灵敏度扫描条 ---------------- */
+  window.initAlpha = function(root){
+    var A=q('#alA',root), At=q('#alAt',root), Ft=q('#alFt',root), box=q('#alSvg',root);
+    function draw(){
+      var a=(+A.value)/100, av=+At.value, fv=+Ft.value;
+      var f = a*av + (1-a)*fv;
+      q('#alV',root).textContent = a.toFixed(2);
+      q('#alAv',root).textContent = grp(av);
+      q('#alFv',root).textContent = grp(fv);
+      q('#alOut',root).textContent = n1(f);
+      q('#alW',root).textContent = Math.round(a*100)+'%';
+      var note;
+      if(a>=0.7) note='α 偏大：几乎只信最近一期实测，反应快，但容易把偶然波动当成趋势（α→1 时 F≈A(t)）。';
+      else if(a<=0.35) note='α 偏小：更倚重历史预测，平稳，但对转变迟钝（α→0 时 F≈F(t)）。';
+      else note='实务常用区间 0.3—0.7：序列越平稳取越小，越需要快速跟踪取越大。';
+      q('#alNote',root).textContent = note + ' 当前：F2027＝'+a.toFixed(2)+'×'+grp(av)+'＋'+(1-a).toFixed(2)+'×'+grp(fv)+'＝'+n1(f)+' 吨。';
+
+      var lo=Math.min(av,fv)-40, hi=Math.max(av,fv)+40;
+      var X=function(t){ return 70+t*540; };
+      var Y=function(v){ return 270-(v-lo)/(hi-lo)*210; };
+      var s='<svg viewBox="0 0 660 320" style="width:100%;height:auto">';
+      s+='<line x1="70" y1="270" x2="620" y2="270" stroke="#c8d6c8" stroke-width="2"/>';
+      s+='<line x1="70" y1="30" x2="70" y2="270" stroke="#c8d6c8" stroke-width="2"/>';
+      for(var i=0;i<=10;i++){ var al=i/10;
+        s+='<line x1="'+X(al)+'" y1="270" x2="'+X(al)+'" y2="265" stroke="#c8d6c8"/>';
+        if(i%2===0) s+=svgTxt(X(al),288,al.toFixed(1),{anchor:'middle',fs:12,c:'#7a8a7c'});
+      }
+      s+=svgTxt(24,275,'α',{fs:13,c:'#7a8a7c'});
+      s+=svgTxt(620,300,'平滑系数 α',{anchor:'end',fs:13,c:'#7a8a7c'});
+      [lo,(lo+hi)/2,hi].forEach(function(v){
+        s+='<line x1="70" y1="'+Y(v)+'" x2="620" y2="'+Y(v)+'" stroke="#eef2ed" stroke-dasharray="4 4"/>';
+        s+=svgTxt(64,Y(v)+4,grp(Math.round(v)),{anchor:'end',fs:12,c:'#7a8a7c'});
+      });
+      s+='<line x1="'+X(0.05)+'" y1="'+Y(0.05*av+0.95*fv)+'" x2="'+X(0.95)+'" y2="'+Y(0.95*av+0.05*fv)+'" stroke="#2e7d32" stroke-width="4"/>';
+      [[0.6,'#2e7d32','α＝0.6'],[0.3,'#b8860b','α＝0.3']].forEach(function(m){
+        var v=m[0]*av+(1-m[0])*fv;
+        s+='<circle cx="'+X(m[0])+'" cy="'+Y(v)+'" r="6" fill="'+m[1]+'"/>';
+        s+=svgTxt(X(m[0]),Y(v)-12,m[2]+' → '+n1(v),{anchor:'middle',fs:13,c:m[1],bold:true});
+      });
+      s+='<circle cx="'+X(a)+'" cy="'+Y(f)+'" r="11" fill="#c62828" stroke="#fff" stroke-width="3"/>';
+      s+=svgTxt(X(a),Y(f)-20,n1(f)+' 吨',{anchor:'middle',fs:16,c:'#c62828',bold:true});
+      s+='<line x1="'+X(a)+'" y1="'+Y(f)+'" x2="'+X(a)+'" y2="270" stroke="#c62828" stroke-width="1" stroke-dasharray="4 3"/>';
+      s+=svgTxt(345,50,'F2027 ＝ α·A2026 ＋ (1−α)·F2026',{anchor:'middle',fs:14,c:'#1b5e20',bold:true});
+      s+='</svg>';
+      box.innerHTML=s;
+    }
+    [A,At,Ft].forEach(function(el){ el.addEventListener('input',draw); });
+    draw();
+  };
+
+  /* ---------------- 模块一：定量预测方法对比器 ---------------- */
+  window.initCompare = function(root){
+    var N=q('#cpN',root), W1=q('#cpW1',root), W2=q('#cpW2',root), W3=q('#cpW3',root), AL=q('#cpA',root);
+    var box=q('#cpSvg',root), out=q('#cpOut',root);
+    function vals(){
+      var n=+N.value;
+      var avg=0, i, arr=Y0.slice(Y0.length-n);
+      for(i=0;i<arr.length;i++) avg+=arr[i];
+      avg=avg/arr.length;
+      var w=[+W1.value,+W2.value,+W3.value], sw=w[0]+w[1]+w[2];
+      if(sw<=0){ w=[1,1,1]; sw=3; }
+      var ww=[w[0]/sw,w[1]/sw,w[2]/sw];
+      var last3=Y0.slice(3);
+      var wavg=last3[0]*ww[0]+last3[1]*ww[1]+last3[2]*ww[2];
+      var fprev=Math.round((last3[0]+last3[1]+last3[2])/3/10)*10;
+      var a=(+AL.value)/100;
+      var exp=a*Y0[5]+(1-a)*fprev;
+      var sy=0,sty=0,st2=0;
+      for(i=0;i<6;i++){ sy+=Y0[i]; sty+=TT[i]*Y0[i]; st2+=TT[i]*TT[i]; }
+      var aa=sy/6, bb=sty/st2, reg=aa+bb*7;
+      return {n:n,avg:avg,ww:ww,wavg:wavg,a:a,exp:exp,fprev:fprev,aa:aa,bb:bb,reg:reg};
+    }
+    function draw(){
+      var v=vals();
+      q('#cpNv',root).textContent=v.n;
+      q('#cpW1v',root).textContent=v.ww[0].toFixed(2);
+      q('#cpW2v',root).textContent=v.ww[1].toFixed(2);
+      q('#cpW3v',root).textContent=v.ww[2].toFixed(2);
+      q('#cpAv',root).textContent=v.a.toFixed(2);
+      var items=[
+        {k:'算术平均法',v:v.avg,c:'#a5c9a8',w:'近 '+v.n+' 期等权'},
+        {k:'移动加权平均法',v:v.wavg,c:'#5da065',w:v.ww[0].toFixed(2)+'／'+v.ww[1].toFixed(2)+'／'+v.ww[2].toFixed(2)},
+        {k:'指数平滑法',v:v.exp,c:'#2e7d32',w:'α＝'+v.a.toFixed(2)+'，F2026＝'+v.fprev},
+        {k:'回归直线法',v:v.reg,c:'#1b5e20',w:'y＝'+n1(v.aa)+'＋'+n1(v.bb)+'t'}
+      ];
+      var lo=1600, hi=2000;
+      var Y=function(x){ return 250-(x-lo)/(hi-lo)*190; };
+      var s='<svg viewBox="0 0 660 300" style="width:100%;height:auto">';
+      s+='<line x1="50" y1="250" x2="640" y2="250" stroke="#c8d6c8" stroke-width="2"/>';
+      [1600,1700,1800,1900,2000].forEach(function(g){
+        s+='<line x1="50" y1="'+Y(g)+'" x2="640" y2="'+Y(g)+'" stroke="#eef2ed"/>';
+        s+=svgTxt(44,Y(g)+4,grp(g),{anchor:'end',fs:12,c:'#7a8a7c'});
+      });
+      s+='<line x1="50" y1="'+Y(1800)+'" x2="640" y2="'+Y(1800)+'" stroke="#c62828" stroke-width="2" stroke-dasharray="7 4"/>';
+      s+='<line x1="50" y1="'+Y(1900)+'" x2="640" y2="'+Y(1900)+'" stroke="#2e7d32" stroke-width="2" stroke-dasharray="7 4"/>';
+      items.forEach(function(it,i){
+        var x=95+i*140, h=250-Y(it.v);
+        s+='<rect x="'+x+'" y="'+Y(it.v)+'" width="78" height="'+Math.max(2,h)+'" rx="5" fill="'+it.c+'"/>';
+        s+=svgTxt(x+39,Y(it.v)-9,n1(it.v),{anchor:'middle',fs:17,c:'#1b5e20',bold:true});
+        s+=svgTxt(x+39,270,it.k,{anchor:'middle',fs:13,c:'#17251a',bold:true});
+        s+=svgTxt(x+39,288,it.w,{anchor:'middle',fs:11,c:'#7a8a7c'});
+      });
+      // 基准线标签：绘于柱之上并加白色描边，避免被最右柱遮挡
+      s+=svgTxt(636,Y(1800)-7,'2026 实际 1,800',{anchor:'end',fs:12,c:'#c62828',bold:true,halo:true});
+      s+=svgTxt(636,Y(1900)-7,'综合确定 1,900',{anchor:'end',fs:12,c:'#2e7d32',bold:true,halo:true});
+      s+='</svg>';
+      box.innerHTML=s;
+      var mean=(v.avg+v.wavg+v.exp+v.reg)/4;
+      out.innerHTML =
+        '<div class="ob g"><div class="ol">算术平均法（近 '+v.n+' 期）</div><div class="ov num">'+n1(v.avg)+'</div></div>'+
+        '<div class="ob g"><div class="ol">移动加权平均法（归一化权数）</div><div class="ov num">'+n1(v.wavg)+'</div></div>'+
+        '<div class="ob g"><div class="ol">指数平滑法（α＝'+v.a.toFixed(2)+'）</div><div class="ov num">'+n1(v.exp)+'</div></div>'+
+        '<div class="ob y"><div class="ol">回归直线法（六年最小二乘）</div><div class="ov num">'+n1(v.reg)+'</div></div>'+
+        '<div class="ob"><div class="ol">四法均值</div><div class="ov num">'+n1(mean)+'</div></div>'+
+        '<div class="ob r"><div class="ol">极差（最高−最低）</div><div class="ov num">'+n1(Math.max(v.avg,v.wavg,v.exp,v.reg)-Math.min(v.avg,v.wavg,v.exp,v.reg))+'</div></div>';
+    }
+    [N,W1,W2,W3,AL].forEach(function(el){ el.addEventListener('input',draw); });
+    q('#cpReset',root).addEventListener('click',function(){
+      N.value=3; W1.value=10; W2.value=30; W3.value=60; AL.value=60; draw();
+    });
+    draw();
+  };
+
+  /* ---------------- 模块二：回归直线法动态拟合器 ---------------- */
+  window.initReg = function(root){
+    var box=q('#rgSvg',root), Y=Y0.slice(), drag=-1, svg=null;
+    function calc(){
+      var sy=0,sty=0,st2=0,i;
+      for(i=0;i<6;i++){ sy+=Y[i]; sty+=TT[i]*Y[i]; st2+=TT[i]*TT[i]; }
+      var a=sy/6, b=sty/st2, y7=a+b*7, sse=0;
+      for(i=0;i<6;i++){ var r=Y[i]-(a+b*TT[i]); sse+=r*r; }
+      return {a:a,b:b,y7:y7,sse:sse};
+    }
+    function draw(){
+      var c=calc();
+      q('#rgY',root).textContent=n1(c.y7);
+      q('#rgA',root).textContent=n1(c.a);
+      q('#rgB',root).textContent=n1(c.b);
+      q('#rgS',root).textContent=grp(Math.round(c.sse));
+      var X=function(t){ return 70+(t+6)/14*540; };
+      var V=function(v){ return 290-(v-1000)/1700*240; };
+      var s='<svg viewBox="0 0 660 340" style="width:100%;height:auto">';
+      s+='<line x1="70" y1="290" x2="620" y2="290" stroke="#c8d6c8" stroke-width="2"/>';
+      s+='<line x1="70" y1="20" x2="70" y2="290" stroke="#c8d6c8" stroke-width="2"/>';
+      [1000,1400,1800,2200,2600].forEach(function(g){
+        s+='<line x1="70" y1="'+V(g)+'" x2="620" y2="'+V(g)+'" stroke="#eef2ed"/>';
+        s+=svgTxt(64,V(g)+4,grp(g),{anchor:'end',fs:12,c:'#7a8a7c'});
+      });
+      [-5,-3,-1,1,3,5,7].forEach(function(t){
+        s+=svgTxt(X(t),310,(2021+(t+5)/2)+'',{anchor:'middle',fs:12,c:'#7a8a7c'});
+      });
+      s+=svgTxt(X(7),310,'2027',{anchor:'middle',fs:12,c:'#c62828',bold:true});
+      s+='<line x1="'+X(-5)+'" y1="'+V(c.a+c.b*-5)+'" x2="'+X(5)+'" y2="'+V(c.a+c.b*5)+'" stroke="#2e7d32" stroke-width="4"/>';
+      s+='<line x1="'+X(5)+'" y1="'+V(c.a+c.b*5)+'" x2="'+X(7)+'" y2="'+V(c.a+c.b*7)+'" stroke="#2e7d32" stroke-width="4" stroke-dasharray="8 5"/>';
+      s+=svgTxt(X(-5),V(c.a+c.b*-5)-12,'y＝'+n1(c.a)+'＋'+n1(c.b)+'t',{fs:14,c:'#1b5e20',bold:true});
+      Y.forEach(function(v,i){
+        s+='<circle cx="'+X(TT[i])+'" cy="'+V(v)+'" r="9" fill="#fff" stroke="#2e7d32" stroke-width="3" data-i="'+i+'" style="cursor:ns-resize"/>';
+        s+=svgTxt(X(TT[i]),V(v)-16,grp(v),{anchor:'middle',fs:12,c:'#1b5e20',bold:true});
+      });
+      s+='<circle cx="'+X(7)+'" cy="'+V(c.y7)+'" r="10" fill="#c62828"/>';
+      s+=svgTxt(X(7),V(c.y7)-18,n1(c.y7)+' 吨',{anchor:'middle',fs:15,c:'#c62828',bold:true});
+      s+='<line x1="'+X(7)+'" y1="'+V(c.y7)+'" x2="'+X(7)+'" y2="290" stroke="#c62828" stroke-width="1" stroke-dasharray="4 3"/>';
+      s+='</svg>';
+      box.innerHTML=s;
+      svg=q('svg',box);
+      if(svg){
+        Array.prototype.forEach.call(svg.querySelectorAll('circle[data-i]'),function(el){
+          el.setAttribute('data-pt','1');
+        });
+      }
+    }
+    function toVal(ev){
+      var sv=q('svg',box); if(!sv) return null;
+      var pt=sv.createSVGPoint ? sv.createSVGPoint() : null;
+      if(pt && sv.getScreenCTM){
+        try{
+          var m=sv.getScreenCTM(); if(!m) return null;
+          pt.x=ev.clientX; pt.y=ev.clientY;
+          var p=pt.matrixTransform(m.inverse());
+          var v=1000+(290-p.y)/240*1700;
+          return Math.max(1000,Math.min(2700,v));
+        }catch(e){}
+      }
+      var r=sv.getBoundingClientRect();
+      var vy=(ev.clientY-r.top)/r.height*340;
+      return Math.max(1000,Math.min(2700,1000+(290-vy)/240*1700));
+    }
+    box.addEventListener('pointerdown',function(e){
+      var t=e.target; if(!t.getAttribute||!t.getAttribute('data-i')) return;
+      drag=+t.getAttribute('data-i');
+      try{ box.setPointerCapture(e.pointerId); }catch(err){}
+      e.preventDefault();
+    });
+    box.addEventListener('pointermove',function(e){
+      if(drag<0) return;
+      var v=toVal(e); if(v==null) return;
+      Y[drag]=Math.round(v/10)*10;
+      draw();
+    });
+    ['pointerup','pointercancel','pointerleave'].forEach(function(k){
+      box.addEventListener(k,function(){ drag=-1; });
+    });
+    q('#rgReset',root).addEventListener('click',function(){ Y=Y0.slice(); draw(); });
+    q('#rgFlat',root).addEventListener('click',function(){ Y=Y0.slice(); Y[5]=1500; draw(); });
+    draw();
+  };
+
+  /* ---------------- 模块四：目标成本倒推器 ---------------- */
+  window.initTarget = function(root){
+    var P=q('#tgP',root), F=q('#tgF',root), Q=q('#tgQ',root), C=q('#tgC',root);
+    function draw(){
+      var p=+P.value, f=+F.value, qq=+Q.value, c=+C.value;
+      q('#tgPv',root).textContent=p; q('#tgFv',root).textContent=f;
+      q('#tgQv',root).textContent=grp(qq); q('#tgCv',root).textContent=grp(c);
+      var u1=p*10000/qq, u2=PRICE-u1, u3=f*10000/qq, u4=u2-u3, u5=c-u4, u6=c?u5/c*100:0;
+      q('#tgU1',root).textContent=n2(u1);
+      q('#tgU2',root).textContent=n2(u2);
+      q('#tgU3',root).textContent=n2(u3);
+      q('#tgU4',root).textContent=n2(u4);
+      q('#tgU5',root).textContent=n2(u5);
+      q('#tgU6',root).textContent=n2(u6)+'%';
+      var chk=qq*(PRICE-u4)-f*10000;
+      q('#tgChk',root).textContent=grp(qq)+'×(6,000−'+n2(u4)+')−'+grp(f*10000)+'＝'+grp(Math.round(chk))+' 元＝'+n1(chk/10000)+' 万元'+(Math.abs(chk-p*10000)<1?' ✓':'');
+      var w='';
+      if(u4>=c){
+        w='<div class="note r"><b>红色警示：</b>单位目标变动成本 <b>'+n2(u4)+'</b> 元/吨 ≥ 现行 '+grp(c)+
+          ' 元/吨——目标利润在当前成本结构下<b>已可实现</b>，无需下达降本任务。请检查目标利润是否定得过低、或销量/固定成本参数是否填错。</div>';
+      } else if(u6>10){
+        w='<div class="note r"><b>降幅警示：</b>需降低 '+n2(u5)+' 元/吨，降幅 '+n2(u6)+
+          '% 已超过 10%——车间难以独立消化，需重新审视目标利润的可行性或配套工艺改造。</div>';
+      } else {
+        w='<div class="note g"><b>口径正确：</b>教材的「单位产品目标成本」'+n2(u2)+
+          ' 是<b>全成本口径</b>（已含单位固定成本 '+n2(u3)+'）；减去它之后得到的 <b>'+n2(u4)+
+          '</b> 才是与现行 '+grp(c)+' 元/吨同口径、可下达车间的降本目标。</div>';
+      }
+      q('#tgWarn',root).innerHTML=w;
+      var X0=70, W=520;
+      var s='<svg viewBox="0 0 660 190" style="width:100%;height:auto">';
+      function stack(y,segs,label){
+        var x=X0;
+        s+=svgTxt(64,y+26,label,{anchor:'end',fs:13,c:'#17251a',bold:true});
+        segs.forEach(function(g){
+          var wpx=g.v/6000*W;
+          s+='<rect x="'+x+'" y="'+y+'" width="'+Math.max(0,wpx)+'" height="42" fill="'+g.c+'"/>';
+          if(wpx>52) s+=svgTxt(x+wpx/2,y+27,g.k,{anchor:'middle',fs:12,c:g.tc||'#fff',bold:true});
+          if(wpx>52) s+=svgTxt(x+wpx/2,y+38,n2(g.v),{anchor:'middle',fs:11,c:g.tc||'#fff'});
+          x+=wpx;
+        });
+      }
+      stack(16,[
+        {v:u1,c:'#b8860b',k:'目标利润'},
+        {v:u3,c:'#9aa79c',k:'单位固定成本'},
+        {v:u4,c:'#2e7d32',k:'单位目标变动成本'}
+      ],'目标结构');
+      var curProfit=Math.max(0,PRICE-u3-c);
+      stack(90,[
+        {v:curProfit,c:'#e3c9c7',k:'现行利润',tc:'#8a3a34'},
+        {v:u3,c:'#9aa79c',k:'单位固定成本'},
+        {v:c,c:'#1b5e20',k:'现行变动成本'}
+      ],'现行结构');
+      s+=svgTxt(X0,158,'售价 6,000 元/吨',{fs:12,c:'#7a8a7c'});
+      s+=svgTxt(X0+W,158,'6,000',{anchor:'end',fs:12,c:'#7a8a7c'});
+      if(u5>0) s+=svgTxt(X0+W/2,182,'缺口：每吨需降 '+n2(u5)+' 元（降幅 '+n2(u6)+'%）',{anchor:'middle',fs:14,c:'#c62828',bold:true});
+      s+='</svg>';
+      q('#tgSvg',root).innerHTML=s;
+    }
+    [P,F,Q,C].forEach(function(el){ el.addEventListener('input',draw); });
+    q('#tgReset',root).addEventListener('click',function(){
+      P.value=260; F.value=120; Q.value=1900; C.value=4200; draw();
+    });
+    draw();
+  };
+
+  /* ---------------- 模块五：销售百分比法动态模型 ---------------- */
+  window.initFunds = function(root){
+    var Q=q('#fdQ',root), I=q('#fdI',root), D=q('#fdD',root), Pf=q('#fdP',root);
+    var SA=0.50, SL=0.25, S0=1080, REPAY=50, DEP=62;
+    function calc(qq,i,d,p){
+      var s1=qq*6000/10000;
+      var g=s1-S0;
+      var w=(SA-SL)*g;
+      var np=p*0.75;
+      var ret=np*(1-d/100);
+      return {g:g,w:w,np:np,ret:ret,e:w+i+REPAY-DEP-ret};
+    }
+    function draw(){
+      var qq=+Q.value, i=+I.value, d=+D.value, p=+Pf.value;
+      q('#fdQv',root).textContent=grp(qq); q('#fdIv',root).textContent=i;
+      q('#fdDv',root).textContent=d+'%'; q('#fdPv',root).textContent=p;
+      var c=calc(qq,i,d,p);
+      q('#fdG',root).textContent=n1(c.g);
+      q('#fdW',root).textContent=n1(c.w);
+      q('#fdR',root).textContent=n1(c.ret);
+      q('#fdE',root).textContent=n1(c.e);
+      var need=c.w+i+REPAY-DEP;
+      var line='';
+      if(need<=0) line='在其他参数不变时，<b>任何股利支付率下都无需外部融资</b>（内部来源已覆盖全部资金占用）。';
+      else if(need>=c.np) line='即使<b>完全不分红</b>（股利支付率 0%），留存 '+n1(c.np)+' 万元仍不足以覆盖，仍须外部融资 '+n1(need-c.np)+' 万元。';
+      else line='在其他参数不变时，股利支付率降到约 <b>'+n1((1-need/c.np)*100)+'%</b>，外部融资需求即降为 0。';
+      q('#fdLine',root).innerHTML=line;
+      var w='';
+      if(c.e<=0) w='<div class="note g"><b>无需对外融资：</b>外部融资需求 '+n1(c.e)+' 万元 ≤ 0，'
+        +'营运资金追加与酌量支出可被折旧与留存覆盖，企业尚有 '+n1(-c.e)+' 万元富余。</div>';
+      else w='<div class="note r"><b>需要外部融资 '+n1(c.e)+' 万元。</b>记住：管理层看的永远是'
+        +'<b>第二层</b>的数——营运资金追加只是其中一小块，技改投资与到期还本才是大头。</div>';
+      q('#fdWarn',root).innerHTML=w;
+      var ds=[], k;
+      for(k=0;k<=100;k+=5) ds.push({d:k,e:calc(qq,i,k,p).e});
+      var lo=Math.min(0,ds[0].e,ds[ds.length-1].e)-20, hi=Math.max(0,ds[0].e,ds[ds.length-1].e)+20;
+      var X=function(dd){ return 70+dd/100*530; };
+      var Y=function(v){ return 250-(v-lo)/(hi-lo)*200; };
+      var s='<svg viewBox="0 0 660 300" style="width:100%;height:auto">';
+      s+='<line x1="70" y1="250" x2="620" y2="250" stroke="#c8d6c8" stroke-width="2"/>';
+      s+='<line x1="70" y1="20" x2="70" y2="250" stroke="#c8d6c8" stroke-width="2"/>';
+      s+='<line x1="70" y1="'+Y(0)+'" x2="620" y2="'+Y(0)+'" stroke="#2e7d32" stroke-width="2" stroke-dasharray="7 4"/>';
+      s+=svgTxt(624,Y(0)-7,'外部融资＝0',{anchor:'end',fs:12,c:'#2e7d32',bold:true});
+      [0,25,50,75,100].forEach(function(g){
+        s+='<line x1="'+X(g)+'" y1="250" x2="'+X(g)+'" y2="244" stroke="#c8d6c8"/>';
+        s+=svgTxt(X(g),266,g+'%',{anchor:'middle',fs:12,c:'#7a8a7c'});
+      });
+      s+=svgTxt(345,285,'股利支付率',{anchor:'middle',fs:13,c:'#7a8a7c'});
+      s+=svgTxt(20,30,'外部融资（万元）',{fs:12,c:'#7a8a7c'});
+      var pts=ds.map(function(o){ return X(o.d)+','+Y(o.e); }).join(' ');
+      s+='<polyline points="'+pts+'" fill="none" stroke="#c62828" stroke-width="4"/>';
+      s+='<circle cx="'+X(d)+'" cy="'+Y(c.e)+'" r="11" fill="#c62828" stroke="#fff" stroke-width="3"/>';
+      s+=svgTxt(X(d),Y(c.e)-20,n1(c.e)+' 万元',{anchor:'middle',fs:15,c:'#c62828',bold:true});
+      if(need>0 && need<c.np){
+        var dc=(1-need/c.np)*100;
+        s+='<circle cx="'+X(dc)+'" cy="'+Y(0)+'" r="8" fill="#2e7d32"/>';
+        s+=svgTxt(X(dc),Y(0)+24,'临界 '+n1(dc)+'%',{anchor:'middle',fs:12,c:'#2e7d32',bold:true});
+      }
+      s+=svgTxt(345,44,'融资需求与股利政策：一对可以直接权衡的杠杆',{anchor:'middle',fs:14,c:'#1b5e20',bold:true});
+      s+='</svg>';
+      q('#fdSvg',root).innerHTML=s;
+    }
+    [Q,I,D,Pf].forEach(function(el){ el.addEventListener('input',draw); });
+    q('#fdReset',root).addEventListener('click',function(){
+      Q.value=1900; I.value=80; D.value=80; Pf.value=260; draw();
+    });
+    draw();
+  };
+})();
+</script>
+
+<script>
+/* =======================================================================
+   导航 + 课堂实时互动工具（投票 / 倒计时 / 随机点名）
+   ======================================================================= */
+(function(){
+  'use strict';
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var pad=function(n){return (n<10?'0':'')+n};
+  var mmss=function(s){ if(s<0)s=0; var m=Math.floor(s/60),x=Math.floor(s%60); return pad(m)+':'+pad(x); };
+
+  /* ---------- 模块标签 ---------- */
+  var MODS=[
+    {no:'模块一',name:'定量预测方法对比器'},
+    {no:'模块二',name:'回归直线法动态拟合器'},
+    {no:'模块三',name:'α 灵敏度扫描条'},
+    {no:'模块四',name:'目标成本倒推器'},
+    {no:'模块五',name:'销售百分比法动态模型'}
+  ];
+  var tabsBox=$('#tabs');
+  MODS.forEach(function(m,i){
+    var b=document.createElement('button');
+    b.className='tab'; b.setAttribute('data-mod',i);
+    b.innerHTML='<span class="tn">'+m.no+'</span>'+m.name;
+    b.addEventListener('click',function(){ showMod(i); });
+    tabsBox.appendChild(b);
+  });
+  var modEls=$$('.mod');
+  var inited={};
+  function showMod(i){
+    i=Math.max(0,Math.min(MODS.length-1,i));
+    modEls.forEach(function(el){ el.classList.toggle('act', +el.getAttribute('data-mod')===i); });
+    $$('.tab').forEach(function(t){ t.classList.toggle('on', +t.getAttribute('data-mod')===i); });
+    $('#stage').scrollTop=0;
+    var sec=modEls[i];
+    var fn='init'+['Compare','Reg','Alpha','Target','Funds'][i];
+    if(!inited[i]){ inited[i]=true; if(window[fn]){ try{ window[fn](sec); }catch(e){ console.error(fn,e);} } }
+  }
+
+  /* ---------- 浮层 ---------- */
+  function openOv(id){ $('#'+id).classList.add('on'); }
+  function closeOv(){ $$('.overlay').forEach(function(o){ o.classList.remove('on'); }); }
+  $$('[data-close]').forEach(function(b){ b.addEventListener('click',function(){ $('#'+b.getAttribute('data-close')).classList.remove('on'); }); });
+  $$('.overlay').forEach(function(o){ o.addEventListener('click',function(e){ if(e.target===o) o.classList.remove('on'); }); });
+
+  /* ---------- 投票 ---------- */
+  var VOPTS=[
+    {k:'A',d:'追加广告，把销量硬拉到 2,111 吨'},
+    {k:'B',d:'提价，每吨涨 200 元'},
+    {k:'C',d:'降本，每吨成本压 200 元'},
+    {k:'D',d:'把目标降下来，接受 222 万元'}
+  ];
+  var votes={A:0,B:0,C:0,D:0}, showAns=false;
+  function paintVote(){
+    var box=$('#voteBtns'); box.innerHTML='';
+    var max=Math.max(1,VOPTS.reduce(function(m,o){return Math.max(m,votes[o.k])},0));
+    var tot=VOPTS.reduce(function(s,o){return s+votes[o.k]},0);
+    VOPTS.forEach(function(o){
+      var d=document.createElement('div');
+      d.className='vb'+(showAns&&o.k==='C'?' win':'');
+      d.innerHTML='<div class="vk">'+o.k+'</div><div class="vd">'+o.d+'</div>'+
+        '<div class="vn num">'+votes[o.k]+'</div>'+
+        '<div class="vbar"><i style="width:'+(votes[o.k]/max*100)+'%;background:'+(showAns&&o.k==='C'?'#2e7d32':'#7fa886')+'"></i></div>'+
+        '<div class="sm mute">'+(tot?Math.round(votes[o.k]/tot*100):0)+'%</div>';
+      d.addEventListener('click',function(){ votes[o.k]++; paintVote(); });
+      box.appendChild(d);
+    });
+    $('#vAnsTxt').innerHTML=showAns
+      ? '<b style="color:#c62828">正解：C 降本＋资金配套</b>——A 超产能上限 2,000 吨；B 受稻谷最低收购价与竞品双重挤压；D 是最后才走的一步。'
+      : '（答案留白，揭晓时再点）';
+  }
+  $('#btnVote').addEventListener('click',function(){ paintVote(); openOv('ovVote'); });
+  $('#vClear').addEventListener('click',function(){ VOPTS.forEach(function(o){votes[o.k]=0}); paintVote(); });
+  $('#vAns').addEventListener('click',function(){ showAns=!showAns; paintVote(); });
+  paintVote();
+
+  /* ---------- 随机点名 ---------- */
+  var rollT=null, hist=[];
+  var rA=$('#rA'), rB=$('#rB');
+  $('#btnRoll').addEventListener('click',function(){ openOv('ovRoll'); });
+  $('#rGo').addEventListener('click',function(){
+    if(rollT) return;
+    var a=+rA.value||1, b=+rB.value||45; if(a>b){var t=a;a=b;b=t;}
+    rollT=setInterval(function(){
+      var pool=[]; for(var i=a;i<=b;i++){ if(hist.indexOf(i)<0) pool.push(i); }
+      if(!pool.length){ hist=[]; for(var j=a;j<=b;j++) pool.push(j); }
+      $('#rNum').textContent=pool[Math.floor(Math.random()*pool.length)];
+    },70);
+  });
+  $('#rStop').addEventListener('click',function(){
+    if(!rollT) return; clearInterval(rollT); rollT=null;
+    var v=+$('#rNum').textContent; if(v){ hist.push(v); }
+    $('#rHist').textContent=hist.length? hist.join('、') : '—';
+  });
+  $('#rClr').addEventListener('click',function(){ hist=[]; $('#rHist').textContent='—'; });
+
+  /* ---------- 倒计时 ---------- */
+  var cdLeft=0, cdT=null, cdTotal=0, cdPaused=false;
+  function cdPaint(){
+    var n=$('#cdNum'); n.textContent=mmss(cdLeft);
+    n.classList.toggle('warn', cdLeft>0 && cdLeft<=30);
+    n.classList.toggle('over', cdLeft<=0);
+    if(cdLeft<=0) $('#cdTip').textContent='时间到 · 请各组停下';
+  }
+  function cdStart(sec, tip){
+    cdTotal=sec; cdLeft=sec; cdPaused=false;
+    if(tip) $('#cdTip').textContent=tip;
+    if(cdT) clearInterval(cdT);
+    cdT=setInterval(function(){ if(cdPaused) return; if(cdLeft>0) cdLeft--; cdPaint(); },1000);
+    cdPaint(); openOv('cdOv');
+  }
+  $('#btnTimer').addEventListener('click',function(){ openOv('ovTimer'); });
+  $$('#ovTimer [data-min]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var m=+b.getAttribute('data-min');
+      cdStart(m*60, m===5?'四人小组讨论 · 现在手上有六个候选值，你定多少吨？'
+        : (m===6?'课堂综合实训 · 三道题，独立计算 6 分钟':'计时 '+m+' 分钟'));
+      closeOv();
+    });
+  });
+  $('#custGo').addEventListener('click',function(){ var m=+$('#custMin').value||4; cdStart(m*60,'自定义计时 '+m+' 分钟'); closeOv(); });
+  $('#cdCtl').addEventListener('click',function(e){
+    var k=e.target.getAttribute&&e.target.getAttribute('data-cd'); if(!k) return;
+    if(k==='pause') cdPaused=true;
+    else if(k==='resume') cdPaused=false;
+    else if(k==='plus') cdLeft+=30;
+    else if(k==='minus') cdLeft=Math.max(0,cdLeft-30);
+    else if(k==='reset') cdLeft=cdTotal;
+    else if(k==='close'){ if(cdT){clearInterval(cdT);cdT=null;} $('#cdOv').classList.remove('on'); }
+    cdPaint();
+  });
+
+  /* ---------- 投影 / 全屏 / 说明 ---------- */
+  $('#btnProj').addEventListener('click',function(){
+    document.documentElement.classList.toggle('proj');
+    this.classList.toggle('on', document.documentElement.classList.contains('proj'));
+  });
+  $('#btnFull').addEventListener('click',function(){
+    if(!document.fullscreenElement){ (document.documentElement.requestFullscreen||function(){})(); }
+    else document.exitFullscreen();
+  });
+  $('#btnHelp').addEventListener('click',function(){ openOv('ovHelp'); });
+
+  /* ---------- 键盘 ---------- */
+  document.addEventListener('keydown',function(e){
+    if(/INPUT|TEXTAREA|SELECT/.test((e.target.tagName||''))) return;
+    var k=e.key;
+    if(k>='1'&&k<='5'){ showMod(+k-1); e.preventDefault(); return; }
+    if(k==='ArrowRight'){ showMod($$('.mod.act').length?+modEls.indexOf($('.mod.act'))+1:0); e.preventDefault(); return; }
+    if(k==='ArrowLeft'){ showMod($$('.mod.act').length?+modEls.indexOf($('.mod.act'))-1:0); e.preventDefault(); return; }
+    if(k==='Escape'){ closeOv(); return; }
+    if(k==='?'){ openOv('ovHelp'); return; }
+    var low=(k||'').toLowerCase();
+    if(low==='v'){ $('#btnVote').click(); }
+    else if(low==='c'){ $('#btnTimer').click(); }
+    else if(low==='r'){ $('#btnRoll').click(); }
+    else if(low==='m'){ $('#btnProj').click(); }
+    else if(low==='f'){ $('#btnFull').click(); }
+  });
+
+  /* ---------- 启动 ---------- */
+  showMod(0);
+})();
+</script>
+</body>
+</html>

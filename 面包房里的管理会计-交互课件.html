@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>面包房里的管理会计 · 课堂交互课件（零基础版）</title>
+<style>
+  :root{
+    --bg:#FBF7F0; --card:#FFFFFF; --primary:#B45309; --second:#166534;
+    --accent:#DC2626; --ink:#1F2937; --muted:#6B7280; --line:#E7DFD3;
+    --soft:#F3EADF; --ok:#166534; --bad:#DC2626;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Microsoft YaHei","PingFang SC","Source Han Sans SC",-apple-system,"Segoe UI",sans-serif;
+    font-size:16px;line-height:1.6;}
+  header{background:var(--primary);color:#fff;padding:14px 20px;position:sticky;top:0;z-index:50;
+    box-shadow:0 2px 10px rgba(0,0,0,.12);}
+  header h1{margin:0;font-size:19px;font-weight:700;letter-spacing:.5px;}
+  header .sub{font-size:13px;opacity:.85;margin-top:2px;}
+  nav{display:flex;flex-wrap:wrap;gap:6px;background:var(--soft);padding:8px 14px;position:sticky;top:62px;z-index:49;border-bottom:1px solid var(--line);}
+  nav button{border:none;background:transparent;color:var(--primary);font-size:14px;padding:6px 11px;border-radius:999px;cursor:pointer;font-weight:600;}
+  nav button.on{background:var(--primary);color:#fff;}
+  main{max-width:1180px;margin:0 auto;padding:20px 18px 140px;}
+  section{display:none;}
+  section.on{display:block;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:16px;}
+  .card h2{margin:0 0 4px;font-size:21px;color:var(--primary);}
+  .card h3{margin:14px 0 6px;font-size:17px;color:var(--ink);}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 10px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;}
+  .stat{background:var(--soft);border-radius:12px;padding:12px 14px;}
+  .stat .k{font-size:13px;color:var(--muted);}
+  .stat .v{font-size:26px;font-weight:800;color:var(--primary);line-height:1.2;}
+  .stat .v.s{color:var(--second);} .stat .v.a{color:var(--accent);}
+  .stat .n{font-size:12px;color:var(--muted);}
+  label{font-size:14px;color:var(--muted);display:block;margin-bottom:4px;}
+  input[type=range]{width:100%;accent-color:var(--primary);}
+  input[type=number],input[type=text],textarea,select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:15px;font-family:inherit;background:#fff;color:var(--ink);}
+  textarea{min-height:90px;resize:vertical;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  button.act{background:var(--primary);color:#fff;border:none;border-radius:9px;padding:9px 16px;font-size:14px;font-weight:700;cursor:pointer;}
+  button.act.ghost{background:#fff;color:var(--primary);border:1px solid var(--primary);}
+  button.act.green{background:var(--second);}
+  button.act.red{background:var(--accent);}
+  .pill{display:inline-block;background:var(--soft);color:var(--primary);border-radius:999px;padding:3px 11px;font-size:13px;margin:2px 4px 2px 0;}
+  .tagok{color:var(--ok);font-weight:700;} .tagbad{color:var(--bad);font-weight:700;}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;}
+  th,td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;}
+  th{background:var(--primary);color:#fff;font-weight:700;}
+  tr:nth-child(even) td{background:#FDFAF6;}
+  .fb{margin-top:8px;padding:9px 12px;border-radius:9px;font-size:14.5px;}
+  .fb.ok{background:#E8F3EC;color:var(--ok);} .fb.no{background:#FBE9E9;color:var(--bad);}
+  .choice{border:1px solid var(--line);border-radius:11px;padding:11px 14px;margin:6px 0;cursor:pointer;background:#fff;}
+  .choice:hover{border-color:var(--primary);}
+  .choice.sel{border-color:var(--primary);background:var(--soft);font-weight:700;}
+  .vote-bar{height:26px;border-radius:6px;background:var(--soft);overflow:hidden;margin:4px 0;}
+  .vote-bar > div{height:100%;background:var(--primary);color:#fff;font-size:13px;line-height:26px;padding-left:8px;}
+  .kv{display:flex;justify-content:space-between;font-size:14px;padding:3px 0;border-bottom:1px dashed var(--line);}
+  /* 计时器 */
+  #timer{position:fixed;right:16px;bottom:16px;background:#fff;border:1px solid var(--line);border-radius:14px;
+    box-shadow:0 6px 20px rgba(0,0,0,.14);padding:12px 14px;width:250px;z-index:80;}
+  #timer .t{font-size:34px;font-weight:800;color:var(--primary);line-height:1.1;text-align:center;font-variant-numeric:tabular-nums;}
+  #timer.warn .t{color:var(--accent);}
+  #timer .btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;justify-content:center;}
+  #timer button{border:1px solid var(--line);background:#fff;color:var(--primary);border-radius:7px;padding:4px 9px;font-size:12.5px;cursor:pointer;}
+  #timer.fullscreen{position:fixed;inset:0;width:100%;height:100%;border-radius:0;display:flex;flex-direction:column;justify-content:center;align-items:center;}
+  #timer.fullscreen .t{font-size:150px;}
+  #timer.fullscreen .hint{font-size:20px;color:var(--muted);}
+  .hint{font-size:12.5px;color:var(--muted);text-align:center;}
+  .mini{font-size:13px;color:var(--muted);}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  @media(max-width:760px){ .split{grid-template-columns:1fr;} nav{top:58px;} }
+  .answerbox{background:#1F2937;color:#E7DFD3;font-family:Consolas,Monaco,monospace;font-size:13px;
+    padding:12px;border-radius:10px;white-space:pre-wrap;word-break:break-all;}
+  .sticky-note{background:var(--soft);border-left:4px solid var(--primary);padding:10px 14px;border-radius:0 8px 8px 0;font-size:14.5px;margin:10px 0;}
+  .foot{font-size:13px;color:var(--muted);text-align:center;padding:20px 0;}
+</style>
+</head>
+<body>
+<header>
+  <h1>面包房里的管理会计 · 课堂交互课件</h1>
+  <div class="sub">零基础版 · 90 分钟 · 投票 / 测算 / 计时 / 小测 —— 单文件离线可用，无需联网、无需安装</div>
+</header>
+
+<nav id="nav">
+  <button data-t="home" class="on">首页</button>
+  <button data-t="vote">① 课堂投票</button>
+  <button data-t="split">② 成本分堆</button>
+  <button data-t="d1">③ 决策一 · 涨价</button>
+  <button data-t="d2">④ 决策二 · 特殊订单</button>
+  <button data-t="d3">⑤ 决策三 · 自制外包</button>
+  <button data-t="drill">⑥ 随堂演练</button>
+  <button data-t="group">⑦ 分组任务与展示</button>
+  <button data-t="quiz">⑧ 课后小测与自评</button>
+  <button data-t="teacher">⑨ 教师看板</button>
+</nav>
+
+<main>
+
+<!-- ============ 首页 ============ -->
+<section id="home" class="on">
+  <div class="card">
+    <h2>怎么用这份课件</h2>
+    <p class="lead">学生用自己的手机 / 电脑打开本文件即可；教师把同一份文件投到大屏，用「教师看板」页统计。全部数据存在本机浏览器里，不上传任何服务器。</p>
+    <div class="grid">
+      <div class="stat"><div class="k">学生做什么</div><div class="n">投票 → 分堆 → 拖参数算数 → 小组计时 → 小测自评 → 生成答案卡</div></div>
+      <div class="stat"><div class="k">教师做什么</div><div class="n">大屏演示 + 用投票页点选计票 + 用右下计时器控场 + 回收答案卡</div></div>
+      <div class="stat"><div class="k">断网也能用</div><div class="n">本文件自带全部逻辑，没有外部依赖，也不会请求网络</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>90 分钟时间表</h2>
+    <table>
+      <tr><th>环节</th><th>时长</th><th>你在课件上做的事</th><th>带走什么</th></tr>
+      <tr><td>导入</td><td>14′</td><td>投票页第 1 题 + 成本分堆页</td><td>成本分堆卡</td></tr>
+      <tr><td>探究（三个决策）</td><td>42′</td><td>决策一 / 二 / 三页，拖滑块找临界点</td><td>决策三问模板</td></tr>
+      <tr><td>演练</td><td>10′</td><td>随堂演练页（自驾 vs 打车）</td><td>即时反馈</td></tr>
+      <tr><td>展示</td><td>12′</td><td>分组任务页计时 + 成果展示区</td><td>一页纸成果</td></tr>
+      <tr><td>小结</td><td>12′</td><td>课后小测页 + 自评 + 生成答案卡</td><td>自查清单</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h2>先选好你的组号</h2>
+    <div class="row">
+      <select id="grpSel" style="max-width:180px"></select>
+      <span class="mini">组号会写进你提交的答案卡，方便教师按组统计。</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 投票 ============ -->
+<section id="vote">
+  <div class="card">
+    <h2>① 课堂投票</h2>
+    <p class="lead">学生点选自己的答案（只存在本机）；教师在<b>大屏同一台设备</b>上用下面的「教师计票」按钮累加，实时出柱状图。</p>
+    <div id="voteList"></div>
+    <h3>教师计票（大屏用）</h3>
+    <div class="row"><span class="mini">选择题目：</span><select id="tvSel" style="max-width:420px"></select></div>
+    <div class="row" id="tvBtns" style="margin-top:8px"></div>
+    <div class="row"><button class="act ghost" onclick="resetTally()">清零本题</button>
+      <button class="act ghost" onclick="resetAllTally()">全部清零</button></div>
+  </div>
+</section>
+
+<!-- ============ 成本分堆 ============ -->
+<section id="split">
+  <div class="card">
+    <h2>② 练一练：这 5 笔钱该进哪一堆？</h2>
+    <p class="lead">点「固定」或「变动」，立刻告诉你对不对。全对 = 达成今天第 1 条学习产出。</p>
+    <div id="splitList"></div>
+    <div class="row" style="margin-top:12px">
+      <button class="act" onclick="checkSplit()">提交并查看得分</button>
+      <button class="act ghost" onclick="resetSplit()">重做</button>
+      <span id="splitScore" style="font-weight:700;color:var(--primary)"></span>
+    </div>
+    <div id="splitFb"></div>
+    <div class="sticky-note">判断口诀：<b>不做这件事，这笔钱还花不花？</b>还花 → 固定；不花 → 变动。</div>
+  </div>
+</section>
+
+<!-- ============ 决策一 ============ -->
+<section id="d1">
+  <div class="card">
+    <h2>③ 决策一 · 涨价还是不涨价</h2>
+    <p class="lead">拖动参数，所有数字实时重算。<b>先自己在纸上算一遍，再用这里验证。</b></p>
+    <div class="split">
+      <div>
+        <h3>方案 A · 不涨价</h3>
+        <label>售价（元）<span id="l_a_p"></span></label><input type="range" id="a_p" min="20" max="40" step="1" value="28">
+        <label>预计销量（个）<span id="l_a_q"></span></label><input type="range" id="a_q" min="500" max="3000" step="1" value="2000">
+      </div>
+      <div>
+        <h3>方案 B · 涨价</h3>
+        <label>售价（元）<span id="l_b_p"></span></label><input type="range" id="b_p" min="20" max="40" step="1" value="32">
+        <label>预计销量（个）<span id="l_b_q"></span></label><input type="range" id="b_q" min="500" max="3000" step="1" value="1700">
+      </div>
+    </div>
+    <div class="split">
+      <div><label>单位变动成本（元）<span id="l_vc"></span></label><input type="range" id="vc" min="5" max="20" step="0.5" value="13"></div>
+      <div><label>月固定成本（元）<span id="l_fc"></span></label><input type="range" id="fc" min="10000" max="40000" step="500" value="25000"></div>
+    </div>
+    <div class="row" style="margin-top:6px"><button class="act ghost" onclick="resetD1()">回到课堂数据</button></div>
+    <h3>方案 A / B 数据对比</h3>
+    <div id="d1out"></div>
+    <h3>本量利盈亏平衡图（A vs B）</h3>
+    <div id="d1chart"></div>
+    <div class="sticky-note" id="d1note"></div>
+  </div>
+</section>
+
+<!-- ============ 决策二 ============ -->
+<section id="d2">
+  <div class="card">
+    <h2>④ 决策二 · 18 元的团购单接不接</h2>
+    <p class="lead">把订单量拖过剩余产能，看「机会成本」什么时候冒出来；把订单价往下拖，看结论在哪一刻翻面。</p>
+    <div class="split">
+      <div><label>订单价（元/个）<span id="l_o_p"></span></label><input type="range" id="o_p" min="6" max="28" step="0.5" value="18"></div>
+      <div><label>订单量（个/月）<span id="l_o_q"></span></label><input type="range" id="o_q" min="100" max="2000" step="50" value="500"></div>
+    </div>
+    <div class="split">
+      <div><label>单位变动成本（元）<span id="l_o_vc"></span></label><input type="range" id="o_vc" min="5" max="20" step="0.5" value="10"></div>
+      <div><label>正常销量（个）<span id="l_o_base"></span></label><input type="range" id="o_base" min="500" max="2800" step="50" value="2000"></div>
+    </div>
+    <div class="split">
+      <div><label>最大产能（个）<span id="l_o_cap"></span></label><input type="range" id="o_cap" min="1000" max="4000" step="50" value="3000"></div>
+      <div><label>月固定成本（元）<span id="l_o_fc"></span></label><input type="range" id="o_fc" min="10000" max="40000" step="500" value="25000"></div>
+    </div>
+    <div class="row" style="margin-top:6px"><button class="act ghost" onclick="resetD2()">回到课堂数据</button></div>
+    <div class="grid" style="margin-top:14px" id="d2out"></div>
+    <div class="sticky-note" id="d2note"></div>
+  </div>
+</section>
+
+<!-- ============ 决策三 ============ -->
+<section id="d3">
+  <div class="card">
+    <h2>⑤ 决策三 · 自己做还是外包</h2>
+    <p class="lead">拖动销量，看「推荐方案」在哪一刻翻面 —— 那个点就是成本无差别点。</p>
+    <div class="split">
+      <div><label>月销量（个）<span id="l_m_q"></span></label><input type="range" id="m_q" min="200" max="3000" step="50" value="2000"></div>
+      <div><label>自制单位变动成本（元）<span id="l_m_vc"></span></label><input type="range" id="m_vc" min="5" max="20" step="0.5" value="10"></div>
+    </div>
+    <div class="split">
+      <div><label>自制固定成本（元）<span id="l_m_f1"></span></label><input type="range" id="m_f1" min="10000" max="40000" step="500" value="25000"></div>
+      <div><label>外包单价（元/个）<span id="l_m_p"></span></label><input type="range" id="m_p" min="8" max="25" step="0.5" value="15"></div>
+    </div>
+    <div><label>外包后固定成本（元）<span id="l_m_f2"></span></label><input type="range" id="m_f2" min="8000" max="35000" step="500" value="19000"></div>
+    <div class="row" style="margin-top:6px"><button class="act ghost" onclick="resetD3()">回到课堂数据</button></div>
+    <div class="grid" style="margin-top:14px" id="d3out"></div>
+    <h3>两条总成本线</h3>
+    <div id="d3chart"></div>
+    <div class="sticky-note" id="d3note"></div>
+  </div>
+</section>
+
+<!-- ============ 演练 ============ -->
+<section id="drill">
+  <div class="card">
+    <h2>⑥ 随堂演练 · 你的生活里也有临界点</h2>
+    <p class="lead">把方法搬出面包房。算完立刻对答案。</p>
+    <h3>题 1 · 自己开车还是全程打车</h3>
+    <div class="split">
+      <div><label>开车：月固定成本（元）<span id="l_c_f"></span></label><input type="range" id="c_f" min="300" max="3000" step="50" value="1200"></div>
+      <div><label>开车：每公里变动（元）<span id="l_c_v"></span></label><input type="range" id="c_v" min="0.2" max="2" step="0.05" value="0.6"></div>
+    </div>
+    <div><label>打车：每公里（元）<span id="l_c_t"></span></label><input type="range" id="c_t" min="1" max="4" step="0.1" value="2.2"></div>
+    <div class="grid" id="c_out" style="margin-top:10px"></div>
+    <div class="row"><label style="max-width:200px">你每月大概跑（公里）</label>
+      <input type="number" id="c_km" value="500" style="max-width:140px">
+      <button class="act" onclick="checkDrill1()">看我该怎么选</button></div>
+    <div id="c_fb"></div>
+
+    <h3>题 2 · 健身房年卡</h3>
+    <div class="split">
+      <div><label>年卡价（元）<span id="l_g_f"></span></label><input type="range" id="g_f" min="600" max="5000" step="100" value="2400"></div>
+      <div><label>按次单价（元）<span id="l_g_v"></span></label><input type="range" id="g_v" min="10" max="100" step="5" value="40"></div>
+    </div>
+    <div class="grid" id="g_out" style="margin-top:10px"></div>
+    <div class="row"><label style="max-width:220px">你一年大概去（次）</label>
+      <input type="number" id="g_n" value="30" style="max-width:140px">
+      <button class="act" onclick="checkDrill2()">看我该怎么选</button></div>
+    <div id="g_fb"></div>
+  </div>
+</section>
+
+<!-- ============ 分组 ============ -->
+<section id="group">
+  <div class="card">
+    <h2>⑦ 分组任务 · 计时与成果展示</h2>
+    <p class="lead">右下角计时器可全局使用；这里还有专门的「5 分钟讨论 / 90 秒路演」快捷键。</p>
+    <div class="row">
+      <button class="act" onclick="startTimer(300,'小组讨论')">开始 5 分钟讨论</button>
+      <button class="act" onclick="startTimer(90,'路演倒计时')">开始 90 秒路演</button>
+      <button class="act ghost" onclick="pauseTimer()">暂停</button>
+      <button class="act ghost" onclick="resetTimer()">重置</button>
+      <button class="act red" onclick="toggleFull()">全屏投影计时</button>
+    </div>
+    <h3>成果展示区（四步模板 · 自动保存）</h3>
+    <div class="row"><span class="mini">当前组号：</span><select id="grpSel2" style="max-width:160px"></select></div>
+    <label>① 场景：我们选的是谁的决策？</label><textarea id="w1" placeholder="例：学校门口奶茶店，要不要接社团的团购单"></textarea>
+    <label>② 分两堆：哪些是固定成本，哪些是变动成本？</label><textarea id="w2" placeholder="固定：房租 3000、店员底薪 4000；变动：原料 4 元/杯、杯子 0.5 元"></textarea>
+    <label>③ 报一个数：保本量 / 边际贡献 / 临界点</label><textarea id="w3" placeholder="单位边际贡献 8 元，月保本量 = 7000/8 ≈ 875 杯"></textarea>
+    <label>④ 给结论：低于 X 选 A，高于 X 选 B（再写一个非财务考量）</label><textarea id="w4" placeholder="团购价低于 4.5 元就不接；另外要考虑高峰期挤掉散客的体验"></textarea>
+    <div class="row" style="margin-top:10px">
+      <button class="act" onclick="saveWork()">保存</button>
+      <button class="act green" onclick="exportWork()">导出本组成果（复制到剪贴板）</button>
+      <button class="act ghost" onclick="printWork()">打印 / 存为 PDF</button>
+    </div>
+    <div id="workFb" class="mini"></div>
+  </div>
+</section>
+
+<!-- ============ 小测 ============ -->
+<section id="quiz">
+  <div class="card">
+    <h2>⑧ 课后小测（5 题）+ 学习收获自评</h2>
+    <p class="lead">做完点「生成我的答案卡」，把卡片交到学习通 / 问卷星即可。教师用「教师看板」批量统计。</p>
+    <div id="quizList"></div>
+    <h3>学习收获自评（1 = 完全不会，4 = 很熟练）</h3>
+    <div id="selfList"></div>
+    <label>一句话收获（选填）</label>
+    <textarea id="gain" placeholder="例：原来固定成本在决策里根本不该算进去"></textarea>
+    <div class="row" style="margin-top:12px">
+      <button class="act" onclick="gradeQuiz()">提交并查看结果</button>
+      <button class="act green" onclick="makeCard()">生成我的答案卡</button>
+      <button class="act ghost" onclick="downloadCard()">下载答案卡 .txt</button>
+      <button class="act ghost" onclick="resetQuiz()">重做</button>
+    </div>
+    <div id="quizFb"></div>
+    <div id="cardBox"></div>
+  </div>
+</section>
+
+<!-- ============ 教师看板 ============ -->
+<section id="teacher">
+  <div class="card">
+    <h2>⑨ 教师看板 · 回收与统计</h2>
+    <p class="lead">把全班学生的「答案卡」文本逐段粘贴进来（一行/一段一张），点解析即可得到统计结果。</p>
+    <textarea id="pasteBox" placeholder="把学生提交的答案卡粘贴到这里，每张卡一行"></textarea>
+    <div class="row" style="margin-top:10px">
+      <button class="act" onclick="parseCards()">解析并统计</button>
+      <button class="act green" onclick="exportCSV()">导出 CSV</button>
+      <button class="act ghost" onclick="document.getElementById('pasteBox').value=''">清空</button>
+    </div>
+    <div id="dashOut"></div>
+  </div>
+  <div class="card">
+    <h2>课后小测与自评，应该怎么收集？</h2>
+    <table>
+      <tr><th>方案</th><th>怎么做</th><th>适用</th><th>要提前准备什么</th></tr>
+      <tr><td><b>A. 答案卡 + 学习通（推荐）</b></td><td>学生点「生成我的答案卡」→ 复制 → 粘贴到学习通作业 / 问卷星；教师在本页批量粘贴统计</td><td>无网络、无服务器、50 人以上</td><td>在学习通建一个"文本提交"作业</td></tr>
+      <tr><td><b>B. 截图提交</b></td><td>学生截图结果页（含分数与自评）上传学习通</td><td>快速、可留痕</td><td>作业开启图片上传</td></tr>
+      <tr><td><b>C. 现场读号</b></td><td>下课前 2 分钟，教师念组号，学生报分数，教师在本页手动录入</td><td>时间紧、设备不足</td><td>一张纸质名单</td></tr>
+      <tr><td><b>D. 表单直连（可选）</b></td><td>把本文件挂到学校静态空间，在 <code>makeCard()</code> 里把答案 POST 到腾讯问卷/问卷星接口</td><td>想自动化统计</td><td>需要教师提供一个可写接口地址（占位符，勿填未授权地址）</td></tr>
+    </table>
+    <div class="sticky-note">提示：本课件<b>不联网、不上传</b>，所有答案只存在学生本机浏览器（localStorage）。
+    若要自动汇总，必须由教师自行配置收集端，切勿把答案发往未授权地址。</div>
+  </div>
+</section>
+
+<div class="foot">面包房里的管理会计 · 零基础版交互课件 ｜ 单文件离线可用 ｜ 数据仅存本机</div>
+</main>
+
+<div id="timer">
+  <div class="t" id="tDisp">05:00</div>
+  <div class="hint" id="tHint">计时器</div>
+  <div class="btns">
+    <button onclick="startTimer(120,'2 分钟')">2′</button>
+    <button onclick="startTimer(300,'5 分钟')">5′</button>
+    <button onclick="startTimer(600,'10 分钟')">10′</button>
+    <button onclick="startTimer(90,'90 秒路演')">90″</button>
+    <button onclick="pauseTimer()">暂停</button>
+    <button onclick="resetTimer()">重置</button>
+    <button onclick="toggleFull()">全屏</button>
+  </div>
+</div>
+
+<script>
+/* ---------- 工具 ---------- */
+function $(id){return document.getElementById(id);}
+function fmt(n){ if(!isFinite(n)) return '—'; return Math.round(n).toLocaleString('zh-CN'); }
+function fmt2(n){ if(!isFinite(n)) return '—'; return (Math.round(n*10)/10).toLocaleString('zh-CN'); }
+function pct(n){ if(!isFinite(n)) return '—'; return (Math.round(n*1000)/10)+'%'; }
+function save(k,v){ try{localStorage.setItem('ma_'+k,JSON.stringify(v));}catch(e){} }
+function load(k,d){ try{var s=localStorage.getItem('ma_'+k); return s?JSON.parse(s):d;}catch(e){return d;} }
+
+/* ---------- 导航 ---------- */
+var TABS=['home','vote','split','d1','d2','d3','drill','group','quiz','teacher'];
+document.querySelectorAll('#nav button').forEach(function(b){
+  b.onclick=function(){
+    TABS.forEach(function(t){ $(''+t).classList.toggle('on', t===b.dataset.t); });
+    document.querySelectorAll('#nav button').forEach(function(x){x.classList.toggle('on', x===b);});
+    window.scrollTo(0,0);
+  };
+});
+
+/* ---------- 组号 ---------- */
+(function(){
+  var opts='';
+  for(var i=1;i<=9;i++){opts+='<option value="'+i+'">第 '+i+' 组</option>';}
+  $('grpSel').innerHTML=opts; $('grpSel2').innerHTML=opts;
+  var g=load('grp',1); $('grpSel').value=g; $('grpSel2').value=g;
+  $('grpSel').onchange=function(){save('grp',this.value);$('grpSel2').value=this.value;};
+  $('grpSel2').onchange=function(){save('grp',this.value);$('grpSel').value=this.value;};
+})();
+function curGrp(){return $('grpSel').value;}
+
+/* ---------- 计时器 ---------- */
+var tk=null, tLeft=300, tTotal=300, tRunning=false;
+function fmtT(s){var m=Math.floor(s/60),r=s%60;return (m<10?'0':'')+m+':'+(r<10?'0':'')+r;}
+function setDisp(){$('tDisp').textContent=fmtT(tLeft); $('timer').classList.toggle('warn', tLeft<=15 && tLeft>0);}
+function startTimer(sec,label){ tTotal=sec; tLeft=sec; tRunning=true; $('tHint').textContent=label||'倒计时';
+  clearInterval(tk); setDisp();
+  tk=setInterval(function(){ if(!tRunning) return; tLeft--; setDisp();
+    if(tLeft<=0){clearInterval(tk);tRunning=false;$('tHint').textContent='时间到！';}
+  },1000); }
+function pauseTimer(){tRunning=false; if(tk)clearInterval(tk); $('tHint').textContent='已暂停';}
+function resetTimer(){tRunning=false; if(tk)clearInterval(tk); tLeft=tTotal; $('tHint').textContent='计时器'; setDisp();}
+function toggleFull(){ $('timer').classList.toggle('fullscreen'); }
+
+/* ---------- 投票 ---------- */
+var VOTES=[
+  {id:'v1',q:'决策一：面粉涨价后，老周该不该涨价？',opts:['A 不涨价，保住销量','B 涨价到 32 元','C 先涨一点点，看反应']},
+  {id:'v2',q:'决策二：18 元的团购单（成本 22.5 元），接不接？',opts:['A 接，反正有空产能','B 不接，低于成本','C 只接一半试试']},
+  {id:'v3',q:'决策三：自己做 10 元 vs 外包 15 元，哪个划算？',opts:['A 自己做，明摆着便宜','B 外包，还省了人工','C 要看卖多少个']},
+  {id:'v4',q:'破冰：上个月你花得最"冤"的一笔钱属于哪一类？',opts:['A 每月躲不掉的（房租/会员）','B 用一次花一次的（外卖/打车）']}
+];
+var myVotes=load('votes',{}), tally=load('tally',{});
+function renderVotes(){
+  var h='';
+  VOTES.forEach(function(v){
+    h+='<div class="card" style="box-shadow:none"><h3>'+v.q+'</h3>';
+    v.opts.forEach(function(o,i){
+      h+='<div class="choice'+(myVotes[v.id]===i?' sel':'')+'" onclick="pickVote(\''+v.id+'\','+i+')">'+o+'</div>';
+    });
+    h+='<div class="mini">你已投：'+(myVotes[v.id]!=null?VOTES_ESC(v,myVotes[v.id]):'（未投）')+'</div></div>';
+  });
+  $('voteList').innerHTML=h;
+  var s=''; VOTES.forEach(function(v){ s+='<option value="'+v.id+'">'+v.q+'</option>'; });
+  $('tvSel').innerHTML=s; renderTally();
+}
+function VOTES_ESC(v,i){ return v.opts[i]; }
+function pickVote(id,i){ myVotes[id]=i; save('votes',myVotes); renderVotes(); }
+function renderTally(){
+  var id=$('tvSel').value, v=VOTES.filter(function(x){return x.id===id;})[0];
+  var t=tally[id]||{}, total=0; v.opts.forEach(function(_,i){total+=(t[i]||0);});
+  // 教师计票：每选项一个「加 1 票」按钮
+  var btn='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px">';
+  v.opts.forEach(function(o,i){
+    btn+='<button class="act" style="padding:7px 12px" onclick="addTally(\''+id+'\','+i+')">给 '+String.fromCharCode(65+i)+' 加 1 票</button>';
+  });
+  btn+='</div>';
+  // 柱状图
+  var bars='<div style="display:flex;flex-wrap:wrap;gap:14px">';
+  v.opts.forEach(function(o,i){
+    var c=t[i]||0, w= total? Math.round(c/total*100):0;
+    bars+='<div style="flex:1;min-width:200px"><div class="kv"><span>'+String.fromCharCode(65+i)+' · '+o+'</span><span>'+c+' 票（'+w+'%）</span></div>'
+      +'<div class="vote-bar"><div style="width:'+w+'%">'+(w>12?c+'':'')+'</div></div></div>';
+  });
+  bars+='</div><div class="mini" style="margin-top:6px">合计 '+total+' 票</div>';
+  $('tvBtns').innerHTML=btn+bars;
+}
+function addTally(id,i){ tally[id]=tally[id]||{}; tally[id][i]=(tally[id][i]||0)+1; save('tally',tally); renderTally(); }
+function resetTally(){ delete tally[$('tvSel').value]; save('tally',tally); renderTally(); }
+function resetAllTally(){ tally={}; save('tally',tally); renderTally(); }
+$('tvSel').onchange=renderTally;
+
+/* ---------- 成本分堆 ---------- */
+var SPLIT=[
+  {t:'面包房每月房租 8,000 元',a:'fix',why:'不管卖多少都要付'},
+  {t:'做一个吐司用的面粉黄油 10 元',a:'var',why:'做一个才花一份'},
+  {t:'店长的固定月薪 6,000 元',a:'fix',why:'与销量无关'},
+  {t:'每个吐司的包装盒 0.8 元',a:'var',why:'跟着个数走'},
+  {t:'外卖平台按单抽成 3 元/单',a:'var',why:'有单才有'}
+];
+var mySplit=load('split',{});
+function renderSplit(){
+  var h='';
+  SPLIT.forEach(function(s,i){
+    h+='<div class="card" style="box-shadow:none;padding:12px 14px"><div style="font-weight:600">'+s.t+'</div><div class="row" style="margin-top:6px">'
+      +'<button class="act '+(mySplit[i]==='fix'?'':'ghost')+'" onclick="setSplit('+i+',\'fix\')">固定成本</button>'
+      +'<button class="act '+(mySplit[i]==='var'?'green':'ghost')+'" onclick="setSplit('+i+',\'var\')">变动成本</button></div></div>';
+  });
+  $('splitList').innerHTML=h;
+}
+function setSplit(i,v){ mySplit[i]=v; save('split',mySplit); renderSplit(); }
+function checkSplit(){
+  var ok=0,h='';
+  SPLIT.forEach(function(s,i){
+    var good = mySplit[i]===s.a; if(good) ok++;
+    h+='<div class="fb '+(good?'ok':'no')+'">'+(good?'✓':'✕')+' '+s.t+' —— '+(good?'正确':'正确答案是「'+(s.a==='fix'?'固定成本':'变动成本')+'」')+'：'+s.why+'</div>';
+  });
+  $('splitFb').innerHTML=h;
+  $('splitScore').textContent='得分：'+ok+' / '+SPLIT.length+'（达标线 5/5）';
+  save('splitScore',ok);
+}
+function resetSplit(){ mySplit={}; save('split',mySplit); $('splitFb').innerHTML=''; $('splitScore').textContent=''; renderSplit(); }
+
+/* ---------- 决策一 ---------- */
+function d1calc(){
+  var ap=+$('a_p').value, aq=+$('a_q').value, bp=+$('b_p').value, bq=+$('b_q').value, vc=+$('vc').value, fc=+$('fc').value;
+  $('l_a_p').textContent=' = '+ap; $('l_a_q').textContent=' = '+fmt(aq);
+  $('l_b_p').textContent=' = '+bp; $('l_b_q').textContent=' = '+fmt(bq);
+  $('l_vc').textContent=' = '+vc; $('l_fc').textContent=' = '+fmt(fc);
+  var cmA=ap-vc, cmB=bp-vc;
+  var beA= cmA>0? fc/cmA : NaN, beB= cmB>0? fc/cmB : NaN;
+  var prA= cmA*aq-fc, prB= cmB*bq-fc;
+  var smA= aq>0? (aq-beA)/aq : NaN, smB= bq>0? (bq-beB)/bq : NaN;
+  // 临界销量：B 方案利润 = A 方案利润（给定 A 的销量 aq）
+  var crit = cmB>0 ? (prA+fc)/cmB : NaN;
+  var rec = prB>prA ? '涨价（方案 B）' : (prA>prB?'不涨价（方案 A）':'两方案一样');
+  // —— 方案 A / B 并排对比表 ——
+  var rows=[
+    {k:'售价（元/个）',       a:ap,     b:bp,     fa:ap,          fb:bp,          dir:0, tip:''},
+    {k:'预计销量（个）',     a:aq,     b:bq,     fa:fmt(aq),      fb:fmt(bq),      dir:0, tip:''},
+    {k:'单位边际贡献（元）', a:cmA,    b:cmB,    fa:fmt2(cmA),    fb:fmt2(cmB),    dir:0, tip:''},
+    {k:'边际贡献总额（元）', a:cmA*aq, b:cmB*bq, fa:fmt(cmA*aq),  fb:fmt(cmB*bq),  dir:0, tip:''},
+    {k:'保本量（个）',       a:beA,    b:beB,    fa:fmt(beA),     fb:fmt(beB),     dir:-1, tip:'越低越好'},
+    {k:'安全边际率',         a:smA,    b:smB,    fa:pct(smA),     fb:pct(smB),     dir:1, tip:'越高越稳'},
+    {k:'预计利润（元）',     a:prA,    b:prB,    fa:fmt(prA),     fb:fmt(prB),     dir:1, tip:'越高越好'}
+  ];
+  var h='<table><thead><tr><th>指标</th><th>方案 A · 不涨价</th><th>方案 B · 涨价</th><th>对比</th></tr></thead><tbody>';
+  rows.forEach(function(r){
+    var better='';
+    if(r.dir===-1){ better=(r.a<r.b)?'A':(r.b<r.a?'B':''); }
+    else if(r.dir===1){ better=(r.a>r.b)?'A':(r.b>r.a?'B':''); }
+    h+='<tr><td style="font-weight:600;white-space:nowrap">'+r.k+'</td>'
+      +'<td'+(better==='A'?' style="background:#E8F3EC;font-weight:700"':'')+'>'+r.fa+'</td>'
+      +'<td'+(better==='B'?' style="background:#E8F3EC;font-weight:700"':'')+'>'+r.fb+'</td>'
+      +'<td class="mini">'+(r.tip||'')+'</td></tr>';
+  });
+  h+='<tr><td style="font-weight:700">结论</td>'
+    +'<td colspan="2" style="font-weight:700;color:var(--second)">当前推荐：'+rec+'</td>'
+    +'<td class="mini">B 利润 '+fmt(prB)+' / A 利润 '+fmt(prA)+'</td></tr>';
+  h+='</tbody></table>';
+  $('d1out').innerHTML=h;
+  $('d1note').innerHTML='<b>怎么读这张图：</b>横轴是销量、纵轴是金额。两条收入线都从原点出发，斜率=售价（绿色方案 B 更陡）；成本线从固定成本 <b>'+fmt(fc)+' 元</b>处向右上方走。'
+    +'收入线与成本线的交点就是<b>保本点</b>——A 保本约 <b>'+fmt(beA)+'</b> 个，B 保本约 <b>'+fmt(beB)+'</b> 个，<b>涨价后保本点更靠左（更容易打平）</b>。'
+    +'<br><b>当前结论：'+rec+'。</b>把方案 B 销量拖到约 <b>'+fmt(crit)+'</b> 个时，B 利润与 A 持平；再往上 B 更赚、再往下 A 更赚。';
+  drawD1(ap,bp,vc,fc,beA,beB,crit);
+  var d={ap:ap,aq:aq,bp:bp,bq:bq,vc:vc,fc:fc}; save('d1',d);
+}
+function stat(k,v,n,cls){
+  return '<div class="stat"><div class="k">'+k+'</div><div class="v '+(cls||'')+'">'+v+'</div>'+(n?'<div class="n">'+n+'</div>':'')+'</div>';
+}
+function drawD1(ap,bp,vc,fc,beA,beB,crit){
+  var W=820,H=430,pl=72,pb=52,pt=24,pr=24, maxQ=3000;
+  var maxY=Math.max(ap,bp)*maxQ*1.05;
+  function X(q){return pl+(q/maxQ)*(W-pl-pr);}
+  function Y(v){return H-pb-(v/maxY)*(H-pb-pt);}
+  var s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-width:820px" font-family="inherit">';
+  // 坐标轴
+  s+='<line x1="'+pl+'" y1="'+pt+'" x2="'+pl+'" y2="'+(H-pb)+'" stroke="#1F2937" stroke-width="2"/>';
+  s+='<line x1="'+pl+'" y1="'+(H-pb)+'" x2="'+(W-pr)+'" y2="'+(H-pb)+'" stroke="#1F2937" stroke-width="2"/>';
+  // X 轴刻度
+  [0,1000,2000,3000].forEach(function(q){
+    s+='<line x1="'+X(q)+'" y1="'+(H-pb)+'" x2="'+X(q)+'" y2="'+(H-pb+4)+'" stroke="#1F2937"/>';
+    s+='<text x="'+X(q)+'" y="'+(H-pb+18)+'" font-size="12" fill="#6B7280" text-anchor="middle">'+fmt(q)+'</text>';
+  });
+  // Y 轴刻度
+  var yStep=Math.ceil(maxY/4/10000)*10000;
+  for(var v=0;v<=maxY;v+=yStep){
+    s+='<line x1="'+pl+'" y1="'+Y(v)+'" x2="'+(pl-4)+'" y2="'+Y(v)+'" stroke="#1F2937"/>';
+    s+='<text x="'+(pl-8)+'" y="'+(Y(v)+4)+'" font-size="12" fill="#6B7280" text-anchor="end">'+fmt(v)+'</text>';
+  }
+  // 轴标题
+  s+='<text x="'+((W+pl)/2)+'" y="'+(H-8)+'" font-size="13" fill="#1F2937" text-anchor="middle">月销量（个）</text>';
+  s+='<text x="18" y="'+((H-pb+pt)/2)+'" font-size="13" fill="#1F2937" text-anchor="middle" transform="rotate(-90 18 '+((H-pb+pt)/2)+')">金额（元）</text>';
+  // 亏损区（成本线下方）
+  s+='<polygon points="'+X(0)+','+Y(0)+' '+X(0)+','+Y(fc)+' '+X(maxQ)+','+Y(vc*maxQ+fc)+' '+X(maxQ)+','+Y(0)+'" fill="#FBE9E9"/>';
+  // 盈利区（成本线上方、B 收入线下方）
+  if(isFinite(beB)&&beB<maxQ){
+    s+='<polygon points="'+X(beB)+','+Y(bp*beB)+' '+X(maxQ)+','+Y(vc*maxQ+fc)+' '+X(maxQ)+','+Y(bp*maxQ)+'" fill="#E8F3EC"/>';
+  }
+  // 成本线
+  s+='<line x1="'+X(0)+'" y1="'+Y(fc)+'" x2="'+X(maxQ)+'" y2="'+Y(vc*maxQ+fc)+'" stroke="#8B7355" stroke-width="3"/>';
+  // 收入线 A
+  s+='<line x1="'+X(0)+'" y1="'+Y(0)+'" x2="'+X(maxQ)+'" y2="'+Y(ap*maxQ)+'" stroke="#B45309" stroke-width="3"/>';
+  // 收入线 B
+  s+='<line x1="'+X(0)+'" y1="'+Y(0)+'" x2="'+X(maxQ)+'" y2="'+Y(bp*maxQ)+'" stroke="#166534" stroke-width="3"/>';
+  // 保本点
+  if(isFinite(beA)&&beA<maxQ){
+    s+='<circle cx="'+X(beA)+'" cy="'+Y(ap*beA)+'" r="6" fill="#B45309"/>';
+    s+='<text x="'+X(beA)+'" y="'+(Y(ap*beA)-10)+'" font-size="12" fill="#B45309" text-anchor="middle">A 保本 '+fmt(beA)+'</text>';
+  }
+  if(isFinite(beB)&&beB<maxQ){
+    s+='<circle cx="'+X(beB)+'" cy="'+Y(bp*beB)+'" r="6" fill="#166534"/>';
+    s+='<text x="'+X(beB)+'" y="'+(Y(bp*beB)+18)+'" font-size="12" fill="#166534" text-anchor="middle">B 保本 '+fmt(beB)+'</text>';
+  }
+  s+='</svg>';
+  s+='<div class="mini" style="margin-top:6px">'
+    +'<span class="pill">总成本线（棕）</span>'
+    +'<span class="pill" style="background:#F3EADF;color:#8B7355">A 收入线（橙）</span>'
+    +'<span class="pill" style="background:#E8F3EC;color:#166534">B 收入线（绿）</span>'
+    +'<span class="pill" style="background:#FBE9E9;color:#DC2626">亏损区</span>'
+    +'<span class="pill" style="background:#E8F3EC;color:#166534">盈利区</span></div>';
+  $('d1chart').innerHTML=s;
+}
+function resetD1(){ $('a_p').value=28;$('a_q').value=2000;$('b_p').value=32;$('b_q').value=1700;$('vc').value=13;$('fc').value=25000; d1calc(); }
+['a_p','a_q','b_p','b_q','vc','fc'].forEach(function(id){ $(id).oninput=d1calc; });
+
+/* ---------- 决策二 ---------- */
+function d2calc(){
+  var op=+$('o_p').value, oq=+$('o_q').value, vc=+$('o_vc').value, base=+$('o_base').value, cap=+$('o_cap').value, fc=+$('o_fc').value;
+  $('l_o_p').textContent=' = '+op; $('l_o_q').textContent=' = '+fmt(oq);
+  $('l_o_vc').textContent=' = '+vc; $('l_o_base').textContent=' = '+fmt(base);
+  $('l_o_cap').textContent=' = '+fmt(cap); $('l_o_fc').textContent=' = '+fmt(fc);
+  var spare = Math.max(0, cap-base);
+  var fullUnit = vc + (base>0? fc/base : 0);
+  var fullRes = (op-fullUnit)*oq;                 // 完全成本法（老周的错误算法）
+  var over = Math.max(0, oq-spare);               // 超出剩余产能的部分
+  var cm = op-vc;
+  var inside = Math.min(oq, spare);
+  var marginRes = cm*inside;                      // 剩余产能内的净增量
+  var NORMAL_PRICE = 28;                          // 门店正常售价，用于计算被挤掉订单的机会成本
+  var oppCost = over * (NORMAL_PRICE - vc);       // 被挤掉的正常销售边际贡献
+  var netRes = marginRes + over*cm - oppCost;     // 考虑机会成本后的净增量
+  var critPrice = vc;
+  var h='';
+  h+=stat('剩余产能',fmt(spare)+' 个','产能 '+fmt(cap)+' − 正常 '+fmt(base));
+  h+=stat('单位完全成本',fmt2(fullUnit)+' 元','变动 '+vc+' + 固定分摊 '+fmt2(fc/base));
+  h+=stat('完全成本法结论',fmt(fullRes)+' 元','（老周的算法，不推荐）', fullRes<0?'a':'s');
+  h+=stat('订单单位边际贡献',fmt2(cm)+' 元','订单价 '+op+' − 变动 '+vc);
+  h+=stat('是否有机会成本',over>0?'有（超 '+fmt(over)+' 个）':'没有',over>0?'要挤掉正常顾客':'还在剩余产能内', over>0?'a':'s');
+  h+=stat('机会成本',fmt(oppCost)+' 元','挤掉部分的边际贡献');
+  h+=stat('边际贡献法净增量',fmt(netRes)+' 元','决策时应看的数', netRes>0?'s':'a');
+  h+=stat('临界订单价',fmt2(critPrice)+' 元','低于此价不该接','a');
+  $('d2out').innerHTML=h;
+  var verdict = netRes>0 ? '应该接' : '不应该接';
+  $('d2note').innerHTML='当前结论：<b>'+verdict+'</b>（净增量 '+fmt(netRes)+' 元）。'
+    +'把「订单量」拖到超过剩余产能 <b>'+fmt(spare)+'</b> 个，机会成本就出现了；把「订单价」拖到 <b>'+fmt2(critPrice)+'</b> 元以下，结论立刻翻面。';
+  save('d2',{op:op,oq:oq,vc:vc,base:base,cap:cap,fc:fc});
+}
+function resetD2(){ $('o_p').value=18;$('o_q').value=500;$('o_vc').value=10;$('o_base').value=2000;$('o_cap').value=3000;$('o_fc').value=25000; d2calc(); }
+['o_p','o_q','o_vc','o_base','o_cap','o_fc'].forEach(function(id){ $(id).oninput=d2calc; });
+
+/* ---------- 决策三 ---------- */
+function d3calc(){
+  var q=+$('m_q').value, vc=+$('m_vc').value, f1=+$('m_f1').value, p=+$('m_p').value, f2=+$('m_f2').value;
+  $('l_m_q').textContent=' = '+fmt(q); $('l_m_vc').textContent=' = '+vc;
+  $('l_m_f1').textContent=' = '+fmt(f1); $('l_m_p').textContent=' = '+p; $('l_m_f2').textContent=' = '+fmt(f2);
+  var c1=vc*q+f1, c2=p*q+f2;
+  var diff = p-vc, fixGap = f1-f2;
+  var indiff = diff>0 ? fixGap/diff : NaN;
+  var rec = c1<c2?'自制' : (c2<c1?'外包':'两方案一样');
+  var h='';
+  h+=stat('自制总成本',fmt(c1)+' 元',vc+'×'+fmt(q)+' + '+fmt(f1));
+  h+=stat('外包总成本',fmt(c2)+' 元',p+'×'+fmt(q)+' + '+fmt(f2));
+  h+=stat('差额',fmt(Math.abs(c1-c2))+' 元',(c1<c2?'自制省':'外包省'));
+  h+=stat('成本无差别点',fmt(indiff)+' 个/月','低于它选外包，高于它选自制','a');
+  h+=stat('当前推荐',rec,'当前销量 '+fmt(q)+' 个', c1<c2?'s':'a');
+  $('d3out').innerHTML=h;
+  $('d3note').innerHTML='把「月销量」滑块拖过 <b>'+fmt(indiff)+'</b>，看「当前推荐」两个字什么时候变色 —— 那就是决策翻面的点。';
+  drawD3(vc,f1,p,f2,indiff,q);
+  save('d3',{q:q,vc:vc,f1:f1,p:p,f2:f2});
+}
+function drawD3(vc,f1,p,f2,indiff,q){
+  var W=760,H=300,pad=66,maxQ=3000,maxY=Math.max(vc,p)*maxQ+Math.max(f1,f2);
+  function X(x){return pad+(x/maxQ)*(W-pad-30);}
+  function niceStep(rng){ var e=Math.floor(Math.log10(rng)); var fr=rng/Math.pow(10,e); var nf; if(fr<=1)nf=1; else if(fr<=2)nf=2; else if(fr<=5)nf=5; else nf=10; return nf*Math.pow(10,e); }
+  var ystep=niceStep(maxY/6), ymax=Math.ceil(maxY/ystep)*ystep;
+  function Y(v){return H-40-(v/ymax)*(H-40-25);}
+  var s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" style="max-width:760px;font-family:inherit">';
+  // 坐标轴
+  s+='<line x1="'+pad+'" y1="'+(H-40)+'" x2="'+(W-30)+'" y2="'+(H-40)+'" stroke="#1F2937" stroke-width="2"/>';
+  s+='<line x1="'+pad+'" y1="25" x2="'+pad+'" y2="'+(H-40)+'" stroke="#1F2937" stroke-width="2"/>';
+  // X轴刻度（销量 0~3000，每 500 一档）
+  [0,500,1000,1500,2000,2500,3000].forEach(function(t){
+    var x=X(t);
+    s+='<line x1="'+x+'" y1="'+(H-40)+'" x2="'+x+'" y2="'+(H-40+5)+'" stroke="#6B7280" stroke-width="1"/>';
+    s+='<text x="'+x+'" y="'+(H-40+18)+'" font-size="11" text-anchor="middle" fill="#4B5563">'+fmt(t)+'</text>';
+  });
+  s+='<text x="'+((pad+(W-30))/2)+'" y="'+(H-6)+'" font-size="12" text-anchor="middle" fill="#1F2937">月销量（个）</text>';
+  // Y轴刻度（金额，自适应档距，顶部对齐为整数倍）
+  for(var v=0; v<=ymax+0.5; v+=ystep){
+    var y=Y(v);
+    s+='<line x1="'+(pad-5)+'" y1="'+y+'" x2="'+pad+'" y2="'+y+'" stroke="#6B7280" stroke-width="1"/>';
+    s+='<text x="'+(pad-8)+'" y="'+(y+4)+'" font-size="11" text-anchor="end" fill="#4B5563">'+fmt(v)+'</text>';
+  }
+  s+='<text x="16" y="142" font-size="12" text-anchor="middle" fill="#1F2937" transform="rotate(-90 16 142)">总成本（元）</text>';
+  // 数据线
+  s+='<line x1="'+X(0)+'" y1="'+Y(f1)+'" x2="'+X(maxQ)+'" y2="'+Y(vc*maxQ+f1)+'" stroke="#B45309" stroke-width="4"/>';
+  s+='<line x1="'+X(0)+'" y1="'+Y(f2)+'" x2="'+X(maxQ)+'" y2="'+Y(p*maxQ+f2)+'" stroke="#166534" stroke-width="4"/>';
+  if(isFinite(indiff)&&indiff>0&&indiff<maxQ){
+    s+='<line x1="'+X(indiff)+'" y1="'+(H-40)+'" x2="'+X(indiff)+'" y2="40" stroke="#DC2626" stroke-width="2" stroke-dasharray="6 5"/>';
+    s+='<circle cx="'+X(indiff)+'" cy="'+Y(vc*indiff+f1)+'" r="7" fill="#DC2626"/>';
+  }
+  s+='<line x1="'+X(q)+'" y1="'+(H-40)+'" x2="'+X(q)+'" y2="30" stroke="#8B7355" stroke-width="2"/>';
+  s+='</svg>';
+  s+='<div class="mini" style="margin-top:4px">'
+    +'<span class="pill">自制总成本线</span>'
+    +'<span class="pill" style="background:#E8F3EC;color:#166534">外包总成本线</span>'
+    +'<span class="pill" style="background:#FBE9E9;color:#DC2626">无差别点</span>'
+    +'<span class="pill" style="background:#F3EADF;color:#8B7355">当前销量</span></div>';
+  $('d3chart').innerHTML=s;
+}
+function resetD3(){ $('m_q').value=2000;$('m_vc').value=10;$('m_f1').value=25000;$('m_p').value=15;$('m_f2').value=19000; d3calc(); }
+['m_q','m_vc','m_f1','m_p','m_f2'].forEach(function(id){ $(id).oninput=d3calc; });
+
+/* ---------- 演练 ---------- */
+function drillCalc(){
+  var f=+$('c_f').value, v=+$('c_v').value, t=+$('c_t').value;
+  $('l_c_f').textContent=' = '+fmt(f); $('l_c_v').textContent=' = '+v; $('l_c_t').textContent=' = '+t;
+  var crit = (t-v)>0 ? f/(t-v) : NaN;
+  $('c_out').innerHTML = stat('开车月成本公式',fmt(f)+' + '+v+' × km','')
+    + stat('打车月成本公式',t+' × km','','s')
+    + stat('临界里程',fmt(crit)+' km','低于它打车划算','a');
+  var gf=+$('g_f').value, gv=+$('g_v').value;
+  $('l_g_f').textContent=' = '+fmt(gf); $('l_g_v').textContent=' = '+gv;
+  window._gcrit = gv>0? gf/gv : NaN;
+  $('g_out').innerHTML = stat('年卡总价公式',fmt(gf)+' 元（一次性）','')
+    + stat('按次累计公式',gv+' × 次','','s')
+    + stat('临界次数',fmt(window._gcrit)+' 次','低于它按次划算','a');
+}
+function checkDrill1(){
+  var f=+$('c_f').value,v=+$('c_v').value,t=+$('c_t').value,km=+$('c_km').value;
+  var a=f+v*km, b=t*km, crit=(t-v)>0? f/(t-v):NaN;
+  var best = a<b?'自己开车':'打车';
+  $('c_fb').innerHTML='<div class="fb ok">每月 '+fmt(km)+' km：开车 '+fmt(a)+' 元，打车 '+fmt(b)+' 元 → <b>'+best+'</b>。'
+    +'临界里程 '+fmt(crit)+' km，你现在在临界点的'+(km<crit?'左边（该打车）':'右边（该开车）')+'。</div>';
+}
+function checkDrill2(){
+  var gf=+$('g_f').value,gv=+$('g_v').value,n=+$('g_n').value;
+  var crit=gv>0?gf/gv:NaN, a=gf, b=gv*n;
+  var best = a<b?'买年卡':'按次付费';
+  $('g_fb').innerHTML='<div class="fb ok">一年去 '+fmt(n)+' 次：年卡 '+fmt(a)+' 元，按次 '+fmt(b)+' 元 → <b>'+best+'</b>。'
+    +'临界次数 '+fmt(crit)+' 次，你在临界点的'+(n<crit?'左边（按次划算）':'右边（年卡划算）')+'。</div>';
+}
+['c_f','c_v','c_t','g_f','g_v'].forEach(function(id){ $(id).oninput=drillCalc; });
+
+/* ---------- 分组成果 ---------- */
+function saveWork(){
+  var w={g:curGrp(),w1:$('w1').value,w2:$('w2').value,w3:$('w3').value,w4:$('w4').value};
+  save('work',w); $('workFb').textContent='已保存到本机（组号 '+w.g+'）· '+new Date().toLocaleTimeString('zh-CN');
+}
+(function(){ var w=load('work',null); if(w){$('w1').value=w.w1||'';$('w2').value=w.w2||'';$('w3').value=w.w3||'';$('w4').value=w.w4||'';} })();
+function exportWork(){
+  var t='【第 '+curGrp()+' 组 · 成果展示】\n① 场景：'+$('w1').value+'\n② 成本两堆：'+$('w2').value+'\n③ 关键数字：'+$('w3').value+'\n④ 结论与非财务考量：'+$('w4').value;
+  copyText(t,'已复制到剪贴板，可直接粘贴到学习通');
+}
+function printWork(){ window.print(); }
+function copyText(t,msg){
+  if(t==null||t===''){ showToast(msg||'内容为空'); return; }
+  var ok=execCopy(t);
+  if(!ok){ ok=asyncCopy(t); }
+  showToast(ok?(msg||'已复制'):((msg||'已复制')+'（如未自动复制，请手动长按选择文本复制）'));
+}
+function execCopy(t){
+  try{
+    var ta=document.createElement('textarea');
+    ta.value=t; ta.setAttribute('readonly','');
+    ta.style.position='fixed'; ta.style.top='0'; ta.style.left='-9999px'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.focus();
+    ta.select(); ta.setSelectionRange(0, ta.value.length);
+    var ok=false; try{ ok=document.execCommand('copy'); }catch(e){ ok=false; }
+    document.body.removeChild(ta);
+    return ok;
+  }catch(e){ return false; }
+}
+function asyncCopy(t){
+  try{ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).catch(function(){}); return true; } }catch(e){}
+  return false;
+}
+function showToast(msg){
+  var el=document.getElementById('toast');
+  if(!el){ el=document.createElement('div'); el.id='toast';
+    el.style.cssText='position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#166534;color:#fff;padding:10px 18px;border-radius:10px;font-size:14.5px;z-index:200;box-shadow:0 6px 20px rgba(0,0,0,.2);opacity:0;transition:opacity .25s;pointer-events:none;max-width:90vw;text-align:center;';
+    document.body.appendChild(el);
+  }
+  el.textContent=msg; el.style.opacity='1';
+  clearTimeout(window._toastT);
+  window._toastT=setTimeout(function(){ el.style.opacity='0'; },2400);
+}
+
+/* ---------- 课后小测 ---------- */
+var QUIZ=[
+  {q:'面包房房租从 25,000 涨到 30,000，其他不变，保本量会怎么变？',opts:['不变','变多','变少'],a:1,
+   why:'保本量 = 固定成本 ÷ 单位边际贡献。固定成本变大，分子变大，保本量变多。'},
+  {q:'去年买的二手烤箱花了 3,000 元，现在换不换烤箱时要算这笔钱吗？',opts:['要算，毕竟花过','不算，已经收不回来'],a:1,
+   why:'这是沉没成本：已经花掉、要不回来的钱，不该进任何未来决策。'},
+  {q:'有人出 12 元/个要 300 个，变动成本 10 元，店里还有空产能。接不接？',opts:['接，每个净赚 2 元','不接，太便宜了'],a:0,
+   why:'12 > 10，每个贡献 2 元，共 +600 元，且不占用正常销售——应该接。'},
+  {q:'自制 10 元+固定 25,000，外包 15 元+固定 19,000。成本无差别点是？',opts:['1,000 个','1,200 个','1,500 个'],a:1,
+   why:'10x+25,000 = 15x+19,000 → 5x = 6,000 → x = 1,200。'},
+  {q:'单位边际贡献 19 元、固定成本 25,000 元，保本量约是多少个？',opts:['1,200','1,316','1,667'],a:1,
+   why:'25,000 ÷ 19 ≈ 1,316 个。'}
+];
+var SELF=[
+  '能把一张成本清单分成固定 / 变动两堆',
+  '能 3 分钟手算保本量和预计利润',
+  '能用"决策三问"给别人一个带数字的建议',
+  '能找到决策反转的临界点并解释它'
+];
+var myQ=load('quiz',{}), myS=load('self',{});
+function renderQuiz(){
+  var h='';
+  QUIZ.forEach(function(x,i){
+    h+='<div class="card" style="box-shadow:none"><h3>第 '+(i+1)+' 题 · '+x.q+'</h3>';
+    x.opts.forEach(function(o,j){
+      h+='<div class="choice'+(myQ[i]===j?' sel':'')+'" onclick="pickQ('+i+','+j+')">'+String.fromCharCode(65+j)+'. '+o+'</div>';
+    });
+    h+='</div>';
+  });
+  $('quizList').innerHTML=h;
+  var s='';
+  SELF.forEach(function(t,i){
+    s+='<div style="margin:8px 0"><div style="font-size:14.5px">'+t+'</div><div class="row">';
+    [1,2,3,4].forEach(function(v){
+      s+='<button class="act '+(myS[i]===v?'':'ghost')+'" style="padding:5px 12px" onclick="setSelf('+i+','+v+')">'+v+'</button>';
+    });
+    s+='<span class="mini">1 完全不会 · 4 很熟练</span></div></div>';
+  });
+  $('selfList').innerHTML=s;
+}
+function pickQ(i,j){ myQ[i]=j; save('quiz',myQ); renderQuiz(); }
+function setSelf(i,v){ myS[i]=v; save('self',myS); renderQuiz(); }
+function gradeQuiz(){
+  var ok=0,h='';
+  QUIZ.forEach(function(x,i){
+    var good = myQ[i]===x.a; if(good) ok++;
+    h+='<div class="fb '+(good?'ok':'no')+'">第 '+(i+1)+' 题：'+(good?'✓ 正确':'✕ 你选了 '+String.fromCharCode(65+(myQ[i]==null?0:myQ[i]))+'，正确答案 '+String.fromCharCode(65+x.a))+'。'+x.why+'</div>';
+  });
+  var sAvg=0,cnt=0; SELF.forEach(function(_,i){ if(myS[i]){sAvg+=myS[i];cnt++;} });
+  h+='<div class="fb ok"><b>小测得分：'+ok+' / '+QUIZ.length+'</b>　自评平均：'+(cnt?(sAvg/cnt).toFixed(2):'未填')+' / 4</div>';
+  $('quizFb').innerHTML=h;
+  save('quizScore',ok); save('selfAvg',cnt?(sAvg/cnt):0);
+}
+function makeCard(){
+  var q=[]; for(var i=0;i<QUIZ.length;i++){ q.push(myQ[i]==null?'-':String.fromCharCode(65+myQ[i])); }
+  var s=[]; for(var j=0;j<SELF.length;j++){ s.push(myS[j]||0); }
+  var split=load('splitScore',0), qs=load('quizScore',0);
+  var gain=($('gain').value||'').replace(/[\r\n|]+/g,' ').slice(0,60);
+  var card='MA1|G'+curGrp()+'|Q:'+q.join(',')+'|S:'+s.join(',')+'|SP:'+split+'|QS:'+qs+'|T:'+gain;
+  $('cardBox').innerHTML='<h3>我的答案卡（复制并提交到学习通）</h3><div class="answerbox" id="cardTxt">'+card+'</div>'
+    +'<div class="row" style="margin-top:8px"><button class="act green" onclick="copyCard()">复制答案卡</button></div>';
+  window._card=card;
+}
+function copyCard(){ copyText(window._card||'','答案卡已复制，去学习通粘贴提交'); }
+function downloadCard(){
+  if(!window._card){ makeCard(); }
+  var blob=new Blob([window._card],{type:'text/plain;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='第'+curGrp()+'组-管理会计答案卡.txt'; a.click();
+}
+function resetQuiz(){ myQ={}; myS={}; save('quiz',myQ); save('self',myS); $('quizFb').innerHTML=''; $('cardBox').innerHTML=''; renderQuiz(); }
+
+/* ---------- 教师看板 ---------- */
+var dashRows=[];
+function parseCards(){
+  var txt=$('pasteBox').value||'';
+  var lines=txt.split(/[\r\n]+/).map(function(s){return s.trim();}).filter(function(s){return s.indexOf('MA1|')===0;});
+  if(!lines.length){ $('dashOut').innerHTML='<div class="fb no">没有识别到答案卡。答案卡必须以 MA1| 开头，每行一张。</div>'; return; }
+  dashRows=[];
+  lines.forEach(function(l){
+    var p=l.split('|'); var o={grp:'?',q:[],s:[],sp:0,qs:0,gain:''};
+    p.forEach(function(seg){
+      if(seg.indexOf('G')===0) o.grp=seg.slice(1);
+      if(seg.indexOf('Q:')===0) o.q=seg.slice(2).split(',');
+      if(seg.indexOf('S:')===0) o.s=seg.slice(2).split(',').map(Number);
+      if(seg.indexOf('SP:')===0) o.sp=+seg.slice(3);
+      if(seg.indexOf('QS:')===0) o.qs=+seg.slice(3);
+      if(seg.indexOf('T:')===0) o.gain=seg.slice(2);
+    });
+    dashRows.push(o);
+  });
+  var n=dashRows.length;
+  var h='<h3>共回收 '+n+' 份</h3>';
+  h+='<table><tr><th>题号</th><th>正确答案</th><th>正确人数</th><th>正确率</th></tr>';
+  QUIZ.forEach(function(x,i){
+    var c=0; dashRows.forEach(function(r){ if(r.q[i]===String.fromCharCode(65+x.a)) c++; });
+    h+='<tr><td>第 '+(i+1)+' 题</td><td>'+String.fromCharCode(65+x.a)+'</td><td>'+c+'</td><td>'+pct(n?c/n:0)+'</td></tr>';
+  });
+  h+='</table>';
+  var avgQ=(dashRows.reduce(function(a,r){return a+(r.qs||0);},0)/n).toFixed(2);
+  var avgS=(dashRows.reduce(function(a,r){var t=0,c=0;r.s.forEach(function(v){if(v){t+=v;c++;}});return a+(c?t/c:0);},0)/n).toFixed(2);
+  var avgSP=(dashRows.reduce(function(a,r){return a+(r.sp||0);},0)/n).toFixed(2);
+  h+='<div class="grid" style="margin-top:12px">'
+    +stat('小测平均分',avgQ+' / '+QUIZ.length,'')
+    +stat('自评平均分',avgS+' / 4','', 's')
+    +stat('成本分堆平均分',avgSP+' / 5','')
+    +'</div>';
+  var byG={}; dashRows.forEach(function(r){ (byG[r.grp]=byG[r.grp]||[]).push(r.qs||0); });
+  h+='<h3>按组统计</h3><table><tr><th>组号</th><th>份数</th><th>小测平均分</th></tr>';
+  Object.keys(byG).sort().forEach(function(g){
+    var a=byG[g], m=(a.reduce(function(x,y){return x+y;},0)/a.length).toFixed(2);
+    h+='<tr><td>第 '+g+' 组</td><td>'+a.length+'</td><td>'+m+'</td></tr>';
+  });
+  h+='</table>';
+  var gs=dashRows.filter(function(r){return r.gain;}).map(function(r){return '· '+r.gain;});
+  if(gs.length) h+='<h3>一句话收获（'+gs.length+' 条）</h3><div class="answerbox">'+gs.join('\n')+'</div>';
+  $('dashOut').innerHTML=h;
+}
+function exportCSV(){
+  if(!dashRows.length){ alert('请先解析答案卡'); return; }
+  var rows=[['组号','Q1','Q2','Q3','Q4','Q5','自评1','自评2','自评3','自评4','分堆分','小测分','收获']];
+  dashRows.forEach(function(r){
+    rows.push([r.grp].concat(r.q, r.s, [r.sp, r.qs, r.gain]));
+  });
+  var csv=rows.map(function(r){return r.join(',');}).join('\n');
+  var blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='管理会计-小测统计.csv'; a.click();
+}
+
+/* ---------- 初始化 ---------- */
+renderVotes(); renderSplit(); d1calc(); d2calc(); d3calc(); drillCalc(); renderQuiz();
+setDisp();
+</script>
+</body>
+</html>

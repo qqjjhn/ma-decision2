@@ -1,0 +1,1518 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>面包房里的管理会计 · 分组任务卡</title>
+<style>
+:root{
+  --green-900:#0d3b24;
+  --green-800:#14532d;
+  --green-700:#1a6b3a;
+  --green-600:#2d7a4f;
+  --green-500:#3d9960;
+  --green-400:#5cb87a;
+  --green-300:#86d3a0;
+  --green-200:#b8e6c8;
+  --green-100:#dff3e6;
+  --green-50:#f0faf3;
+  --amber-500:#f59e0b;
+  --amber-100:#fef3c7;
+  --red-500:#ef4444;
+  --red-100:#fee2e2;
+  --blue-500:#3b82f6;
+  --blue-100:#dbeafe;
+  --gray-900:#1f2937;
+  --gray-700:#374151;
+  --gray-600:#4b5563;
+  --gray-500:#6b7280;
+  --gray-400:#9ca3af;
+  --gray-300:#d1d5db;
+  --gray-200:#e5e7eb;
+  --gray-100:#f3f4f6;
+  --gray-50:#f9fafb;
+  --white:#ffffff;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.05);
+  --shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05);
+  --radius:12px;
+  --radius-sm:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{font-size:16px;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--green-50);
+  color:var(--gray-900);
+  line-height:1.6;
+  min-height:100vh;
+  padding-bottom:80px;
+}
+/* ===== 顶部横幅 ===== */
+.header{
+  background:linear-gradient(135deg,var(--green-800) 0%,var(--green-600) 100%);
+  color:var(--white);
+  padding:20px 16px 16px;
+  position:relative;
+  overflow:hidden;
+}
+.header::before{
+  content:"";
+  position:absolute;
+  top:-40px;right:-40px;
+  width:160px;height:160px;
+  background:rgba(255,255,255,.06);
+  border-radius:50%;
+}
+.header::after{
+  content:"";
+  position:absolute;
+  bottom:-60px;left:-30px;
+  width:140px;height:140px;
+  background:rgba(255,255,255,.04);
+  border-radius:50%;
+}
+.header h1{
+  font-size:1.35rem;
+  font-weight:700;
+  margin-bottom:4px;
+  position:relative;
+  z-index:1;
+}
+.header .subtitle{
+  font-size:.85rem;
+  opacity:.85;
+  position:relative;
+  z-index:1;
+}
+.header .meta{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+  flex-wrap:wrap;
+  position:relative;
+  z-index:1;
+}
+.header .meta span{
+  background:rgba(255,255,255,.15);
+  padding:3px 10px;
+  border-radius:20px;
+  font-size:.75rem;
+  backdrop-filter:blur(4px);
+}
+/* ===== 组号栏 ===== */
+.group-bar{
+  background:var(--white);
+  padding:12px 16px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-bottom:1px solid var(--gray-200);
+  position:sticky;
+  top:0;
+  z-index:100;
+  box-shadow:var(--shadow-sm);
+}
+.group-bar label{
+  font-size:.85rem;
+  font-weight:600;
+  color:var(--green-700);
+  white-space:nowrap;
+}
+.group-bar input{
+  flex:1;
+  max-width:100px;
+  padding:8px 12px;
+  border:2px solid var(--green-200);
+  border-radius:var(--radius-sm);
+  font-size:1rem;
+  font-weight:600;
+  text-align:center;
+  color:var(--green-800);
+  outline:none;
+  transition:border-color .2s;
+}
+.group-bar input:focus{border-color:var(--green-500);}
+.group-bar .role-tag{
+  margin-left:auto;
+  font-size:.75rem;
+  color:var(--gray-500);
+}
+/* ===== Tab 导航 ===== */
+.tabs{
+  display:flex;
+  background:var(--white);
+  border-bottom:2px solid var(--gray-200);
+  position:sticky;
+  top:53px;
+  z-index:99;
+  box-shadow:var(--shadow-sm);
+}
+.tab{
+  flex:1;
+  padding:12px 4px;
+  text-align:center;
+  font-size:.8rem;
+  font-weight:600;
+  color:var(--gray-500);
+  cursor:pointer;
+  border-bottom:3px solid transparent;
+  transition:all .2s;
+  background:none;
+  border-top:none;
+  border-left:none;
+  border-right:none;
+  position:relative;
+}
+.tab.active{
+  color:var(--green-700);
+  border-bottom-color:var(--green-600);
+  background:var(--green-50);
+}
+.tab .tab-num{
+  display:inline-block;
+  width:20px;height:20px;
+  line-height:20px;
+  border-radius:50%;
+  background:var(--gray-200);
+  color:var(--gray-600);
+  font-size:.7rem;
+  margin-right:4px;
+  vertical-align:middle;
+}
+.tab.active .tab-num{
+  background:var(--green-600);
+  color:var(--white);
+}
+.tab .done-dot{
+  position:absolute;
+  top:6px;right:8px;
+  width:8px;height:8px;
+  background:var(--green-500);
+  border-radius:50%;
+  display:none;
+}
+.tab.completed .done-dot{display:block;}
+/* ===== 卡片内容区 ===== */
+.card-content{display:none;padding:16px;}
+.card-content.active{display:block;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+/* ===== 情境框 ===== */
+.scenario{
+  background:linear-gradient(135deg,var(--green-100),var(--green-50));
+  border-left:4px solid var(--green-600);
+  border-radius:var(--radius);
+  padding:14px 16px;
+  margin-bottom:16px;
+}
+.scenario h3{
+  font-size:1rem;
+  color:var(--green-800);
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.scenario h3 .icon{font-size:1.1rem;}
+.scenario p{
+  font-size:.88rem;
+  color:var(--gray-700);
+  line-height:1.7;
+}
+/* ===== 已知数据 ===== */
+.data-box{
+  background:var(--white);
+  border:1px solid var(--gray-200);
+  border-radius:var(--radius);
+  padding:14px 16px;
+  margin-bottom:16px;
+}
+.data-box h4{
+  font-size:.85rem;
+  color:var(--green-700);
+  margin-bottom:10px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.data-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.data-item{
+  background:var(--gray-50);
+  border-radius:var(--radius-sm);
+  padding:8px 10px;
+}
+.data-item .label{
+  font-size:.72rem;
+  color:var(--gray-500);
+  margin-bottom:2px;
+}
+.data-item .value{
+  font-size:.95rem;
+  font-weight:700;
+  color:var(--gray-900);
+}
+.data-item .value.highlight{color:var(--green-700);}
+.data-item .value.warn{color:var(--amber-500);}
+/* ===== 填写区 ===== */
+.fill-section{
+  background:var(--white);
+  border:1px solid var(--gray-200);
+  border-radius:var(--radius);
+  padding:16px;
+  margin-bottom:16px;
+}
+.fill-section h4{
+  font-size:.9rem;
+  color:var(--green-800);
+  margin-bottom:12px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.fill-section h4 .step-badge{
+  display:inline-block;
+  background:var(--green-600);
+  color:var(--white);
+  font-size:.7rem;
+  padding:2px 8px;
+  border-radius:10px;
+  font-weight:600;
+}
+/* 方案对比表 */
+.compare-table{
+  width:100%;
+  border-collapse:collapse;
+  margin-bottom:12px;
+  font-size:.82rem;
+}
+.compare-table th{
+  background:var(--green-700);
+  color:var(--white);
+  padding:8px 6px;
+  font-weight:600;
+  text-align:center;
+  font-size:.78rem;
+}
+.compare-table th:first-child{text-align:left;border-radius:var(--radius-sm) 0 0 0;}
+.compare-table th:last-child{border-radius:0 var(--radius-sm) 0 0;}
+.compare-table td{
+  padding:8px 6px;
+  border-bottom:1px solid var(--gray-100);
+  text-align:center;
+}
+.compare-table td:first-child{
+  text-align:left;
+  font-weight:600;
+  color:var(--gray-700);
+  font-size:.78rem;
+}
+.compare-table tr:nth-child(even){background:var(--gray-50);}
+.compare-table input{
+  width:100%;
+  max-width:80px;
+  padding:6px 8px;
+  border:2px solid var(--gray-200);
+  border-radius:6px;
+  font-size:.85rem;
+  text-align:center;
+  outline:none;
+  transition:all .2s;
+  background:var(--white);
+}
+.compare-table input:focus{
+  border-color:var(--green-500);
+  background:var(--green-50);
+}
+.compare-table input.correct{
+  border-color:var(--green-500);
+  background:var(--green-100);
+  color:var(--green-800);
+  font-weight:600;
+}
+.compare-table input.wrong{
+  border-color:var(--red-500);
+  background:var(--red-100);
+  color:var(--red-700);
+}
+.compare-table .unit{
+  font-size:.7rem;
+  color:var(--gray-400);
+  margin-left:2px;
+}
+/* 单题填写行 */
+.fill-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 0;
+  border-bottom:1px dashed var(--gray-200);
+}
+.fill-row:last-child{border-bottom:none;}
+.fill-row .q-label{
+  flex:1;
+  font-size:.85rem;
+  color:var(--gray-700);
+  font-weight:500;
+}
+.fill-row input,.fill-row select{
+  width:120px;
+  padding:8px 10px;
+  border:2px solid var(--gray-200);
+  border-radius:var(--radius-sm);
+  font-size:.9rem;
+  text-align:center;
+  outline:none;
+  transition:all .2s;
+  background:var(--white);
+}
+.fill-row input:focus,.fill-row select:focus{
+  border-color:var(--green-500);
+  background:var(--green-50);
+}
+.fill-row input.correct{
+  border-color:var(--green-500);
+  background:var(--green-100);
+  color:var(--green-800);
+  font-weight:600;
+}
+.fill-row input.wrong{
+  border-color:var(--red-500);
+  background:var(--red-100);
+  color:var(--red-700);
+}
+.fill-row .ans-hint{
+  font-size:.75rem;
+  color:var(--green-700);
+  font-weight:600;
+  min-width:80px;
+  text-align:right;
+  display:none;
+}
+.fill-row.shown .ans-hint{display:block;}
+/* ===== 按钮区 ===== */
+.btn-row{
+  display:flex;
+  gap:10px;
+  margin-top:16px;
+}
+.btn{
+  flex:1;
+  padding:12px 16px;
+  border:none;
+  border-radius:var(--radius-sm);
+  font-size:.9rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--green-600),var(--green-700));
+  color:var(--white);
+  box-shadow:0 2px 8px rgba(45,122,79,.3);
+}
+.btn-primary:active{transform:scale(.97);box-shadow:0 1px 4px rgba(45,122,79,.3);}
+.btn-secondary{
+  background:var(--gray-100);
+  color:var(--gray-700);
+  border:1px solid var(--gray-300);
+}
+.btn-secondary:active{background:var(--gray-200);}
+.btn-outline{
+  background:var(--white);
+  color:var(--green-700);
+  border:2px solid var(--green-500);
+}
+.btn-outline:active{background:var(--green-50);}
+/* ===== 结果反馈区 ===== */
+.result-box{
+  margin-top:16px;
+  border-radius:var(--radius);
+  padding:14px 16px;
+  display:none;
+}
+.result-box.show{display:block;animation:slideUp .3s ease;}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.result-box.pass{
+  background:var(--green-100);
+  border:1px solid var(--green-300);
+}
+.result-box.fail{
+  background:var(--amber-100);
+  border:1px solid #fcd34d;
+}
+.result-box .result-title{
+  font-size:1rem;
+  font-weight:700;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.result-box.pass .result-title{color:var(--green-800);}
+.result-box.fail .result-title{color:#92400e;}
+.result-box .result-score{
+  font-size:1.8rem;
+  font-weight:800;
+  margin:4px 0;
+}
+.result-box.pass .result-score{color:var(--green-700);}
+.result-box.fail .result-score{color:var(--amber-600);}
+.result-box .result-detail{
+  font-size:.82rem;
+  color:var(--gray-700);
+  line-height:1.7;
+  margin-top:8px;
+}
+.result-box .result-detail strong{color:var(--green-800);}
+/* ===== 解析区 ===== */
+.explain-box{
+  background:var(--blue-100);
+  border:1px solid #93c5fd;
+  border-radius:var(--radius);
+  padding:14px 16px;
+  margin-top:12px;
+  display:none;
+}
+.explain-box.show{display:block;}
+.explain-box h5{
+  font-size:.85rem;
+  color:#1e40af;
+  margin-bottom:8px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.explain-box p,.explain-box li{
+  font-size:.82rem;
+  color:var(--gray-700);
+  line-height:1.7;
+}
+.explain-box ul{padding-left:18px;margin-top:4px;}
+.explain-box .formula{
+  background:var(--white);
+  border-radius:6px;
+  padding:8px 10px;
+  margin:6px 0;
+  font-family:"Courier New",monospace;
+  font-size:.8rem;
+  color:var(--green-800);
+  border-left:3px solid var(--green-500);
+}
+/* ===== 路演模板 ===== */
+.pitch-section{
+  background:var(--white);
+  border:2px solid var(--green-300);
+  border-radius:var(--radius);
+  padding:16px;
+  margin:16px;
+  position:relative;
+}
+.pitch-section::before{
+  content:"任务卡背面";
+  position:absolute;
+  top:-10px;left:16px;
+  background:var(--green-600);
+  color:var(--white);
+  font-size:.7rem;
+  padding:2px 10px;
+  border-radius:10px;
+  font-weight:600;
+}
+.pitch-section h4{
+  font-size:.95rem;
+  color:var(--green-800);
+  margin-bottom:12px;
+  margin-top:4px;
+  font-weight:700;
+}
+.pitch-step{
+  margin-bottom:12px;
+}
+.pitch-step:last-child{margin-bottom:0;}
+.pitch-step .step-head{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:6px;
+}
+.pitch-step .step-num{
+  width:24px;height:24px;
+  line-height:24px;
+  text-align:center;
+  background:var(--green-600);
+  color:var(--white);
+  border-radius:50%;
+  font-size:.75rem;
+  font-weight:700;
+  flex-shrink:0;
+}
+.pitch-step .step-title{
+  font-size:.85rem;
+  font-weight:700;
+  color:var(--green-800);
+}
+.pitch-step textarea{
+  width:100%;
+  min-height:50px;
+  padding:10px;
+  border:2px solid var(--gray-200);
+  border-radius:var(--radius-sm);
+  font-size:.85rem;
+  font-family:inherit;
+  resize:vertical;
+  outline:none;
+  transition:border-color .2s;
+  line-height:1.6;
+}
+.pitch-step textarea:focus{border-color:var(--green-500);background:var(--green-50);}
+/* ===== 角色说明 ===== */
+.roles-bar{
+  background:var(--green-800);
+  color:var(--white);
+  padding:12px 16px;
+  margin:0 16px 16px;
+  border-radius:var(--radius);
+}
+.roles-bar h5{
+  font-size:.8rem;
+  margin-bottom:8px;
+  opacity:.9;
+  font-weight:600;
+}
+.roles-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.role-chip{
+  background:rgba(255,255,255,.12);
+  padding:4px 10px;
+  border-radius:12px;
+  font-size:.72rem;
+}
+/* ===== 分组与角色页 ===== */
+.group-info-bar{
+  background:linear-gradient(135deg,var(--green-700),var(--green-600));
+  color:var(--white);
+  border-radius:var(--radius);
+  padding:16px;
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.group-info-bar .info-left h3{font-size:1.05rem;font-weight:700;margin-bottom:4px;}
+.group-info-bar .info-left p{font-size:.8rem;opacity:.85;}
+.group-info-bar .info-right{text-align:right;}
+.group-info-bar .info-right .big-num{font-size:2rem;font-weight:800;line-height:1;}
+.group-info-bar .info-right .label{font-size:.72rem;opacity:.8;margin-top:2px;}
+.role-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:16px;
+}
+.role-card{
+  background:var(--white);
+  border:1px solid var(--gray-200);
+  border-radius:var(--radius);
+  padding:12px;
+  transition:all .2s;
+  position:relative;
+  overflow:hidden;
+}
+.role-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--green-500);}
+.role-card:nth-child(2)::before{background:var(--amber-500);}
+.role-card:nth-child(3)::before{background:var(--blue-500);}
+.role-card:nth-child(4)::before{background:#8b5cf6;}
+.role-card:nth-child(5)::before{background:var(--red-500);}
+.role-card:nth-child(6)::before{background:#06b6d4;}
+.role-card .role-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.role-card .role-icon{
+  font-size:1.3rem;width:32px;height:32px;line-height:32px;text-align:center;
+  background:var(--green-50);border-radius:8px;flex-shrink:0;
+}
+.role-card:nth-child(2) .role-icon{background:var(--amber-100);}
+.role-card:nth-child(3) .role-icon{background:var(--blue-100);}
+.role-card:nth-child(4) .role-icon{background:#ede9fe;}
+.role-card:nth-child(5) .role-icon{background:var(--red-100);}
+.role-card:nth-child(6) .role-icon{background:#cffafe;}
+.role-card .role-name{font-size:.88rem;font-weight:700;color:var(--gray-900);line-height:1.3;}
+.role-card .role-desc{font-size:.75rem;color:var(--gray-600);line-height:1.5;margin-bottom:8px;min-height:2.2em;}
+.role-card .name-input{
+  width:100%;padding:6px 8px;border:1.5px solid var(--gray-200);border-radius:6px;
+  font-size:.8rem;outline:none;transition:border-color .2s;background:var(--gray-50);
+}
+.role-card .name-input:focus{border-color:var(--green-500);background:var(--green-50);}
+.role-card .name-input.filled{background:var(--green-100);border-color:var(--green-400);font-weight:600;color:var(--green-800);}
+.rotation-tip{
+  background:var(--amber-100);border:1px solid #fcd34d;border-radius:var(--radius);
+  padding:12px 14px;margin-bottom:16px;
+}
+.rotation-tip h5{font-size:.82rem;color:#92400e;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.rotation-tip p{font-size:.78rem;color:var(--gray-700);line-height:1.6;}
+.rotation-tip strong{color:#92400e;}
+@media(max-width:360px){.role-grid{grid-template-columns:1fr;}}
+/* ===== 底部操作栏 ===== */
+.bottom-bar{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  background:var(--white);
+  border-top:1px solid var(--gray-200);
+  padding:10px 16px;
+  display:flex;
+  gap:8px;
+  z-index:200;
+  box-shadow:0 -2px 10px rgba(0,0,0,.05);
+}
+.bottom-bar .btn{padding:10px 12px;font-size:.82rem;}
+/* ===== 提示 toast ===== */
+.toast{
+  position:fixed;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(0,0,0,.8);
+  color:var(--white);
+  padding:12px 24px;
+  border-radius:var(--radius);
+  font-size:.9rem;
+  z-index:999;
+  opacity:0;
+  transition:opacity .3s;
+  pointer-events:none;
+  max-width:80%;
+  text-align:center;
+}
+.toast.show{opacity:1;}
+/* ===== 打印样式 ===== */
+@media print{
+  body{background:white;padding-bottom:0;}
+  .header,.group-bar,.tabs,.bottom-bar,.btn-row,.roles-bar{display:none !important;}
+  .card-content{display:block !important;padding:0;page-break-after:always;}
+  .pitch-section{page-break-before:always;}
+  .result-box,.explain-box{display:block !important;}
+  input,textarea{border:1px solid #999 !important;}
+}
+/* ===== 小屏优化 ===== */
+@media(max-width:360px){
+  .data-grid{grid-template-columns:1fr;}
+  .compare-table{font-size:.75rem;}
+  .compare-table input{max-width:60px;padding:5px 4px;}
+  .fill-row input,.fill-row select{width:100px;}
+}
+</style>
+</head>
+<body>
+
+<!-- 顶部横幅 -->
+<div class="header">
+  <h1>面包房里的管理会计</h1>
+  <div class="subtitle">三个经营决策的算账逻辑 · 分组任务卡</div>
+  <div class="meta">
+    <span>90分钟研讨课</span>
+    <span>6人一组</span>
+    <span>零基础友好</span>
+  </div>
+</div>
+
+<!-- 组号栏 -->
+<div class="group-bar">
+  <label for="groupNum">第</label>
+  <input type="number" id="groupNum" min="1" max="20" placeholder="组号">
+  <label for="groupNum" style="margin-left:-4px;">组</label>
+  <span class="role-tag">先自己算，再点核对</span>
+</div>
+
+<!-- Tab 导航 -->
+<div class="tabs">
+  <button class="tab active" data-tab="group">
+    <span class="tab-num">👥</span>分组角色
+    <span class="done-dot"></span>
+  </button>
+  <button class="tab" data-tab="d1">
+    <span class="tab-num">1</span>涨不涨价
+    <span class="done-dot"></span>
+  </button>
+  <button class="tab" data-tab="d2">
+    <span class="tab-num">2</span>接不接单
+    <span class="done-dot"></span>
+  </button>
+  <button class="tab" data-tab="d3">
+    <span class="tab-num">3</span>自制外包
+    <span class="done-dot"></span>
+  </button>
+  <button class="tab" data-tab="pitch">
+    <span class="tab-num">★</span>路演模板
+    <span class="done-dot"></span>
+  </button>
+</div>
+
+<!-- ==================== 分组与角色 ==================== -->
+<div class="card-content active" id="group">
+  <div class="group-info-bar">
+    <div class="info-left">
+      <h3>👥 分组与角色分工</h3>
+      <p>每组6人，异质分组，角色在三个决策间轮换</p>
+    </div>
+    <div class="info-right">
+      <div class="big-num" id="groupDisplay">--</div>
+      <div class="label">第 组</div>
+    </div>
+  </div>
+
+  <div class="rotation-tip">
+    <h5>🔄 角色轮换规则</h5>
+    <p>三个决策环节中角色应轮换，至少保证<strong>"仿真操作员"</strong>和<strong>"汇报人"</strong>在不同环节由不同学生担任。基础较好的学生优先安排在<strong>质疑员</strong>岗位，在组内起到带动作用。</p>
+  </div>
+
+  <div class="role-grid">
+    <div class="role-card">
+      <div class="role-head">
+        <div class="role-icon">👑</div>
+        <div class="role-name">组长 / 汇报人</div>
+      </div>
+      <div class="role-desc">组织讨论节奏，控制时间，代表小组汇报结论</div>
+      <input type="text" class="name-input" id="role_leader" placeholder="填写姓名">
+    </div>
+    <div class="role-card">
+      <div class="role-head">
+        <div class="role-icon">🧮</div>
+        <div class="role-name">数据测算员</div>
+      </div>
+      <div class="role-desc">负责纸笔计算，验证公式，确保数据准确</div>
+      <input type="text" class="name-input" id="role_calc" placeholder="填写姓名">
+    </div>
+    <div class="role-card">
+      <div class="role-head">
+        <div class="role-icon">🖱️</div>
+        <div class="role-name">仿真操作员</div>
+      </div>
+      <div class="role-desc">操作交互课件，拖动参数，截图记录关键结果</div>
+      <input type="text" class="name-input" id="role_sim" placeholder="填写姓名">
+    </div>
+    <div class="role-card">
+      <div class="role-head">
+        <div class="role-icon">📝</div>
+        <div class="role-name">记录员</div>
+      </div>
+      <div class="role-desc">记录讨论过程、关键数据、最终结论</div>
+      <input type="text" class="name-input" id="role_note" placeholder="填写姓名">
+    </div>
+    <div class="role-card">
+      <div class="role-head">
+        <div class="role-icon">🔍</div>
+        <div class="role-name">质疑员</div>
+      </div>
+      <div class="role-desc">主动挑"销量估计靠不靠谱"等漏洞，挑战小组结论</div>
+      <input type="text" class="name-input" id="role_challenge" placeholder="填写姓名">
+    </div>
+    <div class="role-card">
+      <div class="role-head">
+        <div class="role-icon">👁️</div>
+        <div class="role-name">观察员</div>
+      </div>
+      <div class="role-desc">观察其他组汇报，记录可借鉴之处与不同观点</div>
+      <input type="text" class="name-input" id="role_observe" placeholder="填写姓名">
+    </div>
+  </div>
+
+  <div class="fill-section" style="margin-bottom:0;">
+    <h4><span class="step-badge">确认</span>本组分工确认</h4>
+    <div class="fill-row">
+      <span class="q-label">本组决策三销量场景（决策三用）</span>
+      <select id="group_volume">
+        <option value="">请选择</option>
+        <option value="500">500 个（第1组）</option>
+        <option value="800">800 个（第2组）</option>
+        <option value="1000">1,000 个（第3组）</option>
+        <option value="1200">1,200 个（第4组）</option>
+        <option value="1500">1,500 个（第5组）</option>
+        <option value="2000">2,000 个（第6组·当前）</option>
+        <option value="2500">2,500 个（第7组）</option>
+        <option value="3000">3,000 个（第8组）</option>
+      </select>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="confirmGroup()">✓ 确认分工，开始决策</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 决策一 ==================== -->
+<div class="card-content" id="d1">
+  <div class="scenario">
+    <h3><span class="icon">📈</span>决策一：面粉涨价，涨还是不涨？</h3>
+    <p>面粉黄油进价从 <strong>10元</strong> 涨到 <strong>13元</strong>。老周面临两个选择：<br>
+    <strong>方案A</strong>——不涨价，售价28元，预计还能卖2,000个；<br>
+    <strong>方案B</strong>——涨价到32元，预计销量掉到1,700个。<br>
+    两方案的月固定成本都是 <strong>25,000元</strong>。</p>
+  </div>
+
+  <div class="data-box">
+    <h4>📋 已知数据</h4>
+    <div class="data-grid">
+      <div class="data-item"><div class="label">涨价后单位变动成本</div><div class="value warn">13 元</div></div>
+      <div class="data-item"><div class="label">月固定成本</div><div class="value">25,000 元</div></div>
+      <div class="data-item"><div class="label">方案A售价 / 销量</div><div class="value">28元 / 2000个</div></div>
+      <div class="data-item"><div class="label">方案B售价 / 销量</div><div class="value highlight">32元 / 1700个</div></div>
+    </div>
+  </div>
+
+  <div class="fill-section">
+    <h4><span class="step-badge">测算</span>四个指标对比（先自己算！）</h4>
+    <table class="compare-table">
+      <thead>
+        <tr><th>指标</th><th>方案A 不涨价</th><th>方案B 涨价</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>单位边际贡献<span class="unit">元</span></td>
+          <td><input type="number" id="d1_a_cm" data-answer="15" step="any"></td>
+          <td><input type="number" id="d1_b_cm" data-answer="19" step="any"></td>
+        </tr>
+        <tr>
+          <td>保本量<span class="unit">个</span></td>
+          <td><input type="number" id="d1_a_be" data-answer="1667" step="any"></td>
+          <td><input type="number" id="d1_b_be" data-answer="1316" step="any"></td>
+        </tr>
+        <tr>
+          <td>预计月利润<span class="unit">元</span></td>
+          <td><input type="number" id="d1_a_profit" data-answer="5000" step="any"></td>
+          <td><input type="number" id="d1_b_profit" data-answer="7300" step="any"></td>
+        </tr>
+        <tr>
+          <td>安全边际率<span class="unit">%</span></td>
+          <td><input type="number" id="d1_a_safety" data-answer="16.7" step="any"></td>
+          <td><input type="number" id="d1_b_safety" data-answer="22.6" step="any"></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="fill-row">
+      <span class="q-label">🔍 临界销量：涨价后卖到多少个，就跟不涨利润一样？</span>
+      <input type="number" id="d1_critical" data-answer="1579" step="any" placeholder="个">
+    </div>
+    <div class="fill-row">
+      <span class="q-label">✅ 你的结论：应该选哪个方案？</span>
+      <select id="d1_conclusion" data-answer="B">
+        <option value="">请选择</option>
+        <option value="A">方案A 不涨价</option>
+        <option value="B">方案B 涨价</option>
+      </select>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="checkD1()">✓ 核对答案</button>
+      <button class="btn btn-secondary" onclick="resetCard('d1')">↺ 重填</button>
+    </div>
+
+    <div class="result-box" id="d1_result">
+      <div class="result-title" id="d1_result_title"></div>
+      <div class="result-score" id="d1_score"></div>
+      <div class="result-detail" id="d1_detail"></div>
+    </div>
+
+    <div class="explain-box" id="d1_explain">
+      <h5>💡 计算过程与原理</h5>
+      <div class="formula">单位边际贡献 = 售价 − 单位变动成本<br>
+      A: 28 − 13 = 15 元 &nbsp;&nbsp; B: 32 − 13 = 19 元</div>
+      <div class="formula">保本量 = 固定成本 ÷ 单位边际贡献<br>
+      A: 25,000 ÷ 15 ≈ 1,667 个 &nbsp;&nbsp; B: 25,000 ÷ 19 ≈ 1,316 个</div>
+      <div class="formula">预计利润 = 单位边际贡献 × 销量 − 固定成本<br>
+      A: 15 × 2,000 − 25,000 = 5,000 元<br>
+      B: 19 × 1,700 − 25,000 = 7,300 元</div>
+      <div class="formula">安全边际率 = (预计销量 − 保本量) ÷ 预计销量<br>
+      A: (2,000−1,667)÷2,000 ≈ 16.7% &nbsp;&nbsp; B: (1,700−1,316)÷1,700 ≈ 22.6%</div>
+      <div class="formula">临界销量：令涨价利润 = 不涨利润<br>
+      19x − 25,000 = 5,000 → x = 30,000 ÷ 19 ≈ 1,579 个</div>
+      <p><strong>反直觉点：</strong>涨价后保本量反而更低（1,316 &lt; 1,667），说明"涨价不一定更危险"——关键看每个赚的钱变多了多少，而不是看销量掉没掉。涨价每月多赚 2,300 元，且经营更安全。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 决策二 ==================== -->
+<div class="card-content" id="d2">
+  <div class="scenario">
+    <h3><span class="icon">📦</span>决策二：18元的团购单，接还是不接？</h3>
+    <p>对面写字楼行政提出：每月固定要 <strong>500个</strong> 吐司，只出 <strong>18元/个</strong>。<br>
+    老周一算：单位成本22.5元，每个亏4.5元，500个亏2,250元——<strong>不能接！</strong><br>
+    但老周算对了吗？请用两种算法分别算一算。</p>
+  </div>
+
+  <div class="data-box">
+    <h4>📋 已知数据</h4>
+    <div class="data-grid">
+      <div class="data-item"><div class="label">订单量 / 订单价</div><div class="value warn">500个 / 18元</div></div>
+      <div class="data-item"><div class="label">单位变动成本</div><div class="value">10 元</div></div>
+      <div class="data-item"><div class="label">月固定成本</div><div class="value">25,000 元</div></div>
+      <div class="data-item"><div class="label">正常销量 / 最大产能</div><div class="value">2000 / 3000个</div></div>
+      <div class="data-item"><div class="label">剩余产能</div><div class="value highlight">1,000 个</div></div>
+      <div class="data-item"><div class="label">订单是否在剩余产能内</div><div class="value highlight">是 ✓</div></div>
+    </div>
+  </div>
+
+  <div class="fill-section">
+    <h4><span class="step-badge">测算A</span>老周的算法（完全成本法）</h4>
+    <div class="fill-row">
+      <span class="q-label">单位成本 = 变动10 + 固定分摊(25000÷2000)</span>
+      <input type="number" id="d2_old_unit" data-answer="22.5" step="any" placeholder="元">
+    </div>
+    <div class="fill-row">
+      <span class="q-label">每个盈亏 = 18 − 单位成本</span>
+      <input type="number" id="d2_old_each" data-answer="-4.5" step="any" placeholder="元">
+    </div>
+    <div class="fill-row">
+      <span class="q-label">500个总盈亏</span>
+      <input type="number" id="d2_old_total" data-answer="-2250" step="any" placeholder="元">
+    </div>
+    <div class="fill-row">
+      <span class="q-label">老周的结论</span>
+      <select id="d2_old_conclusion" data-answer="不接">
+        <option value="">请选择</option>
+        <option value="接">接</option>
+        <option value="不接">不接</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="fill-section">
+    <h4><span class="step-badge">测算B</span>正确算法（边际贡献法）</h4>
+    <div class="fill-row">
+      <span class="q-label">增量收入 = 18 × 500</span>
+      <input type="number" id="d2_new_revenue" data-answer="9000" step="any" placeholder="元">
+    </div>
+    <div class="fill-row">
+      <span class="q-label">增量成本 = 10 × 500（固定成本不变！）</span>
+      <input type="number" id="d2_new_cost" data-answer="5000" step="any" placeholder="元">
+    </div>
+    <div class="fill-row">
+      <span class="q-label">净增量 = 增量收入 − 增量成本</span>
+      <input type="number" id="d2_new_net" data-answer="4000" step="any" placeholder="元">
+    </div>
+    <div class="fill-row">
+      <span class="q-label">正确结论</span>
+      <select id="d2_new_conclusion" data-answer="接">
+        <option value="">请选择</option>
+        <option value="接">接</option>
+        <option value="不接">不接</option>
+      </select>
+    </div>
+
+    <div style="height:1px;background:var(--gray-200);margin:12px 0;"></div>
+
+    <div class="fill-row">
+      <span class="q-label">🔍 两种算法相差多少元？</span>
+      <input type="number" id="d2_diff" data-answer="6250" step="any" placeholder="元">
+    </div>
+    <div class="fill-row">
+      <span class="q-label">🔍 临界订单价：低于多少钱就不该接？</span>
+      <input type="number" id="d2_critical_price" data-answer="10" step="any" placeholder="元">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="checkD2()">✓ 核对答案</button>
+      <button class="btn btn-secondary" onclick="resetCard('d2')">↺ 重填</button>
+    </div>
+
+    <div class="result-box" id="d2_result">
+      <div class="result-title" id="d2_result_title"></div>
+      <div class="result-score" id="d2_score"></div>
+      <div class="result-detail" id="d2_detail"></div>
+    </div>
+
+    <div class="explain-box" id="d2_explain">
+      <h5>💡 为什么两种算法差了6,250元？</h5>
+      <p>老周把 <strong>25,000元固定成本</strong> 分摊到每个吐司上（25,000÷2,000=12.5元/个），但这500个团购单<strong>根本不会让房租多一分钱</strong>。</p>
+      <div class="formula">差额 = 被误摊的固定成本 = 12.5元 × 500个 = 6,250元</div>
+      <p><strong>三句话判断：</strong></p>
+      <ul>
+        <li><strong>相关成本</strong>：这个决定会让它变化的钱，要算进去 → 只有变动成本10元/个</li>
+        <li><strong>沉没成本</strong>：已经花掉、要不回来的钱，直接划掉 → 固定成本不进这道题</li>
+        <li><strong>机会成本</strong>：选了这个就放弃的那个，资源不够时才出现 → 订单500个 &lt; 剩余产能1,000个，不挤掉正常顾客，无机会成本</li>
+      </ul>
+      <div class="formula">临界订单价 = 单位变动成本 = 10元<br>只要订单价 &gt; 10元，接了就比不接好</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 决策三 ==================== -->
+<div class="card-content" id="d3">
+  <div class="scenario">
+    <h3><span class="icon">🏭</span>决策三：自己做，还是交给中央厨房？</h3>
+    <p>中央厨房代工报价 <strong>15元/个</strong>，自己做变动成本只要 <strong>10元/个</strong>。<br>
+    但外包后可以辞掉烘焙师，每月省 <strong>6,000元</strong>：自制固定成本25,000元，外包后降至19,000元。<br>
+    自制每个便宜5元，但每月要多背6,000元固定成本——<strong>答案取决于销量！</strong></p>
+  </div>
+
+  <div class="data-box">
+    <h4>📋 已知数据</h4>
+    <div class="data-grid">
+      <div class="data-item"><div class="label">自制单位变动成本</div><div class="value">10 元</div></div>
+      <div class="data-item"><div class="label">外包单位成本</div><div class="value warn">15 元</div></div>
+      <div class="data-item"><div class="label">自制月固定成本</div><div class="value">25,000 元</div></div>
+      <div class="data-item"><div class="label">外包月固定成本</div><div class="value highlight">19,000 元</div></div>
+    </div>
+  </div>
+
+  <div class="fill-section">
+    <h4><span class="step-badge">本组任务</span>你们组分到的销量场景</h4>
+    <div class="fill-row">
+      <span class="q-label">本组月销量（按教师分配选择）</span>
+      <select id="d3_volume" onchange="updateD3Answers()">
+        <option value="">请选择</option>
+        <option value="500">500 个（第1组）</option>
+        <option value="800">800 个（第2组）</option>
+        <option value="1000">1,000 个（第3组）</option>
+        <option value="1200">1,200 个（第4组）</option>
+        <option value="1500">1,500 个（第5组）</option>
+        <option value="2000">2,000 个（第6组·当前）</option>
+        <option value="2500">2,500 个（第7组）</option>
+        <option value="3000">3,000 个（第8组）</option>
+      </select>
+    </div>
+
+    <div class="fill-row">
+      <span class="q-label">自制总成本 = 10×销量 + 25,000</span>
+      <input type="number" id="d3_make_cost" data-answer="" step="any" placeholder="元">
+    </div>
+    <div class="fill-row">
+      <span class="q-label">外包总成本 = 15×销量 + 19,000</span>
+      <input type="number" id="d3_outsource_cost" data-answer="" step="any" placeholder="元">
+    </div>
+    <div class="fill-row">
+      <span class="q-label">差额（自制−外包，正数=自制贵）</span>
+      <input type="number" id="d3_diff" data-answer="" step="any" placeholder="元">
+    </div>
+    <div class="fill-row">
+      <span class="q-label">本组结论：哪个更划算？</span>
+      <select id="d3_conclusion" data-answer="">
+        <option value="">请选择</option>
+        <option value="自制">自制</option>
+        <option value="外包">外包</option>
+        <option value="一样">一样（转折点）</option>
+      </select>
+    </div>
+
+    <div style="height:1px;background:var(--gray-200);margin:12px 0;"></div>
+
+    <div class="fill-row">
+      <span class="q-label">🔍 无差别点：销量为多少时两方案成本相同？</span>
+      <input type="number" id="d3_breakpoint" data-answer="1200" step="any" placeholder="个">
+    </div>
+    <div class="fill-row">
+      <span class="q-label">🔍 老周当前卖2,000个，应该选？</span>
+      <select id="d3_current" data-answer="自制">
+        <option value="">请选择</option>
+        <option value="自制">自制</option>
+        <option value="外包">外包</option>
+      </select>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="checkD3()">✓ 核对答案</button>
+      <button class="btn btn-secondary" onclick="resetCard('d3')">↺ 重填</button>
+    </div>
+
+    <div class="result-box" id="d3_result">
+      <div class="result-title" id="d3_result_title"></div>
+      <div class="result-score" id="d3_score"></div>
+      <div class="result-detail" id="d3_detail"></div>
+    </div>
+
+    <div class="explain-box" id="d3_explain">
+      <h5>💡 无差别点推导与全量表</h5>
+      <div class="formula">令自制总成本 = 外包总成本<br>
+      10x + 25,000 = 15x + 19,000<br>
+      5x = 6,000 → x = 1,200 个/月</div>
+      <p><strong>决策规则：</strong>低于1,200个选外包，高于1,200个选自制。老周卖2,000个，在交叉点右边 → 自制省4,000元。</p>
+      <table class="compare-table" style="margin-top:10px;font-size:.75rem;">
+        <thead><tr><th>月销量</th><th>自制总成本</th><th>外包总成本</th><th>差额</th><th>更划算</th></tr></thead>
+        <tbody>
+          <tr><td>500</td><td>30,000</td><td>26,500</td><td>3,500</td><td>外包</td></tr>
+          <tr><td>800</td><td>33,000</td><td>31,000</td><td>2,000</td><td>外包</td></tr>
+          <tr><td>1,000</td><td>35,000</td><td>34,000</td><td>1,000</td><td>外包</td></tr>
+          <tr style="background:var(--amber-100);"><td><strong>1,200</strong></td><td><strong>37,000</strong></td><td><strong>37,000</strong></td><td><strong>0</strong></td><td><strong>转折点</strong></td></tr>
+          <tr><td>1,500</td><td>40,000</td><td>41,500</td><td>1,500</td><td>自制</td></tr>
+          <tr style="background:var(--green-100);"><td><strong>2,000</strong></td><td><strong>45,000</strong></td><td><strong>49,000</strong></td><td><strong>4,000</strong></td><td><strong>自制</strong></td></tr>
+          <tr><td>2,500</td><td>50,000</td><td>56,500</td><td>6,500</td><td>自制</td></tr>
+          <tr><td>3,000</td><td>55,000</td><td>64,000</td><td>9,000</td><td>自制</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:8px;"><strong>非财务考量：</strong>品质控制、核心能力是否外流、供应灵活性、管理者时间价值、供应链风险——管理者的时间价值也是一种机会成本。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 路演模板 ==================== -->
+<div class="card-content" id="pitch">
+  <div class="pitch-section" style="margin:0;">
+    <h4>🎤 90秒路演四步模板</h4>
+    <p style="font-size:.82rem;color:var(--gray-600);margin-bottom:14px;">每组路演严格按以下四步，90秒内讲完，每步必须有数字。</p>
+
+    <div class="pitch-step">
+      <div class="step-head"><span class="step-num">1</span><span class="step-title">说场景</span></div>
+      <textarea id="pitch_1" placeholder="我们选的是谁的决策？面对什么选择？（例如：老周的面包房，面粉涨价后涨不涨价）"></textarea>
+    </div>
+
+    <div class="pitch-step">
+      <div class="step-head"><span class="step-num">2</span><span class="step-title">分两堆</span></div>
+      <textarea id="pitch_2" placeholder="哪些是固定成本（不管做不做都要付）？哪些是变动成本（多做一份才多花一份）？"></textarea>
+    </div>
+
+    <div class="pitch-step">
+      <div class="step-head"><span class="step-num">3</span><span class="step-title">报一个数</span></div>
+      <textarea id="pitch_3" placeholder="保本量、单位边际贡献或临界点，任选其一，必须有数字。（例如：涨价后保本量1,316个，比不涨价的1,667个更低）"></textarea>
+    </div>
+
+    <div class="pitch-step">
+      <div class="step-head"><span class="step-num">4</span><span class="step-title">给结论</span></div>
+      <textarea id="pitch_4" placeholder="低于某值选A，高于某值选B，并说出一个非财务考量。（例如：销量高于1,579个该涨价；但涨价面对的是学生群体，要考虑顾客承受能力）"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="savePitch()">💾 保存路演稿</button>
+      <button class="btn btn-secondary" onclick="clearPitch()">🗑 清空</button>
+    </div>
+  </div>
+
+  <div class="roles-bar" style="margin:16px 0 0;">
+    <h5>👥 组内角色分工（6人制）</h5>
+    <div class="roles-list">
+      <span class="role-chip">组长/汇报人</span>
+      <span class="role-chip">数据测算员</span>
+      <span class="role-chip">仿真操作员</span>
+      <span class="role-chip">记录员</span>
+      <span class="role-chip">质疑员</span>
+      <span class="role-chip">观察员</span>
+    </div>
+    <p style="font-size:.72rem;opacity:.8;margin-top:8px;">三个决策环节中角色应轮换，至少保证"仿真操作员"和"汇报人"由不同学生担任。</p>
+  </div>
+</div>
+
+<!-- 底部操作栏 -->
+<div class="bottom-bar">
+  <button class="btn btn-secondary" onclick="saveAll()">💾 保存进度</button>
+  <button class="btn btn-outline" onclick="window.print()">🖨 打印/导出PDF</button>
+  <button class="btn btn-primary" onclick="showSummary()">📊 查看总览</button>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== 数据存储 =====
+const STORAGE_KEY = 'bakery_ma_taskcard_v1';
+
+function saveData(){
+  const data = {groupNum:document.getElementById('groupNum').value};
+  document.querySelectorAll('input,select,textarea').forEach(el=>{
+    if(el.id) data[el.id] = el.value;
+  });
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}catch(e){}
+}
+
+function loadData(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    Object.keys(data).forEach(k=>{
+      const el = document.getElementById(k);
+      if(el) el.value = data[k];
+    });
+  }catch(e){}
+}
+
+// 自动保存
+document.addEventListener('input',()=>{clearTimeout(window._saveT);window._saveT=setTimeout(saveData,500);});
+
+// ===== Toast =====
+function showToast(msg,dur=2000){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+// ===== Tab 切换 =====
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.card-content').forEach(c=>c.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+// ===== 通用核对函数 =====
+function checkField(id,tolerance){
+  const el = document.getElementById(id);
+  if(!el) return {correct:false,empty:true};
+  const userVal = el.value.trim();
+  const answer = el.dataset.answer;
+  if(userVal===''||answer===''){
+    el.classList.remove('correct','wrong');
+    return {correct:false,empty:true};
+  }
+  const userNum = parseFloat(userVal);
+  const ansNum = parseFloat(answer);
+  let isCorrect;
+  if(isNaN(ansNum)){
+    isCorrect = (userVal===answer);
+  }else{
+    const tol = tolerance!==undefined?tolerance:0.02;
+    isCorrect = Math.abs(userNum-ansNum) <= Math.max(0.5, Math.abs(ansNum)*tol);
+  }
+  el.classList.toggle('correct',isCorrect);
+  el.classList.toggle('wrong',!isCorrect);
+  return {correct:isCorrect,empty:false,user:userVal,answer:answer};
+}
+
+function showResult(prefix,total,correct,detailHtml){
+  const box = document.getElementById(prefix+'_result');
+  const title = document.getElementById(prefix+'_result_title');
+  const score = document.getElementById(prefix+'_score');
+  const detail = document.getElementById(prefix+'_detail');
+  const explain = document.getElementById(prefix+'_explain');
+  const pct = Math.round(correct/total*100);
+  box.classList.remove('pass','fail');
+  if(pct>=80){
+    box.classList.add('pass');
+    title.innerHTML='🎉 太棒了！测算通过';
+  }else{
+    box.classList.add('fail');
+    title.innerHTML='📝 还差一点，看看解析';
+  }
+  score.textContent = correct+' / '+total+' 正确（'+pct+'%）';
+  detail.innerHTML = detailHtml;
+  box.classList.add('show');
+  explain.classList.add('show');
+  // 标记tab完成
+  const tabMap={d1:'d1',d2:'d2',d3:'d3'};
+  if(tabMap[prefix]){
+    document.querySelector('.tab[data-tab="'+tabMap[prefix]+'"]').classList.add('completed');
+  }
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ===== 决策一核对 =====
+function checkD1(){
+  const fields=['d1_a_cm','d1_a_be','d1_a_profit','d1_a_safety',
+                'd1_b_cm','d1_b_be','d1_b_profit','d1_b_safety',
+                'd1_critical','d1_conclusion'];
+  let correct=0,total=0,empty=0;
+  const wrongList=[];
+  fields.forEach(id=>{
+    const r=checkField(id);
+    if(!r.empty){total++;if(r.correct)correct++;else wrongList.push(id);}
+    else empty++;
+  });
+  if(total===0){showToast('请先填写至少一个空再核对');return;}
+  let detail='';
+  if(wrongList.length>0){
+    const names={d1_a_cm:'A单位边际贡献',d1_a_be:'A保本量',d1_a_profit:'A预计利润',d1_a_safety:'A安全边际率',
+                 d1_b_cm:'B单位边际贡献',d1_b_be:'B保本量',d1_b_profit:'B预计利润',d1_b_safety:'B安全边际率',
+                 d1_critical:'临界销量',d1_conclusion:'最终结论'};
+    detail='<strong>需要订正：</strong>'+wrongList.map(id=>names[id]+'（正确答案：'+document.getElementById(id).dataset.answer+'）').join('；');
+  }else{
+    detail='<strong>全部正确！</strong>涨价方案利润7,300元 &gt; 不涨5,000元，且安全边际率更高（22.6% &gt; 16.7%），应该涨价。';
+  }
+  if(empty>0) detail += '<br><span style="color:var(--gray-500);">还有'+empty+'个空未填写。</span>';
+  showResult('d1',total,correct,detail);
+  saveData();
+}
+
+// ===== 决策二核对 =====
+function checkD2(){
+  const fields=['d2_old_unit','d2_old_each','d2_old_total','d2_old_conclusion',
+                'd2_new_revenue','d2_new_cost','d2_new_net','d2_new_conclusion',
+                'd2_diff','d2_critical_price'];
+  let correct=0,total=0,empty=0;
+  const wrongList=[];
+  fields.forEach(id=>{
+    const r=checkField(id);
+    if(!r.empty){total++;if(r.correct)correct++;else wrongList.push(id);}
+    else empty++;
+  });
+  if(total===0){showToast('请先填写至少一个空再核对');return;}
+  let detail='';
+  if(wrongList.length>0){
+    const names={d2_old_unit:'老周算法-单位成本',d2_old_each:'老周算法-每个盈亏',d2_old_total:'老周算法-总盈亏',d2_old_conclusion:'老周结论',
+                 d2_new_revenue:'增量收入',d2_new_cost:'增量成本',d2_new_net:'净增量',d2_new_conclusion:'正确结论',
+                 d2_diff:'两算法差额',d2_critical_price:'临界订单价'};
+    detail='<strong>需要订正：</strong>'+wrongList.map(id=>names[id]+'（正确答案：'+document.getElementById(id).dataset.answer+'）').join('；');
+  }else{
+    detail='<strong>全部正确！</strong>老周的错误在于把固定成本分摊进了单位成本。正确算法下，接单净增4,000元，应该接。差额6,250元正好是被误摊的固定成本（12.5×500）。';
+  }
+  if(empty>0) detail += '<br><span style="color:var(--gray-500);">还有'+empty+'个空未填写。</span>';
+  showResult('d2',total,correct,detail);
+  saveData();
+}
+
+// ===== 决策三答案动态更新 =====
+const d3AnswerMap={
+  '500':{make:30000,out:26500,diff:3500,conclusion:'外包'},
+  '800':{make:33000,out:31000,diff:2000,conclusion:'外包'},
+  '1000':{make:35000,out:34000,diff:1000,conclusion:'外包'},
+  '1200':{make:37000,out:37000,diff:0,conclusion:'一样'},
+  '1500':{make:40000,out:41500,diff:-1500,conclusion:'自制'},
+  '2000':{make:45000,out:49000,diff:-4000,conclusion:'自制'},
+  '2500':{make:50000,out:56500,diff:-6500,conclusion:'自制'},
+  '3000':{make:55000,out:64000,diff:-9000,conclusion:'自制'}
+};
+
+function updateD3Answers(){
+  const vol=document.getElementById('d3_volume').value;
+  const ans=d3AnswerMap[vol];
+  if(ans){
+    document.getElementById('d3_make_cost').dataset.answer=ans.make;
+    document.getElementById('d3_outsource_cost').dataset.answer=ans.out;
+    document.getElementById('d3_diff').dataset.answer=ans.diff;
+    document.getElementById('d3_conclusion').dataset.answer=ans.conclusion;
+  }
+}
+
+function checkD3(){
+  const vol=document.getElementById('d3_volume').value;
+  if(!vol){showToast('请先选择本组的销量场景');return;}
+  updateD3Answers();
+  const fields=['d3_make_cost','d3_outsource_cost','d3_diff','d3_conclusion','d3_breakpoint','d3_current'];
+  let correct=0,total=0,empty=0;
+  const wrongList=[];
+  fields.forEach(id=>{
+    const r=checkField(id);
+    if(!r.empty){total++;if(r.correct)correct++;else wrongList.push(id);}
+    else empty++;
+  });
+  if(total===0){showToast('请先填写至少一个空再核对');return;}
+  let detail='';
+  if(wrongList.length>0){
+    const names={d3_make_cost:'自制总成本',d3_outsource_cost:'外包总成本',d3_diff:'差额',d3_conclusion:'本组结论',
+                 d3_breakpoint:'无差别点',d3_current:'当前销量结论'};
+    detail='<strong>需要订正：</strong>'+wrongList.map(id=>names[id]+'（正确答案：'+document.getElementById(id).dataset.answer+'）').join('；');
+  }else{
+    const ans=d3AnswerMap[vol];
+    detail='<strong>全部正确！</strong>本组销量'+vol+'个时，'+ans.conclusion+'更划算。无差别点为1,200个/月：低于它选外包，高于它选自制。当前2,000个应选自制，省4,000元。';
+  }
+  if(empty>0) detail += '<br><span style="color:var(--gray-500);">还有'+empty+'个空未填写。</span>';
+  showResult('d3',total,correct,detail);
+  saveData();
+}
+
+// ===== 重置 =====
+function resetCard(prefix){
+  if(!confirm('确定要清空这张卡的所有填写内容吗？'))return;
+  document.querySelectorAll('#'+prefix+' input,#'+prefix+' select').forEach(el=>{
+    el.value='';el.classList.remove('correct','wrong');
+  });
+  document.getElementById(prefix+'_result').classList.remove('show');
+  document.getElementById(prefix+'_explain').classList.remove('show');
+  document.querySelector('.tab[data-tab="'+prefix+'"]').classList.remove('completed');
+  saveData();
+  showToast('已重置');
+}
+
+// ===== 路演稿 =====
+function savePitch(){saveData();showToast('路演稿已保存到本机');}
+function clearPitch(){
+  if(!confirm('确定清空路演稿吗？'))return;
+  ['pitch_1','pitch_2','pitch_3','pitch_4'].forEach(id=>document.getElementById(id).value='');
+  saveData();
+  showToast('已清空');
+}
+
+// ===== 总览 =====
+function showSummary(){
+  let d1c=0,d1t=0,d2c=0,d2t=0,d3c=0,d3t=0;
+  document.querySelectorAll('#d1 input[data-answer],#d1 select[data-answer]').forEach(el=>{
+    if(el.value&&el.dataset.answer){d1t++;if(el.classList.contains('correct'))d1c++;}
+  });
+  document.querySelectorAll('#d2 input[data-answer],#d2 select[data-answer]').forEach(el=>{
+    if(el.value&&el.dataset.answer){d2t++;if(el.classList.contains('correct'))d2c++;}
+  });
+  document.querySelectorAll('#d3 input[data-answer],#d3 select[data-answer]').forEach(el=>{
+    if(el.value&&el.dataset.answer){d3t++;if(el.classList.contains('correct'))d3c++;}
+  });
+  const g=document.getElementById('groupNum').value||'?';
+  alert('📊 第'+g+'组 完成总览\n\n'+
+        '决策一（涨不涨价）：'+(d1t?d1c+'/'+d1t+' 正确':'未开始')+'\n'+
+        '决策二（接不接单）：'+(d2t?d2c+'/'+d2t+' 正确':'未开始')+'\n'+
+        '决策三（自制外包）：'+(d3t?d3c+'/'+d3t+' 正确':'未开始')+'\n\n'+
+        '数据已保存在本机浏览器，关闭后再打开仍在。');
+}
+
+function saveAll(){saveData();showToast('全部进度已保存到本机浏览器');}
+
+// ===== 分组与角色 =====
+function updateGroupDisplay(){
+  const gn = document.getElementById('groupNum').value;
+  const gd = document.getElementById('groupDisplay');
+  if(gd) gd.textContent = gn || '--';
+}
+document.getElementById('groupNum').addEventListener('input', updateGroupDisplay);
+
+// 姓名输入框 filled 样式
+document.querySelectorAll('.name-input').forEach(inp=>{
+  inp.addEventListener('input',()=>{
+    inp.classList.toggle('filled', inp.value.trim()!=='');
+  });
+});
+
+function confirmGroup(){
+  const gn = document.getElementById('groupNum').value;
+  if(!gn){ showToast('请先在顶部填写组号'); return; }
+  // 同步销量场景到决策三
+  const gv = document.getElementById('group_volume').value;
+  if(gv){
+    const d3v = document.getElementById('d3_volume');
+    if(d3v){ d3v.value = gv; updateD3Answers(); }
+  }
+  saveData();
+  showToast('第'+gn+'组分工已确认！');
+  // 跳转到决策一
+  setTimeout(()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.card-content').forEach(c=>c.classList.remove('active'));
+    document.querySelector('.tab[data-tab="d1"]').classList.add('active');
+    document.getElementById('d1').classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }, 600);
+}
+
+// ===== 初始化 =====
+loadData();
+updateGroupDisplay();
+// 恢复姓名输入框的filled样式
+document.querySelectorAll('.name-input').forEach(inp=>{
+  if(inp.value.trim()) inp.classList.add('filled');
+});
+// 恢复销量场景同步
+const gv = document.getElementById('group_volume');
+if(gv && gv.value){
+  const d3v = document.getElementById('d3_volume');
+  if(d3v && !d3v.value){ d3v.value = gv.value; updateD3Answers(); }
+}
+// 恢复决策三的答案映射
+if(document.getElementById('d3_volume').value) updateD3Answers();
+// 恢复已核对状态（简单检查）
+['d1','d2','d3'].forEach(prefix=>{
+  const hasCorrect=document.querySelectorAll('#'+prefix+' .correct').length>0;
+  if(hasCorrect) document.querySelector('.tab[data-tab="'+prefix+'"]').classList.add('completed');
+});
+</script>
+</body>
+</html>

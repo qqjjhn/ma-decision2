@@ -510,73 +510,6 @@ body{
   color:var(--green-800);
   border-left:3px solid var(--green-500);
 }
-/* ===== 路演模板 ===== */
-.pitch-section{
-  background:var(--white);
-  border:2px solid var(--green-300);
-  border-radius:var(--radius);
-  padding:16px;
-  margin:16px;
-  position:relative;
-}
-.pitch-section::before{
-  content:"任务卡背面";
-  position:absolute;
-  top:-10px;left:16px;
-  background:var(--green-600);
-  color:var(--white);
-  font-size:.7rem;
-  padding:2px 10px;
-  border-radius:10px;
-  font-weight:600;
-}
-.pitch-section h4{
-  font-size:.95rem;
-  color:var(--green-800);
-  margin-bottom:12px;
-  margin-top:4px;
-  font-weight:700;
-}
-.pitch-step{
-  margin-bottom:12px;
-}
-.pitch-step:last-child{margin-bottom:0;}
-.pitch-step .step-head{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom:6px;
-}
-.pitch-step .step-num{
-  width:24px;height:24px;
-  line-height:24px;
-  text-align:center;
-  background:var(--green-600);
-  color:var(--white);
-  border-radius:50%;
-  font-size:.75rem;
-  font-weight:700;
-  flex-shrink:0;
-}
-.pitch-step .step-title{
-  font-size:.85rem;
-  font-weight:700;
-  color:var(--green-800);
-}
-.pitch-step textarea{
-  width:100%;
-  min-height:50px;
-  padding:10px;
-  border:2px solid var(--gray-200);
-  border-radius:var(--radius-sm);
-  font-size:.85rem;
-  font-family:inherit;
-  resize:vertical;
-  outline:none;
-  transition:border-color .2s;
-  line-height:1.6;
-}
-.pitch-step textarea:focus{border-color:var(--green-500);background:var(--green-50);}
 /* ===== 角色说明 ===== */
 .roles-bar{
   background:var(--green-800);
@@ -703,7 +636,6 @@ body{
   body{background:white;padding-bottom:0;}
   .header,.group-bar,.tabs,.bottom-bar,.btn-row,.roles-bar{display:none !important;}
   .card-content{display:block !important;padding:0;page-break-after:always;}
-  .pitch-section{page-break-before:always;}
   .result-box,.explain-box{display:block !important;}
   input,textarea{border:1px solid #999 !important;}
 }
@@ -713,6 +645,109 @@ body{
   .compare-table{font-size:.75rem;}
   .compare-table input{max-width:60px;padding:5px 4px;}
   .fill-row input,.fill-row select{width:100px;}
+}
+/* ===== 成绩单模态框 ===== */
+.modal-mask{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,.5);
+  display:none;align-items:center;justify-content:center;
+  z-index:500;padding:16px;
+}
+.modal-mask.show{display:flex;}
+.modal-card{
+  background:var(--white);
+  border-radius:var(--radius);
+  max-width:420px;width:100%;
+  max-height:90vh;overflow-y:auto;
+  box-shadow:var(--shadow-lg);
+}
+.modal-header{
+  background:linear-gradient(135deg,var(--green-800),var(--green-600));
+  color:var(--white);padding:16px 20px;
+  border-radius:var(--radius) var(--radius) 0 0;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.modal-header h3{font-size:1.05rem;font-weight:700;}
+.modal-close{
+  background:none;border:none;color:var(--white);
+  font-size:1.4rem;cursor:pointer;line-height:1;opacity:.8;
+}
+.modal-body{padding:16px 20px;}
+/* ===== 可导出成绩单 ===== */
+.report-card{
+  background:linear-gradient(160deg,var(--green-50) 0%,var(--white) 100%);
+  border:2px solid var(--green-200);
+  border-radius:var(--radius);
+  padding:20px;
+  position:relative;
+  overflow:hidden;
+}
+.report-card::before{
+  content:"";position:absolute;top:-30px;right:-30px;
+  width:100px;height:100px;border-radius:50%;
+  background:var(--green-100);opacity:.6;
+}
+.report-card::after{
+  content:"";position:absolute;bottom:-20px;left:-20px;
+  width:80px;height:80px;border-radius:50%;
+  background:var(--green-100);opacity:.4;
+}
+.report-title{
+  text-align:center;margin-bottom:4px;position:relative;z-index:1;
+}
+.report-title h2{
+  font-size:1.2rem;color:var(--green-800);font-weight:800;
+}
+.report-title .sub{
+  font-size:.75rem;color:var(--gray-500);margin-top:2px;
+}
+.report-group{
+  text-align:center;margin:12px 0;position:relative;z-index:1;
+}
+.report-group .group-label{
+  font-size:.75rem;color:var(--gray-500);
+}
+.report-group .group-num{
+  font-size:2.2rem;font-weight:800;color:var(--green-700);
+  line-height:1.2;
+}
+.report-scores{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
+  margin:14px 0;position:relative;z-index:1;
+}
+.score-item{
+  background:var(--white);border:1px solid var(--green-200);
+  border-radius:var(--radius-sm);padding:10px 6px;text-align:center;
+}
+.score-item .score-label{
+  font-size:.68rem;color:var(--gray-500);margin-bottom:4px;
+  line-height:1.3;min-height:2em;
+}
+.score-item .score-num{
+  font-size:1.1rem;font-weight:800;color:var(--green-700);
+}
+.score-item .score-num.low{color:var(--amber-600);}
+.score-item .score-num.none{color:var(--gray-400);}
+.score-item .score-pct{
+  font-size:.68rem;color:var(--gray-400);margin-top:2px;
+}
+.report-summary{
+  background:var(--white);border-radius:var(--radius-sm);
+  padding:10px 12px;margin-top:10px;position:relative;z-index:1;
+  border:1px solid var(--gray-200);
+}
+.report-summary .row{
+  display:flex;justify-content:space-between;
+  font-size:.75rem;padding:3px 0;
+}
+.report-summary .row .k{color:var(--gray-500);}
+.report-summary .row .v{color:var(--gray-800);font-weight:600;}
+.report-footer{
+  text-align:center;margin-top:14px;position:relative;z-index:1;
+  font-size:.68rem;color:var(--gray-400);
+}
+.modal-actions{
+  display:flex;gap:10px;padding:0 20px 16px;
 }
 </style>
 </head>
@@ -753,10 +788,6 @@ body{
   </button>
   <button class="tab" data-tab="d3">
     <span class="tab-num">3</span>自制外包
-    <span class="done-dot"></span>
-  </button>
-  <button class="tab" data-tab="pitch">
-    <span class="tab-num">★</span>路演模板
     <span class="done-dot"></span>
   </button>
 </div>
@@ -1157,62 +1188,76 @@ body{
   </div>
 </div>
 
-<!-- ==================== 路演模板 ==================== -->
-<div class="card-content" id="pitch">
-  <div class="pitch-section" style="margin:0;">
-    <h4>🎤 90秒路演四步模板</h4>
-    <p style="font-size:.82rem;color:var(--gray-600);margin-bottom:14px;">每组路演严格按以下四步，90秒内讲完，每步必须有数字。</p>
-
-    <div class="pitch-step">
-      <div class="step-head"><span class="step-num">1</span><span class="step-title">说场景</span></div>
-      <textarea id="pitch_1" placeholder="我们选的是谁的决策？面对什么选择？（例如：老周的面包房，面粉涨价后涨不涨价）"></textarea>
-    </div>
-
-    <div class="pitch-step">
-      <div class="step-head"><span class="step-num">2</span><span class="step-title">分两堆</span></div>
-      <textarea id="pitch_2" placeholder="哪些是固定成本（不管做不做都要付）？哪些是变动成本（多做一份才多花一份）？"></textarea>
-    </div>
-
-    <div class="pitch-step">
-      <div class="step-head"><span class="step-num">3</span><span class="step-title">报一个数</span></div>
-      <textarea id="pitch_3" placeholder="保本量、单位边际贡献或临界点，任选其一，必须有数字。（例如：涨价后保本量1,316个，比不涨价的1,667个更低）"></textarea>
-    </div>
-
-    <div class="pitch-step">
-      <div class="step-head"><span class="step-num">4</span><span class="step-title">给结论</span></div>
-      <textarea id="pitch_4" placeholder="低于某值选A，高于某值选B，并说出一个非财务考量。（例如：销量高于1,579个该涨价；但涨价面对的是学生群体，要考虑顾客承受能力）"></textarea>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn btn-outline" onclick="savePitch()">💾 保存路演稿</button>
-      <button class="btn btn-secondary" onclick="clearPitch()">🗑 清空</button>
-    </div>
-  </div>
-
-  <div class="roles-bar" style="margin:16px 0 0;">
-    <h5>👥 组内角色分工（6人制）</h5>
-    <div class="roles-list">
-      <span class="role-chip">组长/汇报人</span>
-      <span class="role-chip">数据测算员</span>
-      <span class="role-chip">仿真操作员</span>
-      <span class="role-chip">记录员</span>
-      <span class="role-chip">质疑员</span>
-      <span class="role-chip">观察员</span>
-    </div>
-    <p style="font-size:.72rem;opacity:.8;margin-top:8px;">三个决策环节中角色应轮换，至少保证"仿真操作员"和"汇报人"由不同学生担任。</p>
-  </div>
-</div>
-
 <!-- 底部操作栏 -->
 <div class="bottom-bar">
   <button class="btn btn-secondary" onclick="saveAll()">💾 保存进度</button>
   <button class="btn btn-outline" onclick="window.print()">🖨 打印/导出PDF</button>
-  <button class="btn btn-primary" onclick="showSummary()">📊 查看总览</button>
+  <button class="btn btn-primary" onclick="openReport()">📊 成绩单/导出图片</button>
 </div>
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<!-- 成绩单模态框 -->
+<div class="modal-mask" id="reportModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>📊 小组成绩单</h3>
+      <button class="modal-close" onclick="closeReport()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="report-card" id="reportCard">
+        <div class="report-title">
+          <h2>面包房里的管理会计</h2>
+          <div class="sub">分组任务卡 · 完成成绩单</div>
+        </div>
+        <div class="report-group">
+          <div class="group-label">第</div>
+          <div class="group-num" id="rpt_group">--</div>
+          <div class="group-label">组</div>
+        </div>
+        <div class="report-scores">
+          <div class="score-item">
+            <div class="score-label">决策一<br>涨不涨价</div>
+            <div class="score-num" id="rpt_d1">--</div>
+            <div class="score-pct" id="rpt_d1_pct"></div>
+          </div>
+          <div class="score-item">
+            <div class="score-label">决策二<br>接不接单</div>
+            <div class="score-num" id="rpt_d2">--</div>
+            <div class="score-pct" id="rpt_d2_pct"></div>
+          </div>
+          <div class="score-item">
+            <div class="score-label">决策三<br>自制外包</div>
+            <div class="score-num" id="rpt_d3">--</div>
+            <div class="score-pct" id="rpt_d3_pct"></div>
+          </div>
+        </div>
+        <div class="report-summary">
+          <div class="row"><span class="k">总正确数</span><span class="v" id="rpt_total_correct">--</span></div>
+          <div class="row"><span class="k">总作答数</span><span class="v" id="rpt_total_ans">--</span></div>
+          <div class="row"><span class="k">综合正确率</span><span class="v" id="rpt_overall">--</span></div>
+          <div class="row"><span class="k">本组销量场景</span><span class="v" id="rpt_volume">--</span></div>
+          <div class="row"><span class="k">导出时间</span><span class="v" id="rpt_time">--</span></div>
+        </div>
+        <div class="report-footer">创业会计学 · 管理会计实践课堂</div>
+      </div>
+      <!-- 图片预览区（生成后显示，供手机长按保存） -->
+      <div id="reportImageWrap" style="display:none;margin-top:16px;">
+        <div style="background:var(--amber-100);border:1px solid #fcd34d;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:.78rem;color:#92400e;text-align:center;">
+          📱 手机用户：<strong>长按下方图片</strong> → 选择"存储图像"即可保存到相册
+        </div>
+        <img id="reportImagePreview" style="width:100%;border-radius:8px;border:1px solid var(--gray-200);" alt="成绩单预览">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeReport()">关闭</button>
+      <button class="btn btn-primary" onclick="exportReportImage()">📷 保存为图片</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 // ===== 数据存储 =====
 const STORAGE_KEY = 'bakery_ma_taskcard_v1';
@@ -1426,17 +1471,8 @@ function resetCard(prefix){
   showToast('已重置');
 }
 
-// ===== 路演稿 =====
-function savePitch(){saveData();showToast('路演稿已保存到本机');}
-function clearPitch(){
-  if(!confirm('确定清空路演稿吗？'))return;
-  ['pitch_1','pitch_2','pitch_3','pitch_4'].forEach(id=>document.getElementById(id).value='');
-  saveData();
-  showToast('已清空');
-}
-
-// ===== 总览 =====
-function showSummary(){
+// ===== 总览 & 成绩单 =====
+function calcScores(){
   let d1c=0,d1t=0,d2c=0,d2t=0,d3c=0,d3t=0;
   document.querySelectorAll('#d1 input[data-answer],#d1 select[data-answer]').forEach(el=>{
     if(el.value&&el.dataset.answer){d1t++;if(el.classList.contains('correct'))d1c++;}
@@ -1447,11 +1483,101 @@ function showSummary(){
   document.querySelectorAll('#d3 input[data-answer],#d3 select[data-answer]').forEach(el=>{
     if(el.value&&el.dataset.answer){d3t++;if(el.classList.contains('correct'))d3c++;}
   });
+  return {d1c,d1t,d2c,d2t,d3c,d3t};
+}
+
+function openReport(){
+  const s=calcScores();
+  const g=document.getElementById('groupNum').value||'?';
+  document.getElementById('rpt_group').textContent=g;
+
+  function setScore(idC,idP,c,t){
+    const elC=document.getElementById(idC);
+    const elP=document.getElementById(idP);
+    if(t===0){
+      elC.textContent='未开始';elC.className='score-num none';
+      elP.textContent='';
+    }else{
+      elC.textContent=c+'/'+t;
+      const pct=Math.round(c/t*100);
+      elP.textContent=pct+'%';
+      elC.className='score-num'+(pct<80?' low':'');
+    }
+  }
+  setScore('rpt_d1','rpt_d1_pct',s.d1c,s.d1t);
+  setScore('rpt_d2','rpt_d2_pct',s.d2c,s.d2t);
+  setScore('rpt_d3','rpt_d3_pct',s.d3c,s.d3t);
+
+  const totalC=s.d1c+s.d2c+s.d3c;
+  const totalT=s.d1t+s.d2t+s.d3t;
+  document.getElementById('rpt_total_correct').textContent=totalC;
+  document.getElementById('rpt_total_ans').textContent=totalT;
+  document.getElementById('rpt_overall').textContent=totalT>0?Math.round(totalC/totalT*100)+'%':'--';
+
+  const vol=document.getElementById('d3_volume').value;
+  document.getElementById('rpt_volume').textContent=vol?vol+' 个/月':'未选择';
+
+  const now=new Date();
+  const pad=n=>String(n).padStart(2,'0');
+  document.getElementById('rpt_time').textContent=
+    now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes());
+
+  // 重置图片预览区
+  document.getElementById('reportImageWrap').style.display='none';
+  document.getElementById('reportImagePreview').src='';
+
+  document.getElementById('reportModal').classList.add('show');
+}
+
+function closeReport(){
+  document.getElementById('reportModal').classList.remove('show');
+}
+
+function exportReportImage(){
+  const card=document.getElementById('reportCard');
+  const btn=event.target;
+  const originalText=btn.textContent;
+  btn.textContent='生成中...';btn.disabled=true;
+
+  html2canvas(card,{
+    scale:2,
+    backgroundColor:'#ffffff',
+    useCORS:true
+  }).then(canvas=>{
+    const dataUrl=canvas.toDataURL('image/png');
+    // 显示图片预览（手机长按保存）
+    const preview=document.getElementById('reportImagePreview');
+    const wrap=document.getElementById('reportImageWrap');
+    preview.src=dataUrl;
+    wrap.style.display='block';
+    // PC端自动触发下载
+    const isMobile=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    if(!isMobile){
+      const link=document.createElement('a');
+      const g=document.getElementById('groupNum').value||'未命名';
+      link.download='管理会计任务卡_第'+g+'组成绩单.png';
+      link.href=dataUrl;
+      link.click();
+      showToast('成绩单图片已下载');
+    }else{
+      showToast('图片已生成，长按保存到相册');
+    }
+    btn.textContent='🔄 重新生成';btn.disabled=false;
+    // 滚动到预览图
+    setTimeout(()=>wrap.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+  }).catch(err=>{
+    showToast('图片生成失败，请重试');
+    btn.textContent=originalText;btn.disabled=false;
+  });
+}
+
+function showSummary(){
+  const s=calcScores();
   const g=document.getElementById('groupNum').value||'?';
   alert('📊 第'+g+'组 完成总览\n\n'+
-        '决策一（涨不涨价）：'+(d1t?d1c+'/'+d1t+' 正确':'未开始')+'\n'+
-        '决策二（接不接单）：'+(d2t?d2c+'/'+d2t+' 正确':'未开始')+'\n'+
-        '决策三（自制外包）：'+(d3t?d3c+'/'+d3t+' 正确':'未开始')+'\n\n'+
+        '决策一（涨不涨价）：'+(s.d1t?s.d1c+'/'+s.d1t+' 正确':'未开始')+'\n'+
+        '决策二（接不接单）：'+(s.d2t?s.d2c+'/'+s.d2t+' 正确':'未开始')+'\n'+
+        '决策三（自制外包）：'+(s.d3t?s.d3c+'/'+s.d3t+' 正确':'未开始')+'\n\n'+
         '数据已保存在本机浏览器，关闭后再打开仍在。');
 }
 

@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>生产经营决策·合作社优化 | 农业合作社生产经营决策台（第5章）</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --g:#2e7d32; --gd:#1b5e20; --ggl:#e9f4e9; --gm:#7cc47f; --gline:#cfe3cf;
+  --bg:#f4f9f4; --card:#fff; --ink:#223021; --muted:#5f6f5c;
+  --hi:#e65100; --lo:#1565c0; --pu:#6a1b9a; --sd:0 2px 12px rgba(46,125,50,.09);
+}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);
+  font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB",system-ui,-apple-system,sans-serif;
+  line-height:1.68;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px 64px}
+.sw-x{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.sw-x::-webkit-scrollbar{height:6px}
+.sw-x::-webkit-scrollbar-thumb{background:var(--gm);border-radius:6px}
+
+/* 页头 */
+header{background:linear-gradient(135deg,#2e7d32 0%,#43a047 60%,#66bb6a 100%);color:#fff;padding:24px 0 20px;box-shadow:0 2px 14px rgba(46,125,50,.25)}
+header .wrap{padding-bottom:0;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.hd-txt{flex:1;min-width:260px}
+.kicker{font-size:13px;letter-spacing:2px;opacity:.9}
+h1{margin:4px 0 6px;font-size:27px;letter-spacing:1px}
+.sub{font-size:14px;opacity:.94}
+.chips{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 12px;font-size:12.5px}
+
+/* 导航 */
+.topnav{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.97);border-bottom:1px solid var(--gline);box-shadow:0 2px 10px rgba(46,125,50,.08)}
+.topnav .wrap{padding:0 16px;display:flex;gap:2px;align-items:center;flex-wrap:wrap}
+.topnav a{color:var(--gd);text-decoration:none;font-size:13px;padding:9px 10px;border-radius:8px;display:inline-block;white-space:nowrap}
+.topnav a:hover{background:var(--ggl)}
+html{scroll-behavior:smooth}
+section{scroll-margin-top:58px}
+
+/* 区块 */
+section{background:var(--card);border:1px solid var(--gline);border-radius:14px;padding:18px 18px 20px;margin-top:18px;box-shadow:var(--sd)}
+h2{margin:0 0 4px;font-size:19px;color:var(--gd);display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+h2 .kp{background:var(--ggl);color:var(--gd);border:1px solid var(--gline);border-radius:6px;font-size:12px;padding:1px 8px;font-weight:600}
+.lead{color:var(--muted);font-size:13.5px;margin:0 0 14px}
+h3{font-size:15px;margin:18px 0 8px;color:var(--gd);border-left:4px solid var(--gm);padding-left:8px}
+
+/* 表格 */
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border:1px solid var(--gline);padding:7px 9px;text-align:center}
+th{background:var(--ggl);color:var(--gd);font-weight:600;white-space:nowrap}
+td.l,th.l{text-align:left}
+tbody tr:nth-child(even){background:#fafdfa}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:4px}
+.tw th.l,.tw td.l{position:sticky;left:0;z-index:2;box-shadow:inset -1px 0 0 var(--gline),inset 1px 0 0 var(--gline)}
+.tw th.l{background:var(--ggl)} .tw td.l{background:#fff}
+.tw tbody tr:nth-child(even) td.l{background:#fafdfa}
+tr.best{background:#e6f4ea !important}
+tr.best td{font-weight:600;color:var(--gd)}
+tr.best td.l:before{content:"★ ";color:var(--g)}
+
+input[type=number],select{width:100%;padding:6px 8px;border:1px solid var(--gline);border-radius:6px;background:#fff;font:inherit;color:var(--ink);min-width:74px}
+input[type=number]:focus,select:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(46,125,50,.13)}
+input[readonly]{background:#f3f7f3;color:var(--muted)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(226px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.field{background:#fbfefb;border:1px dashed var(--gline);border-radius:10px;padding:10px 12px}
+.field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:4px}
+
+/* 按钮 */
+.btn{border:1px solid var(--g);background:#fff;color:var(--gd);border-radius:8px;padding:7px 14px;font:inherit;font-size:13px;cursor:pointer;transition:.15s}
+.btn:hover{background:var(--ggl)}
+.btn.solid{background:var(--g);color:#fff}
+.btn.solid:hover{background:var(--gd)}
+.btn.sm{padding:4px 10px;font-size:12.5px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* 结论与提示 */
+.badge{display:inline-block;border-radius:6px;padding:1px 8px;font-size:12px;font-weight:600;color:#fff}
+.b-hi{background:var(--hi)} .b-lo{background:var(--lo)} .b-ok{background:var(--g)} .b-gr{background:#6d7a6b}
+.verdict{border-radius:12px;padding:12px 14px;margin-top:12px;font-size:13.5px;border:1px solid}
+.v-hi{background:#fff4ec;border-color:#ffcc9e;color:#7a3700}
+.v-lo{background:#eaf2fd;border-color:#b8d3f5;color:#0d3f78}
+.v-ok{background:var(--ggl);border-color:var(--gline);color:var(--gd)}
+.verdict b{font-size:15px}
+.note{background:#fbfefb;border:1px dashed var(--gline);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--muted);margin-top:10px}
+.warn{background:#fff8e1;border:1px solid #ffe0a3;color:#7a5300;border-radius:10px;padding:8px 12px;font-size:13px;margin-top:8px}
+.formula{background:var(--ggl);border:1px solid var(--gline);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--gd);margin:10px 0;font-family:Consolas,"Courier New",monospace}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:12px}
+.card{border:1px solid var(--gline);border-radius:12px;padding:12px 14px;background:#fff}
+.card .ttl{font-size:12.5px;color:var(--muted)}
+.card .big{font-size:22px;font-weight:700;color:var(--gd);letter-spacing:.5px}
+.card .sml{font-size:12px;color:var(--muted)}
+.tiny{font-size:12px;color:var(--muted)}
+.pill{display:inline-block;border-radius:999px;padding:1px 10px;font-size:12px;background:var(--ggl);color:var(--gd);border:1px solid var(--gline);margin:0 6px 4px 0}
+.tag{display:inline-block;background:var(--ggl);color:var(--gd);border-radius:5px;padding:0 7px;font-size:12px;border:1px solid var(--gline)}
+.hide{display:none !important}
+
+/* SVG 图 */
+.plot{width:100%;height:auto;display:block;border:1px solid var(--gline);border-radius:12px;background:linear-gradient(180deg,#fbfefb,#f3f9f3)}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:12.5px;color:var(--muted)}
+.legend span.i{display:inline-block;width:16px;height:4px;border-radius:3px;vertical-align:middle;margin-right:5px}
+
+/* 随堂演练（手算填空） */
+.drill{border:1px dashed var(--gm);background:#fbfefb;border-radius:12px;padding:12px 14px;margin-top:16px}
+.drill-hd{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between}
+.drill-hd .t{font-size:14.5px;font-weight:600;color:var(--gd)}
+.drill-hd .sc{font-size:12.5px;color:var(--muted)}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(226px,1fr));gap:10px;margin-top:10px}
+.ditem{background:#fff;border:1px solid var(--gline);border-radius:9px;padding:8px 10px}
+.ditem label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:4px}
+.ditem .row{display:flex;gap:6px;align-items:center}
+.ditem input{width:100%;min-width:0}
+.ditem .st{font-size:12px;margin-top:5px;min-height:17px;color:var(--muted)}
+.ditem .st.ok{color:#1b5e20}
+.ditem .st.no{color:#8c1d18}
+.ditem .st.tip{color:#7a5300}
+.ditem.f-ok{border-color:var(--g);background:#f6fbf6}
+.ditem.f-no{border-color:#e57373;background:#fffafa}
+.dbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px;align-items:center}
+.proc{margin-top:12px;background:#f3f9f3;border:1px solid var(--gline);border-left:4px solid var(--g);border-radius:0 10px 10px 0;padding:10px 14px;font-size:13px;line-height:1.85;color:#31402f}
+.proc h4{margin:0 0 6px;font-size:13.5px;color:var(--gd)}
+.proc ol,.proc ul{margin:6px 0;padding-left:21px}
+.proc li{margin:4px 0}
+.proc code{background:var(--ggl);border-radius:4px;padding:1px 5px;color:var(--gd)}
+.proc .stepn{color:var(--g);font-weight:600}
+
+/* 知识点 */
+details{border:1px solid var(--gline);border-radius:10px;margin-top:10px;background:#fff;overflow:hidden}
+details[open]{background:#fbfefb}
+summary{cursor:pointer;padding:10px 14px;font-weight:600;color:var(--gd);background:var(--ggl);list-style:none;font-size:14.5px}
+summary::-webkit-details-marker{display:none}
+summary:before{content:"▸ ";color:var(--g)}
+details[open] summary:before{content:"▾ "}
+.kbody{padding:12px 16px 16px;font-size:13.5px;color:#31402f}
+.kbody p{margin:6px 0}
+.kbody ol,.kbody ul{margin:6px 0;padding-left:22px}
+.kbody li{margin:3px 0}
+.kbody code{background:var(--ggl);border-radius:4px;padding:1px 5px;color:var(--gd)}
+
+/* 闯关练习 */
+.qz-top{display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:var(--ggl);border:1px solid var(--gline);border-radius:10px;padding:10px 12px}
+.qz-score{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.qz-score b{font-size:19px;color:var(--gd);margin:0 2px}
+.qz-prog{flex:1;min-width:120px;height:9px;background:#dbeadb;border-radius:9px;overflow:hidden}
+.qz-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#66bb6a,#2e7d32);transition:width .35s}
+.qz-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:6px;margin:12px 0 4px}
+.qz-step{border:1px solid var(--gline);border-radius:9px;padding:6px 8px;font-size:12px;text-align:center;background:#fff;color:var(--muted)}
+.qz-step.done{background:var(--ggl);border-color:var(--gm);color:var(--gd);font-weight:600}
+.qz-step.cur{outline:2px solid var(--g);color:var(--gd);font-weight:700;background:#fff}
+.qbox{border:1px solid var(--gline);border-radius:12px;padding:14px;background:#fff;margin-top:12px}
+.qt{font-size:14.5px;font-weight:600;color:var(--gd);margin:0 0 8px}
+.qstem{font-size:14px;margin:0 0 6px;line-height:1.7}
+.qsub{font-size:12.5px;color:var(--muted);margin:0 0 10px}
+.opts{display:grid;gap:7px;margin-top:8px}
+.opt{border:1px solid var(--gline);border-radius:9px;padding:8px 11px;font-size:13.5px;cursor:pointer;background:#fff;transition:.14s;text-align:left;font-family:inherit;color:var(--ink)}
+.opt:hover{background:var(--ggl);border-color:var(--gm)}
+.opt.right{background:#e6f4ea;border-color:#2e7d32;color:#1b5e20;font-weight:600}
+.opt.wrong{background:#fdecea;border-color:#e57373;color:#8c1d18}
+.opt[disabled]{cursor:default}
+.fill{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.fill input{width:150px}
+.qfb{border-radius:9px;padding:9px 12px;font-size:13.5px;margin-top:10px;line-height:1.7}
+.qfb.ok{background:#e6f4ea;border:1px solid #a5d6a7;color:#1b5e20}
+.qfb.no{background:#fdecea;border:1px solid #ef9a9a;color:#8c1d18}
+.qfb.tip{background:#fff8e1;border:1px solid #ffe0a3;color:#7a5300}
+.qz-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.final{border-radius:12px;padding:14px 16px;margin-top:14px;border:1px solid var(--gm);background:linear-gradient(135deg,#f1f8f1,#e3f1e4)}
+.final h3{margin:0 0 6px;border:0;padding:0;font-size:18px;color:var(--gd)}
+.logrow{border-bottom:1px dashed var(--gline);padding:8px 0;font-size:13px}
+.logrow:last-child{border-bottom:0}
+.logrow .lg-t{font-weight:600;color:#31402f}
+.logrow .lg-a{font-size:12.5px;color:var(--muted)}
+footer{text-align:center;color:var(--muted);font-size:12.5px;padding:22px 0 0}
+@media (max-width:640px){
+  h1{font-size:22px}
+  .hd-ico{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <svg class="hd-ico" width="82" height="82" viewBox="0 0 82 82" aria-hidden="true">
+      <circle cx="41" cy="41" r="39" fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.5)"/>
+      <path d="M41 12c8 6 12 16 12 26s-4 20-12 26c-8-6-12-16-12-26s4-20 12-26z" fill="#fff8e1" stroke="#fff" stroke-width="1.2"/>
+      <g fill="#fbc02d">
+        <circle cx="35" cy="30" r="3"/><circle cx="47" cy="30" r="3"/>
+        <circle cx="35" cy="41" r="3"/><circle cx="47" cy="41" r="3"/>
+        <circle cx="35" cy="52" r="3"/><circle cx="47" cy="52" r="3"/>
+      </g>
+      <path d="M28 62c-6-4-9-11-8-18" stroke="#c5e1a5" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M54 62c6-4 9-11 8-18" stroke="#c5e1a5" stroke-width="4" fill="none" stroke-linecap="round"/>
+    </svg>
+    <div class="hd-txt">
+      <div class="kicker">管理会计 · 第 5 章 经营决策</div>
+      <h1>生产经营决策 · 合作社优化</h1>
+      <div class="sub">金穗农业合作社：鲜食玉米 / 玉米罐头 / 玉米果干 的品种、深加工、特殊订单与组合决策虚拟仿真台</div>
+      <div class="chips">
+        <span class="chip">单位约束资源贡献边际</span>
+        <span class="chip">差量分析法</span>
+        <span class="chip">成本无差别点</span>
+        <span class="chip">机会成本</span>
+        <span class="chip">可行域图解法</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="topnav">
+  <div class="wrap">
+    <a href="#s0">场景参数</a>
+    <a href="#s1">5.2 品种决策</a>
+    <a href="#s2">5.3 深加工决策</a>
+    <a href="#s3">5.4 特殊订单</a>
+    <a href="#s4">5.5 产品组合</a>
+    <a href="#s5">知识点 5.1–5.5</a>
+    <a href="#s6">闯关速练</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ============ 0 场景参数 ============ -->
+<section id="s0">
+  <h2><span class="kp">场景</span>金穗农业合作社 · 基础数据</h2>
+  <p class="lead">三种产品计量单位统一为「吨」。所有单元格均可编辑，改动后下方四个决策模块全部实时联动重算。</p>
+
+  <h3>① 产品单位数据</h3>
+  <div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="l">产品</th><th>单价（元/吨）</th><th>单位变动成本（元/吨）</th>
+        <th>单位贡献边际（元/吨）</th><th>土地（亩/吨）</th><th>人工（工时/吨）</th>
+        <th>设备（台时/吨）</th><th>市场容量（吨）</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="l">A 鲜食玉米（鲜穗）</td>
+        <td><input id="p_A" type="number" value="3600" step="100" min="0"></td>
+        <td><input id="b_A" type="number" value="2400" step="100" min="0"></td>
+        <td id="cm_A">—</td>
+        <td><input id="ld_A" type="number" value="1.0" step="0.1" min="0"></td>
+        <td><input id="lb_A" type="number" value="12" step="1" min="0"></td>
+        <td><input id="mc_A" type="number" value="4" step="1" min="0"></td>
+        <td><input id="cp_A" type="number" value="300" step="10" min="0"></td>
+      </tr>
+      <tr>
+        <td class="l">B 玉米罐头</td>
+        <td><input id="p_B" type="number" value="8600" step="100" min="0"></td>
+        <td><input id="b_B" type="number" value="5800" step="100" min="0"></td>
+        <td id="cm_B">—</td>
+        <td><input id="ld_B" type="number" value="1.2" step="0.1" min="0"></td>
+        <td><input id="lb_B" type="number" value="20" step="1" min="0"></td>
+        <td><input id="mc_B" type="number" value="13" step="1" min="0"></td>
+        <td><input id="cp_B" type="number" value="200" step="10" min="0"></td>
+      </tr>
+      <tr>
+        <td class="l">C 玉米果干（深加工）</td>
+        <td><input id="p_C" type="number" value="15000" step="100" min="0"></td>
+        <td><input id="b_C" type="number" value="7800" step="100" min="0"></td>
+        <td id="cm_C">—</td>
+        <td><input id="ld_C" type="number" value="2.0" step="0.1" min="0"></td>
+        <td><input id="lb_C" type="number" value="60" step="1" min="0"></td>
+        <td><input id="mc_C" type="number" value="28" step="1" min="0"></td>
+        <td><input id="cp_C" type="number" value="60" step="5" min="0"></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="note">
+    口径说明：C 果干的 2.0 亩/吨＝2 吨鲜穗（每亩产 1 吨鲜穗）；单位变动成本 7,800 元＝鲜穗原料 2×2,400＋追加加工 3,000 元。
+    追加加工变动成本折算到「每吨鲜穗」＝3,000÷2＝1,500 元，与 5.3 深加工模块一致。
+  </div>
+
+  <h3>② 资源总量上限</h3>
+  <div class="grid g3">
+    <div class="field"><label>土地（亩）</label><input id="r_land" type="number" value="400" step="10" min="0"></div>
+    <div class="field"><label>人工工时（小时）</label><input id="r_labor" type="number" value="6000" step="100" min="0"></div>
+    <div class="field"><label>设备台时（小时）</label><input id="r_mach" type="number" value="3000" step="100" min="0"></div>
+  </div>
+  <div class="bar" style="margin-top:12px">
+    <button class="btn sm" id="btnReset">恢复默认数据</button>
+    <button class="btn sm" id="btnCopy">复制决策摘要</button>
+    <span class="tiny" id="copyTip"></span>
+  </div>
+</section>
+
+<!-- ============ 1 品种决策 ============ -->
+<section id="s1">
+  <h2><span class="kp">5.2</span>品种决策：生产哪个品种？</h2>
+  <p class="lead">单一资源受限时，判据不是「单位贡献边际最大」，而是「<b>单位约束资源贡献边际</b>最大」。</p>
+
+  <div class="formula">单位约束资源贡献边际 = 单位贡献边际 ÷ 单位产品耗用的约束资源量</div>
+
+  <div class="grid g2">
+    <div class="field"><label>选择唯一受约束的资源</label>
+      <select id="vd_res">
+        <option value="land">土地（亩）</option>
+        <option value="labor">人工工时（小时）</option>
+        <option value="mach">设备台时（小时）</option>
+      </select>
+    </div>
+    <div class="field"><label>该资源本期可用总量</label><input id="vd_lim" type="text" readonly value="—"></div>
+  </div>
+
+  <div class="tw" style="margin-top:12px">
+  <table id="vd_tb">
+    <thead><tr>
+      <th class="l">产品</th><th>单位贡献边际</th><th>单位资源耗用</th><th>单位约束资源贡献边际</th>
+      <th>排序</th><th>该资源下最大产量（吨）</th><th>可获总贡献边际（元）</th>
+    </tr></thead>
+    <tbody></tbody>
+  </table>
+  </div>
+
+  <div id="vd_verdict" class="verdict v-ok"></div>
+  <div id="vd_check" class="note"></div>
+  <div class="warn">注意：本表结论只在「<b>该资源是唯一约束</b>」时成立。若土地、人工、设备同时受限，三种资源可能指向三个不同答案，此时必须用 5.5 的线性规划求解。</div>
+
+  <div class="drill" data-d="variety"></div>
+</section>
+
+<!-- ============ 2 深加工决策 ============ -->
+<section id="s2">
+  <h2><span class="kp">5.3</span>深加工决策：直接售鲜穗，还是加工成果干？</h2>
+  <p class="lead">半成品（鲜穗）的种植成本在两种方案下都发生，属于<b>无关成本（沉没/共同成本）</b>，只比较差量收入与差量成本。</p>
+
+  <div class="grid g4">
+    <div class="field"><label>本期鲜穗产量 Q（吨）</label><input id="dp_Q" type="number" value="60" step="5" min="0"></div>
+    <div class="field"><label>每吨果干耗鲜穗（吨）</label><input id="dp_s" type="number" value="2" step="0.1" min="0.1"></div>
+    <div class="field"><label>每吨鲜穗追加变动加工成本（元）</label><input id="dp_avc" type="number" value="1500" step="50" min="0"></div>
+    <div class="field"><label>烘干线专属固定成本（元/期）</label><input id="dp_F" type="number" value="200000" step="10000" min="0"></div>
+  </div>
+  <div class="grid g2" style="margin-top:12px">
+    <div class="field"><label>鲜穗直接出售单价（元/吨，联动 A）</label><input id="dp_p0" type="text" readonly value="—"></div>
+    <div class="field"><label>果干售价（元/吨，联动 C）</label><input id="dp_p1" type="text" readonly value="—"></div>
+  </div>
+
+  <h3>差量分析表</h3>
+  <div class="tw"><table id="dp_tb">
+    <thead><tr><th class="l">项目</th><th>深加工成 果干</th><th>直接出售 鲜穗</th><th>差量（加工 − 直售）</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+
+  <div class="cards">
+    <div class="card"><div class="ttl">差量收入（合计）</div><div class="big" id="dp_dR">—</div><div class="sml" id="dp_dRu">—</div></div>
+    <div class="card"><div class="ttl">差量成本（合计）</div><div class="big" id="dp_dC">—</div><div class="sml" id="dp_dCu">—</div></div>
+    <div class="card"><div class="ttl">差量利润</div><div class="big" id="dp_dP">—</div><div class="sml" id="dp_dPu">—</div></div>
+    <div class="card"><div class="ttl">成本无差别点（临界产量）</div><div class="big" id="dp_Qstar">—</div><div class="sml">差量利润＝0 时的鲜穗产量</div></div>
+  </div>
+
+  <div id="dp_verdict" class="verdict v-ok"></div>
+  <div class="formula">临界产量 Q* = 专属固定成本 ÷ (单位差量收入 − 单位追加变动成本)</div>
+
+  <h3>产量敏感性（差量利润）</h3>
+  <div class="tw"><table id="dp_sens">
+    <thead><tr><th class="l">鲜穗产量</th><th>差量收入</th><th>差量成本</th><th>差量利润</th><th>结论</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+  <div class="note">提示：专属固定成本一次性发生、不随产量变化，因此产量越大越倾向加工——这正是「成本无差别点法」要解决的问题。</div>
+
+  <div class="drill" data-d="deep"></div>
+</section>
+
+<!-- ============ 3 特殊订单 ============ -->
+<section id="s3">
+  <h2><span class="kp">5.4</span>特殊订单：低价追加订货接不接？</h2>
+  <p class="lead">判据：<b>差量收入 ＞ 差量成本</b>。差量成本里必须包含「挤占正常销售的机会成本」。</p>
+
+  <div class="grid g3">
+    <div class="field"><label>本期产能上限（吨）</label><input id="so_cap" type="number" value="300" step="10" min="0"></div>
+    <div class="field"><label>已接正常订单（吨）</label><input id="so_norm" type="number" value="200" step="10" min="0"></div>
+    <div class="field"><label>客户报价（元/吨）</label><input id="so_ps" type="number" value="2900" step="50" min="0"></div>
+    <div class="field"><label>特殊订单量（吨）</label><input id="so_q" type="number" value="60" step="5" min="0"></div>
+    <div class="field"><label>专属追加成本（包装/物流，元）</label><input id="so_add" type="number" value="0" step="1000" min="0"></div>
+    <div class="field"><label>单位变动成本（元/吨，联动 A）</label><input id="so_b" type="text" readonly value="—"></div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><div class="ttl">剩余产能</div><div class="big" id="so_remain">—</div><div class="sml">产能上限 − 已接正常订单</div></div>
+    <div class="card"><div class="ttl">需挤占正常销量</div><div class="big" id="so_crowd">—</div><div class="sml">超出剩余产能的部分</div></div>
+    <div class="card"><div class="ttl">机会成本</div><div class="big" id="so_opp">—</div><div class="sml">挤占量 × 单位贡献边际</div></div>
+    <div class="card"><div class="ttl">差量利润</div><div class="big" id="so_dP">—</div><div class="sml">差量收入 − 差量成本</div></div>
+  </div>
+
+  <div class="tw"><table id="so_tb">
+    <thead><tr><th class="l">项目</th><th>金额（元）</th><th class="l">计算过程</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+
+  <div id="so_verdict" class="verdict v-ok"></div>
+  <div class="formula">保本报价 = 差量成本 ÷ 订单量 ； 接受条件：报价 ＞ 保本报价（且不低于单位变动成本）</div>
+  <div id="so_warn" class="warn hide"></div>
+  <div class="note">除定量判断外，还需考虑定性因素：是否扰乱既有价格体系、客户是否为新市场、闲置产能的后续安排、履约对品牌与渠道的影响。</div>
+
+  <div class="drill" data-d="order"></div>
+</section>
+
+<!-- ============ 4 产品组合 ============ -->
+<section id="s4">
+  <h2><span class="kp">5.5</span>产品组合：可行域图解法与最优解</h2>
+  <p class="lead">目标函数取「贡献边际总额最大」，约束为土地、人工、设备与两端市场容量；线性规划的最优解一定在<b>可行域顶点</b>上取得。</p>
+
+  <div class="grid g4">
+    <div class="field"><label>横轴 x 产品</label><select id="lp_x"><option value="A">A 鲜穗</option><option value="B" selected>B 罐头</option><option value="C">C 果干</option></select></div>
+    <div class="field"><label>纵轴 y 产品</label><select id="lp_y"><option value="A" selected>A 鲜穗</option><option value="B">B 罐头</option><option value="C">C 果干</option></select></div>
+    <div class="field"><label>目标函数</label><input id="lp_obj" type="text" readonly value="—"></div>
+    <div class="field"><label>扣除专属固定成本</label><select id="lp_fix"><option value="0">不扣（贡献边际口径）</option><option value="1">扣烘干线 20 万（净收益口径）</option></select></div>
+  </div>
+
+  <div style="margin-top:14px"><svg id="lp_svg" class="plot" viewBox="0 0 780 480" preserveAspectRatio="xMidYMid meet"></svg></div>
+  <div class="legend" id="lp_legend"></div>
+
+  <div class="cards" style="margin-top:14px">
+    <div class="card"><div class="ttl">最优解 x（<span id="lp_nx">—</span>）</div><div class="big" id="lp_xv">—</div><div class="sml">吨</div></div>
+    <div class="card"><div class="ttl">最优解 y（<span id="lp_ny">—</span>）</div><div class="big" id="lp_yv">—</div><div class="sml">吨</div></div>
+    <div class="card"><div class="ttl">最大贡献边际 Z</div><div class="big" id="lp_z">—</div><div class="sml" id="lp_zn">—</div></div>
+    <div class="card"><div class="ttl">网格枚举校验</div><div class="big" id="lp_chk">—</div><div class="sml" id="lp_chkn">—</div></div>
+  </div>
+
+  <h3>约束松弛情况（最优解处）</h3>
+  <div class="tw"><table id="lp_tb">
+    <thead><tr><th class="l">约束</th><th>约束式</th><th>最优耗用</th><th>上限</th><th>松弛量</th><th>状态</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+  <div class="note">松弛量为 0 的约束即「紧约束」：再增加一单位该资源能直接提高目标函数值（影子价格 &gt; 0），是扩产优先要解的资源瓶颈；松弛量大的资源短期无需追加投入。</div>
+
+  <div class="drill" data-d="lp"></div>
+</section>
+
+<!-- ============ 5 知识点 ============ -->
+<section id="s5">
+  <h2><span class="kp">知识点</span>5.1 – 5.5 注释</h2>
+  <p class="lead">按教材第 5 章（经营决策）体例整理，供课堂讲解与课后自学对照。</p>
+
+  <details>
+    <summary>5.1 经营决策基础：相关成本与三种基本方法</summary>
+    <div class="kbody">
+      <p><b>一、相关成本 vs 无关成本</b></p>
+      <ul>
+        <li><b>相关成本</b>：随方案改变而改变、且为未来发生的成本。包括变动成本、追加的专属固定成本、机会成本、可避免成本、重置成本、付现成本。</li>
+        <li><b>无关成本</b>：不随方案改变而改变。典型是沉没成本（已发生、无法回收）与共同固定成本（多个方案共同负担）。</li>
+        <li>判断口诀：<b>「两方案都要花的，不相关；只有某一方案才花的，才相关」</b>。</li>
+      </ul>
+      <p><b>二、三种基本方法</b></p>
+      <ol>
+        <li><b>差量分析法</b>：比较两方案的差量收入与差量成本，Δ利润 = Δ收入 − Δ成本 &gt; 0 则取前者。用于深加工、特殊订单、自制或外购等两两比较。</li>
+        <li><b>贡献边际分析法</b>：存在剩余产能且不增加固定成本时，只要单位贡献边际 &gt; 0（或贡献边际总额 &gt; 0），方案即可取。</li>
+        <li><b>成本无差别点法</b>：求两方案总成本（或总利润）相等的业务量 Q*，业务量大于 Q* 取某一方案、小于则取另一方案。用于存在专属固定成本的场景（如本课件 5.3）。</li>
+      </ol>
+      <p><b>三、决策流程</b>：明确决策目标 → 列举备选方案 → 识别相关成本与相关收入 → 定量比较（差量/贡献边际/无差别点）→ 叠加定性因素 → 形成结论。</p>
+      <p><b>四、常见错误</b>：① 把单位固定成本计入差量（固定成本在相关范围内不随产量变动）；② 忽略机会成本（挤占正常销售、占用资源的潜在收益）；③ 用「单位成本」而非「相关成本」比较。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>5.2 品种决策：单位约束资源贡献边际</summary>
+    <div class="kbody">
+      <p><b>判据</b>：只有一种资源受限（其余资源充足、且产品可自由增产）时，优先安排 <code>单位约束资源贡献边际 = 单位贡献边际 ÷ 单位约束资源耗用量</code> 最大的品种。</p>
+      <p><b>为什么不是单位贡献边际</b>：单位贡献边际高的产品往往消耗更多约束资源；真正要最大化的是「每单位稀缺资源能换回多少贡献边际」。</p>
+      <p><b>本课件情景</b>：土地受限 → C 果干最优（3,600 元/亩）；人工受限 → B 罐头最优（140 元/小时）；设备受限 → A 鲜穗最优（300 元/台时）。约束不同，结论不同，这正是单一资源法的局限。</p>
+      <p><b>多约束并存</b>：必须建立线性规划模型（见 5.5），用图解法或单纯形法求整体最优，不能逐个资源排序。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>5.3 深加工决策：半成品是否进一步加工</summary>
+    <div class="kbody">
+      <p><b>核心口径</b>：加工前已发生的成本（鲜穗种植成本、共同固定成本）是沉没/共同成本，两方案共有，<b>不进入比较</b>。</p>
+      <p><b>公式</b>：</p>
+      <ul>
+        <li>差量收入 = 加工后销售收入 − 直接出售收入</li>
+        <li>差量成本 = 追加变动加工成本 + 专属固定成本（如新增设备租金、烘干线承租费）</li>
+        <li>差量利润 = 差量收入 − 差量成本；&gt; 0 则应深加工</li>
+        <li>临界产量 Q* = 专属固定成本 ÷ (单位差量收入 − 单位追加变动成本)</li>
+      </ul>
+      <p><b>本课件默认数据</b>：每吨鲜穗差量收入 3,900 元、追加变动加工成本 1,500 元、专属固定成本 20 万元 → Q* = 83.33 吨。产量 60 吨时差量利润 −5.6 万元（宜直售）；产量提到 100 吨时差量利润 +4 万元（宜加工）。</p>
+      <p><b>易错点</b>：把鲜穗的种植成本 2,400 元/吨计入「差量成本」——它在两种方案下都发生，属于无关成本。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>5.4 特殊订单决策：低价追加订货</summary>
+    <div class="kbody">
+      <p><b>适用前提</b>：① 有剩余产能；② 不影响原有正常售价与渠道；③ 无需新增长期产能投资。</p>
+      <p><b>公式</b>：</p>
+      <ul>
+        <li>差量收入 = 客户报价 × 订单量</li>
+        <li>差量成本 = 单位变动成本 × 订单量 + 专属追加成本 + 机会成本</li>
+        <li>机会成本 = 挤占的正常销量 × 单位贡献边际（正常售价 − 单位变动成本）</li>
+        <li>保本报价 = 差量成本 ÷ 订单量</li>
+      </ul>
+      <p><b>判断</b>：报价 &gt; 保本报价即可接受；特别地，在剩余产能范围内时，底线是报价 &gt; 单位变动成本。</p>
+      <p><b>本课件默认数据</b>：产能 300 吨、已接 200 吨、剩余 100 吨；报价 2,900 元/吨、订单 60 吨 → 差量收入 17.4 万、差量成本 14.4 万、差量利润 +3 万元，保本报价 2,400 元/吨 → <b>接受</b>。</p>
+      <p><b>易错点</b>：① 用「报价低于正常售价」直接拒绝（忽略了闲置产能只追加变动成本）；② 忘记挤占正常销量带来的机会成本；③ 把不可避免的固定成本摊进差量成本。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>5.5 产品组合决策：线性规划图解法</summary>
+    <div class="kbody">
+      <p><b>建模</b>：决策变量 x₁、x₂（各产品产量）；目标函数 max Z = Σ(cmᵢ·xᵢ)；约束 Σ(aᵢⱼ·xᵢ) ≤ 资源上限 bⱼ，以及市场容量与 x ≥ 0。</p>
+      <p><b>图解法步骤</b>：① 画各约束直线；② 确定可行域（公共满足区域，凸多边形）；③ 画出目标函数等值线（等贡献边际线）并沿法向平移；④ 最后一个离开可行域的接触点即最优解——必为<b>可行域顶点</b>。</p>
+      <p><b>顶点定理</b>：线性规划若有最优解，必可在可行域的某个顶点上取得。因此只需枚举顶点（本课件枚举所有约束两两交点后筛可行点），再取 Z 最大者。</p>
+      <p><b>松弛与影子价格</b>：松弛量 = 上限 − 实际耗用；为 0 者为紧约束，其影子价格 &gt; 0，是扩产优先解瓶颈；松弛量大者短期不必追加投入。</p>
+      <p><b>本课件默认（B 罐头为 x、A 鲜穗为 y）</b>：最优 x = 170.7 吨（罐头）、y = 195.1 吨（鲜穗），Z ≈ 71.22 万元；土地与设备为紧约束（松弛量 0），人工约 244 小时松弛、两端市场容量均未用满。切换到 A+C 组合可得 Z = 67.20 万元（最优 200, 60），B+C 组合约 71.63 万元（最优 101.5, 60）——可据此讨论「组合整体最优 ≠ 单品种排序最优」。</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============ 6 闯关速练 ============ -->
+<section id="s6">
+  <h2><span class="kp">闯关速练</span>五项决策小测（随参数实时更新）</h2>
+  <p class="lead">题目答案由当前场景参数实时计算生成；改动上方任一参数后再做，题面与答案会同步刷新。</p>
+  <div id="drill_sum" class="note">随堂演练完成度：尚未开始（共 4 块 · 14 空）。</div>
+  <div class="qz-top">
+    <div class="qz-score">得分 <b id="qz_s">0</b> / 100</div>
+    <div class="qz-score">连击 <b id="qz_c">0</b></div>
+    <div class="qz-prog"><i id="qz_p"></i></div>
+    <button class="btn sm" id="qz_again">再来一轮</button>
+  </div>
+  <div class="qz-steps" id="qz_steps"></div>
+  <div id="qz_body"></div>
+  <div id="qz_final" class="final hide"></div>
+</section>
+
+<footer>管理会计 · 第 5 章 经营决策 · 农业合作社生产经营决策台（单文件离线可用）</footer>
+</div>
+
+<script>
+/* =========================================================
+   主仿真：合作社生产经营决策台
+   模块：5.2 品种决策 / 5.3 深加工 / 5.4 特殊订单 / 5.5 组合
+   ========================================================= */
+(function(){
+  'use strict';
+  var $ = function(s){ return document.querySelector(s); };
+  var KEYS = ['A','B','C'];
+  var DEF = {
+    A:{name:'鲜食玉米（鲜穗）', short:'鲜穗', p:3600, b:2400, land:1.0, labor:12, mach:4,  cap:300},
+    B:{name:'玉米罐头',       short:'罐头', p:8600, b:5800, land:1.2, labor:20, mach:13, cap:200},
+    C:{name:'玉米果干',       short:'果干', p:15000,b:7800, land:2.0, labor:60, mach:28, cap:60}
+  };
+  var RESDEF = {land:400, labor:6000, mach:3000};
+  var RESNAME = {land:'土地', labor:'人工工时', mach:'设备台时'};
+  var RESUNIT = {land:'亩', labor:'小时', mach:'台时'};
+  var COLORS = ['#1565c0','#e65100','#6a1b9a','#00838f','#455a64'];
+
+  var S = null;
+  var lastRes = {variety:null, deep:null, order:null, lp:null};
+
+  function num(id, d){
+    var el = document.getElementById(id);
+    if(!el) return d;
+    var v = parseFloat(el.value);
+    return (isFinite(v) && v >= 0) ? v : d;
+  }
+  function txt(id, v){ var el = document.getElementById(id); if(el) el.innerHTML = v; }
+  function fmt(n, d){
+    if(d === undefined) d = 0;
+    if(!isFinite(n)) return '—';
+    return n.toLocaleString('zh-CN', {minimumFractionDigits:d, maximumFractionDigits:d});
+  }
+  function money(n, d){ return fmt(n, d===undefined?0:d) + ' 元'; }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  /* ---------- 读取状态 ---------- */
+  function readState(){
+    var P = {};
+    KEYS.forEach(function(k){
+      var d = DEF[k];
+      var o = {
+        key:k, name:d.name, short:d.short,
+        p:  num('p_'+k, d.p),  b: num('b_'+k, d.b),
+        land:num('ld_'+k, d.land), labor:num('lb_'+k, d.labor), mach:num('mc_'+k, d.mach),
+        cap: num('cp_'+k, d.cap)
+      };
+      if(o.land <= 0) o.land = 0.01;
+      if(o.labor <= 0) o.labor = 0.01;
+      if(o.mach <= 0) o.mach = 0.01;
+      o.cm = o.p - o.b;
+      P[k] = o;
+      txt('cm_'+k, fmt(o.cm));
+    });
+    S = { P:P, RES:{ land:num('r_land',RESDEF.land), labor:num('r_labor',RESDEF.labor), mach:num('r_mach',RESDEF.mach) } };
+    return S;
+  }
+
+  /* ================= 5.2 品种决策 ================= */
+  function renderVariety(){
+    var rk = $('#vd_res').value;
+    var lim = S.RES[rk];
+    $('#vd_lim').value = fmt(lim,2) + ' ' + RESUNIT[rk] + '（' + RESNAME[rk] + '）';
+
+    var rows = KEYS.map(function(k){
+      var o = S.P[k];
+      var cons = o[rk];
+      var per = (cons > 0) ? o.cm / cons : 0;
+      var qty = (cons > 0) ? lim / cons : 0;
+      return { k:k, name:o.name, short:o.short, cm:o.cm, cons:cons, per:per, qty:qty, tot:o.cm*qty };
+    });
+    rows.sort(function(a,b){ return b.per - a.per; });
+    rows.forEach(function(r, i){ r.rank = i+1; });
+
+    var tb = '';
+    rows.forEach(function(r){
+      tb += '<tr' + (r.rank===1?' class="best"':'') + '>'
+        + '<td class="l">' + r.k + ' ' + esc(r.name) + '</td>'
+        + '<td>' + fmt(r.cm) + '</td>'
+        + '<td>' + fmt(r.cons,2) + ' ' + RESUNIT[rk] + '/吨</td>'
+        + '<td><b>' + fmt(r.per,1) + '</b> 元/' + RESUNIT[rk] + '</td>'
+        + '<td>' + r.rank + '</td>'
+        + '<td>' + fmt(r.qty,1) + '</td>'
+        + '<td>' + fmt(r.tot) + '</td></tr>';
+    });
+    $('#vd_tb').querySelector('tbody').innerHTML = tb;
+
+    var best = rows[0];
+    var v = '<b>结论：</b>在「' + RESNAME[rk] + '」唯一受限（可用 ' + fmt(lim,2) + ' ' + RESUNIT[rk] + '）时，应优先安排生产 <b>'
+      + best.k + ' ' + esc(best.name) + '</b>：其单位约束资源贡献边际 ' + fmt(best.per,1) + ' 元/' + RESUNIT[rk]
+      + '，为三者最高；全部资源投给该产品可获贡献边际 ' + fmt(best.tot) + ' 元。';
+    $('#vd_verdict').className = 'verdict v-ok';
+    $('#vd_verdict').innerHTML = v;
+
+    // 其他资源可行性检查（单一资源法的局限）
+    var others = ['land','labor','mach'].filter(function(r){ return r !== rk; });
+    var chk = '<b>交叉校验（该资源法是否真的可行）：</b>按上述安排生产 ' + fmt(best.qty,1) + ' 吨 ' + best.k + '，需要——<br>';
+    var feasible = true;
+    others.forEach(function(r){
+      var need = best.qty * S.P[best.k][r];
+      var ok = need <= S.RES[r] + 1e-6;
+      if(!ok) feasible = false;
+      chk += RESNAME[r] + '：需 ' + fmt(need,1) + ' ' + RESUNIT[r] + '，上限 ' + fmt(S.RES[r],1) + ' '
+           + (ok ? '<span class="badge b-ok">可行</span>' : '<span class="badge b-hi">超限</span>') + '；';
+    });
+    chk += feasible
+      ? '<br>其余资源均不超限，本结论成立。'
+      : '<br><b>其余资源已超限</b>：单一资源法失效，请到 5.5 用线性规划求整体最优组合。';
+    $('#vd_check').innerHTML = chk;
+
+    lastRes.variety = { rk:rk, lim:lim, best:best, rows:rows, P:S.P, RES:S.RES };
+    return lastRes.variety;
+  }
+
+  /* ================= 5.3 深加工决策 ================= */
+  function renderDeep(){
+    var Q = num('dp_Q', 60);
+    var s = num('dp_s', 2); if(!(s > 0)) s = 2;
+    var avc = num('dp_avc', 1500);
+    var F = num('dp_F', 200000);
+    var p0 = S.P.A.p, p1 = S.P.C.p;
+    $('#dp_p0').value = fmt(p0) + '（A 单价）';
+    $('#dp_p1').value = fmt(p1) + '（C 单价）';
+
+    var unitR = p1/s - p0;              // 每吨鲜穗差量收入
+    var unitV = avc;                    // 每吨鲜穗追加变动加工成本
+    var dR = unitR * Q;
+    var dC = unitV * Q + F;
+    var dP = dR - dC;
+    var Qstar = (unitR - unitV) > 0 ? F/(unitR - unitV) : Infinity;
+
+    $('#dp_dR').textContent = fmt(dR);
+    $('#dp_dRu').textContent = '每吨鲜穗 ' + fmt(unitR,1) + ' 元 × ' + fmt(Q,1) + ' 吨';
+    $('#dp_dC').textContent = fmt(dC);
+    $('#dp_dCu').textContent = '追加变动 ' + fmt(unitV*Q) + ' ＋ 专属固定 ' + fmt(F);
+    $('#dp_dP').textContent = fmt(dP);
+    $('#dp_dPu').textContent = dP > 0 ? '差量收入 ＞ 差量成本' : '差量收入 ＜ 差量成本';
+    $('#dp_Qstar').textContent = isFinite(Qstar) ? fmt(Qstar,2) + ' 吨' : '不加工恒优';
+
+    var tb = '';
+    function row(a,b,c,d,e){ return '<tr><td class="l">' + a + '</td><td>' + b + '</td><td>' + c + '</td><td>' + d + '</td></tr>'; }
+    tb += row('销售收入', fmt(p1/s*Q), fmt(p0*Q), '+' + fmt(dR));
+    tb += row('其中：鲜穗种植成本（共同/沉没）', '<span class="tiny">不计入</span>', '<span class="tiny">不计入</span>', '<span class="tiny">0（无关成本）</span>');
+    tb += row('追加变动加工成本', fmt(avc*Q), '0', '+' + fmt(avc*Q));
+    tb += row('烘干线专属固定成本', fmt(F), '0', '+' + fmt(F));
+    tb += '<tr class="best"><td class="l">相关成本合计 / 差量利润</td><td>' + fmt(avc*Q+F) + '</td><td>0</td><td><b>' + fmt(dP) + '</b></td></tr>';
+    $('#dp_tb').querySelector('tbody').innerHTML = tb;
+
+    var el = $('#dp_verdict');
+    if(dP > 0){
+      el.className = 'verdict v-ok';
+      el.innerHTML = '<b>结论：应深加工成果干。</b>差量利润 +' + fmt(dP) + ' 元（差量收入 ' + fmt(dR)
+        + ' 元 ＞ 差量成本 ' + fmt(dC) + ' 元）。当前产量 ' + fmt(Q,1) + ' 吨已超过临界产量 ' + fmt(Qstar,2) + ' 吨，固定成本被足够大的产量摊薄。';
+    }else{
+      el.className = 'verdict v-hi';
+      el.innerHTML = '<b>结论：应直接出售鲜穗，暂不上果干线。</b>差量利润 ' + fmt(dP) + ' 元。临界产量为 '
+        + fmt(Qstar,2) + ' 吨，当前仅 ' + fmt(Q,1) + ' 吨，不足以覆盖 ' + fmt(F) + ' 元专属固定成本。';
+    }
+
+    // 敏感性
+    var sens = [0.6,0.8,1.0,1.2,1.5].map(function(m){ return Math.round(Q*m*10)/10; });
+    var st = '';
+    sens.forEach(function(q){
+      var r = unitR*q, c = unitV*q + F, p = r - c;
+      st += '<tr' + (Math.abs(q-Q)<1e-9?' class="best"':'') + '><td class="l">' + fmt(q,1) + ' 吨' + (Math.abs(q-Q)<1e-9?'（当前）':'')
+        + '</td><td>' + fmt(r) + '</td><td>' + fmt(c) + '</td><td><b>' + fmt(p) + '</b></td><td>'
+        + (p>0?'加工有利':'直接出售') + '</td></tr>';
+    });
+    $('#dp_sens').querySelector('tbody').innerHTML = st;
+
+    lastRes.deep = { Q:Q, s:s, avc:avc, F:F, p0:p0, p1:p1, b0:S.P.A.b, unitR:unitR, unitV:unitV, dR:dR, dC:dC, dP:dP, Qstar:Qstar };
+    return lastRes.deep;
+  }
+
+  /* ================= 5.4 特殊订单 ================= */
+  function renderOrder(){
+    var cap = num('so_cap',300), norm = num('so_norm',200);
+    var ps = num('so_ps',2900), q = num('so_q',60), add = num('so_add',0);
+    var b = S.P.A.b, p = S.P.A.p, cm = p - b;
+    $('#so_b').value = fmt(b) + '（A 单位变动成本）';
+
+    var remain = Math.max(0, cap - norm);
+    var crowd = Math.max(0, q - remain);
+    var opp = crowd * cm;
+    var dR = ps * q;
+    var dC = b * q + add + opp;
+    var dP = dR - dC;
+    var be = q > 0 ? dC / q : 0;
+
+    $('#so_remain').textContent = fmt(remain,1) + ' 吨';
+    $('#so_crowd').textContent = fmt(crowd,1) + ' 吨';
+    $('#so_opp').textContent = fmt(opp);
+    $('#so_dP').textContent = fmt(dP);
+
+    var tb = '';
+    function r2(a,c,d){ return '<tr><td class="l">' + a + '</td><td>' + c + '</td><td class="l">' + d + '</td></tr>'; }
+    tb += r2('差量收入', fmt(dR), '报价 ' + fmt(ps) + ' × 订单量 ' + fmt(q,1) + ' 吨');
+    tb += r2('差量变动成本', fmt(b*q), '单位变动成本 ' + fmt(b) + ' × ' + fmt(q,1) + ' 吨');
+    tb += r2('专属追加成本', fmt(add), '包装 / 物流等一次性支出');
+    tb += r2('机会成本', fmt(opp), '挤占 ' + fmt(crowd,1) + ' 吨 × 单位贡献边际 ' + fmt(cm));
+    tb += '<tr class="best"><td class="l">差量成本合计</td><td>' + fmt(dC) + '</td><td class="l">变动成本＋专属＋机会成本</td></tr>';
+    tb += '<tr class="best"><td class="l">差量利润</td><td><b>' + fmt(dP) + '</b></td><td class="l">差量收入 − 差量成本</td></tr>';
+    tb += '<tr><td class="l">保本报价</td><td>' + fmt(be,1) + ' 元/吨</td><td class="l">' + fmt(dC) + ' ÷ ' + fmt(q,1) + ' 吨</td></tr>';
+    $('#so_tb').querySelector('tbody').innerHTML = tb;
+
+    var el = $('#so_verdict'), w = $('#so_warn');
+    w.className = 'warn hide'; w.innerHTML = '';
+    if(!(q > 0)){
+      el.className = 'verdict v-lo';
+      el.innerHTML = '<b>请输入订单量。</b>';
+    }else if(q > cap){
+      el.className = 'verdict v-lo';
+      el.innerHTML = '<b>订单量 ' + fmt(q,1) + ' 吨超过产能上限 ' + fmt(cap,1) + ' 吨</b>，现有产能无法完成，须外协/扩产后再评估。';
+    }else if(dP > 0){
+      el.className = 'verdict v-ok';
+      el.innerHTML = '<b>结论：接受该特殊订单。</b>差量利润 +' + fmt(dP) + ' 元。报价 ' + fmt(ps)
+        + ' 元/吨高于保本报价 ' + fmt(be,1) + ' 元/吨' + (crowd>0 ? '（已扣除挤占 ' + fmt(crowd,1) + ' 吨正常销量的机会成本 ' + fmt(opp) + ' 元）' : '（剩余产能充足，无需挤占正常销售）') + '。';
+      if(ps < b){
+        w.className = 'warn';
+        w.innerHTML = '报价 ' + fmt(ps) + ' 元低于单位变动成本 ' + fmt(b) + ' 元，本例之所以仍有利，是因为机会成本/专属成本的口径差异——实务中低于变动成本的订单一般不予接受，除非出于战略（清库存、保客户、维持开工）目的。';
+      }
+    }else{
+      el.className = 'verdict v-hi';
+      el.innerHTML = '<b>结论：拒绝该特殊订单。</b>差量利润 ' + fmt(dP) + ' 元。报价 ' + fmt(ps)
+        + ' 元/吨低于保本报价 ' + fmt(be,1) + ' 元/吨' + (crowd>0 ? '，且需挤占 ' + fmt(crowd,1) + ' 吨正常销量，机会成本 ' + fmt(opp) + ' 元。' : '。');
+    }
+
+    lastRes.order = { cap:cap, norm:norm, ps:ps, q:q, add:add, b:b, p:p, cm:cm, remain:remain, crowd:crowd, opp:opp, dR:dR, dC:dC, dP:dP, be:be };
+    return lastRes.order;
+  }
+
+  /* ================= 5.5 产品组合（线性规划） ================= */
+  function buildConstraints(kx, ky){
+    var X = S.P[kx], Y = S.P[ky];
+    return [
+      {id:'land',  name:'土地',     a:X.land,  b:Y.land,  lim:S.RES.land,  unit:'亩',  color:COLORS[0]},
+      {id:'labor', name:'人工工时', a:X.labor, b:Y.labor, lim:S.RES.labor, unit:'小时', color:COLORS[1]},
+      {id:'mach',  name:'设备台时', a:X.mach,  b:Y.mach,  lim:S.RES.mach,  unit:'台时', color:COLORS[2]},
+      {id:'capX',  name:'市场容量·'+X.short, a:1, b:0, lim:X.cap, unit:'吨', color:COLORS[3]},
+      {id:'capY',  name:'市场容量·'+Y.short, a:0, b:1, lim:Y.cap, unit:'吨', color:COLORS[4]}
+    ];
+  }
+
+  function solveLP(X, Y, cs){
+    var lines = cs.concat([{a:1,b:0,lim:0},{a:0,b:1,lim:0}]);
+    var pts = [], i, j;
+    for(i=0;i<lines.length;i++){
+      for(j=i+1;j<lines.length;j++){
+        var A1 = lines[i], A2 = lines[j];
+        var det = A1.a*A2.b - A2.a*A1.b;
+        if(Math.abs(det) < 1e-9) continue;
+        var x = (A1.lim*A2.b - A2.lim*A1.b) / det;
+        var y = (A1.a*A2.lim - A2.a*A1.lim) / det;
+        if(x < -1e-7 || y < -1e-7) continue;
+        var ok = true;
+        for(var m=0;m<cs.length;m++){
+          if(cs[m].a*x + cs[m].b*y > cs[m].lim + 1e-6){ ok = false; break; }
+        }
+        if(ok) pts.push({x:x, y:y});
+      }
+    }
+    // 去重
+    var uniq = [];
+    pts.forEach(function(p){
+      for(var k=0;k<uniq.length;k++){
+        if(Math.abs(uniq[k].x-p.x) < 1e-6 && Math.abs(uniq[k].y-p.y) < 1e-6) return;
+      }
+      uniq.push(p);
+    });
+    // 凸包（Andrew monotone chain）
+    var hull = [];
+    if(uniq.length >= 1){
+      var sp = uniq.slice().sort(function(a,b){ return a.x-b.x || a.y-b.y; });
+      function cross(o,a,b){ return (a.x-o.x)*(b.y-o.y) - (a.y-o.y)*(b.x-o.x); }
+      var lower = [];
+      sp.forEach(function(p){
+        while(lower.length >= 2 && cross(lower[lower.length-2], lower[lower.length-1], p) <= 0) lower.pop();
+        lower.push(p);
+      });
+      var upper = [];
+      for(var t=sp.length-1;t>=0;t--){
+        var p2 = sp[t];
+        while(upper.length >= 2 && cross(upper[upper.length-2], upper[upper.length-1], p2) <= 0) upper.pop();
+        upper.push(p2);
+      }
+      hull = lower.slice(0,-1).concat(upper.slice(0,-1));
+      if(hull.length === 0) hull = [sp[0]];
+    }
+    // 顶点法最优
+    var best = null;
+    uniq.forEach(function(p){
+      var z = X.cm*p.x + Y.cm*p.y;
+      if(!best || z > best.z + 1e-9) best = {x:p.x, y:p.y, z:z};
+    });
+    if(!best) best = {x:0, y:0, z:0};
+    // 网格枚举校验
+    var maxX = 0, maxY = 0;
+    uniq.forEach(function(p){ if(p.x>maxX) maxX=p.x; if(p.y>maxY) maxY=p.y; });
+    var gx = Math.max(maxX, 1), gy = Math.max(maxY, 1);
+    var stepX = gx/400, stepY = gy/400;
+    var gb = {x:0, y:0, z:-Infinity}, cnt = 0;
+    for(var x = 0; x <= gx + 1e-9; x += stepX){
+      var ymax = Infinity;
+      for(var c=0;c<cs.length;c++){
+        var cc = cs[c];
+        if(cc.b > 1e-9){ ymax = Math.min(ymax, (cc.lim - cc.a*x)/cc.b); }
+        else if(cc.a*x > cc.lim + 1e-9){ ymax = -1; break; }
+      }
+      if(!isFinite(ymax) || ymax < 0) continue;
+      for(var y = 0; y <= ymax + 1e-9; y += stepY){
+        cnt++;
+        var z = X.cm*x + Y.cm*y;
+        if(z > gb.z){ gb.z = z; gb.x = x; gb.y = y; }
+      }
+    }
+    var maxXall = 0, maxYall = 0;
+    uniq.forEach(function(p){ maxXall = Math.max(maxXall, p.x); maxYall = Math.max(maxYall, p.y); });
+    return { verts:uniq, hull:hull, opt:best, grid:gb, gridCnt:cnt, maxX:maxXall, maxY:maxYall, cs:cs };
+  }
+
+  function niceMax(v){
+    if(!(v > 0)) return 1;
+    var p = Math.pow(10, Math.floor(Math.log10(v)));
+    var ms = [1,1.2,1.5,2,2.5,3,4,5,6,8,10];
+    for(var i=0;i<ms.length;i++){ if(p*ms[i] >= v - 1e-9) return p*ms[i]; }
+    return p*10;
+  }
+  function niceStep(v){
+    if(!(v > 0)) return 1;
+    var p = Math.pow(10, Math.floor(Math.log10(v)));
+    var ms = [1,2,2.5,5,10];
+    for(var i=0;i<ms.length;i++){ if(p*ms[i] >= v - 1e-9) return p*ms[i]; }
+    return p*10;
+  }
+
+  function buildSVG(sol, X, Y){
+    var W=780, H=480, L=72, R=26, T=24, B=58;
+    var iw = W-L-R, ih = H-T-B;
+    var xMax = niceMax(Math.max(sol.maxX*1.15, 1));
+    var yMax = niceMax(Math.max(sol.maxY*1.15, 1));
+    var sx = function(v){ return L + v/xMax*iw; };
+    var sy = function(v){ return T + ih - v/yMax*ih; };
+    var stepX = niceStep(xMax/5), stepY = niceStep(yMax/5);
+    var g = '';
+
+    g += '<defs><clipPath id="lpClip"><rect x="'+L+'" y="'+T+'" width="'+iw+'" height="'+ih+'"/></clipPath></defs>';
+    g += '<rect x="'+L+'" y="'+T+'" width="'+iw+'" height="'+ih+'" fill="#ffffff" stroke="#cfe3cf"/>';
+
+    // 网格
+    var v, i;
+    for(i=0; ; i++){
+      v = i*stepX; if(v > xMax + 1e-9) break;
+      g += '<line x1="'+sx(v).toFixed(1)+'" y1="'+T+'" x2="'+sx(v).toFixed(1)+'" y2="'+(T+ih)+'" stroke="#e6f0e6" stroke-width="1"/>';
+      g += '<text x="'+sx(v).toFixed(1)+'" y="'+(T+ih+17)+'" font-size="11" fill="#5f6f5c" text-anchor="middle">'+fmt(v,0)+'</text>';
+    }
+    for(i=0; ; i++){
+      v = i*stepY; if(v > yMax + 1e-9) break;
+      g += '<line x1="'+L+'" y1="'+sy(v).toFixed(1)+'" x2="'+(L+iw)+'" y2="'+sy(v).toFixed(1)+'" stroke="#e6f0e6" stroke-width="1"/>';
+      g += '<text x="'+(L-8)+'" y="'+(sy(v)+4).toFixed(1)+'" font-size="11" fill="#5f6f5c" text-anchor="end">'+fmt(v,0)+'</text>';
+    }
+    // 轴标题
+    g += '<text x="'+(L+iw/2)+'" y="'+(H-12)+'" font-size="12.5" fill="#1b5e20" text-anchor="middle">x：'+esc(X.key+' '+X.name)+'（吨）</text>';
+    g += '<text x="16" y="'+(T+ih/2)+'" font-size="12.5" fill="#1b5e20" text-anchor="middle" transform="rotate(-90 16 '+(T+ih/2)+')">y：'+esc(Y.key+' '+Y.name)+'（吨）</text>';
+
+    var clipped = '';
+
+    // 约束线
+    sol.cs.forEach(function(c){
+      var cand = [];
+      function push(px, py){
+        if(px >= -1e-7 && px <= xMax + 1e-7 && py >= -1e-7 && py <= yMax + 1e-7) cand.push([px,py]);
+      }
+      if(Math.abs(c.b) > 1e-9){ push(0, c.lim/c.b); push(xMax, (c.lim - c.a*xMax)/c.b); }
+      if(Math.abs(c.a) > 1e-9){ push(c.lim/c.a, 0); push((c.lim - c.b*yMax)/c.a, yMax); }
+      if(cand.length < 2) return;
+      var bestPair = null, bd = -1;
+      for(var a=0;a<cand.length;a++) for(var b2=a+1;b2<cand.length;b2++){
+        var dx = cand[a][0]-cand[b2][0], dy = cand[a][1]-cand[b2][1];
+        var d = dx*dx + dy*dy;
+        if(d > bd){ bd = d; bestPair = [cand[a], cand[b2]]; }
+      }
+      if(!bestPair || bd < 1e-12) return;
+      var p1 = bestPair[0], p2 = bestPair[1];
+      clipped += '<line x1="'+sx(p1[0]).toFixed(1)+'" y1="'+sy(p1[1]).toFixed(1)+'" x2="'+sx(p2[0]).toFixed(1)+'" y2="'+sy(p2[1]).toFixed(1)+'" stroke="'+c.color+'" stroke-width="1.8"/>';
+      var mx = (p1[0]+p2[0])/2, my = (p1[1]+p2[1])/2;
+      var lx = sx(mx), ly = sy(my) - 6;
+      lx = Math.max(L+26, Math.min(L+iw-26, lx));
+      ly = Math.max(T+12, Math.min(T+ih-6, ly));
+      clipped += '<text x="'+lx.toFixed(1)+'" y="'+ly.toFixed(1)+'" font-size="11" fill="'+c.color+'" text-anchor="middle" stroke="#ffffff" stroke-width="3" paint-order="stroke" style="paint-order:stroke">'+esc(c.name)+'</text>';
+    });
+
+    // 可行域
+    if(sol.hull.length >= 3){
+      var poly = sol.hull.map(function(p){ return sx(p.x).toFixed(1)+','+sy(p.y).toFixed(1); }).join(' ');
+      clipped += '<polygon points="'+poly+'" fill="rgba(46,125,50,.14)" stroke="#2e7d32" stroke-width="2"/>';
+    }
+    // 顶点
+    sol.verts.forEach(function(p){
+      clipped += '<circle cx="'+sx(p.x).toFixed(1)+'" cy="'+sy(p.y).toFixed(1)+'" r="3.2" fill="#fff" stroke="#2e7d32" stroke-width="1.6"/>';
+    });
+    // 等贡献边际线
+    var Z = sol.opt.z;
+    var pts2 = [];
+    if(Y.cm > 1e-9){ var yi = Z/Y.cm; pts2.push([0, yi]); }
+    if(X.cm > 1e-9){ var xi = Z/X.cm; pts2.push([xi, 0]); }
+    if(pts2.length === 2){
+      clipped += '<line x1="'+sx(pts2[0][0]).toFixed(1)+'" y1="'+sy(pts2[0][1]).toFixed(1)+'" x2="'+sx(pts2[1][0]).toFixed(1)+'" y2="'+sy(pts2[1][1]).toFixed(1)+'" stroke="#e65100" stroke-width="1.8" stroke-dasharray="7 4"/>';
+    }
+    // 最优解
+    var ox = sx(sol.opt.x), oy = sy(sol.opt.y);
+    clipped += '<circle cx="'+ox.toFixed(1)+'" cy="'+oy.toFixed(1)+'" r="7" fill="#fbc02d" stroke="#1b5e20" stroke-width="2"/>';
+    clipped += '<circle cx="'+ox.toFixed(1)+'" cy="'+oy.toFixed(1)+'" r="12" fill="none" stroke="#fbc02d" stroke-width="1.4" opacity=".8"/>';
+    var flip = sol.opt.x > xMax*0.55;
+    var bx = flip ? ox - 14 : ox + 14;
+    var anchor = flip ? 'end' : 'start';
+    clipped += '<text x="'+bx.toFixed(1)+'" y="'+(oy-10).toFixed(1)+'" font-size="12.5" font-weight="700" fill="#1b5e20" text-anchor="'+anchor+'" stroke="#ffffff" stroke-width="3.5" paint-order="stroke" style="paint-order:stroke">最优 ('+fmt(sol.opt.x,1)+', '+fmt(sol.opt.y,1)+')</text>';
+    clipped += '<text x="'+bx.toFixed(1)+'" y="'+(oy+6).toFixed(1)+'" font-size="12" fill="#e65100" text-anchor="'+anchor+'" stroke="#ffffff" stroke-width="3.5" paint-order="stroke" style="paint-order:stroke">Z = '+fmt(Z)+' 元</text>';
+
+    g += '<g clip-path="url(#lpClip)">' + clipped + '</g>';
+    g += '<text x="'+(L+6)+'" y="'+(T+16)+'" font-size="12" fill="#5f6f5c">可行域（阴影）· 顶点即候选最优解</text>';
+    return g;
+  }
+
+  function renderLP(){
+    var kx = $('#lp_x').value, ky = $('#lp_y').value;
+    if(kx === ky){
+      ky = (kx === 'A') ? 'B' : 'A';
+      $('#lp_y').value = ky;
+    }
+    var X = S.P[kx], Y = S.P[ky];
+    var cs = buildConstraints(kx, ky);
+    var sol = solveLP(X, Y, cs);
+    var deduct = $('#lp_fix').value === '1';
+    var useC = (kx === 'C' || ky === 'C');
+    var fixed = useC && deduct ? num('dp_F', 200000) : 0;
+
+    $('#lp_obj').value = 'max Z = ' + fmt(X.cm) + 'x + ' + fmt(Y.cm) + 'y';
+    $('#lp_nx').textContent = X.key + ' ' + X.short;
+    $('#lp_ny').textContent = Y.key + ' ' + Y.short;
+    $('#lp_xv').textContent = fmt(sol.opt.x, 1);
+    $('#lp_yv').textContent = fmt(sol.opt.y, 1);
+    $('#lp_z').textContent = fmt(sol.opt.z);
+    $('#lp_zn').textContent = fixed > 0 ? ('净收益 ' + fmt(sol.opt.z - fixed) + ' 元（已扣专属固定成本 ' + fmt(fixed) + '）') : '贡献边际口径（未扣固定成本）';
+
+    var diff = Math.abs(sol.grid.z - sol.opt.z);
+    var tol = Math.max(1, Math.abs(sol.opt.z) * 0.005);
+    $('#lp_chk').textContent = diff <= tol ? '一致 ✓' : '有偏差';
+    $('#lp_chkn').textContent = '网格枚举 Z = ' + fmt(sol.grid.z) + '（' + fmt(sol.gridCnt) + ' 个网格点），顶点法 Z = ' + fmt(sol.opt.z);
+
+    $('#lp_svg').innerHTML = buildSVG(sol, X, Y);
+
+    // 图例
+    var lg = '';
+    cs.forEach(function(c){
+      lg += '<span class="pill"><span class="i" style="background:'+c.color+'"></span>' + esc(c.name) + '</span>';
+    });
+    lg += '<span class="pill"><span class="i" style="background:#e65100"></span>等贡献边际线</span>';
+    $('#lp_legend').innerHTML = lg;
+
+    // 松弛表
+    var tb = '';
+    cs.forEach(function(c){
+      var use = c.a*sol.opt.x + c.b*sol.opt.y;
+      var slack = c.lim - use;
+      var bind = Math.abs(slack) < Math.max(1e-6, c.lim*1e-9 + 1e-6) || slack < 0;
+      tb += '<tr' + (bind?' class="best"':'') + '><td class="l">' + esc(c.name) + '</td><td>'
+        + fmt(c.a,2) + 'x + ' + fmt(c.b,2) + 'y ≤ ' + fmt(c.lim,1) + '</td><td>' + fmt(use,1) + '</td><td>' + fmt(c.lim,1)
+        + ' ' + c.unit + '</td><td>' + (slack < 0 ? fmt(slack,1) : fmt(slack,1)) + '</td><td>'
+        + (bind ? '<span class="badge b-hi">紧约束</span>' : '<span class="badge b-gr">有松弛</span>') + '</td></tr>';
+    });
+    $('#lp_tb').querySelector('tbody').innerHTML = tb;
+
+    lastRes.lp = { kx:kx, ky:ky, X:X, Y:Y, sol:sol, cs:cs, Z:sol.opt.z };
+    return lastRes.lp;
+  }
+
+  /* ================= 汇总与事件 ================= */
+  function copySummary(){
+    var v = lastRes.variety, d = lastRes.deep, o = lastRes.order, l = lastRes.lp;
+    if(!v || !d || !o || !l) return '';
+    var s = '';
+    s += '【5.2 品种决策】约束资源：' + RESNAME[v.rk] + '；最优：' + v.best.k + ' ' + v.best.name
+       + '；单位约束资源贡献边际 ' + fmt(v.best.per,1) + ' 元/' + RESUNIT[v.rk] + '\n';
+    s += '【5.3 深加工决策】产量 ' + fmt(d.Q,1) + ' 吨；差量收入 ' + fmt(d.dR) + ' 元，差量成本 ' + fmt(d.dC)
+       + ' 元，差量利润 ' + fmt(d.dP) + ' 元；临界产量 ' + fmt(d.Qstar,2) + ' 吨；结论：' + (d.dP>0?'深加工':'直接出售') + '\n';
+    s += '【5.4 特殊订单】剩余产能 ' + fmt(o.remain,1) + ' 吨；报价 ' + fmt(o.ps) + ' 元/吨，保本报价 ' + fmt(o.be,1)
+       + ' 元/吨；差量利润 ' + fmt(o.dP) + ' 元；结论：' + (o.dP>0?'接受':'拒绝') + '\n';
+    s += '【5.5 产品组合】' + l.X.key + ' ' + l.X.short + ' × ' + l.Y.key + ' ' + l.Y.short + '：最优 ('
+       + fmt(l.sol.opt.x,1) + ', ' + fmt(l.sol.opt.y,1) + ')，最大贡献边际 ' + fmt(l.sol.opt.z) + ' 元\n';
+    return s;
+  }
+
+  function recompute(){
+    readState();
+    renderVariety();
+    renderDeep();
+    renderOrder();
+    renderLP();
+    if(window.__DRILL_REFRESH__) window.__DRILL_REFRESH__();
+    if(window.__QZ_REFRESH__) window.__QZ_REFRESH__();
+  }
+
+  function bindAll(){
+    var ids = [];
+    KEYS.forEach(function(k){ ids.push('p_'+k,'b_'+k,'ld_'+k,'lb_'+k,'mc_'+k,'cp_'+k); });
+    ids = ids.concat(['r_land','r_labor','r_mach','dp_Q','dp_s','dp_avc','dp_F','so_cap','so_norm','so_ps','so_q','so_add','vd_res','lp_x','lp_y','lp_fix']);
+    ids.forEach(function(id){
+      var el = document.getElementById(id);
+      if(!el) return;
+      el.addEventListener('input', recompute);
+      el.addEventListener('change', recompute);
+    });
+    $('#btnReset').addEventListener('click', function(){
+      KEYS.forEach(function(k){
+        var d = DEF[k];
+        document.getElementById('p_'+k).value = d.p;
+        document.getElementById('b_'+k).value = d.b;
+        document.getElementById('ld_'+k).value = d.land;
+        document.getElementById('lb_'+k).value = d.labor;
+        document.getElementById('mc_'+k).value = d.mach;
+        document.getElementById('cp_'+k).value = d.cap;
+      });
+      document.getElementById('r_land').value = RESDEF.land;
+      document.getElementById('r_labor').value = RESDEF.labor;
+      document.getElementById('r_mach').value = RESDEF.mach;
+      document.getElementById('dp_Q').value = 60;
+      document.getElementById('dp_s').value = 2;
+      document.getElementById('dp_avc').value = 1500;
+      document.getElementById('dp_F').value = 200000;
+      document.getElementById('so_cap').value = 300;
+      document.getElementById('so_norm').value = 200;
+      document.getElementById('so_ps').value = 2900;
+      document.getElementById('so_q').value = 60;
+      document.getElementById('so_add').value = 0;
+      recompute();
+    });
+    $('#btnCopy').addEventListener('click', function(){
+      var s = copySummary();
+      var tip = $('#copyTip');
+      function done(ok){
+        tip.textContent = ok ? '已复制到剪贴板 ✓' : '复制失败，请手动选取';
+        setTimeout(function(){ tip.textContent = ''; }, 2200);
+      }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(s).then(function(){ done(true); }, function(){ done(false); });
+      }else{
+        try{
+          var ta = document.createElement('textarea');
+          ta.value = s; document.body.appendChild(ta); ta.select();
+          var ok = document.execCommand('copy');
+          document.body.removeChild(ta); done(ok);
+        }catch(e){ done(false); }
+      }
+    });
+  }
+
+  // 对外接口（供练习模块读取实时结果）
+  window.CH5 = {
+    get: function(){ return lastRes; },
+    recompute: recompute,
+    fmt: fmt,
+    RESNAME: RESNAME, RESUNIT: RESUNIT, DEF: DEF
+  };
+
+  bindAll();
+  recompute();
+})();
+</script>
+
+<script>
+/* =========================================================
+   随堂演练：手算填空 → 提交核对 → 逐步计算过程
+   独立模块：只读主仿真结果（window.CH5.get()），不改动主仿真参数
+   ========================================================= */
+(function(){
+  'use strict';
+  var $ = function(s){ return document.querySelector(s); };
+  function fmt(n,d){ if(d===undefined)d=0; if(!isFinite(n))return '—'; return n.toLocaleString('zh-CN',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function R(){ return (window.CH5 && window.CH5.get) ? window.CH5.get() : null; }
+  function U(rk){ return window.CH5.RESUNIT[rk]; }
+  function N(rk){ return window.CH5.RESNAME[rk]; }
+  function tol(ans){ return Math.max(0.5, Math.abs(ans)*0.005); }
+
+  /* ---------- 5.2 品种决策：单位约束资源贡献边际 ---------- */
+  var D_VARIETY = {
+    title:function(r){ return '✍ 动手算一算 · ' + N(r.variety.rk) + '约束下的品种排序依据'; },
+    sub:function(r){ return '自己先算：三个品种的「单位' + N(r.variety.rk) + '贡献边际」（元/' + U(r.variety.rk) + '），填入后点「提交核对」。'; },
+    fields:function(r){
+      var v=r.variety, u=U(v.rk), map={};
+      v.rows.forEach(function(x){ map[x.k]=x; });
+      return ['A','B','C'].map(function(k){
+        var x=map[k];
+        return { key:k, label:k + ' ' + esc(x.name) + '（元/' + u + '）', unit:'元/'+u, ans:x.per, tol:tol(x.per) };
+      });
+    },
+    process:function(r){
+      var v=r.variety, u=U(v.rk), nm=N(v.rk);
+      var rows=v.rows.slice().sort(function(a,b){ return a.k<b.k?-1:1; });
+      var h='<h4>计算过程</h4><ol>';
+      h+='<li><span class="stepn">第一步</span>　算单位贡献边际 <code>cm = 单价 − 单位变动成本</code>：'
+        + rows.map(function(x){ return x.k+' = '+fmt(x.cm)+' 元/吨'; }).join('，') + '。</li>';
+      h+='<li><span class="stepn">第二步</span>　算单位'+nm+'贡献边际 <code>cm ÷ 单位'+nm+'耗用</code>：'
+        + rows.map(function(x){ return x.k+'：'+fmt(x.cm)+' ÷ '+fmt(x.cons,2)+' = <code>'+fmt(x.per,1)+'</code> 元/'+u; }).join('；') + '。</li>';
+      h+='<li><span class="stepn">第三步</span>　排序比较：'+v.rows.map(function(x){ return x.k+'（'+fmt(x.per,1)+'）'; }).join(' ＞ ')
+        +'　→ 应选 <b>'+v.best.k+' '+esc(v.best.name)+'</b>。</li>';
+      h+='<li><span class="stepn">第四步</span>　验算：'+nm+'总量 '+fmt(v.lim,2)+' '+u+' 全部投给 '+v.best.k
+        +'，可产 '+fmt(v.best.qty,1)+' 吨，贡献边际 '+fmt(v.best.tot)+' 元。</li>';
+      h+='</ol>';
+      var others=['land','labor','mach'].filter(function(x){ return x!==v.rk; });
+      var over=[];
+      others.forEach(function(x){
+        var need=v.best.qty*v.P[v.best.k][x];
+        if(need > v.RES[x]+1e-6) over.push(N(x)+'需 '+fmt(need,1)+' '+U(x)+' ＞ 上限 '+fmt(v.RES[x],1));
+      });
+      h+= over.length
+        ? '<p><b>反向校验：</b>'+over.join('；')+' —— 单一资源法在此已失效，答案只能作为排序参考，最终组合须用 5.5 线性规划。</p>'
+        : '<p><b>反向校验：</b>其余资源均未超限，本结论成立。</p>';
+      h+='<p class="tiny">易错提示：不要直接比「单位贡献边际」——C 的单位贡献边际最高，但换成「每单位稀缺资源换回多少贡献边际」才是判据。</p>';
+      return h;
+    }
+  };
+
+  /* ---------- 5.3 深加工：差量收入 / 差量成本 / 临界产量 ---------- */
+  var D_DEEP = {
+    title:function(){ return '✍ 动手算一算 · 深加工的差量利润与临界产量'; },
+    sub:function(){ return '按「差量分析法」手算四格：差量收入、差量成本、差量利润、成本无差别点产量 Q*。'; },
+    fields:function(r){
+      var d=r.deep;
+      return [
+        { key:'dR',    label:'① 差量收入合计（元）', unit:'元',   ans:d.dR,    tol:tol(d.dR) },
+        { key:'dC',    label:'② 差量成本合计（元，含专属固定成本）', unit:'元', ans:d.dC, tol:tol(d.dC) },
+        { key:'dP',    label:'③ 差量利润（元，负号表示不利）', unit:'元', ans:d.dP, tol:tol(d.dP) },
+        { key:'Qstar', label:'④ 临界产量 Q*（吨）', unit:'吨', ans:d.Qstar, tol:tol(d.Qstar) }
+      ];
+    },
+    process:function(r){
+      var d=r.deep;
+      var h='<h4>计算过程</h4><ol>';
+      h+='<li><span class="stepn">第一步</span>　每吨鲜穗加工后可收入 = 果干售价 '+fmt(d.p1)+' ÷ 鲜穗单耗 '+fmt(d.s,1)
+        +' = <code>'+fmt(d.p1/d.s,1)+'</code> 元（1 吨鲜穗出 '+fmt(1/d.s,2)+' 吨果干）。</li>';
+      h+='<li><span class="stepn">第二步</span>　单位差量收入 = '+fmt(d.p1/d.s,1)+' − 直售单价 '+fmt(d.p0)
+        +' = <code>'+fmt(d.unitR,1)+'</code> 元/吨鲜穗。</li>';
+      h+='<li><span class="stepn">第三步</span>　差量收入合计 = '+fmt(d.unitR,1)+' × 产量 '+fmt(d.Q,1)
+        +' = <code>'+fmt(d.dR)+'</code> 元。</li>';
+      h+='<li><span class="stepn">第四步</span>　差量成本合计 = 追加变动 '+fmt(d.avc)+' × '+fmt(d.Q,1)
+        +' + 专属固定 '+fmt(d.F)+' = <code>'+fmt(d.dC)+'</code> 元。</li>';
+      h+='<li><span class="stepn">第五步</span>　差量利润 = '+fmt(d.dR)+' − '+fmt(d.dC)+' = <code>'+fmt(d.dP)
+        +'</code> 元 → '+(d.dP>0?'<b>差量为正，应深加工</b>':'<b>差量为负，应直接出售鲜穗</b>')+'。</li>';
+      h+='<li><span class="stepn">第六步</span>　成本无差别点 <code>Q* = 专属固定成本 ÷ (单位差量收入 − 单位追加变动成本)</code> = '
+        +fmt(d.F)+' ÷ ('+fmt(d.unitR,1)+' − '+fmt(d.avc)+') = <code>'+fmt(d.Qstar,2)+'</code> 吨。产量 '
+        +(d.Q>=d.Qstar?'≥':'＜')+' Q*，故结论与第五步一致。</li>';
+      h+='</ol>';
+      h+='<p><b>无关成本提醒：</b>鲜穗种植成本 '+fmt(d.b0)+' 元/吨在「直售」与「加工」两方案下都发生，属沉没/共同成本，'
+        +'<u>不进入差量比较</u>；把它算进差量成本是本章最常见的错误。</p>';
+      return h;
+    }
+  };
+
+  /* ---------- 5.4 特殊订单：剩余产能 / 机会成本 / 保本报价 ---------- */
+  var D_ORDER = {
+    title:function(){ return '✍ 动手算一算 · 特殊订单的差量利润与保本报价'; },
+    sub:function(){ return '先判断有无剩余产能，再算机会成本、差量利润，最后反推「保本报价」。'; },
+    fields:function(r){
+      var o=r.order;
+      return [
+        { key:'remain', label:'① 剩余产能（吨）',        unit:'吨',     ans:o.remain, tol:tol(o.remain) },
+        { key:'opp',    label:'② 机会成本（元）',        unit:'元',     ans:o.opp,    tol:tol(o.opp) },
+        { key:'dP',     label:'③ 差量利润（元）',        unit:'元',     ans:o.dP,     tol:tol(o.dP) },
+        { key:'be',     label:'④ 保本报价（元/吨）',      unit:'元/吨',  ans:o.be,     tol:tol(o.be) }
+      ];
+    },
+    process:function(r){
+      var o=r.order;
+      var h='<h4>计算过程</h4><ol>';
+      h+='<li><span class="stepn">第一步</span>　剩余产能 = 产能上限 '+fmt(o.cap,1)+' − 已接正常订单 '+fmt(o.norm,1)
+        +' = <code>'+fmt(o.remain,1)+'</code> 吨；订单量 '+fmt(o.q,1)+' 吨'
+        +(o.crowd>0?(' ＞ 剩余产能，需挤占 <b>'+fmt(o.crowd,1)+'</b> 吨正常销量。'):' ≤ 剩余产能，无需挤占。')+'</li>';
+      h+='<li><span class="stepn">第二步</span>　机会成本 = 挤占量 '+fmt(o.crowd,1)+' × 单位贡献边际（'+fmt(o.p)+' − '+fmt(o.b)
+        +' = '+fmt(o.cm)+'）= <code>'+fmt(o.opp)+'</code> 元。</li>';
+      h+='<li><span class="stepn">第三步</span>　差量收入 = 报价 '+fmt(o.ps)+' × '+fmt(o.q,1)+' = <code>'+fmt(o.dR)+'</code> 元。</li>';
+      h+='<li><span class="stepn">第四步</span>　差量成本 = 变动成本 '+fmt(o.b)+' × '+fmt(o.q,1)+' + 专属追加 '+fmt(o.add)
+        +' + 机会成本 '+fmt(o.opp)+' = <code>'+fmt(o.dC)+'</code> 元。</li>';
+      h+='<li><span class="stepn">第五步</span>　差量利润 = '+fmt(o.dR)+' − '+fmt(o.dC)+' = <code>'+fmt(o.dP)
+        +'</code> 元 → '+(o.dP>0?'<b>为正，可以接受</b>':'<b>为负，应当拒绝</b>')+'。</li>';
+      h+='<li><span class="stepn">第六步</span>　保本报价 = 差量成本 '+fmt(o.dC)+' ÷ 订单量 '+fmt(o.q,1)
+        +' = <code>'+fmt(o.be,1)+'</code> 元/吨。客户报价 '+fmt(o.ps)+' '
+        +(o.ps>o.be?'高于':'低于')+'该临界值，与第五步结论一致。</li>';
+      h+='</ol>';
+      h+='<p class="tiny">思路提示：有剩余产能时，底线是「报价 ＞ 单位变动成本 '+fmt(o.b)+' 元」；一旦订单量超出剩余产能，'
+        +'被挤占的正常销售所损失的单位贡献边际必须计入机会成本，否则会高估收益。</p>';
+      return h;
+    }
+  };
+
+  /* ---------- 5.5 产品组合：最优解与最大贡献边际 ---------- */
+  var D_LP = {
+    title:function(r){ return '✍ 动手算一算 · ' + r.lp.X.short + ' 与 ' + r.lp.Y.short + ' 的最优组合'; },
+    sub:function(r){ return '按图解法：先写目标函数与约束，找紧约束交点手算最优解 (x, y)，再代回求 Z。'; },
+    fields:function(r){
+      var l=r.lp;
+      return [
+        { key:'x', label:'① 最优 x（'+l.X.short+'，吨）', unit:'吨', ans:l.sol.opt.x, tol:Math.max(0.5, Math.abs(l.sol.opt.x)*0.01) },
+        { key:'y', label:'② 最优 y（'+l.Y.short+'，吨）', unit:'吨', ans:l.sol.opt.y, tol:Math.max(0.5, Math.abs(l.sol.opt.y)*0.01) },
+        { key:'z', label:'③ 最大贡献边际 Z（元）', unit:'元', ans:l.sol.opt.z, tol:tol(l.sol.opt.z) }
+      ];
+    },
+    process:function(r){
+      var l=r.lp, cs=l.cs, o=l.sol.opt, X=l.X, Y=l.Y;
+      var h='<h4>计算过程</h4><ol>';
+      h+='<li><span class="stepn">第一步</span>　列目标函数：<code>max Z = '+fmt(X.cm)+'x + '+fmt(Y.cm)+'y</code>（x＝'
+        +esc(X.short)+'，y＝'+esc(Y.short)+'）。</li>';
+      h+='<li><span class="stepn">第二步</span>　列约束条件：<br>'
+        + cs.map(function(c,i){ return '（'+'①②③④⑤'.charAt(i)+'）'+fmt(c.a,2)+'x + '+fmt(c.b,2)+'y ≤ '+fmt(c.lim,1)+'　'+esc(c.name); }).join('<br>')
+        +'<br>＋ x ≥ 0，y ≥ 0。</li>';
+      var binds=cs.filter(function(c){ return Math.abs(c.lim-(c.a*o.x+c.b*o.y)) < Math.max(1e-6, c.lim*1e-9+1e-6); });
+      var i1=cs.indexOf(binds[0]), i2=cs.indexOf(binds[1]);
+      var mk=function(i){ return '（'+'①②③④⑤'.charAt(i)+'）'; };
+      if(binds.length===2){
+        var c1=binds[0], c2=binds[1], m1=mk(i1), m2=mk(i2);
+        if((c1.a>1e-9 && c1.b>1e-9) && (c2.a<=1e-9 || c2.b<=1e-9)){ var t=c1;c1=c2;c2=t; var tt=m1;m1=m2;m2=tt; }
+        h+='<li><span class="stepn">第三步</span>　最优解处两条紧约束为 '+esc(c1.name)+' 与 '+esc(c2.name)+'（松弛量为 0），联立求解：';
+        if(Math.abs(c1.b)<1e-9){
+          var xv=c1.lim/c1.a, yv=(c2.lim-c2.a*xv)/c2.b;
+          h+='<br>由 '+m1+' 得 x = '+fmt(c1.lim,1)+' ÷ '+fmt(c1.a,2)+' = <code>'+fmt(xv,2)+'</code>；'
+            +'<br>代入 '+m2+'：'+fmt(c2.a,2)+'×'+fmt(xv,2)+' + '+fmt(c2.b,2)+'y = '+fmt(c2.lim,1)
+            +' → y = ('+fmt(c2.lim,1)+' − '+fmt(c2.a*xv,2)+') ÷ '+fmt(c2.b,2)+' = <code>'+fmt(yv,2)+'</code>。';
+        }else if(Math.abs(c1.a)<1e-9){
+          var yv2=c1.lim/c1.b, xv2=(c2.lim-c2.b*yv2)/c2.a;
+          h+='<br>由 '+m1+' 得 y = '+fmt(c1.lim,1)+' ÷ '+fmt(c1.b,2)+' = <code>'+fmt(yv2,2)+'</code>；'
+            +'<br>代入 '+m2+'：'+fmt(c2.a,2)+'x + '+fmt(c2.b,2)+'×'+fmt(yv2,2)+' = '+fmt(c2.lim,1)
+            +' → x = ('+fmt(c2.lim,1)+' − '+fmt(c2.b*yv2,2)+') ÷ '+fmt(c2.a,2)+' = <code>'+fmt(xv2,2)+'</code>。';
+        }else{
+          var A=c2.a - c2.b*c1.a/c1.b, B=c2.lim - c2.b*c1.lim/c1.b;
+          var x3=B/A, y3=(c1.lim-c1.a*x3)/c1.b;
+          h+='<br>由 '+m1+' 得 y = ('+fmt(c1.lim,1)+' − '+fmt(c1.a,2)+'x) ÷ '+fmt(c1.b,2)+'；'
+            +'<br>代入 '+m2+'：'+fmt(c2.a,2)+'x + '+fmt(c2.b,2)+'×[('+fmt(c1.lim,1)+' − '+fmt(c1.a,2)+'x) ÷ '+fmt(c1.b,2)+'] = '+fmt(c2.lim,1)
+            +'<br>化简：('+fmt(c2.a,2)+' − '+fmt(c2.b*c1.a/c1.b,2)+')x = '+fmt(c2.lim,1)+' − '+fmt(c2.b*c1.lim/c1.b,2)
+            +' → '+fmt(A,2)+'x = '+fmt(B,2)
+            +'<br>x = '+fmt(B,2)+' ÷ '+fmt(A,2)+' = <code>'+fmt(x3,2)+'</code>；'
+            +'y = ('+fmt(c1.lim,1)+' − '+fmt(c1.a,2)+'×'+fmt(x3,2)+') ÷ '+fmt(c1.b,2)+' = <code>'+fmt(y3,2)+'</code>。';
+        }
+        h+='</li>';
+      }else{
+        h+='<li><span class="stepn">第三步</span>　本例紧约束为 '+binds.length+' 条（'+binds.map(function(c){return esc(c.name);}).join('、')
+          +'），交点退化，改用顶点比较法（见下表）。</li>';
+      }
+      h+='<li><span class="stepn">第四步</span>　代回目标函数：Z = '+fmt(X.cm)+' × '+fmt(o.x,2)+' + '+fmt(Y.cm)+' × '+fmt(o.y,2)
+        +' = <code>'+fmt(o.z)+'</code> 元。</li>';
+      h+='</ol>';
+      var vs=l.sol.verts.slice().sort(function(a,b){ return (X.cm*b.x+Y.cm*b.y)-(X.cm*a.x+Y.cm*a.y); }).slice(0,6);
+      h+='<h4>顶点比较（验证最优性）</h4><table style="font-size:12.5px"><thead><tr><th>x</th><th>y</th><th>Z＝'+fmt(X.cm)+'x+'+fmt(Y.cm)+'y</th><th>说明</th></tr></thead><tbody>';
+      vs.forEach(function(p,i){
+        var z=X.cm*p.x+Y.cm*p.y;
+        var isOpt=Math.abs(z-o.z)<1e-6;
+        h+='<tr'+(isOpt?' class="best"':'')+'><td>'+fmt(p.x,2)+'</td><td>'+fmt(p.y,2)+'</td><td>'+fmt(z)+'</td><td>'+(i===0?'最大 → 最优解':'')+'</td></tr>';
+      });
+      h+='</tbody></table>';
+      h+='<p class="tiny">思路提示：线性规划的最优解一定在可行域顶点上取得（顶点定理），因此只需比较顶点；'
+        +'图上也可把等贡献边际线沿法向平移，最后离开可行域的那个接触点即最优解。松弛量为 0 的是紧约束，是扩产优先要解的瓶颈。</p>';
+      return h;
+    }
+  };
+
+  var DRILLS = { variety:D_VARIETY, deep:D_DEEP, order:D_ORDER, lp:D_LP };
+  var ORDER = ['variety','deep','order','lp'];
+  var state = {};
+
+  function st(id){
+    if(!state[id]) state[id] = { vals:{}, res:null, peek:false, wrong:{}, dirty:false };
+    return state[id];
+  }
+  function boxOf(id){ return document.querySelector('[data-d="'+id+'"]'); }
+
+  function scoreTxt(id, fs){
+    var s=st(id);
+    if(s.res){
+      var n=0; fs.forEach(function(f){ if(s.res[f.key]>0) n++; });
+      return '已核对 · 答对 '+n+' / '+fs.length+' 空' + (s.peek?'（看过思路）':'');
+    }
+    if(s.peek) return '已看思路 · 共 '+fs.length+' 空';
+    return '未作答 · 共 '+fs.length+' 空';
+  }
+
+  function collect(box, s){
+    Array.prototype.forEach.call(box.querySelectorAll('input[data-f]'), function(inp){
+      s.vals[inp.getAttribute('data-f')] = inp.value;
+    });
+  }
+
+  function render(id){
+    var box=boxOf(id); if(!box) return;
+    var r=R(); if(!r || !r.variety) return;
+    var d=DRILLS[id], s=st(id), fs=d.fields(r);
+    var h='';
+    h+='<div class="drill-hd"><div class="t">'+d.title(r)+'</div><div class="sc">'+scoreTxt(id,fs)+'</div></div>';
+    h+='<p class="qsub" style="margin:6px 0 0">'+d.sub(r)+'</p>';
+    if(s.dirty) h+='<div class="warn">上方参数已变更，本块答案已同步更新并重置，请按新数据重新计算。</div>';
+    h+='<div class="dgrid">';
+    fs.forEach(function(f){
+      var v=(s.vals[f.key]!==undefined? s.vals[f.key] : '');
+      var cls='', stx='';
+      if(s.res){
+        var rr=s.res[f.key];
+        if(rr===1){ cls=' f-ok'; stx='<span class="st ok">✓ 正确（你填 '+fmt(parseFloat(v),2)+'）</span>'; }
+        else if(rr===0.5){ cls=' f-ok'; stx='<span class="st ok">✓ 重试后正确（记半分）</span>'; }
+        else{ cls=' f-no'; stx='<span class="st no">✗ 你填 '+(isFinite(parseFloat(v))?fmt(parseFloat(v),2):'—')+'　正解 '+fmt(f.ans,2)+' '+f.unit+'</span>'; }
+      }else if(s.peek){
+        stx='<span class="st tip">正解 '+fmt(f.ans,2)+' '+f.unit+'（已看思路，本块记 0 分）</span>';
+      }
+      h+='<div class="ditem'+cls+'"><label>'+f.label+'</label><div class="row">'
+        +'<input type="number" step="0.01" data-f="'+f.key+'" value="'+esc(v)+'" placeholder="手算后填入">'
+        +'<span class="tiny">'+f.unit+'</span></div><div class="st">'+stx+'</div></div>';
+    });
+    h+='</div>';
+    h+='<div class="dbar"><button class="btn sm solid" data-a="submit">提交核对</button>'
+      +'<button class="btn sm" data-a="peek">看思路</button>'
+      +'<button class="btn sm" data-a="redo">重做</button>'
+      +'<span class="tiny">数值题容差 ±0.5%（或 ±0.5 绝对值）；坐标值容差 ±1%</span></div>';
+    if(s.res || s.peek) h+='<div class="proc">'+d.process(r)+'</div>';
+    box.innerHTML=h;
+    Array.prototype.forEach.call(box.querySelectorAll('input[data-f]'), function(inp){
+      inp.addEventListener('input', function(){ s.vals[inp.getAttribute('data-f')] = inp.value; });
+    });
+    Array.prototype.forEach.call(box.querySelectorAll('[data-a]'), function(b){
+      b.addEventListener('click', function(){
+        var a=b.getAttribute('data-a');
+        if(a==='submit') submit(id); else if(a==='peek') peek(id); else redo(id);
+      });
+    });
+  }
+
+  function submit(id){
+    var box=boxOf(id); if(!box) return;
+    var r=R(); if(!r || !r.variety) return;
+    var s=st(id), fs=DRILLS[id].fields(r);
+    collect(box, s);
+    var res={};
+    fs.forEach(function(f){
+      var raw=parseFloat(s.vals[f.key]);
+      var good=isFinite(raw) && Math.abs(raw-f.ans)<=f.tol;
+      if(s.peek){ res[f.key]=0; }
+      else if(good){ res[f.key]= s.wrong[f.key] ? 0.5 : 1; }
+      else { res[f.key]=0; s.wrong[f.key]=true; }
+    });
+    s.res=res; s.dirty=false;
+    render(id); updateSum();
+    var p=boxOf(id).querySelector('.proc');
+    if(p && p.scrollIntoView) p.scrollIntoView({block:'nearest'});
+  }
+
+  function peek(id){
+    var s=st(id);
+    s.peek=true; s.res=null; s.dirty=false;
+    render(id); updateSum();
+    var box=boxOf(id); if(box){ var p=box.querySelector('.proc'); if(p && p.scrollIntoView) p.scrollIntoView({block:'nearest'}); }
+  }
+
+  function redo(id){
+    state[id]={ vals:{}, res:null, peek:false, wrong:{}, dirty:false };
+    render(id); updateSum();
+  }
+
+  function updateSum(){
+    var r=R(); if(!r || !r.variety) return;
+    var done=0, ok=0, tot=0;
+    ORDER.forEach(function(id){
+      var fs=DRILLS[id].fields(r); tot+=fs.length;
+      var s=st(id);
+      if(s.res){ done++; fs.forEach(function(f){ if(s.res[f.key]>0) ok++; }); }
+      else if(s.peek){ done++; }
+    });
+    var el=$('#drill_sum');
+    if(!el) return;
+    el.innerHTML = done
+      ? '<b>随堂演练完成度：'+done+' / 4 块 · 答对 '+ok+' / '+tot+' 空。</b>'
+        +(done<4 ? ' 未完成的块可继续；' : ' ')
+        +'任何一块点「看思路」都会调出该块的完整计算过程（看过思路后该块记 0 分）。'
+      : '随堂演练：共 4 块 '+tot+' 空，均未作答。手算后点「提交核对」即可逐空比对，并可展开完整计算过程。';
+  }
+
+  window.__DRILL_REFRESH__ = function(){
+    ORDER.forEach(function(id){
+      var s=state[id];
+      if(s && (s.res || s.peek)){
+        state[id]={ vals:{}, res:null, peek:false, wrong:{}, dirty:true };
+      }else if(s){ s.dirty=false; }
+      render(id);
+    });
+    updateSum();
+  };
+
+  ORDER.forEach(render);
+  updateSum();
+})();
+</script>
+
+<script>
+/* =========================================================
+   闯关速练（独立模块：只操作自己的 DOM，不读写主仿真参数）
+   ========================================================= */
+(function(){
+  'use strict';
+  var $ = function(s){ return document.querySelector(s); };
+  function fmt(n,d){ if(d===undefined) d=0; if(!isFinite(n)) return '—'; return n.toLocaleString('zh-CN',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+  var R = null, qs = [], idx = 0, score = 0, combo = 0, answered = [], locked = false;
+
+  function build(){
+    R = (window.CH5 && window.CH5.get()) ? window.CH5.get() : null;
+    if(!R || !R.variety || !R.deep || !R.order || !R.lp) return [];
+    var v = R.variety, d = R.deep, o = R.order, l = R.lp;
+    var list = [];
+
+    // Q1 单位约束资源贡献边际最大者
+    var opts = v.rows.map(function(r){ return r.k + ' ' + r.name; });
+    list.push({
+      type:'choice',
+      stem:'当前唯一受约束的资源是「' + window.CH5.RESNAME[v.rk] + '」，应优先生产哪个品种？',
+      sub:'判据：单位约束资源贡献边际 = 单位贡献边际 ÷ 单位约束资源耗用量',
+      opts: opts.slice().sort(),
+      ans: v.best.k + ' ' + v.best.name,
+      exp: v.best.k + ' ' + v.best.name + ' 的单位约束资源贡献边际为 ' + fmt(v.best.per,1) + ' 元/'
+        + window.CH5.RESUNIT[v.rk] + '，居首。注意：若比较的是「单位贡献边际」，答案会不同，那是错误口径。'
+    });
+
+    // Q2 深加工差量利润
+    list.push({
+      type:'num',
+      stem:'鲜穗产量 ' + fmt(d.Q,1) + ' 吨、果干售价 ' + fmt(d.p1) + ' 元/吨（每 '
+        + fmt(d.s,1) + ' 吨鲜穗出 1 吨果干）时，深加工的差量利润是多少元？',
+      sub:'差量利润 = 差量收入 − 差量成本；专属固定成本 ' + fmt(d.F) + ' 元需计入差量成本',
+      ans: d.dP, tol: Math.max(1, Math.abs(d.dP)*0.005), unit:'元',
+      exp:'每吨鲜穗差量收入 = ' + fmt(d.p1) + '÷' + fmt(d.s,1) + ' − ' + fmt(d.p0) + ' = ' + fmt(d.unitR,1)
+        + ' 元；差量收入 = ' + fmt(d.unitR,1) + '×' + fmt(d.Q,1) + ' = ' + fmt(d.dR) + ' 元，差量成本 = '
+        + fmt(d.avc) + '×' + fmt(d.Q,1) + ' + ' + fmt(d.F) + ' = ' + fmt(d.dC) + ' 元，差量利润 = '
+        + fmt(d.dP) + ' 元。结果为' + (d.dP>0?'正，应深加工':'负，应直接出售') + '。'
+    });
+
+    // Q3 特殊订单保本报价
+    list.push({
+      type:'num',
+      stem:'订单量 ' + fmt(o.q,1) + ' 吨、剩余产能 ' + fmt(o.remain,1) + ' 吨，该特殊订单的「保本报价」是多少元/吨？',
+      sub:'保本报价 = 差量成本 ÷ 订单量（含机会成本）',
+      ans: o.be, tol: Math.max(0.5, Math.abs(o.be)*0.005), unit:'元/吨',
+      exp:'差量成本 = ' + fmt(o.b) + '×' + fmt(o.q,1) + ' + 专属 ' + fmt(o.add) + ' + 机会成本 ' + fmt(o.opp)
+        + ' = ' + fmt(o.dC) + ' 元；保本报价 = ' + fmt(o.dC) + ' ÷ ' + fmt(o.q,1) + ' = ' + fmt(o.be,1) + ' 元/吨。'
+    });
+
+    // Q4 组合最优目标值
+    list.push({
+      type:'num',
+      stem:'按当前参数，' + l.X.short + '（x）与 ' + l.Y.short + '（y）的最优组合能取得的最大贡献边际是多少元？',
+      sub:'最优解 x = ' + fmt(l.sol.opt.x,1) + ' 吨，y = ' + fmt(l.sol.opt.y,1) + ' 吨（可行域顶点）',
+      ans: l.sol.opt.z, tol: Math.max(1, Math.abs(l.sol.opt.z)*0.005), unit:'元',
+      exp:'Z = ' + fmt(l.X.cm) + '×' + fmt(l.sol.opt.x,1) + ' + ' + fmt(l.Y.cm) + '×' + fmt(l.sol.opt.y,1)
+        + ' = ' + fmt(l.sol.opt.z) + ' 元。线性规划最优解必在可行域顶点取得。'
+    });
+
+    // Q5 概念判断
+    list.push({
+      type:'choice',
+      stem:'深加工决策中，鲜穗已发生的种植成本（2,400 元/吨）属于什么成本？',
+      sub:'相关成本 / 无关成本 的判断',
+      opts:['相关成本（应计入差量成本）','无关成本（沉没/共同成本，不应计入）','机会成本','专属固定成本'],
+      ans:'无关成本（沉没/共同成本，不应计入）',
+      exp:'该成本在「直接出售」与「深加工」两个方案下都会发生、且不因方案改变而改变，属于沉没/共同成本，是无关成本。把它计入差量成本是本章最常见的错误。'
+    });
+    return list;
+  }
+
+  function steps(){
+    var h = '';
+    qs.forEach(function(q, i){
+      var cls = 'qz-step' + (answered[i] ? ' done' : '') + (i === idx && !answered[i] ? ' cur' : '');
+      h += '<div class="' + cls + '">第 ' + (i+1) + ' 题' + (answered[i] ? (answered[i].ok ? ' ✓' : ' ✗') : '') + '</div>';
+    });
+    $('#qz_steps').innerHTML = h;
+  }
+
+  function render(){
+    if(idx >= qs.length){ finish(); return; }
+    locked = false;               // 换题必须解锁，否则后续题目无法作答
+    var q = qs[idx];
+    var h = '<div class="qbox"><div class="qt">第 ' + (idx+1) + ' / ' + qs.length + ' 题</div>'
+      + '<p class="qstem">' + q.stem + '</p><p class="qsub">' + q.sub + '</p>';
+    if(q.type === 'choice'){
+      h += '<div class="opts">';
+      q.opts.forEach(function(op, i){
+        h += '<button class="opt" data-i="' + i + '">' + op + '</button>';
+      });
+      h += '</div>';
+    }else{
+      h += '<div class="fill"><input type="number" id="qz_in" step="0.01" placeholder="请输入数值"><span class="tiny">' + q.unit + '</span>'
+        + '<button class="btn sm" id="qz_submit">提交</button><button class="btn sm" id="qz_show">看答案</button></div>';
+    }
+    h += '<div id="qz_fb"></div></div>';
+    $('#qz_body').innerHTML = h;
+    if(q.type === 'choice'){
+      Array.prototype.forEach.call($('#qz_body').querySelectorAll('.opt'), function(btn){
+        btn.addEventListener('click', function(){ judgeChoice(parseInt(btn.getAttribute('data-i'),10), btn); });
+      });
+    }else{
+      $('#qz_submit').addEventListener('click', function(){ judgeNum(false); });
+      $('#qz_show').addEventListener('click', function(){ judgeNum(true); });
+      $('#qz_in').addEventListener('keydown', function(e){ if(e.key === 'Enter') judgeNum(false); });
+    }
+    steps();
+  }
+
+  function fb(cls, html){
+    var el = $('#qz_fb');
+    if(!el) return;
+    el.innerHTML = '<div class="qfb ' + cls + '">' + html + '</div>';
+  }
+
+  function next(){
+    idx++;
+    setTimeout(function(){ render(); }, 900);
+  }
+
+  function judgeChoice(i, btn){
+    if(locked) return;
+    var q = qs[idx];
+    var val = q.opts[i];
+    var ok = (val === q.ans);
+    locked = true;
+    Array.prototype.forEach.call($('#qz_body').querySelectorAll('.opt'), function(b){
+      b.disabled = true;
+      if(b.textContent === q.ans) b.className = 'opt right';
+      else if(b === btn) b.className = 'opt wrong';
+    });
+    record(ok, val);
+    next();
+  }
+
+  function judgeNum(show){
+    if(locked) return;
+    var q = qs[idx];
+    var raw = $('#qz_in').value;
+    var v = parseFloat(raw);
+    var ok = false, val = '（未作答）';
+    if(show){
+      fb('tip', '<b>本题答案：' + fmt(q.ans,2) + ' ' + q.unit + '</b><br>' + q.exp + '<br>显示答案后本题记 0 分。');
+      locked = true;
+      record(false, '看答案');
+      next();
+      return;
+    }
+    if(!isFinite(v)){ fb('no', '请输入一个数值。'); return; }
+    ok = Math.abs(v - q.ans) <= q.tol;
+    val = fmt(v,2);
+    locked = true;
+    fb(ok ? 'ok' : 'no', (ok ? '<b>回答正确：</b>' : '<b>不正确。</b>你的答案 ' + fmt(v,2) + ' ' + q.unit + '，正确答案 ' + fmt(q.ans,2) + ' ' + q.unit + '。<br>') + q.exp);
+    record(ok, val);
+    next();
+  }
+
+  function record(ok, val){
+    var q = qs[idx];
+    if(!answered[idx]){
+      var gain = ok ? 20 : 0;
+      score += gain;
+      if(ok){ combo++; if(combo >= 2 && combo <= 4) score += 5; }
+      else combo = 0;
+      answered[idx] = { ok:ok, val:val, ans:q, retry:false };
+    }else if(ok && !answered[idx].ok && !answered[idx].retry){
+      score += 10; answered[idx].retry = true; answered[idx].ok = true;
+    }
+    $('#qz_s').textContent = String(Math.min(100, score));
+    $('#qz_c').textContent = String(combo);
+    $('#qz_p').style.width = ((Object.keys(answered).length) / qs.length * 100) + '%';
+    steps();
+  }
+
+  function finish(){
+    var lv = Math.min(100, score) >= 90 ? '优秀：决策口径掌握扎实，可尝试改变参数做敏感性分析。'
+      : score >= 70 ? '良好：主要判据已掌握，注意差量成本中的机会成本。'
+      : score >= 50 ? '合格：建议重做 5.3 与 5.4，重点区分相关成本与无关成本。'
+      : '待加强：请回到 5.1 知识点，先弄清「相关成本」的判断标准。';
+    var h = '<h3>本轮得分 ' + Math.min(100, score) + ' 分</h3><p style="margin:0 0 8px">' + lv + '</p>';
+    answered.forEach(function(a, i){
+      if(!a) return;
+      h += '<div class="logrow"><div class="lg-t">第 ' + (i+1) + ' 题：' + a.ans.stem + '</div>'
+        + '<div class="lg-a">你的答案：' + a.val + '　|　正确答案：'
+        + (a.ans.type === 'num' ? fmt(a.ans.ans,2) + ' ' + a.ans.unit : a.ans.ans) + '　|　' + (a.ok ? '✓' : '✗') + '</div></div>';
+    });
+    $('#qz_body').innerHTML = '';
+    var f = $('#qz_final');
+    f.className = 'final';
+    f.innerHTML = h;
+  }
+
+  function reset(){
+    qs = build();
+    idx = 0; score = 0; combo = 0; answered = []; locked = false;
+    $('#qz_s').textContent = '0';
+    $('#qz_c').textContent = '0';
+    $('#qz_p').style.width = '0%';
+    $('#qz_final').className = 'final hide';
+    $('#qz_final').innerHTML = '';
+    render();
+  }
+
+  window.__QZ_REFRESH__ = function(){
+    if(!qs.length) return;
+    reset();
+  };
+
+  $('#qz_again').addEventListener('click', reset);
+  reset();
+})();
+</script>
+</body>
+</html>

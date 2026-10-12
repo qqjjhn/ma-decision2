@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第五章 经营决策 · 课堂交互台（教师投屏／学生跟做）</title>
+<style>
+:root{
+  --g:#2e7d32; --gd:#1b5e20; --gbg:#e8f5e9; --gl:#c8e6c9;
+  --gold:#f9a825; --blue:#1565c0; --red:#c62828; --ink:#263238; --mut:#5f6b63;
+  --line:#d8e2d9;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Microsoft YaHei","PingFang SC",sans-serif;color:var(--ink);background:#f4f8f4;line-height:1.6}
+svg{display:block}
+button{font-family:inherit;cursor:pointer}
+.hd{background:linear-gradient(135deg,var(--gd),var(--g));color:#fff;padding:14px 18px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.hd h1{margin:0;font-size:20px;letter-spacing:.5px}
+.hd .sub{margin:2px 0 0;font-size:12.5px;opacity:.9}
+.badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+  border-radius:10px;padding:2px 8px;font-size:12px;margin-left:6px}
+.hd-r{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{background:#fff;color:var(--gd);border:none;border-radius:10px;padding:7px 14px;font-size:13px;font-weight:700}
+.btn.solid{background:var(--gd);color:#fff}
+.btn.sm{padding:5px 10px;font-size:12px}
+.btn.warn{background:var(--red);color:#fff}
+.nav{display:flex;flex-wrap:wrap;gap:6px;background:#fff;border-bottom:2px solid var(--gl);padding:8px 14px;position:sticky;top:0;z-index:20}
+.nav button{background:#f1f6f1;border:1.5px solid var(--gl);border-radius:10px;padding:7px 13px;font-size:13.5px;color:var(--gd);font-weight:700}
+.nav button.active{background:var(--g);border-color:var(--g);color:#fff}
+main{max-width:1180px;margin:0 auto;padding:16px}
+.mod{display:none}
+.mod.on{display:block}
+.grid{display:grid;grid-template-columns:minmax(300px,1fr) minmax(340px,1.25fr);gap:16px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:#fff;border:2px solid var(--gl);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.card>h2{margin:0 0 4px;font-size:16px;color:var(--gd)}
+.card>h2 .no{display:inline-block;background:var(--gbg);color:var(--gd);border-radius:10px;padding:1px 9px;margin-right:6px;font-size:14px}
+.card .tip{font-size:12.5px;color:var(--mut);margin:0 0 10px}
+.box{border:2px solid var(--gl);border-radius:10px;padding:14px 16px;background:#fff}
+.box.gold{border-color:var(--gold)}
+.box.blue{border-color:var(--blue)}
+.box.red{border-color:var(--red)}
+.prow{margin-bottom:11px}
+.prow label{display:block;font-size:13px;font-weight:700;color:var(--gd);margin-bottom:3px}
+.prow label .u{font-weight:400;color:var(--mut)}
+.prow .ctl{display:flex;gap:8px;align-items:center}
+.prow input[type=range]{flex:1;accent-color:var(--g);height:22px}
+.prow input[type=number]{width:104px;padding:5px 7px;border:1.5px solid var(--line);border-radius:10px;font-size:13px;font-family:inherit}
+.chkline{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 12px}
+.chkline label{font-size:13px;background:#f1f6f1;border:1.5px solid var(--gl);border-radius:10px;padding:5px 10px;cursor:pointer}
+.chkline input{accent-color:var(--g);margin-right:5px}
+table.calc{width:100%;border-collapse:collapse;font-size:13.5px}
+table.calc td{padding:6px 8px;border-bottom:1px dashed var(--line)}
+table.calc td.k{color:var(--mut);white-space:nowrap}
+table.calc td.v{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+table.calc td.e{font-family:Consolas,"Microsoft YaHei",monospace;font-size:12.5px;color:var(--mut);font-weight:400}
+tr.hi td{background:var(--gbg)}
+.concl{margin-top:12px;border:2px solid var(--g);border-radius:10px;padding:12px 14px;background:var(--gbg)}
+.concl.bad{border-color:var(--red);background:#fdecea}
+.concl .ct{font-size:15px;font-weight:700;color:var(--gd);margin-bottom:4px}
+.concl.bad .ct{color:var(--red)}
+.concl .cs{font-size:13px}
+.flip{margin-top:10px;font-size:13px;background:#fff8e1;border:2px solid var(--gold);border-radius:10px;padding:10px 12px}
+.chartbox{border:2px solid var(--gl);border-radius:10px;background:#fff;padding:8px 4px 4px}
+.chartbox svg.chart{width:100%;height:auto}
+.mono{font-family:Consolas,"Microsoft YaHei",monospace}
+.kv{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mut);margin-top:8px}
+.kv b{color:var(--ink)}
+/* 辨识器 */
+.q{background:#fff;border:2px solid var(--gl);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.q .qn{font-size:14px;font-weight:700;color:var(--gd);margin-bottom:6px}
+.q .qd{font-size:13px;margin-bottom:8px}
+.q .opts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.q .opts button{border:2px solid var(--gl);background:#f1f6f1;color:var(--gd);border-radius:10px;padding:5px 14px;font-size:13px;font-weight:700}
+.q .opts button.sel{background:var(--g);border-color:var(--g);color:#fff}
+.q.ok{border-color:var(--g);background:#f3faf3}
+.q.no{border-color:var(--red);background:#fdecea}
+.q .fb{margin-top:8px;font-size:12.5px;padding:8px 10px;border-radius:10px;background:rgba(0,0,0,.04)}
+.score{font-size:14px;font-weight:700;color:var(--gd)}
+/* 先猜后看 */
+body.guess .concl,body.guess .flip,body.guess .q .fb{filter:blur(7px);opacity:.35;transition:.2s}
+.ft{text-align:center;color:var(--mut);font-size:12px;padding:16px 12px 26px}
+.note{font-size:12.5px;color:var(--mut);background:#fff;border-left:4px solid var(--gold);padding:8px 12px;border-radius:0 10px 10px 0;margin-top:10px}
+</style>
+</head>
+<body>
+
+<div class="hd">
+  <div>
+    <h1>第五章 经营决策 · 课堂交互台<span class="badge">教师投屏演示</span><span class="badge">学生同参跟做</span></h1>
+    <p class="sub">贯穿案例：金穗农业合作社（教学虚构） ｜ 数据与《自主学习任务单》、场景卡、演示文稿共用同一套参数 ｜ 单文件网页，无需安装与联网</p>
+  </div>
+  <div class="hd-r">
+    <label class="chk" style="font-size:13px;background:rgba(255,255,255,.16);border-radius:10px;padding:7px 12px">
+      <input type="checkbox" id="guessMode" style="accent-color:#fff"> 先猜后看（隐藏结论）
+    </label>
+    <button class="btn" id="btnReset">全部复位</button>
+  </div>
+</div>
+
+<nav class="nav">
+  <button data-m="1" class="active">① 三法参数联动</button>
+  <button data-m="2">② 相关成本辨识器</button>
+  <button data-m="3">③ 贡献边际分析</button>
+  <button data-m="4">④ 差别损益分析</button>
+  <button data-m="5">⑤ 相关损益与无差别点</button>
+</nav>
+
+<main>
+
+<!-- ================= 模块一 变式翻转台 ================= -->
+<section class="mod on" id="m1">
+  <div class="card">
+    <h2><span class="no">模块一</span>三法参数联动台 · 改一个参数，结论反向</h2>
+    <p class="tip">对应环节五（70—82 分钟）三道变式。教师拖动滑块改参数，学生先猜结论，再点「先猜后看」取消隐藏当场核对；参数一变，三行算式与结论即时刷新。</p>
+  </div>
+
+  <div class="grid">
+    <div>
+      <div class="box">
+        <div class="prow">
+          <label>变式一 · 罐头生产线专属固定成本 F<span class="u">（元，教材原值 240,000）</span></label>
+          <div class="ctl"><input type="range" data-m="v1" data-p="F" min="120000" max="600000" step="10000" value="240000"><input type="number" data-m="v1" data-p="F" value="240000"></div>
+        </div>
+        <div class="prow">
+          <label>拟投产业务量 Q<span class="u">（吨）</span></label>
+          <div class="ctl"><input type="range" data-m="v1" data-p="Q" min="50" max="250" step="10" value="150"><input type="number" data-m="v1" data-p="Q" value="150"></div>
+        </div>
+        <div class="prow">
+          <label>单位贡献边际 cm ＝ P − b<span class="u">（8,600 − 5,800，固定）</span></label>
+          <div class="ctl mono" style="font-size:14px">＝ 2,800 元／吨</div>
+        </div>
+      </div>
+      <div class="note">观测点：把 F 从 240,000 拖到 450,000，临界产量由 85.7 吨右移到 160.7 吨，150 吨落到临界值左侧 —— 结论由「应当投产」翻转为「本期不投产」。</div>
+    </div>
+    <div>
+      <div class="box blue">
+        <table class="calc">
+          <tr><td class="k">贡献边际总额</td><td class="v" id="v1_tot"></td><td class="e" id="v1_tot_e"></td></tr>
+          <tr class="hi"><td class="k">净增利润</td><td class="v" id="v1_net"></td><td class="e" id="v1_net_e"></td></tr>
+          <tr><td class="k">临界产量</td><td class="v" id="v1_be"></td><td class="e" id="v1_be_e"></td></tr>
+        </table>
+        <div class="concl" id="v1_c"><div class="ct" id="v1_ct"></div><div class="cs" id="v1_cs"></div></div>
+        <div class="flip" id="v1_f"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:12px">
+    <div>
+      <div class="box">
+        <div class="prow">
+          <label>变式二 · 追加订货量 q<span class="u">（吨，产能 300、正常订单 200）</span></label>
+          <div class="ctl"><input type="range" data-m="v2" data-p="q" min="20" max="180" step="10" value="60"><input type="number" data-m="v2" data-p="q" value="60"></div>
+        </div>
+        <div class="prow">
+          <label>特殊订货单价<span class="u">（元／吨）</span></label>
+          <div class="ctl"><input type="range" data-m="v2" data-p="sp" min="2200" max="3600" step="50" value="2900"><input type="number" data-m="v2" data-p="sp" value="2900"></div>
+        </div>
+        <div class="chkline" style="font-size:12.5px;color:var(--mut)">
+          单位变动成本 2,400 元／吨；正常售价 3,600 元／吨；剩余产能 ＝ 300 − 200 ＝ 100 吨
+        </div>
+      </div>
+      <div class="note">观测点：q 由 60 加到 130，多出的 30 吨要挤占正常销量 —— 机会成本按「正常售价 × 不足产能」进场，保本报价由 2,400 元／吨升到 2,677 元／吨。</div>
+    </div>
+    <div>
+      <div class="box blue">
+        <table class="calc">
+          <tr><td class="k">真增量（吨）</td><td class="v" id="v2_real"></td><td class="e" id="v2_real_e"></td></tr>
+          <tr><td class="k">挤占正常销量（吨）</td><td class="v" id="v2_over"></td><td class="e" id="v2_over_e"></td></tr>
+          <tr><td class="k">增量成本</td><td class="v" id="v2_inc"></td><td class="e" id="v2_inc_e"></td></tr>
+          <tr><td class="k">机会成本</td><td class="v" id="v2_occ"></td><td class="e" id="v2_occ_e"></td></tr>
+          <tr><td class="k">相关成本合计</td><td class="v" id="v2_cost"></td><td class="e" id="v2_cost_e"></td></tr>
+          <tr><td class="k">相关收入</td><td class="v" id="v2_rev"></td><td class="e" id="v2_rev_e"></td></tr>
+          <tr class="hi"><td class="k">差别损益</td><td class="v" id="v2_d"></td><td class="e" id="v2_d_e"></td></tr>
+          <tr><td class="k">保本报价</td><td class="v" id="v2_be"></td><td class="e" id="v2_be_e"></td></tr>
+        </table>
+        <div class="concl" id="v2_c"><div class="ct" id="v2_ct"></div><div class="cs" id="v2_cs"></div></div>
+        <div class="flip" id="v2_f"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:12px">
+    <div>
+      <div class="box">
+        <div class="prow">
+          <label>变式三 · 深加工本期投料量 q<span class="u">（吨，临界 75 吨）</span></label>
+          <div class="ctl"><input type="range" data-m="v3" data-p="q" min="20" max="160" step="5" value="60"><input type="number" data-m="v3" data-p="q" value="60"></div>
+        </div>
+        <div class="chkline" style="font-size:12.5px;color:var(--mut)">
+          加工前后差价 8,600 − 3,600 ＝ 5,000 元／吨；追加变动成本 3,400 元／吨；追加专属成本 120,000 元
+        </div>
+      </div>
+      <div class="note">观测点：q 由 60 提到 100，越过临界产量 75 吨，差别损益由 −24,000 元翻转为 ＋40,000 元。</div>
+    </div>
+    <div>
+      <div class="box blue">
+        <table class="calc">
+          <tr><td class="k">差别收入</td><td class="v" id="v3_rev"></td><td class="e" id="v3_rev_e"></td></tr>
+          <tr><td class="k">差别成本</td><td class="v" id="v3_cost"></td><td class="e" id="v3_cost_e"></td></tr>
+          <tr class="hi"><td class="k">差别损益</td><td class="v" id="v3_d"></td><td class="e" id="v3_d_e"></td></tr>
+          <tr><td class="k">临界产量</td><td class="v" id="v3_be"></td><td class="e" id="v3_be_e"></td></tr>
+          <tr><td class="k">可承受专属成本上限</td><td class="v" id="v3_cap"></td><td class="e" id="v3_cap_e"></td></tr>
+        </table>
+        <div class="concl" id="v3_c"><div class="ct" id="v3_ct"></div><div class="cs" id="v3_cs"></div></div>
+        <div class="flip" id="v3_f"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 模块二 相关成本辨识器 ================= -->
+<section class="mod" id="m2">
+  <div class="card">
+    <h2><span class="no">模块二</span>相关成本辨识器 · 十项判定（沉没 · 机会）</h2>
+    <p class="tip">对应环节一补漏（0—10 分钟）与线上任务 4 的错题类型。逐项点「相关／无关」，即时反馈；题库覆盖沉没成本与机会成本两类。口诀：两方案都要发生的，不相关；不入账的也要进表。</p>
+  </div>
+  <div class="box">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+      <span class="score" id="q_score">已判定 0 / 10 ｜ 正确 0</span>
+      <button class="btn sm" id="q_reset">重新判定</button>
+    </div>
+    <div id="q_list"></div>
+  </div>
+</section>
+
+<!-- ================= 模块三 贡献边际台 ================= -->
+<section class="mod" id="m3">
+  <div class="card">
+    <h2><span class="no">模块三</span>贡献边际分析 · 新产品投产与临界产量</h2>
+    <p class="tip">对应场景一（教师打版后当场验算）与变式一；场景二（亏损产品是否停产）附在下方，用同一块面板切换观测。改任意一个参数，临界值与结论即时刷新。</p>
+  </div>
+
+  <div class="grid">
+    <div>
+      <div class="box">
+        <div class="prow"><label>单价 P<span class="u">（元／吨）</span></label>
+          <div class="ctl"><input type="range" data-m="s1" data-p="P" min="6000" max="11000" step="100" value="8600"><input type="number" data-m="s1" data-p="P" value="8600"></div></div>
+        <div class="prow"><label>单位变动成本 b<span class="u">（元／吨）</span></label>
+          <div class="ctl"><input type="range" data-m="s1" data-p="b" min="4000" max="8000" step="100" value="5800"><input type="number" data-m="s1" data-p="b" value="5800"></div></div>
+        <div class="prow"><label>专属固定成本 F<span class="u">（元）</span></label>
+          <div class="ctl"><input type="range" data-m="s1" data-p="F" min="0" max="600000" step="10000" value="240000"><input type="number" data-m="s1" data-p="F" value="240000"></div></div>
+        <div class="prow"><label>拟投产业务量 Q<span class="u">（吨）</span></label>
+          <div class="ctl"><input type="range" data-m="s1" data-p="Q" min="10" max="250" step="5" value="150"><input type="number" data-m="s1" data-p="Q" value="150"></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="box blue">
+        <table class="calc">
+          <tr><td class="k">单位贡献边际 cm ＝ P − b</td><td class="v" id="s1_cm"></td><td class="e" id="s1_cm_e"></td></tr>
+          <tr><td class="k">贡献边际总额 ＝ cm × Q</td><td class="v" id="s1_tot"></td><td class="e" id="s1_tot_e"></td></tr>
+          <tr class="hi"><td class="k">净增利润 ＝ 总额 − F</td><td class="v" id="s1_net"></td><td class="e" id="s1_net_e"></td></tr>
+          <tr><td class="k">临界产量 ＝ F ÷ cm</td><td class="v" id="s1_be"></td><td class="e" id="s1_be_e"></td></tr>
+        </table>
+        <div class="concl" id="s1_c"><div class="ct" id="s1_ct"></div><div class="cs" id="s1_cs"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chartbox" style="margin:12px 0"><svg class="chart" id="s1_svg" viewBox="0 0 900 150" preserveAspectRatio="xMidYMid meet"></svg></div>
+
+  <div class="grid">
+    <div>
+      <div class="box gold">
+        <h2 style="margin:0 0 8px;font-size:15px;color:var(--gd)">场景二 · 亏损产品是否停产（速冻玉米粒）</h2>
+        <div class="prow"><label>该产品单位贡献边际<span class="u">（元／吨）</span></label>
+          <div class="ctl"><input type="range" data-m="s2" data-p="cm" min="100" max="1000" step="50" value="600"><input type="number" data-m="s2" data-p="cm" value="600"></div></div>
+        <div class="prow"><label>本期业务量<span class="u">（吨）</span></label>
+          <div class="ctl"><input type="range" data-m="s2" data-p="Q" min="10" max="120" step="5" value="50"><input type="number" data-m="s2" data-p="Q" value="50"></div></div>
+        <div class="prow"><label>转产产品单位贡献边际<span class="u">（元／吨，鲜穗 1,200）</span></label>
+          <div class="ctl"><input type="range" data-m="s2" data-p="tcm" min="300" max="2000" step="100" value="1200"><input type="number" data-m="s2" data-p="tcm" value="1200"></div></div>
+        <p class="tip" style="margin:8px 0 0">共同固定成本 60,000 元不可避免；账面亏损 30,000 元。</p>
+      </div>
+    </div>
+    <div>
+      <div class="box gold">
+        <table class="calc">
+          <tr><td class="k">该产品贡献边际</td><td class="v" id="s2_cm"></td><td class="e" id="s2_cm_e"></td></tr>
+          <tr class="hi"><td class="k">停产后总利润变动</td><td class="v" id="s2_d"></td><td class="e" id="s2_d_e"></td></tr>
+          <tr><td class="k">临界转产量</td><td class="v" id="s2_be"></td><td class="e" id="s2_be_e"></td></tr>
+        </table>
+        <div class="concl" id="s2_c"><div class="ct" id="s2_ct"></div><div class="cs" id="s2_cs"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 模块四 差别损益台 ================= -->
+<section class="mod" id="m4">
+  <div class="card">
+    <h2><span class="no">模块四</span>差别损益分析 · 追加订货与半成品深加工</h2>
+    <p class="tip">对应场景三（悬念揭晓后验算）与场景五（弹性，当堂插入则验算、转课后用于课后任务）。机会成本一律按「正常售价 × 不足产能」计；被挤占部分的变动成本属无差别成本，不得再计入增量成本。</p>
+  </div>
+
+  <div class="grid">
+    <div>
+      <div class="box">
+        <div class="prow"><label>场景三 · 特殊订货量 q<span class="u">（吨）</span></label>
+          <div class="ctl"><input type="range" data-m="s3" data-p="q" min="20" max="180" step="5" value="60"><input type="number" data-m="s3" data-p="q" value="60"></div></div>
+        <div class="prow"><label>特殊订货单价<span class="u">（元／吨）</span></label>
+          <div class="ctl"><input type="range" data-m="s3" data-p="sp" min="2200" max="3600" step="50" value="2900"><input type="number" data-m="s3" data-p="sp" value="2900"></div></div>
+        <div class="prow"><label>单位变动成本 b<span class="u">（元／吨）</span></label>
+          <div class="ctl"><input type="range" data-m="s3" data-p="vc" min="1800" max="3000" step="50" value="2400"><input type="number" data-m="s3" data-p="vc" value="2400"></div></div>
+        <div class="prow"><label>月产能 / 正常订单<span class="u">（吨）</span></label>
+          <div class="ctl"><input type="number" data-m="s3" data-p="cap" value="300"><input type="number" data-m="s3" data-p="nor" value="200"></div></div>
+        <div class="prow"><label>正常售价<span class="u">（元／吨）</span></label>
+          <div class="ctl"><input type="range" data-m="s3" data-p="np" min="3000" max="4200" step="50" value="3600"><input type="number" data-m="s3" data-p="np" value="3600"></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="box blue">
+        <table class="calc">
+          <tr><td class="k">剩余产能 / 真增量</td><td class="v" id="s3_real"></td><td class="e" id="s3_real_e"></td></tr>
+          <tr><td class="k">挤占正常销量</td><td class="v" id="s3_over"></td><td class="e" id="s3_over_e"></td></tr>
+          <tr><td class="k">增量成本</td><td class="v" id="s3_inc"></td><td class="e" id="s3_inc_e"></td></tr>
+          <tr><td class="k">机会成本</td><td class="v" id="s3_occ"></td><td class="e" id="s3_occ_e"></td></tr>
+          <tr><td class="k">相关收入</td><td class="v" id="s3_rev"></td><td class="e" id="s3_rev_e"></td></tr>
+          <tr class="hi"><td class="k">差别损益</td><td class="v" id="s3_d"></td><td class="e" id="s3_d_e"></td></tr>
+          <tr><td class="k">保本报价</td><td class="v" id="s3_be"></td><td class="e" id="s3_be_e"></td></tr>
+        </table>
+        <div class="concl" id="s3_c"><div class="ct" id="s3_ct"></div><div class="cs" id="s3_cs"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:12px">
+    <div>
+      <div class="box">
+        <div class="prow"><label>场景五 · 深加工本期投料量 q<span class="u">（吨）</span></label>
+          <div class="ctl"><input type="range" data-m="s5" data-p="q" min="20" max="160" step="5" value="60"><input type="number" data-m="s5" data-p="q" value="60"></div></div>
+        <div class="prow"><label>加工前后差价<span class="u">（元／吨）</span></label>
+          <div class="ctl"><input type="range" data-m="s5" data-p="dp" min="3000" max="7000" step="100" value="5000"><input type="number" data-m="s5" data-p="dp" value="5000"></div></div>
+        <div class="prow"><label>追加变动加工成本<span class="u">（元／吨）</span></label>
+          <div class="ctl"><input type="range" data-m="s5" data-p="av" min="2000" max="4800" step="100" value="3400"><input type="number" data-m="s5" data-p="av" value="3400"></div></div>
+        <div class="prow"><label>追加专属成本<span class="u">（元，利用闲置设备）</span></label>
+          <div class="ctl"><input type="range" data-m="s5" data-p="ex" min="0" max="240000" step="10000" value="120000"><input type="number" data-m="s5" data-p="ex" value="120000"></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="box blue">
+        <table class="calc">
+          <tr><td class="k">差别收入</td><td class="v" id="s5_rev"></td><td class="e" id="s5_rev_e"></td></tr>
+          <tr><td class="k">差别成本</td><td class="v" id="s5_cost"></td><td class="e" id="s5_cost_e"></td></tr>
+          <tr class="hi"><td class="k">差别损益</td><td class="v" id="s5_d"></td><td class="e" id="s5_d_e"></td></tr>
+          <tr><td class="k">临界产量</td><td class="v" id="s5_be"></td><td class="e" id="s5_be_e"></td></tr>
+          <tr><td class="k">专属成本可承受上限</td><td class="v" id="s5_cap"></td><td class="e" id="s5_cap_e"></td></tr>
+        </table>
+        <div class="concl" id="s5_c"><div class="ct" id="s5_ct"></div><div class="cs" id="s5_cs"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chartbox" style="margin-top:12px"><svg class="chart" id="s3_svg" viewBox="0 0 900 170" preserveAspectRatio="xMidYMid meet"></svg></div>
+</section>
+
+<!-- ================= 模块五 成本无差别点台 ================= -->
+<section class="mod" id="m5">
+  <div class="card">
+    <h2><span class="no">模块五</span>相关损益与成本无差别点 · 两条总成本线相交</h2>
+    <p class="tip">对应场景四（自制或外购，三层加码、临界点逐次右移）与场景六（三工艺方案，两个临界值）。勾选条件、拖动业务量，交点随之右移，结论当场翻面。</p>
+  </div>
+
+  <div class="grid">
+    <div>
+      <div class="box">
+        <h2 style="margin:0 0 8px;font-size:15px;color:var(--gd)">场景四 · 包装箱自制或外购（需求量 120,000 个）</h2>
+        <div class="prow"><label>业务量 Q<span class="u">（个）</span></label>
+          <div class="ctl"><input type="range" data-m="s4" data-p="Q" min="10000" max="200000" step="5000" value="120000"><input type="number" data-m="s4" data-p="Q" value="120000"></div></div>
+        <div class="prow"><label>外购单价<span class="u">（元／个）</span></label>
+          <div class="ctl"><input type="range" data-m="s4" data-p="po" min="0.9" max="1.6" step="0.05" value="1.20"><input type="number" data-m="s4" data-p="po" step="0.05" value="1.2"></div></div>
+        <div class="prow"><label>自制单位变动成本<span class="u">（元／个）</span></label>
+          <div class="ctl"><input type="range" data-m="s4" data-p="pv" min="0.5" max="1.1" step="0.05" value="0.80"><input type="number" data-m="s4" data-p="pv" step="0.05" value="0.8"></div></div>
+        <div class="chkline">
+          <label><input type="checkbox" data-m="s4" data-p="eq"> 加码①添置设备（专属 36,000 元）</label>
+          <label><input type="checkbox" data-m="s4" data-p="rent"> 加码②厂房可出租（机会成本 20,000 元）</label>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="box blue">
+        <table class="calc">
+          <tr><td class="k">自制相关总成本</td><td class="v" id="s4_mk"></td><td class="e" id="s4_mk_e"></td></tr>
+          <tr><td class="k">外购相关总成本</td><td class="v" id="s4_buy"></td><td class="e" id="s4_buy_e"></td></tr>
+          <tr class="hi"><td class="k">自制比外购</td><td class="v" id="s4_diff"></td><td class="e" id="s4_diff_e"></td></tr>
+          <tr><td class="k">临界业务量</td><td class="v" id="s4_be"></td><td class="e" id="s4_be_e"></td></tr>
+          <tr><td class="k">谈判底线（自制单价）</td><td class="v" id="s4_fl"></td><td class="e" id="s4_fl_e"></td></tr>
+        </table>
+        <div class="concl" id="s4_c"><div class="ct" id="s4_ct"></div><div class="cs" id="s4_cs"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chartbox" style="margin:12px 0"><svg class="chart" id="s4_svg" viewBox="0 0 900 300" preserveAspectRatio="xMidYMid meet"></svg></div>
+
+  <div class="grid">
+    <div>
+      <div class="box">
+        <h2 style="margin:0 0 8px;font-size:15px;color:var(--gd)">场景六 · 鲜穗脱水工艺方案（本期 300 吨）</h2>
+        <div class="prow"><label>业务量 q<span class="u">（吨，本期 300，可拖到 2,000 吨外推）</span></label>
+          <div class="ctl"><input type="range" data-m="s6" data-p="q" min="50" max="2000" step="50" value="300"><input type="number" data-m="s6" data-p="q" value="300"></div></div>
+        <table class="calc">
+          <tr><td class="k">甲 自然晾晒</td><td class="v">固定 20,000 元 ／ 单位变动 180 元</td></tr>
+          <tr><td class="k">乙 热风烘干</td><td class="v">固定 92,000 元 ／ 单位变动 60 元</td></tr>
+          <tr><td class="k">丙 冷冻干燥</td><td class="v">固定 146,000 元 ／ 单位变动 30 元</td></tr>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="box blue">
+        <table class="calc">
+          <tr><td class="k">甲方案相关总成本</td><td class="v" id="s6_a"></td><td class="e" id="s6_a_e"></td></tr>
+          <tr><td class="k">乙方案相关总成本</td><td class="v" id="s6_b"></td><td class="e" id="s6_b_e"></td></tr>
+          <tr><td class="k">丙方案相关总成本</td><td class="v" id="s6_c"></td><td class="e" id="s6_c_e"></td></tr>
+          <tr class="hi"><td class="k">本期最优</td><td class="v" id="s6_best"></td><td class="e" id="s6_best_e"></td></tr>
+          <tr><td class="k">甲／乙临界业务量</td><td class="v" id="s6_be1"></td><td class="e">（92,000−20,000）÷（180−60）</td></tr>
+          <tr><td class="k">丙／乙临界业务量</td><td class="v" id="s6_be2"></td><td class="e">（146,000−92,000）÷（60−30）</td></tr>
+        </table>
+        <div class="concl" id="s6_c"><div class="ct" id="s6_ct"></div><div class="cs" id="s6_cs"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chartbox" style="margin-top:12px"><svg class="chart" id="s6_svg" viewBox="0 0 900 300" preserveAspectRatio="xMidYMid meet"></svg></div>
+</section>
+
+</main>
+
+<div class="ft">第五章 经营决策 · 课堂交互台 v1.0 ｜ 只用于「要看数据变动」的环节：汇报后当场验算、变式改参验证翻转、临界值观测。方法讲授由任务单视频完成，流程与结论由演示文稿承载。</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------------- 工具 ---------------- */
+function fmt(n){
+  if(!isFinite(n)) return "—";
+  var neg = n < 0;
+  var s = Math.abs(n).toFixed(Math.abs(n) < 100 && Math.abs(n) % 1 !== 0 ? 2 : 0);
+  var parts = s.split(".");
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return (neg ? "−" : "") + parts.join(".");
+}
+function t(id, v){ var e = document.getElementById(id); if(e) e.textContent = v; }
+function money(n){ return fmt(n) + " 元"; }
+function num(n, u){ return fmt(n) + (u || ""); }
+function fmtQ(n){
+  if(!isFinite(n)) return "—";
+  var v = n.toFixed(1);
+  if(v.slice(-2) === ".0") v = v.slice(0, -2);
+  var parts = v.split(".");
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return parts.join(".");
+}
+function fmt2(n){
+  if(!isFinite(n)) return "—";
+  var s = Math.abs(n).toFixed(2);
+  var parts = s.split(".");
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return (n < 0 ? "−" : "") + parts.join(".");
+}
+function numQ(n, u){ return fmtQ(n) + (u || ""); }
+
+/* ---------------- 状态 ---------------- */
+var DEF = {
+  v1:{F:240000,Q:150},
+  v2:{q:60,sp:2900},
+  v3:{q:60},
+  s1:{P:8600,b:5800,F:240000,Q:150},
+  s2:{cm:600,Q:50,tcm:1200},
+  s3:{q:60,sp:2900,vc:2400,cap:300,nor:200,np:3600},
+  s5:{q:60,dp:5000,av:3400,ex:120000},
+  s4:{Q:120000,po:1.2,pv:0.8,eq:0,rent:0},
+  s6:{q:300}
+};
+var S = JSON.parse(JSON.stringify(DEF));
+
+/* ---------------- 计算 ---------------- */
+function calcCM(a){
+  var cm = a.P - a.b, tot = cm * a.Q, net = tot - a.F, be = cm > 0 ? a.F / cm : Infinity;
+  return {cm:cm, tot:tot, net:net, be:be, ok:net > 0};
+}
+function calcOrder(a){
+  var rest = Math.max(0, a.cap - a.nor);
+  var real = Math.min(a.q, rest);
+  var over = Math.max(0, a.q - rest);
+  var inc = a.vc * real;
+  var occ = a.np * over;
+  var cost = inc + occ, rev = a.sp * a.q, d = rev - cost;
+  return {rest:rest, real:real, over:over, inc:inc, occ:occ, cost:cost, rev:rev, d:d, be:a.q > 0 ? cost / a.q : 0, ok:d > 0};
+}
+function calcDeep(a){
+  var gap = a.dp - a.av;
+  var rev = a.dp * a.q, cost = a.av * a.q + a.ex, d = rev - cost;
+  return {rev:rev, cost:cost, d:d, be:gap > 0 ? a.ex / gap : Infinity, cap:gap * a.q, ok:d > 0};
+}
+function calcMake(a){
+  var F = (a.eq ? 36000 : 0) + (a.rent ? 20000 : 0);
+  var mk = F + a.pv * a.Q, buy = a.po * a.Q, gap = a.po - a.pv;
+  return {F:F, mk:mk, buy:buy, gap:gap, be:gap > 0 ? F / gap : 0, diff:buy - mk, floor:a.Q > 0 ? mk / a.Q : 0, ok:(buy - mk) > 0};
+}
+function calcProc(q){
+  var p = [{n:"甲 自然晾晒", f:20000, v:180, col:"#2e7d32"},
+           {n:"乙 热风烘干", f:92000, v:60,  col:"#1565c0"},
+           {n:"丙 冷冻干燥", f:146000, v:30, col:"#f9a825"}];
+  for(var i=0;i<p.length;i++) p[i].tc = p[i].f + p[i].v * q;
+  var min = p.slice().sort(function(a,b){return a.tc - b.tc;})[0];
+  return {p:p, min:min,
+    be1:(92000-20000)/(180-60),
+    be2:(146000-92000)/(60-30)};
+}
+
+/* ---------------- 结论渲染 ---------------- */
+function put(id, v, e){
+  t(id, v);
+  if(arguments.length > 2) t(id + "_e", e || "");
+}
+function setConcl(pre, r, txt){
+  var box = document.getElementById(pre + "_c");
+  var ct = document.getElementById(pre + "_ct");
+  var cs = document.getElementById(pre + "_cs");
+  if(!box) return;
+  ct.textContent = txt[r.ok ? 0 : 1];
+  cs.textContent = txt[2 + (r.ok ? 0 : 1)];
+  box.className = "concl" + (r.ok ? "" : " bad");
+}
+
+/* ---------------- 图形 ---------------- */
+function axis(box, o){
+  // o: {xmax, be, q, unit, okLeft}
+  var W=900, H=150, x0=60, x1=850, y=86;
+  var mx = o.xmax;
+  function X(v){ return x0 + (v / mx) * (x1 - x0); }
+  var s = '';
+  s += '<rect x="0" y="0" width="'+W+'" height="'+H+'" fill="#ffffff"/>';
+  // 区间底色
+  if(isFinite(o.be)){
+    s += '<rect x="'+X(o.be)+'" y="'+(y-24)+'" width="'+Math.max(0,x1-X(o.be))+'" height="26" fill="#e8f5e9"/>';
+    s += '<rect x="'+x0+'" y="'+(y-24)+'" width="'+Math.max(0,X(o.be)-x0)+'" height="26" fill="#fdecea"/>';
+    s += '<text x="'+(X(o.be)+ (X(o.be)>x1-90 ? -6 : 6))+'" y="'+(y-30)+'" font-size="13" fill="#c62828" text-anchor="'+(X(o.be)>x1-90?'end':'start')+'">临界 '+fmtQ(o.be)+' '+o.unit+'</text>';
+    s += '<line x1="'+X(o.be)+'" y1="'+(y-26)+'" x2="'+X(o.be)+'" y2="'+(y+16)+'" stroke="#c62828" stroke-width="2" stroke-dasharray="5 4"/>';
+  }
+  s += '<line x1="'+x0+'" y1="'+y+'" x2="'+x1+'" y2="'+y+'" stroke="#5f6b63" stroke-width="2"/>';
+  s += '<text x="'+x0+'" y="'+(y+34)+'" font-size="12" fill="#5f6b63" text-anchor="middle">0</text>';
+  s += '<text x="'+x1+'" y="'+(y+34)+'" font-size="12" fill="#5f6b63" text-anchor="middle">'+fmtQ(mx)+'</text>';
+  // 当前业务量
+  s += '<line x1="'+X(o.q)+'" y1="'+(y-40)+'" x2="'+X(o.q)+'" y2="'+y+'" stroke="#2e7d32" stroke-width="4"/>';
+  s += '<circle cx="'+X(o.q)+'" cy="'+y+'" r="6" fill="#2e7d32"/>';
+  s += '<text x="'+X(o.q)+'" y="'+(y-46)+'" font-size="13" font-weight="700" fill="#1b5e20" text-anchor="middle">本期 '+fmt(o.q)+' '+o.unit+'</text>';
+  s += '<text x="'+x0+'" y="24" font-size="13" fill="#263238">业务量轴：绿线为本期业务量，红线为临界值 —— 本期量落在临界值右侧才划算</text>';
+  box.innerHTML = s;
+}
+
+function bars(box, o){
+  var W=900, H=170, x0=150, x1=840;
+  var mx = Math.max(o.a, o.b, 1) * 1.12;
+  function L(v){ return Math.max(2, (v / mx) * (x1 - x0)); }
+  var s = '';
+  s += '<rect x="0" y="0" width="'+W+'" height="'+H+'" fill="#ffffff"/>';
+  s += '<text x="24" y="26" font-size="13" fill="#263238">相关收入与相关成本对比（差额＝差别损益）</text>';
+  s += '<text x="24" y="60" font-size="14" font-weight="700" fill="#1565c0">相关收入</text>';
+  s += '<rect x="'+x0+'" y="44" width="'+L(o.a)+'" height="26" rx="4" fill="#1565c0"/>';
+  s += '<text x="'+(x0+L(o.a)+8)+'" y="63" font-size="14" fill="#1565c0">'+money(o.a)+'</text>';
+  s += '<text x="24" y="106" font-size="14" font-weight="700" fill="#c62828">相关成本</text>';
+  s += '<rect x="'+x0+'" y="90" width="'+L(o.b)+'" height="26" rx="4" fill="#c62828"/>';
+  s += '<text x="'+(x0+L(o.b)+8)+'" y="109" font-size="14" fill="#c62828">'+money(o.b)+'</text>';
+  var d = o.a - o.b, col = d > 0 ? "#2e7d32" : "#c62828";
+  s += '<text x="24" y="152" font-size="15" font-weight="700" fill="'+col+'">差别损益 '+(d>0?"＋":"−")+money(Math.abs(d)).replace("−","")+'　'+(d>0?"（应当接受）":"（不应接受）")+'</text>';
+  box.innerHTML = s;
+}
+
+function lines(box, o){
+  // o: {xmax, ymax, ls:[{n,f,v,c}], vline, marks:[{x,c,label}], unit, yunit}
+  var W=900, H=300, x0=76, x1=856, y0=250, y1=34;
+  var mx = o.xmax, my = o.ymax;
+  function X(v){ return x0 + (v / mx) * (x1 - x0); }
+  function Y(v){ return y0 - (v / my) * (y0 - y1); }
+  var s = '';
+  s += '<rect x="0" y="0" width="'+W+'" height="'+H+'" fill="#ffffff"/>';
+  // 网格与刻度
+  for(var g=1; g<=4; g++){
+    var gv = my * g / 4, gy = Y(gv);
+    s += '<line x1="'+x0+'" y1="'+gy+'" x2="'+x1+'" y2="'+gy+'" stroke="#eef2ee" stroke-width="1"/>';
+    s += '<text x="'+(x0-8)+'" y="'+(gy+4)+'" font-size="11" fill="#5f6b63" text-anchor="end">'+fmt(gv)+'</text>';
+  }
+  for(var g2=0; g2<=4; g2++){
+    var gxv = mx * g2 / 4, gx = X(gxv);
+    s += '<text x="'+gx+'" y="'+(y0+20)+'" font-size="11" fill="#5f6b63" text-anchor="middle">'+fmt(gxv)+'</text>';
+  }
+  s += '<line x1="'+x0+'" y1="'+y0+'" x2="'+x1+'" y2="'+y0+'" stroke="#5f6b63" stroke-width="2"/>';
+  s += '<line x1="'+x0+'" y1="'+y0+'" x2="'+x0+'" y2="'+y1+'" stroke="#5f6b63" stroke-width="2"/>';
+  s += '<text x="'+x1+'" y="'+(y0+38)+'" font-size="12" fill="#5f6b63" text-anchor="end">业务量（'+o.unit+'）</text>';
+  s += '<text x="14" y="'+(y1-8)+'" font-size="12" fill="#5f6b63">相关总成本（'+o.yunit+'）</text>';
+  // 线
+  for(var i=0;i<o.ls.length;i++){
+    var L = o.ls[i];
+    var xa = X(0), ya = Y(L.f), xb = X(mx), yb = Y(L.f + L.v * mx);
+    s += '<line x1="'+xa+'" y1="'+ya+'" x2="'+xb+'" y2="'+yb+'" stroke="'+L.c+'" stroke-width="3"/>';
+    var ly = Math.max(y1+14, Math.min(y0-6, Y(L.f + L.v * mx * 0.62)));
+    s += '<text x="'+(X(mx*0.62)+8)+'" y="'+ly+'" font-size="13" font-weight="700" fill="'+L.c+'">'+L.n+'</text>';
+  }
+  // 交点
+  for(var j=0;j<o.marks.length;j++){
+    var m = o.marks[j];
+    s += '<line x1="'+X(m.x)+'" y1="'+y1+'" x2="'+X(m.x)+'" y2="'+y0+'" stroke="'+m.c+'" stroke-width="2" stroke-dasharray="5 4"/>';
+    s += '<circle cx="'+X(m.x)+'" cy="'+Y(m.y)+'" r="5" fill="'+m.c+'"/>';
+    s += '<text x="'+(X(m.x)+6)+'" y="'+(y1+16)+'" font-size="12" fill="'+m.c+'">'+m.label+'</text>';
+  }
+  // 当前业务量
+  s += '<line x1="'+X(o.vline)+'" y1="'+y1+'" x2="'+X(o.vline)+'" y2="'+y0+'" stroke="#263238" stroke-width="2"/>';
+  s += '<text x="'+(X(o.vline)+6)+'" y="'+(y1+34)+'" font-size="12" fill="#263238">本期 '+fmt(o.vline)+'</text>';
+  box.innerHTML = s;
+}
+
+/* ---------------- 辨识器题库 ---------------- */
+var QS = [
+  {d:"已购专用设备的折旧（设备无残值、无其他用途）", a:false, w:"沉没成本：已经发生、不受今日选择控制，划掉。", r:"口诀：两方案都要发生的，不相关。"},
+  {d:"接受追加订货所发生的变动生产成本", a:true, w:"真正的增量成本，随方案发生而变动。", r:"它是差别成本的主体。"},
+  {d:"闲置厂房若自用则放弃的月租金收入 20,000 元", a:true, w:"机会成本：不入账但必须进表，按放弃的收益计。", r:"口诀：不入账的也要进表。"},
+  {d:"因突破产能而被挤占的正常销售（按正常售价计）", a:true, w:"机会成本 ＝ 正常售价 × 不足产能。", r:"注意不是按单位贡献边际计。"},
+  {d:"已摊入存货的固定制造费用（每吨 700 元）", a:false, w:"已经摊过，属沉没成本；再看一遍会重复计算。", r:"会计口径亏、决策口径不亏，根源就在这里。"},
+  {d:"为新方案专门添置设备而增加的折旧", a:true, w:"专属固定成本，随方案发生。", r:"专属成本是相关成本。"},
+  {d:"不因方案选择而改变的共用固定成本 60,000 元", a:false, w:"共同成本：两方案都要发生，属无差别成本。", r:"停产会把它们转嫁给别的产品，总额不变。"},
+  {d:"深加工方案追加的变动加工成本（每吨 3,400 元）", a:true, w:"随方案发生的增量变动成本。", r:"计入差别成本。"},
+  {d:"已签订且不可撤销的材料采购合同款", a:false, w:"无论选哪个方案都要付，属无差别成本。", r:"除非撤销合同能省下款项，否则不相关。"},
+  {d:"由外购改为自制后节省下来的那部分变动成本", a:true, w:"自制方案的反向收益，属于相关成本（负项）。", r:"列在自制一侧的减项。"}
+];
+var picked = {};
+function renderQuiz(){
+  var box = document.getElementById("q_list");
+  var s = '', done = 0, right = 0;
+  for(var i=0;i<QS.length;i++){
+    var q = QS[i], p = picked[i];
+    if(p === true || p === false){ done++; if(p === q.a) right++; }
+    var cls = (p === undefined) ? "q" : (p === q.a ? "q ok" : "q no");
+    s += '<div class="'+cls+'">';
+    s += '<div class="qn">第 '+(i+1)+' 项</div>';
+    s += '<div class="qd">'+q.d+'</div>';
+    s += '<div class="opts">';
+    s += '<button data-qi="'+i+'" data-qv="1" class="'+(p===true?"sel":"")+'">相关（计入）</button>';
+    s += '<button data-qi="'+i+'" data-qv="0" class="'+(p===false?"sel":"")+'">无关（划掉）</button>';
+    s += '</div>';
+    if(p !== undefined){
+      s += '<div class="fb"><b>'+(p===q.a?"判定正确":"判定有误")+'</b>　'+q.w+'<br>'+q.r+'</div>';
+    }
+    s += '</div>';
+  }
+  box.innerHTML = s;
+  t("q_score", "已判定 " + done + " / 10 ｜ 正确 " + right);
+}
+
+/* ---------------- 渲染 ---------------- */
+function render(){
+  // 变式一
+  var v1 = calcCM({P:8600, b:5800, F:S.v1.F, Q:S.v1.Q});
+  put("v1_tot", money(v1.tot), "2,800 × " + S.v1.Q);
+  put("v1_net", money(v1.net), fmt(v1.tot) + " − " + fmt(S.v1.F));
+  put("v1_be", numQ(v1.be, " 吨"), fmt(S.v1.F) + " ÷ 2,800");
+  setConcl("v1", v1, ["应当投产玉米罐头", "本期不投产",
+    "贡献边际总额 " + money(v1.tot) + " 能够覆盖专属固定成本 " + money(S.v1.F) + "，净增利润 " + money(v1.net) + "。",
+    "临界产量 " + fmt(v1.be) + " 吨已高于拟投产 " + S.v1.Q + " 吨，净增利润 " + money(v1.net) + "，投产即亏。"]);
+  t("v1_f", "翻转对照：F ＝ 240,000 时临界 85.7 吨、净增 ＋180,000 元（应当投产）；F ＝ 450,000 时临界 160.7 吨、净增 −30,000 元（本期不投产）。当前 F ＝ " + fmt(S.v1.F) + " 元，临界 " + fmtQ(v1.be) + " 吨。");
+
+  // 变式二
+  var v2 = calcOrder({q:S.v2.q, sp:S.v2.sp, vc:2400, cap:300, nor:200, np:3600});
+  put("v2_real", num(v2.real, " 吨"), "min(" + S.v2.q + ", 100)");
+  put("v2_over", num(v2.over, " 吨"), "max(0, " + S.v2.q + " − 100)");
+  put("v2_inc", money(v2.inc), "2,400 × " + v2.real);
+  put("v2_occ", money(v2.occ), "3,600 × " + v2.over);
+  put("v2_cost", money(v2.cost), fmt(v2.inc) + " ＋ " + fmt(v2.occ));
+  put("v2_rev", money(v2.rev), S.v2.sp + " × " + S.v2.q);
+  put("v2_d", (v2.d>0?"＋":"−") + money(Math.abs(v2.d)), fmt(v2.rev) + " − " + fmt(v2.cost));
+  put("v2_be", num(v2.be, " 元／吨"), fmt(v2.cost) + " ÷ " + S.v2.q);
+  setConcl("v2", v2, ["应当接受这笔低价追加订货", "不应接受",
+    "相关收入 " + money(v2.rev) + " 大于相关成本 " + money(v2.cost) + "，差别损益 " + money(v2.d) + "，保本报价 " + fmt(v2.be) + " 元／吨。",
+    "差别损益 " + money(v2.d) + "，低于保本报价 " + fmt(v2.be) + " 元／吨即亏，不应接受。"]);
+  t("v2_f", "翻转对照：q ＝ 60 吨时不挤占产能，保本报价 2,400 元／吨、差别损益 ＋30,000 元；q ＝ 130 吨时挤占 30 吨，机会成本 108,000 元进场，保本报价升至 2,677 元／吨、差别损益 ＋29,000 元。当前 q ＝ " + S.v2.q + " 吨。");
+
+  // 变式三
+  var v3 = calcDeep({q:S.v3.q, dp:5000, av:3400, ex:120000});
+  put("v3_rev", money(v3.rev), "5,000 × " + S.v3.q);
+  put("v3_cost", money(v3.cost), "3,400 × " + S.v3.q + " ＋ 120,000");
+  put("v3_d", (v3.d>0?"＋":"−") + money(Math.abs(v3.d)), fmt(v3.rev) + " − " + fmt(v3.cost));
+  put("v3_be", numQ(v3.be, " 吨"), "120,000 ÷ 1,600");
+  put("v3_cap", money(v3.cap), "1,600 × " + S.v3.q);
+  setConcl("v3", v3, ["应当深加工", "本期直接出售",
+    "投料 " + S.v3.q + " 吨已越过临界 75 吨，差别损益 " + money(v3.d) + "，深加工更划算。",
+    "投料 " + S.v3.q + " 吨未达临界 75 吨，差别损益 " + money(v3.d) + "，直接出售更划算。"]);
+  t("v3_f", "翻转对照：q ＝ 60 吨时差别损益 −24,000 元（直接出售）；q ＝ 100 吨时差别损益 ＋40,000 元（应当深加工）。临界产量 75 吨就是那道分界线。当前 q ＝ " + S.v3.q + " 吨。");
+
+  // 场景一
+  var s1 = calcCM(S.s1);
+  put("s1_cm", money(s1.cm), fmt(S.s1.P) + " − " + fmt(S.s1.b));
+  put("s1_tot", money(s1.tot), fmt(s1.cm) + " × " + S.s1.Q);
+  put("s1_net", money(s1.net), fmt(s1.tot) + " − " + fmt(S.s1.F));
+  put("s1_be", numQ(s1.be, " 吨"), fmt(S.s1.F) + " ÷ " + fmt(s1.cm));
+  setConcl("s1", s1, ["应当投产玉米罐头", "本期不投产",
+    "存在剩余产能，贡献边际总额能够覆盖专属固定成本，净增利润 " + money(s1.net) + "，临界产量 " + fmtQ(s1.be) + " 吨。",
+    "临界产量 " + fmtQ(s1.be) + " 吨高于拟投产 " + S.s1.Q + " 吨，净增利润 " + money(s1.net) + "，不宜投产。"]);
+  axis(document.getElementById("s1_svg"), {
+    xmax: Math.max(s1.be * 1.35, S.s1.Q * 1.35, 20), be: s1.be, q: S.s1.Q, unit: "吨"
+  });
+
+  // 场景二
+  var cm2 = S.s2.cm * S.s2.Q;
+  var be2 = S.s2.tcm > 0 ? cm2 / S.s2.tcm : Infinity;
+  put("s2_cm", money(cm2), S.s2.cm + " × " + S.s2.Q);
+  put("s2_d", "下降 " + money(cm2), "停产后贡献边际消失，共同固定成本转由其他产品承担");
+  put("s2_be", numQ(be2, " 吨"), fmt(cm2) + " ÷ " + S.s2.tcm);
+  var ok2 = true;
+  var box2 = document.getElementById("s2_c");
+  document.getElementById("s2_ct").textContent = "不应停产";
+  document.getElementById("s2_cs").textContent = "产品贡献边际 " + money(cm2) + " 为正；停产后总利润反而下降 " + money(cm2) + "。除非转产产品年贡献边际超过 " + fmt(cm2) + " 元（按单位贡献边际 " + S.s2.tcm + " 元／吨计，需超过 " + fmtQ(be2) + " 吨），否则不停产。";
+  box2.className = "concl";
+
+  // 场景三
+  var s3 = calcOrder(S.s3);
+  put("s3_real", s3.rest + " ／ " + s3.real + " 吨", "剩余产能 ＝ " + S.s3.cap + " − " + S.s3.nor);
+  put("s3_over", num(s3.over, " 吨"), "max(0, " + S.s3.q + " − " + s3.rest + ")");
+  put("s3_inc", money(s3.inc), S.s3.vc + " × " + s3.real);
+  put("s3_occ", money(s3.occ), S.s3.np + " × " + s3.over);
+  put("s3_rev", money(s3.rev), S.s3.sp + " × " + S.s3.q);
+  put("s3_d", (s3.d>0?"＋":"−") + money(Math.abs(s3.d)), fmt(s3.rev) + " − " + fmt(s3.cost));
+  put("s3_be", num(s3.be, " 元／吨"), fmt(s3.cost) + " ÷ " + S.s3.q);
+  setConcl("s3", s3, ["应当接受这笔追加订货", "不应接受",
+    "相关收入 " + money(s3.rev) + "、相关成本 " + money(s3.cost) + "，差别损益 " + money(s3.d) + "；保本报价 " + fmt(s3.be) + " 元／吨。",
+    "差别损益 " + money(s3.d) + "，低于保本报价 " + fmt(s3.be) + " 元／吨即亏。"]);
+  bars(document.getElementById("s3_svg"), {a:s3.rev, b:s3.cost});
+
+  // 场景五
+  var s5 = calcDeep(S.s5);
+  put("s5_rev", money(s5.rev), S.s5.dp + " × " + S.s5.q);
+  put("s5_cost", money(s5.cost), S.s5.av + " × " + S.s5.q + " ＋ " + fmt(S.s5.ex));
+  put("s5_d", (s5.d>0?"＋":"−") + money(Math.abs(s5.d)), fmt(s5.rev) + " − " + fmt(s5.cost));
+  put("s5_be", numQ(s5.be, " 吨"), fmt(S.s5.ex) + " ÷ " + fmt(S.s5.dp - S.s5.av));
+  put("s5_cap", money(s5.cap), fmt(S.s5.dp - S.s5.av) + " × " + S.s5.q);
+  setConcl("s5", s5, ["应当深加工", "本期直接出售",
+    "投料 " + S.s5.q + " 吨越过临界 " + fmtQ(s5.be) + " 吨，差别损益 " + money(s5.d) + "。",
+    "投料 " + S.s5.q + " 吨未达临界 " + fmtQ(s5.be) + " 吨，差别损益 " + money(s5.d) + "。"]);
+
+  // 场景四
+  var s4 = calcMake(S.s4);
+  put("s4_mk", money(s4.mk), (s4.F ? fmt(s4.F) + " ＋ " : "") + fmt2(S.s4.pv) + " × " + fmt(S.s4.Q));
+  put("s4_buy", money(s4.buy), fmt2(S.s4.po) + " × " + fmt(S.s4.Q));
+  put("s4_diff", (s4.diff>0?"省 ":"多 ") + money(Math.abs(s4.diff)), fmt(s4.buy) + " − " + fmt(s4.mk));
+  put("s4_be", num(s4.be, " 个"), s4.gap > 0 ? fmt(s4.F) + " ÷ " + fmt(s4.gap) : "单位差额 ≤ 0，无条件自制");
+  put("s4_fl", fmt2(s4.floor) + " 元／个", fmt(s4.mk) + " ÷ " + S.s4.Q);
+  setConcl("s4", s4, ["应当自制", "应当外购",
+    "自制相关总成本 " + money(s4.mk) + " 低于外购 " + money(s4.buy) + "，自制省 " + money(s4.diff) + "；谈判底线 " + fmt2(s4.floor) + " 元／个。",
+    "自制相关总成本 " + money(s4.mk) + " 高于外购 " + money(s4.buy) + "，外购省 " + money(-s4.diff) + "；谈判底线 " + fmt2(s4.floor) + " 元／个。"]);
+  var ymax4 = Math.max(s4.buy, s4.mk, s4.F + S.s4.pv * 200000, S.s4.po * 200000) * 1.08;
+  var marks4 = [];
+  if(s4.F > 0 && s4.gap > 0 && s4.be <= 200000){
+    marks4.push({x:s4.be, y:s4.F + S.s4.pv * s4.be, c:"#c62828", label:"临界 " + fmt(s4.be) + " 个"});
+  }
+  lines(document.getElementById("s4_svg"), {
+    xmax:200000, ymax:ymax4, unit:"个", yunit:"元", vline:S.s4.Q, marks:marks4,
+    ls:[{n:"外购", f:0, v:S.s4.po, c:"#c62828"}, {n:"自制", f:s4.F, v:S.s4.pv, c:"#2e7d32"}]
+  });
+
+  // 场景六
+  var s6 = calcProc(S.s6.q);
+  put("s6_a", money(s6.p[0].tc), "20,000 ＋ 180 × " + S.s6.q);
+  put("s6_b", money(s6.p[1].tc), "92,000 ＋ 60 × " + S.s6.q);
+  put("s6_c", money(s6.p[2].tc), "146,000 ＋ 30 × " + S.s6.q);
+  put("s6_best", s6.min.n + "　" + money(s6.min.tc), "逐方案比较相关总成本，取其低者");
+  put("s6_be1", num(s6.be1, " 吨"));
+  put("s6_be2", num(s6.be2, " 吨"));
+  var cs6 = document.getElementById("s6_cs");
+  document.getElementById("s6_ct").textContent = "本期选 " + s6.min.n;
+  cs6.textContent = "业务量 " + S.s6.q + " 吨处，三方案相关总成本分别为 " + money(s6.p[0].tc) + "、" + money(s6.p[1].tc) + "、" + money(s6.p[2].tc) + "。业务量越过 " + fmt(s6.be1) + " 吨即由甲改选乙，越过 " + fmt(s6.be2) + " 吨再由乙改选丙；丙单位变动成本最低却最贵，因其临界量远超本期上限。";
+  document.getElementById("s6_c").className = "concl";
+  var ymax6 = Math.max(20000 + 180 * 2000, 92000 + 60 * 2000, 146000 + 30 * 2000) * 1.05;
+  lines(document.getElementById("s6_svg"), {
+    xmax:2000, ymax:ymax6, unit:"吨", yunit:"元", vline:S.s6.q,
+    marks:[{x:s6.be1, y:20000 + 180 * s6.be1, c:"#c62828", label:"甲／乙临界 " + fmt(s6.be1) + " 吨"},
+           {x:s6.be2, y:92000 + 60 * s6.be2, c:"#f9a825", label:"丙／乙临界 " + fmt(s6.be2) + " 吨"}],
+    ls:[{n:"甲 自然晾晒", f:20000, v:180, c:"#2e7d32"},
+        {n:"乙 热风烘干", f:92000, v:60, c:"#1565c0"},
+        {n:"丙 冷冻干燥", f:146000, v:30, c:"#f9a825"}]
+  });
+}
+
+/* ---------------- 绑定 ---------------- */
+document.addEventListener("input", function(ev){
+  var el = ev.target;
+  if(el.dataset && el.dataset.m && el.dataset.p){
+    var m = el.dataset.m, p = el.dataset.p, v;
+    if(el.type === "checkbox") v = el.checked ? 1 : 0;
+    else v = parseFloat(el.value);
+    if(isNaN(v)) return;
+    S[m][p] = v;
+    // 同步同参数的另一个控件
+    var peers = document.querySelectorAll('[data-m="' + m + '"][data-p="' + p + '"]');
+    for(var i=0;i<peers.length;i++){
+      if(peers[i] !== el){
+        if(peers[i].type === "checkbox") peers[i].checked = !!v;
+        else if(document.activeElement !== peers[i]) peers[i].value = v;
+      }
+    }
+    render();
+  }
+});
+
+document.addEventListener("click", function(ev){
+  var b = ev.target;
+  if(!b || b.tagName !== "BUTTON") return;
+  if(b.dataset && b.dataset.m){
+    var i = b.dataset.m;
+    var tabs = document.querySelectorAll(".nav button");
+    for(var k=0;k<tabs.length;k++) tabs[k].classList.remove("active");
+    b.classList.add("active");
+    var mods = document.querySelectorAll(".mod");
+    for(var j=0;j<mods.length;j++) mods[j].classList.remove("on");
+    document.getElementById("m" + i).classList.add("on");
+    return;
+  }
+  if(b.dataset && b.dataset.qi !== undefined){
+    picked[b.dataset.qi] = (b.dataset.qv === "1");
+    renderQuiz();
+    return;
+  }
+  if(b.id === "q_reset"){ picked = {}; renderQuiz(); return; }
+  if(b.id === "btnReset"){ S = JSON.parse(JSON.stringify(DEF)); syncAll(); render(); return; }
+});
+
+document.getElementById("guessMode").addEventListener("change", function(){
+  document.body.classList.toggle("guess", this.checked);
+});
+
+function syncAll(){
+  var els = document.querySelectorAll("[data-m][data-p]");
+  for(var i=0;i<els.length;i++){
+    var el = els[i], m = el.dataset.m, p = el.dataset.p;
+    if(!(m in S) || !(p in S[m])) continue;
+    if(el.type === "checkbox") el.checked = !!S[m][p];
+    else el.value = S[m][p];
+  }
+}
+
+renderQuiz();
+render();
+})();
+</script>
+</body>
+</html>

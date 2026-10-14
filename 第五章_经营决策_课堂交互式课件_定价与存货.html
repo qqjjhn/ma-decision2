@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第五章 经营决策·定价与存货｜课堂交互式课件</title>
+<style>
+  :root{
+    --green:#2e7d32; --green-dark:#1b5e20; --green-bg:#e8f5e9;
+    --blue:#002060; --red:#b00000; --brown:#964600; --gold:#c9881a;
+    --line:#9ccc9e; --ink:#1f2d22; --muted:#5a6b5e;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB",sans-serif;
+    background:var(--green-bg); color:var(--ink); line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  svg{display:block;}
+  .chartbox svg.chart{width:100%;height:auto;display:block;}
+  header.top{
+    background:linear-gradient(135deg,var(--green) 0%,var(--green-dark) 100%);
+    color:#fff; padding:18px 22px;
+  }
+  header.top h1{margin:0; font-size:22px; letter-spacing:1px;}
+  header.top .sub{margin-top:6px; font-size:13px; opacity:.92;}
+  header.top .themes{margin-top:8px; font-size:12.5px; opacity:.95;}
+  header.top .themes span{display:inline-block; background:rgba(255,255,255,.16);
+    padding:2px 10px; border-radius:20px; margin-right:8px;}
+  .wrap{max-width:1120px; margin:0 auto; padding:14px 16px 40px;}
+  nav.tabs{display:flex; flex-wrap:wrap; gap:6px; margin:14px 0 6px;}
+  nav.tabs button{
+    font-family:inherit; font-size:14px; cursor:pointer; border:1px solid var(--green);
+    background:#fff; color:var(--green-dark); padding:8px 14px; border-radius:8px;
+    transition:.15s;
+  }
+  nav.tabs button:hover{background:var(--green-bg);}
+  nav.tabs button.active{background:var(--green); color:#fff; border-color:var(--green);}
+  section.panel{display:none; background:#fff; border:1px solid var(--line);
+    border-radius:12px; padding:18px 20px; margin-top:10px; box-shadow:0 2px 10px rgba(46,125,50,.07);}
+  section.panel.show{display:block;}
+  .phead{border-left:5px solid var(--green); padding-left:12px; margin-bottom:6px;}
+  .phead h2{margin:0; color:var(--green-dark); font-size:19px;}
+  .phead .tag{font-size:12.5px; color:var(--muted); margin-top:2px;}
+  .desc{font-size:13.5px; color:var(--muted); margin:8px 0 14px;}
+  .em{ /* 强调框：2px solid + 圆角10px + 内边距14-16px */
+    border:2px solid var(--green); border-radius:10px; padding:15px 16px;
+    background:#f3fbf4; margin:12px 0; font-size:13.5px;
+  }
+  .em.blue{border-color:var(--blue); background:#f2f5fc;}
+  .em.gold{border-color:var(--gold); background:#fdf6e9;}
+  .layout{display:grid; grid-template-columns:340px 1fr; gap:18px; align-items:start;}
+  @media(max-width:820px){ .layout{grid-template-columns:1fr;} }
+  .controls{background:var(--green-bg); border:1px solid var(--line);
+    border-radius:10px; padding:14px 14px;}
+  .ctrl{margin-bottom:14px;}
+  .ctrl label{display:block; font-size:13px; color:var(--green-dark); font-weight:600; margin-bottom:4px;}
+  .ctrl .row{display:flex; align-items:center; gap:8px;}
+  .ctrl input[type=range]{flex:1; accent-color:var(--green);}
+  .ctrl output{font-size:13px; color:var(--red); font-weight:700; min-width:64px; text-align:right;}
+  .ctrl input[type=number]{width:100%; padding:6px 8px; border:1px solid var(--line);
+    border-radius:6px; font-family:inherit; font-size:14px;}
+  .chartbox{background:#fff; border:1px solid var(--line); border-radius:10px; padding:8px;}
+  .results{margin-top:12px;}
+  table.kv{width:100%; border-collapse:collapse; font-size:13px; margin-top:8px;}
+  table.kv th,table.kv td{border:1px solid var(--line); padding:6px 8px; text-align:left;}
+  table.kv th{background:var(--green-bg); color:var(--green-dark); font-weight:700;}
+  table.kv td.num{text-align:right; font-variant-numeric:tabular-nums;}
+  .big{font-size:16px; font-weight:800;}
+  .c-green{color:var(--green);} .c-blue{color:var(--blue);} .c-red{color:var(--red);}
+  .c-brown{color:var(--brown);} .c-gold{color:var(--gold);}
+  .check{margin-top:14px; border-top:1px dashed var(--line); padding-top:12px;}
+  .check label{font-size:13px; color:var(--green-dark); font-weight:600; display:block; margin-bottom:6px;}
+  .check .row{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+  .check input[type=number]{width:160px; padding:6px 8px; border:1px solid var(--line); border-radius:6px; font-family:inherit;}
+  .check button{font-family:inherit; cursor:pointer; border:none; background:var(--green);
+    color:#fff; padding:7px 16px; border-radius:7px; font-size:13px;}
+  .check button:hover{background:var(--green-dark);}
+  .ok{color:var(--green); font-weight:800;} .bad{color:var(--red); font-weight:800;}
+  /* module 4 subtabs */
+  .subtabs{display:flex; gap:6px; margin:8px 0 14px; flex-wrap:wrap;}
+  .subtabs button{font-family:inherit; font-size:13.5px; cursor:pointer; border:1px solid var(--green);
+    background:#fff; color:var(--green-dark); padding:6px 12px; border-radius:7px;}
+  .subtabs button.active{background:var(--green); color:#fff;}
+  .subpanel{display:none;} .subpanel.show{display:block;}
+  details.help{background:#fff; border:1px solid var(--line); border-radius:10px; padding:6px 14px; margin-top:10px;}
+  details.help summary{cursor:pointer; color:var(--green-dark); font-weight:700; font-size:14px; padding:8px 0;}
+  details.help ul{margin:6px 0; padding-left:20px; font-size:13px; color:var(--ink);}
+  details.help li{margin:4px 0;}
+  footer.ft{text-align:center; font-size:12px; color:var(--muted); margin-top:24px;}
+  .card5{margin-top:14px; border:2px solid var(--brown); border-radius:10px; padding:15px 16px; background:#fdfaf3;}
+  .card5 h3{margin:.1em 0 .6em; color:var(--brown); font-size:16px;}
+  .card5 .field{margin-bottom:10px;}
+  .card5 .field label{display:block; font-weight:700; font-size:13px; color:var(--brown); margin-bottom:3px;}
+  .card5 textarea,.card5 input{width:100%; padding:7px 9px; border:1px solid var(--line); border-radius:7px;
+    font-family:inherit; font-size:13.5px; resize:vertical;}
+  .card5 .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  @media(max-width:680px){.card5 .grid2{grid-template-columns:1fr;}}
+  .card5 button{font-family:inherit; cursor:pointer; border:none; background:var(--brown); color:#fff;
+    padding:7px 16px; border-radius:7px; font-size:13px; margin-top:4px;}
+  details.example{margin-top:8px; font-size:13px; color:var(--muted);}
+  details.example summary{cursor:pointer; color:var(--brown);}
+  .scn{display:inline-block; font-size:12px; padding:2px 8px; border-radius:6px; background:var(--green-bg);
+    color:var(--green-dark); border:1px solid var(--line); margin-right:6px; cursor:pointer;}
+  .note{font-size:12px; color:var(--muted); margin-top:8px;}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>第五章　经营决策 · 定价与存货｜课堂交互式课件</h1>
+  <div class="sub">金穗农业合作社（教学虚构）· 单文件网页 · 无需安装与联网 · 教师端课堂投屏</div>
+  <div class="themes">
+    <span>第一课时：定价决策——成本底线与市场信号（45分钟）</span>
+    <span>第二课时：存货决策——订货批量与储存的权衡（45分钟）</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="tabs" id="tabs">
+    <button data-t="m1" class="active">模块一　定价三视角演示台</button>
+    <button data-t="m2">模块二　需求曲线与最优定价</button>
+    <button data-t="m3">模块三　存货两线权衡图</button>
+    <button data-t="m4">模块四　扩展对照台</button>
+    <button data-t="card">经营决策卡出口</button>
+    <button data-t="help">使用说明</button>
+  </nav>
+
+  <!-- ===================== 模块一 ===================== -->
+  <section class="panel show" id="m1">
+    <div class="phead"><h2>模块一　定价三视角演示台</h2>
+      <div class="tag">第一课时 · 环节二讲两口径、环节三演练后验算｜输入成本与加成率，实时看两条路径同达一价</div></div>
+    <div class="desc">同一组鲜穗数据，分别走「完全成本加成」与「变动成本加成」两条路径。拖动滑块改参，看两条路径如何各自算出目标售价、两个加成率，并最终汇于同一价格。</div>
+    <div class="em blue"><b>用法提示：</b>教师讲「20% 与 55% 为何都等于 3,720」时，拖动「目标加成率」看两口径如何联动；学生演练后用下方「演练验算」当场核对。</div>
+    <div class="layout">
+      <div class="controls">
+        <div class="ctrl"><label>单位变动成本 v（元/吨）</label>
+          <div class="row"><input type="range" id="m1_v" min="1000" max="4000" step="50" value="2400">
+            <output id="m1_v_out">2400</output></div></div>
+        <div class="ctrl"><label>月固定成本总额 F（元）</label>
+          <div class="row"><input type="range" id="m1_F" min="0" max="400000" step="10000" value="210000">
+            <output id="m1_F_out">210000</output></div></div>
+        <div class="ctrl"><label>月产能（吨）</label>
+          <div class="row"><input type="range" id="m1_cap" min="100" max="500" step="10" value="300">
+            <output id="m1_cap_out">300</output></div></div>
+        <div class="ctrl"><label>目标加成率（完全成本口径）r</label>
+          <div class="row"><input type="range" id="m1_r" min="0" max="50" step="1" value="20">
+            <output id="m1_r_out">20%</output></div></div>
+      </div>
+      <div>
+        <div class="chartbox"><svg class="chart" id="m1_chart" viewBox="0 0 640 320"></svg></div>
+        <div class="results">
+          <table class="kv">
+            <tr><th>项目</th><th>完全成本加成法</th><th>变动成本加成法</th></tr>
+            <tr><td>成本基数（元/吨）</td><td class="num" id="m1_fc">—</td><td class="num" id="m1_vbase">—</td></tr>
+            <tr><td>加成率</td><td class="num" id="m1_rfull">—</td><td class="num" id="m1_rvar">—</td></tr>
+            <tr><td>目标售价（元/吨）</td><td class="num big c-green" id="m1_pfull">—</td><td class="num big c-green" id="m1_pvar">—</td></tr>
+          </table>
+          <div class="em" id="m1_eq">—</div>
+          <div class="check">
+            <label>演练验算：输入学生纸笔算出的「目标售价」（元/吨）</label>
+            <div class="row">
+              <input type="number" id="m1_check" placeholder="例如 3720">
+              <button id="m1_check_btn">核对</button>
+              <span id="m1_check_res"></span>
+            </div>
+            <div class="note">容差 ±0.5%；工具只核对、不替代计算。正确值随上方参数联动。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 模块二 ===================== -->
+  <section class="panel" id="m2">
+    <div class="phead"><h2>模块二　需求曲线与最优定价</h2>
+      <div class="tag">第一课时 · 环节四讲最优定价、环节六讨论第二问｜拖动截距与斜率，实时看 MR=MC 最优点</div></div>
+    <div class="desc">由需求函数 <b>P＝a−bQ</b> 写出收入与边际收入，令边际收入等于单位变动成本（边际成本），解出最优业务量与最优价格。拖动 a、b 看最优价如何随需求移动而变。</div>
+    <div class="em">需求函数为教学拟合（详见教学设计附录 FAQ），真实企业须由市场调研、历史销售数据与回归分析得到。本课件只保证「价升量降」方向真实。</div>
+    <div class="layout">
+      <div class="controls">
+        <div class="ctrl"><label>需求截距 a（元/吨）</label>
+          <div class="row"><input type="range" id="m2_a" min="4000" max="7000" step="50" value="5600">
+            <output id="m2_a_out">5600</output></div></div>
+        <div class="ctrl"><label>需求斜率 b（元/吨·吨）</label>
+          <div class="row"><input type="range" id="m2_b" min="2" max="16" step="0.5" value="8">
+            <output id="m2_b_out">8</output></div></div>
+        <div class="ctrl"><label>单位变动成本（边际成本）v（元/吨）</label>
+          <div class="row"><input type="range" id="m2_v" min="1000" max="4000" step="50" value="2400">
+            <output id="m2_v_out">2400</output></div></div>
+      </div>
+      <div>
+        <div class="chartbox"><svg class="chart" id="m2_chart" viewBox="0 0 640 380"></svg></div>
+        <div class="results">
+          <table class="kv">
+            <tr><th>项目</th><th class="num">数值</th></tr>
+            <tr><td>收入函数 R＝aQ−bQ²</td><td class="num" id="m2_r">—</td></tr>
+            <tr><td>边际收入 MR＝a−2bQ</td><td class="num" id="m2_mr">—</td></tr>
+            <tr><td>最优业务量 Q*＝(a−v)/(2b)</td><td class="num big c-green" id="m2_q">—</td></tr>
+            <tr><td>最优价格 P*＝a−bQ*</td><td class="num big c-green" id="m2_p">—</td></tr>
+            <tr><td>现行价 3,600 对应销量 Qc</td><td class="num" id="m2_qc">—</td></tr>
+          </table>
+          <div class="em" id="m2_warn">—</div>
+          <div class="check">
+            <label>演练验算：输入学生算出的「最优价格 P*」（元/吨）</label>
+            <div class="row">
+              <input type="number" id="m2_check" placeholder="例如 4000">
+              <button id="m2_check_btn">核对</button>
+              <span id="m2_check_res"></span>
+            </div>
+            <div class="note">容差 ±0.5%。讨论「需求曲线整体下移，最优价怎么变」时，可拖动 a 或 b 现场演示方向。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 模块三 ===================== -->
+  <section class="panel" id="m3">
+    <div class="phead"><h2>模块三　存货两线权衡图</h2>
+      <div class="tag">第二课时 · 环节二讲 EOQ、环节三演练后自检｜拖动批量滑块，看订货与储存两线此消彼长</div></div>
+    <div class="desc">全年需要量 D、每次订货成本 K、单位年储存成本 KC 固定。拖动订货批量 Q，看<b>订货成本</b>随批量增大而下降、<b>储存成本</b>随批量增大而上升，两线交点即经济订货批量 Q*。</div>
+    <div class="em blue"><b>用法提示：</b>讲「两条线找交点」时左右拖动 Q；交点处两类成本相等（均为 3,000 元），总成本最低。</div>
+    <div class="layout">
+      <div class="controls">
+        <div class="ctrl"><label>全年需要量 D（件）</label>
+          <div class="row"><input type="range" id="m3_D" min="12000" max="60000" step="1000" value="36000">
+            <output id="m3_D_out">36000</output></div></div>
+        <div class="ctrl"><label>每次订货成本 K（元/次）</label>
+          <div class="row"><input type="range" id="m3_K" min="20" max="300" step="10" value="100">
+            <output id="m3_K_out">100</output></div></div>
+        <div class="ctrl"><label>单位年储存成本 KC（元/件·年）</label>
+          <div class="row"><input type="range" id="m3_KC" min="1" max="12" step="0.5" value="5">
+            <output id="m3_KC_out">5</output></div></div>
+        <div class="ctrl"><label>当前订货批量 Q（件）</label>
+          <div class="row"><input type="range" id="m3_Q" min="200" max="3000" step="50" value="1200">
+            <output id="m3_Q_out">1200</output></div></div>
+      </div>
+      <div>
+        <div class="chartbox"><svg class="chart" id="m3_chart" viewBox="0 0 640 380"></svg></div>
+        <div class="results">
+          <table class="kv">
+            <tr><th>项目</th><th class="num">数值</th></tr>
+            <tr><td>经济订货批量 Q*＝√(2DK/KC)</td><td class="num big c-green" id="m3_eoq">—</td></tr>
+            <tr><td>当前批量订货成本 (D/Q)·K</td><td class="num" id="m3_oc">—</td></tr>
+            <tr><td>当前批量储存成本 (Q/2)·KC</td><td class="num" id="m3_hc">—</td></tr>
+            <tr><td>当前批量相关总成本</td><td class="num" id="m3_tc">—</td></tr>
+            <tr><td>交点处两类成本（应相等）</td><td class="num" id="m3_eqv">—</td></tr>
+          </table>
+          <div class="em" id="m3_warn">—</div>
+          <div class="check">
+            <label>演练验算：输入学生算出的「经济订货批量 Q*」（件）</label>
+            <div class="row">
+              <input type="number" id="m3_check" placeholder="例如 1200">
+              <button id="m3_check_btn">核对</button>
+              <span id="m3_check_res"></span>
+            </div>
+            <div class="note">容差 ±0.5%（或 ±1 件取整）。可用「订货成本＝储存成本」自检。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 模块四 ===================== -->
+  <section class="panel" id="m4">
+    <div class="phead"><h2>模块四　扩展对照台</h2>
+      <div class="tag">第二课时 · 环节四讲扩展、环节五演练后验算｜数量折扣／陆续到货／再订货点 三情形对照</div></div>
+    <div class="desc">基本模型的三种扩展：把原来不相关或未考虑的成本拉进来一起权衡。切换下方子页查看三类成本构成与结果。</div>
+    <div class="subtabs" id="m4_sub">
+      <button data-s="s1" class="active">数量折扣</button>
+      <button data-s="s2">陆续到货</button>
+      <button data-s="s3">再订货点</button>
+    </div>
+
+    <!-- 子页1：数量折扣 -->
+    <div class="subpanel show" id="s1">
+      <div class="em gold"><b>数量折扣：</b>单价降至 U 时购置成本成为相关成本，须与订货、储存成本合并比较（算总账）。</div>
+      <div class="layout">
+        <div class="controls">
+          <div class="ctrl"><label>折扣单价 U（元/件）</label>
+            <div class="row"><input type="range" id="m4_u" min="9.0" max="10.0" step="0.05" value="9.50">
+              <output id="m4_u_out">9.50</output></div></div>
+          <div class="ctrl"><label>折扣门槛批量（件）</label>
+            <div class="row"><input type="range" id="m4_qd" min="2000" max="8000" step="500" value="5000">
+              <output id="m4_qd_out">5000</output></div></div>
+          <div class="note">基准单价 10.00 元/件；年需 36,000；K=100；KC=5。</div>
+        </div>
+        <div>
+          <div class="chartbox"><svg class="chart" id="m4_chart1" viewBox="0 0 640 340"></svg></div>
+          <div class="results">
+            <table class="kv">
+              <tr><th>方案</th><th class="num">购置</th><th class="num">订货</th><th class="num">储存</th><th class="num">总成本</th></tr>
+              <tr><td>经济批量 1,200 件</td><td class="num" id="m4_p1a">—</td><td class="num" id="m4_p1b">—</td><td class="num" id="m4_p1c">—</td><td class="num" id="m4_p1t">—</td></tr>
+              <tr><td>折扣批量 <span id="m4_qdt">5,000</span> 件</td><td class="num" id="m4_p2a">—</td><td class="num" id="m4_p2b">—</td><td class="num" id="m4_p2c">—</td><td class="num" id="m4_p2t">—</td></tr>
+            </table>
+            <div class="em" id="m4_d1">—</div>
+            <div class="check">
+              <label>演练验算：输入两方案「净差额」（元，折扣方案相对经济批量方案）</label>
+              <div class="row">
+                <input type="number" id="m4_check" placeholder="例如 10780">
+                <button id="m4_check_btn">核对</button>
+                <span id="m4_check_res"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 子页2：陆续到货 -->
+    <div class="subpanel" id="s2">
+      <div class="em gold"><b>陆续到货：</b>边进边用，平均库存不再是一半，须乘修正因子 (1−d/p)。</div>
+      <div class="layout">
+        <div class="controls">
+          <div class="ctrl"><label>每日耗用量 d（件/天）</label>
+            <div class="row"><input type="range" id="m4_d" min="40" max="200" step="10" value="100">
+              <output id="m4_d_out">100</output></div></div>
+          <div class="ctrl"><label>每日到货量 p（件/天）</label>
+            <div class="row"><input type="range" id="m4_p" min="120" max="300" step="10" value="180">
+              <output id="m4_p_out">180</output></div></div>
+          <div class="note">D=36,000；K=100；KC=5；年营业 360 天。</div>
+        </div>
+        <div>
+          <div class="chartbox"><svg class="chart" id="m4_chart2" viewBox="0 0 640 340"></svg></div>
+          <div class="results">
+            <table class="kv">
+              <tr><th>项目</th><th class="num">数值</th></tr>
+              <tr><td>修正因子 (1−d/p)</td><td class="num" id="m4_fac">—</td></tr>
+              <tr><td>陆续到货经济批量 Q*</td><td class="num big c-green" id="m4_eoq2">—</td></tr>
+              <tr><td>相关总成本</td><td class="num" id="m4_tc2">—</td></tr>
+            </table>
+            <div class="em" id="m4_d2">—</div>
+            <div class="check">
+              <label>演练验算：输入「陆续到货经济批量 Q*」（件）</label>
+              <div class="row">
+                <input type="number" id="m4_check2" placeholder="例如 1800">
+                <button id="m4_check2_btn">核对</button>
+                <span id="m4_check2_res"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 子页3：再订货点 -->
+    <div class="subpanel" id="s3">
+      <div class="em gold"><b>再订货点：</b>库存降到 R＝L×d＋B 时须发出订单，B 为保险储备（应对需求增大或送货延迟）。</div>
+      <div class="layout">
+        <div class="controls">
+          <div class="ctrl"><label>交货期 L（天）</label>
+            <div class="row"><input type="range" id="m4_L" min="1" max="20" step="1" value="6">
+              <output id="m4_L_out">6</output></div></div>
+          <div class="ctrl"><label>每日耗用量 d（件/天）</label>
+            <div class="row"><input type="range" id="m4_d3" min="40" max="200" step="10" value="100">
+              <output id="m4_d3_out">100</output></div></div>
+          <div class="ctrl"><label>保险储备 B（件）</label>
+            <div class="row"><input type="range" id="m4_B" min="0" max="400" step="20" value="200">
+              <output id="m4_B_out">200</output></div></div>
+        </div>
+        <div>
+          <div class="chartbox"><svg class="chart" id="m4_chart3" viewBox="0 0 640 340"></svg></div>
+          <div class="results">
+            <table class="kv">
+              <tr><th>项目</th><th class="num">数值</th></tr>
+              <tr><td>交货期用量 L×d</td><td class="num" id="m4_ld">—</td></tr>
+              <tr><td>再订货点 R＝L×d＋B</td><td class="num big c-green" id="m4_R">—</td></tr>
+              <tr><td>保险储备年储存成本 B×KC</td><td class="num" id="m4_Bc">—</td></tr>
+            </table>
+            <div class="em" id="m4_d3">—</div>
+            <div class="check">
+              <label>演练验算：输入「再订货点 R」（件）</label>
+              <div class="row">
+                <input type="number" id="m4_check3" placeholder="例如 800">
+                <button id="m4_check3_btn">核对</button>
+                <span id="m4_check3_res"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 经营决策卡出口 ===================== -->
+  <section class="panel" id="card">
+    <div class="phead"><h2>经营决策卡出口（统一五字段）</h2>
+      <div class="tag">承接「一核四阶一卡」——把课堂两处决策沉淀为可提交、可复盘的经营判断卡</div></div>
+    <div class="desc">文件名建议：<b>学号-第五章-决策卡</b>。先选场景，再填五字段；「复制」按钮兼容本地双击打开（file://）环境。</div>
+    <div style="margin:10px 0;">
+      <span class="scn" data-scn="price">场景一：鲜穗定价决策</span>
+      <span class="scn" data-scn="order">场景二：包装箱订购决策</span>
+    </div>
+    <div class="card5">
+      <h3>经营决策卡</h3>
+      <div class="field"><label>① 问题（决策是什么）</label>
+        <input type="text" id="c_q" placeholder="例如：鲜穗这一批该报多少价？"></div>
+      <div class="field"><label>② 假设（前提与口径）</label>
+        <input type="text" id="c_a" placeholder="例如：单位变动成本2400、月固定21万、需求P=5600-8Q"></div>
+      <div class="field"><label>③ 指标变化（关键量如何变）</label>
+        <input type="text" id="c_i" placeholder="例如：提价至4000→销量降至200→月边际贡献+20000"></div>
+      <div class="field"><label>④ 经营建议（选哪种、为什么）</label>
+        <textarea id="c_r" rows="2" placeholder="例如：报4000元/吨最优；若市场只肯3600，则回成本底价3720检查"></textarea></div>
+      <div class="field"><label>⑤ 风险责任（代价与谁担）</label>
+        <textarea id="c_z" rows="2" placeholder="例如：定价偏低侵蚀利润由销售端担；跌破底价须主任审批"></textarea></div>
+      <div class="grid2">
+        <div><button id="c_copy">复制决策卡</button></div>
+        <div><button id="c_reset" style="background:#9ccc9e;">清空</button></div>
+      </div>
+      <details class="example">
+        <summary>查看范例（场景一：鲜穗定价）</summary>
+        <p style="font-size:13px;line-height:1.7;">
+        ① 问题：本批鲜穗对外报价定在多少？<br>
+        ② 假设：单位变动成本 2,400 元/吨、月固定 210,000、月产能 300 吨；成本加成政策 20%；需求 P=5,600−8Q（教学拟合）。<br>
+        ③ 指标变化：成本加成底价 3,720；需求最优价 4,000（Q=200）；现行价 3,600（Q=250）。最优价比现行价月边际贡献多 20,000 元。<br>
+        ④ 经营建议：以最优价 4,000 为主报价，但须确认市场接受度；若只肯出 3,600，则回到底价 3,720 检查——压成本或放弃，不破底价。<br>
+        ⑤ 风险责任：报价低于底价由销售负责人担；最优价能否覆盖固定成本（月营业利润 110,000）由财务复核。</p>
+      </details>
+    </div>
+    <div class="note" id="c_msg"></div>
+  </section>
+
+  <!-- ===================== 使用说明 ===================== -->
+  <section class="panel" id="help">
+    <div class="phead"><h2>课件使用说明（定位 · 双端用法 · 应急预案）</h2></div>
+    <details class="help" open>
+      <summary>一、课件定位（三不）</summary>
+      <ul>
+        <li><b>不用于讲方法：</b>公式与推导在 PPT 与学案上讲，本课件只在「要看数据变动」时切入演示。</li>
+        <li><b>不逐页替代 PPT：</b>本课件是课堂交互工具，不是把整堂课翻成网页。</li>
+        <li><b>无变动处不硬用：</b>凡是纸笔算得清、无需看联动的地方，不用本课件。</li>
+      </ul>
+    </details>
+    <details class="help">
+      <summary>二、双端用法</summary>
+      <ul>
+        <li><b>教师端：</b>课堂投屏，讲新概念时演示参数联动、学生演练后当场验算、讨论环节改参看方向。</li>
+        <li><b>学生端：</b>可同参跟做（同一组滑块自行试算）；断网时改为观察教师操作。</li>
+      </ul>
+    </details>
+    <details class="help">
+      <summary>三、设备应急预案（限教室端失效）</summary>
+      <ul>
+        <li>① 课前存档关键输出截图，网络中断时直接展示。</li>
+        <li>② 课件故障时改用计算器与 Excel 直接算，流程照走。</li>
+        <li>③ 全程断网时把「学生操作课件」改为「观察教师操作」；本节所有结论均可用纸笔复现（已给出全部算式）。</li>
+      </ul>
+    </details>
+    <div class="em" style="margin-top:12px;">贯穿案例「金穗农业合作社」为教学虚构；需求函数为市场调研拟合的教学简化，真实企业须由回归分析得到（见教学设计附录 FAQ）。</div>
+  </section>
+
+  <footer class="ft">湖南农业大学商学院 · 《管理会计》第五章经营决策（定价与存货）· 课堂交互式课件 · 与教学设计 v1 数据一致</footer>
+</div>
+
+<script>
+/* ============ 通用 ============ */
+function fmt(n,d){ d=(d===undefined)?0:d; if(!isFinite(n)) return '—'; return n.toLocaleString('zh-CN',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function setSVG(id,svg){ var el=document.getElementById(id); if(el) el.innerHTML=svg; }
+
+/* ============ 模块一 IIFE ============ */
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var v=$('m1_v'),F=$('m1_F'),cap=$('m1_cap'),r=$('m1_r');
+  var ov=$('m1_v_out'),oF=$('m1_F_out'),oc=$('m1_cap_out'),or=$('m1_r_out');
+  var price=0;
+  function upd(){
+    var vv=+v.value,FF=+F.value,cc=+cap.value,rr=+r.value;
+    ov.textContent=vv; oF.textContent=FF; oc.textContent=cc; or.textContent=rr+'%';
+    var uf=FF/cc, fc=vv+uf;
+    var pFull=fc*(1+rr/100);
+    var rVar=(pFull-vv)/vv*100;
+    var pVar=vv*(1+rVar/100);
+    price=pFull;
+    $('m1_fc').textContent=fmt(fc,0);
+    $('m1_vbase').textContent=fmt(vv,0);
+    $('m1_rfull').textContent=rr+'%';
+    $('m1_rvar').textContent=(Math.round(rVar*10)/10)+'%';
+    $('m1_pfull').textContent=fmt(pFull,0);
+    $('m1_pvar').textContent=fmt(pVar,0);
+    $('m1_eq').innerHTML='<b>两法等价：</b>同一价格 '+fmt(pFull,0)+
+      ' 元/吨，完全成本法的加成率 '+rr+'% 除以「完全成本」，变动成本法的加成率 '+
+      (Math.round(rVar*10)/10)+'% 除以「变动成本」——分母不同，故比例不同，钱是同一份。';
+    drawBar(vv,uf,rVar,pFull,fc);
+  }
+  function drawBar(vv,uf,rVar,pFull,fc){
+    var W=640,H=320,pad=40, barH=46, gap=46;
+    var x0=110, x1=600;
+    var scale=(x1-x0)/pFull;
+    function seg(x,val,color,label){
+      var w=val*scale; var s='<rect x="'+x+'" y="{Y}" width="'+w+'" height="'+barH+'" fill="'+color+'"/>';
+      s+='<text x="'+(x+w/2)+'" y="{YT}" fill="#fff" font-size="12" text-anchor="middle">'+label+'</text>';
+      return {s:s,w:w};
+    }
+    var y1=70, y2=y1+gap+barH;
+    var rows='';
+    // 路径A 完全成本加成: 0..v(变动) , v..fc(固定) , fc..pFull(利润)
+    var xA=x0;
+    var g1='<rect x="'+xA+'" y="'+y1+'" width="'+(vv*scale)+'" height="'+barH+'" fill="#2e7d32"/>'+
+           '<text x="'+(xA+vv*scale/2)+'" y="'+(y1+29)+'" fill="#fff" font-size="12" text-anchor="middle">变动 '+fmt(vv,0)+'</text>';
+    var xB=xA+vv*scale;
+    var g2='<rect x="'+xB+'" y="'+y1+'" width="'+(uf*scale)+'" height="'+barH+'" fill="#964600"/>'+
+           '<text x="'+(xB+uf*scale/2)+'" y="'+(y1+29)+'" fill="#fff" font-size="12" text-anchor="middle">固定 '+fmt(uf,0)+'</text>';
+    var xC=xB+uf*scale;
+    var g3='<rect x="'+xC+'" y="'+y1+'" width="'+( (pFull-fc)*scale )+'" height="'+barH+'" fill="#c9881a"/>'+
+           '<text x="'+(xC+(pFull-fc)*scale/2)+'" y="'+(y1+29)+'" fill="#fff" font-size="12" text-anchor="middle">利润 '+fmt(pFull-fc,0)+'</text>';
+    // 路径B 变动成本加成: 0..v(变动), v..pFull(加成额=固定+利润)
+    var yB=y1+gap+barH+8;
+    var b1='<rect x="'+x0+'" y="'+yB+'" width="'+(vv*scale)+'" height="'+barH+'" fill="#1b5e20"/>'+
+           '<text x="'+(x0+vv*scale/2)+'" y="'+(yB+29)+'" fill="#fff" font-size="12" text-anchor="middle">变动 '+fmt(vv,0)+'</text>';
+    var b2='<rect x="'+(x0+vv*scale)+'" y="'+yB+'" width="'+( (pFull-vv)*scale )+'" height="'+barH+'" fill="#c9881a"/>'+
+           '<text x="'+(x0+vv*scale+(pFull-vv)*scale/2)+'" y="'+(yB+29)+'" fill="#fff" font-size="12" text-anchor="middle">加成额 '+fmt(pFull-vv,0)+'</text>';
+    rows=g1+g2+g3+b1+b2;
+    var svg='<svg class="chart" viewBox="0 0 '+W+' '+H+'">';
+    svg+='<line x1="'+x0+'" y1="40" x2="'+x0+'" y2="'+(yB+barH+10)+'" stroke="#888" stroke-width="1"/>';
+    svg+='<text x="'+x0+'" y="34" font-size="12" fill="#5a6b5e">0</text>';
+    svg+='<line x1="'+x1+'" y1="40" x2="'+x1+'" y2="'+(yB+barH+10)+'" stroke="#888" stroke-width="1" stroke-dasharray="3 3"/>';
+    svg+='<text x="'+(x1-4)+'" y="34" font-size="12" fill="#5a6b5e" text-anchor="end">'+fmt(pFull,0)+'</text>';
+    svg+='<text x="14" y="'+(y1+barH/2)+'" font-size="12.5" fill="#2e7d32" font-weight="700">完全成本加成</text>';
+    svg+='<text x="14" y="'+(yB+barH/2)+'" font-size="12.5" fill="#1b5e20" font-weight="700">变动成本加成</text>';
+    svg+=rows;
+    svg+='</svg>';
+    setSVG('m1_chart',svg);
+  }
+  [v,F,cap,r].forEach(function(e){e.addEventListener('input',upd);});
+  $('m1_check_btn').addEventListener('click',function(){
+    var val=+$('m1_check').value; if(!val){$('m1_check_res').textContent='';return;}
+    var ok=Math.abs(val-price)<=Math.max(1,price*0.005);
+    $('m1_check_res').innerHTML=ok?'<span class="ok">✓ 正确</span>':'<span class="bad">✗ 应为约 '+fmt(price,0)+' 元/吨</span>';
+  });
+  upd();
+})();
+
+/* ============ 模块二 IIFE ============ */
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var a=$('m2_a'),b=$('m2_b'),v=$('m2_v');
+  var oa=$('m2_a_out'),ob=$('m2_b_out'),ov=$('m2_v_out');
+  var state={p:4000,q:200};
+  function upd(){
+    var aa=+a.value,bb=+b.value,vv=+v.value;
+    oa.textContent=aa; ob.textContent=bb; ov.textContent=vv;
+    var qc=(aa>3600)?((aa-3600)/bb):0;
+    var q=(aa>vv)?((aa-vv)/(2*bb)):0;
+    var p=(aa>vv)?(aa-bb*q):0;
+    state.p=p; state.q=q;
+    $('m2_r').textContent='R＝'+aa+'Q−'+bb+'Q²';
+    $('m2_mr').textContent='MR＝'+aa+'−'+ (2*bb) +'Q';
+    $('m2_q').textContent=(aa>vv)?fmt(q,0)+' 吨':'—（价低于变动成本）';
+    $('m2_p').textContent=(aa>vv)?fmt(p,0)+' 元/吨':'—';
+    $('m2_qc').textContent=(aa>3600)?fmt(qc,0)+' 吨':'—';
+    var warn='';
+    if(aa<=vv) warn='⚠ 需求截距 a 不大于单位变动成本 v，价格低于变动成本，不应生产（除非能覆盖固定成本）。';
+    else if(q>300) warn='⚠ 最优业务量 '+fmt(q,0)+' 吨已超过月产能 300 吨，实际受产能约束，最优只能产到 300 吨（此时价 '+(aa-bb*300)+' 元/吨）。';
+    else warn='✓ 固定成本不参与最优定价（无论卖多卖少都要发生）；算出最优价后仍须检查能否覆盖月固定成本 210,000 元（本例月营业利润 110,000 元，能覆盖）。';
+    $('m2_warn').textContent=warn;
+    draw(aa,bb,vv,q,p,qc);
+  }
+  function draw(aa,bb,vv,q,p,qc){
+    var W=640,H=380,L=56,R=20,T=20,B=44;
+    var x0=L,x1=W-R,y0=T,y1=H-B;
+    var Qmax=Math.max(300, Math.ceil((Math.max(q,qc,0)+30)/50)*50);
+    var Pmax=Math.max(aa, vv, 4000)*1.06;
+    function X(qq){return x0+(qq/Qmax)*(x1-x0);}
+    function Y(pp){return y1-(pp/Pmax)*(y1-y0);}
+    var s='<svg class="chart" viewBox="0 0 '+W+' '+H+'">';
+    // 网格与轴
+    s+='<line x1="'+x0+'" y1="'+y1+'" x2="'+x1+'" y2="'+y1+'" stroke="#888" stroke-width="1"/>';
+    s+='<line x1="'+x0+'" y1="'+y0+'" x2="'+x0+'" y2="'+y1+'" stroke="#888" stroke-width="1"/>';
+    s+='<text x="'+(x1-2)+'" y="'+(y1+30)+'" font-size="12" fill="#5a6b5e" text-anchor="end">业务量 Q（吨/月）</text>';
+    s+='<text x="'+(x0-6)+'" y="'+(y0+4)+'" font-size="12" fill="#5a6b5e" text-anchor="end">价格 P</text>';
+    s+='<text x="'+x0+'" y="'+(y1+16)+'" font-size="11" fill="#5a6b5e">0</text>';
+    s+='<text x="'+(x1-2)+'" y="'+(y1+16)+'" font-size="11" fill="#5a6b5e" text-anchor="end">'+Qmax+'</text>';
+    // 需求曲线 P=a-bQ (green)
+    var qEndD=Math.min(Qmax, aa/bb);
+    s+='<line x1="'+X(0)+'" y1="'+Y(aa)+'" x2="'+X(qEndD)+'" y2="'+Y(0)+'" stroke="#2e7d32" stroke-width="3"/>';
+    s+='<text x="'+X(qEndD/2)+'" y="'+(Y(aa/2)-8)+'" font-size="12" fill="#2e7d32">需求 P＝a−bQ</text>';
+    // MR 曲线 MR=a-2bQ (blue)
+    var qEndM=Math.min(Qmax, aa/(2*bb));
+    s+='<line x1="'+X(0)+'" y1="'+Y(aa)+'" x2="'+X(qEndM)+'" y2="'+Y(0)+'" stroke="#002060" stroke-width="2.5"/>';
+    s+='<text x="'+X(qEndM*0.6)+'" y="'+(Y(aa*0.45))+'" font-size="12" fill="#002060">MR</text>';
+    // MC 线 (red horizontal at v)
+    s+='<line x1="'+X(0)+'" y1="'+Y(vv)+'" x2="'+X(Qmax)+'" y2="'+Y(vv)+'" stroke="#b00000" stroke-width="2" stroke-dasharray="6 4"/>';
+    s+='<text x="'+(x1-2)+'" y="'+(Y(vv)-6)+'" font-size="12" fill="#b00000" text-anchor="end">边际成本 v</text>';
+    // 现行价 3600 线 (gold dashed)
+    if(aa>3600){
+      s+='<line x1="'+X(0)+'" y1="'+Y(3600)+'" x2="'+X(Qmax)+'" y2="'+Y(3600)+'" stroke="#c9881a" stroke-width="1.5" stroke-dasharray="3 3"/>';
+      s+='<text x="'+(x1-2)+'" y="'+(Y(3600)+14)+'" font-size="11" fill="#c9881a" text-anchor="end">现行价 3600</text>';
+      s+='<line x1="'+X(qc)+'" y1="'+Y(3600)+'" x2="'+X(qc)+'" y2="'+y1+'" stroke="#c9881a" stroke-width="1" stroke-dasharray="3 3"/>';
+    }
+    // 最优点
+    if(q>0 && q<=Qmax){
+      s+='<circle cx="'+X(q)+'" cy="'+Y(p)+'" r="6" fill="#b00000" stroke="#fff" stroke-width="2"/>';
+      s+='<text x="'+X(q)+'" y="'+(Y(p)-12)+'" font-size="12" fill="#b00000" text-anchor="middle" font-weight="700">最优点 Q*='+fmt(q,0)+' P*='+fmt(p,0)+'</text>';
+      s+='<line x1="'+X(q)+'" y1="'+Y(p)+'" x2="'+X(q)+'" y2="'+Y(vv)+'" stroke="#b00000" stroke-width="1" stroke-dasharray="2 3"/>';
+    }
+    s+='</svg>';
+    setSVG('m2_chart',s);
+  }
+  [a,b,v].forEach(function(e){e.addEventListener('input',upd);});
+  $('m2_check_btn').addEventListener('click',function(){
+    var val=+$('m2_check').value; if(!val){$('m2_check_res').textContent='';return;}
+    var ok=Math.abs(val-state.p)<=Math.max(1,state.p*0.005);
+    $('m2_check_res').innerHTML=ok?'<span class="ok">✓ 正确</span>':'<span class="bad">✗ 应为约 '+fmt(state.p,0)+' 元/吨</span>';
+  });
+  upd();
+})();
+
+/* ============ 模块三 IIFE ============ */
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var D=$('m3_D'),K=$('m3_K'),KC=$('m3_KC'),Q=$('m3_Q');
+  var oD=$('m3_D_out'),oK=$('m3_K_out'),oKC=$('m3_KC_out'),oQ=$('m3_Q_out');
+  var eoq=1200;
+  function eoqOf(){ return Math.sqrt(2*D.value*K.value/KC.value); }
+  function upd(){
+    var Dv=+D.value,Kv=+K.value,KCv=+KC.value,Qv=+Q.value;
+    oD.textContent=Dv; oK.textContent=Kv; oKC.textContent=KCv; oQ.textContent=Qv;
+    eoq=Math.sqrt(2*Dv*Kv/KCv);
+    var oc=(Dv/Qv)*Kv, hc=(Qv/2)*KCv, tc=oc+hc;
+    var eqv=(Dv/eoq)*Kv; // 交点处订货=储存
+    $('m3_eoq').textContent=fmt(eoq,0)+' 件';
+    $('m3_oc').textContent=fmt(oc,0)+' 元';
+    $('m3_hc').textContent=fmt(hc,0)+' 元';
+    $('m3_tc').textContent=fmt(tc,0)+' 元';
+    $('m3_eqv').textContent=fmt(eqv,0)+' 元（订货＝储存）';
+    var warn='';
+    if(Math.abs(Qv-eoq)<=Math.max(1,eoq*0.01)) warn='✓ 当前批量恰为经济订货批量，两类成本相等、总成本最低。';
+    else warn='拖动 Q 向 '+fmt(eoq,0)+' 件靠拢：偏离交点，总成本即上升。';
+    $('m3_warn').textContent=warn;
+    draw(Dv,Kv,KCv,Qv,eoq);
+  }
+  function draw(Dv,Kv,KCv,Qv,eoq){
+    var W=640,H=380,L=56,R=20,T=20,B=44;
+    var x0=L,x1=W-R,y0=T,y1=H-B;
+    var Qmax=Math.max(3000, Qv)*1.05;
+    var ocAtMin=(Dv/200)*Kv; var hcAtMax=(Qmax/2)*KCv;
+    var Cmax=Math.max(ocAtMin,hcAtMax)*1.1;
+    function X(q){return x0+(q/Qmax)*(x1-x0);}
+    function Y(c){return y1-(c/Cmax)*(y1-y0);}
+    var s='<svg class="chart" viewBox="0 0 '+W+' '+H+'">';
+    s+='<line x1="'+x0+'" y1="'+y1+'" x2="'+x1+'" y2="'+y1+'" stroke="#888" stroke-width="1"/>';
+    s+='<line x1="'+x0+'" y1="'+y0+'" x2="'+x0+'" y2="'+y1+'" stroke="#888" stroke-width="1"/>';
+    s+='<text x="'+(x1-2)+'" y="'+(y1+30)+'" font-size="12" fill="#5a6b5e" text-anchor="end">订货批量 Q（件）</text>';
+    s+='<text x="'+(x0-6)+'" y="'+(y0+4)+'" font-size="12" fill="#5a6b5e" text-anchor="end">成本（元）</text>';
+    // 订货成本曲线（绿）
+    var ptsO=''; for(var q=200;q<=Qmax;q+=Math.max(20,Qmax/80)){ ptsO+=(ptsO?' ':'')+X(q)+','+Y((Dv/q)*Kv); }
+    s+='<polyline points="'+ptsO+'" fill="none" stroke="#2e7d32" stroke-width="2.5"/>';
+    s+='<text x="'+X(400)+'" y="'+(Y((Dv/400)*Kv)-6)+'" font-size="12" fill="#2e7d32">订货成本 (D/Q)·K</text>';
+    // 储存成本线（棕）
+    s+='<line x1="'+X(0)+'" y1="'+Y(0)+'" x2="'+X(Qmax)+'" y2="'+Y((Qmax/2)*KCv)+'" stroke="#964600" stroke-width="2.5"/>';
+    s+='<text x="'+X(Qmax*0.6)+'" y="'+(Y((Qmax*0.6/2)*KCv)-6)+'" font-size="12" fill="#964600">储存成本 (Q/2)·KC</text>';
+    // 总成本曲线（淡蓝）
+    var ptsT=''; for(var q2=200;q2<=Qmax;q2+=Math.max(20,Qmax/80)){ ptsT+=(ptsT?' ':'')+X(q2)+','+Y((Dv/q2)*Kv+(q2/2)*KCv); }
+    s+='<polyline points="'+ptsT+'" fill="none" stroke="#002060" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.8"/>';
+    // EOQ 交点
+    if(eoq<=Qmax){
+      var eqv=(Dv/eoq)*Kv;
+      s+='<line x1="'+X(eoq)+'" y1="'+y0+'" x2="'+X(eoq)+'" y2="'+y1+'" stroke="#b00000" stroke-width="1.5" stroke-dasharray="4 3"/>';
+      s+='<circle cx="'+X(eoq)+'" cy="'+Y(eqv)+'" r="5" fill="#b00000" stroke="#fff" stroke-width="2"/>';
+      s+='<text x="'+X(eoq)+'" y="'+(y0+14)+'" font-size="12" fill="#b00000" text-anchor="middle" font-weight="700">EOQ='+fmt(eoq,0)+'</text>';
+    }
+    // 当前 Q 点
+    if(Qv<=Qmax){
+      var oc=(Dv/Qv)*Kv, hc=(Qv/2)*KCv;
+      s+='<line x1="'+X(Qv)+'" y1="'+y0+'" x2="'+X(Qv)+'" y2="'+y1+'" stroke="#555" stroke-width="1"/>';
+      s+='<circle cx="'+X(Qv)+'" cy="'+Y(oc)+'" r="4" fill="#2e7d32"/>';
+      s+='<circle cx="'+X(Qv)+'" cy="'+Y(hc)+'" r="4" fill="#964600"/>';
+      s+='<circle cx="'+X(Qv)+'" cy="'+Y(oc+hc)+'" r="4" fill="#002060"/>';
+    }
+    s+='</svg>';
+    setSVG('m3_chart',s);
+  }
+  [D,K,KC,Q].forEach(function(e){e.addEventListener('input',upd);});
+  $('m3_check_btn').addEventListener('click',function(){
+    var val=+$('m3_check').value; if(!val){$('m3_check_res').textContent='';return;}
+    var ok=Math.abs(val-eoq)<=Math.max(1,eoq*0.005);
+    $('m3_check_res').innerHTML=ok?'<span class="ok">✓ 正确</span>':'<span class="bad">✗ 应为约 '+fmt(eoq,0)+' 件</span>';
+  });
+  upd();
+})();
+
+/* ============ 模块四 IIFE（含三个子页） ============ */
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  // 子页切换
+  var subBtns=document.querySelectorAll('#m4_sub button');
+  subBtns.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      subBtns.forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active');
+      var s=btn.getAttribute('data-s');
+      ['s1','s2','s3'].forEach(function(id){document.getElementById(id).classList.remove('show');});
+      document.getElementById(s).classList.add('show');
+    });
+  });
+  // ---- 数量折扣 ----
+  var u=$('m4_u'),qd=$('m4_qd');
+  var ou=$('m4_u_out'),oqd=$('m4_qd_out');
+  var D=36000,K=100,KC=5,Ubase=10.00, net=0, p2t=0;
+  function upd1(){
+    var Uv=+u.value, QD=+qd.value;
+    ou.textContent=Uv.toFixed(2); oqd.textContent=QD;
+    $('m4_qdt').textContent=fmt(QD,0);
+    var p1a=D*Ubase, p1b=(D/1200)*K, p1c=(1200/2)*KC, p1t=p1a+p1b+p1c;
+    var p2a=D*Uv, p2b=(D/QD)*K, p2c=(QD/2)*KC, p2t=p2a+p2b+p2c;
+    net=p1t-p2t;
+    $('m4_p1a').textContent=fmt(p1a,0); $('m4_p1b').textContent=fmt(p1b,0);
+    $('m4_p1c').textContent=fmt(p1c,0); $('m4_p1t').textContent=fmt(p1t,0);
+    $('m4_p2a').textContent=fmt(p2a,0); $('m4_p2b').textContent=fmt(p2b,0);
+    $('m4_p2c').textContent=fmt(p2c,0); $('m4_p2t').textContent=fmt(p2t,0);
+    var accept=p2t<p1t;
+    var crit=(p1t-( (D/QD)*K + (QD/2)*KC ))/D; // 临界单价：使折扣总额=经济批量总额
+    $('m4_d1').innerHTML='<b>'+(accept?'应当接受折扣':'暂不应接受折扣')+'：</b>折扣方案比经济批量方案'+
+      (accept?('省 '+fmt(net,0)+' 元'):('多花 '+fmt(-net,0)+' 元'))+'。'+
+      '临界单价 ≈ '+crit.toFixed(2)+' 元/件（低于此价折扣才划算）——折扣有门槛，不是越深越好。';
+    draw1(p1a,p1b,p1c,p2a,p2b,p2c,p1t,p2t);
+  }
+  function draw1(a1,b1,c1,a2,b2,c2,t1,t2){
+    var W=640,H=340, x0=70, y0=40, barW=70, gap=40;
+    var maxv=Math.max(a1,b1,c1,a2,b2,c2,t1,t2)*1.05;
+    function Y(v){return H-50 - v/maxv*(H-50-y0);}
+    var s='<svg class="chart" viewBox="0 0 '+W+' '+H+'">';
+    // 组1
+    var groups=[['经济批量',a1,b1,c1,t1],['折扣批量',a2,b2,c2,t2]];
+    var cols=['#2e7d32','#964600','#c9881a'];
+    var labels=['购置','订货','储存'];
+    var gx=x0;
+    groups.forEach(function(g,gi){
+      var bx=gx; var acc=y0;
+      // 堆叠：购置+订货+储存
+      var comps=[g[1],g[2],g[3]];
+      comps.forEach(function(cv,ci){
+        var yTop=Y(cv+ (gi===0?0:0));
+        // 从底向上堆叠
+      });
+      // 简化：用三组并排小条表示构成 + 总额文字
+      bx=gx; var sy=H-50;
+      var stack=[g[1],g[2],g[3]];
+      var runY=sy;
+      stack.forEach(function(cv,ci){
+        var h=cv/maxv*(H-50-y0);
+        s+='<rect x="'+bx+'" y="'+(runY-h)+'" width="'+barW+'" height="'+h+'" fill="'+cols[ci]+'"/>';
+        s+='<text x="'+(bx+barW/2)+'" y="'+(runY-h/2+4)+'" font-size="10" fill="#fff" text-anchor="middle">'+labels[ci]+'</text>';
+        runY=runY-h;
+      });
+      s+='<text x="'+(bx+barW/2)+'" y="'+(y0-8)+'" font-size="12.5" fill="#1b5e20" text-anchor="middle" font-weight="700">'+g[0]+'</text>';
+      s+='<text x="'+(bx+barW/2)+'" y="'+(H-32)+'" font-size="12" fill="#b00000" text-anchor="middle" font-weight="700">合计 '+fmt(g[4],0)+'</text>';
+      gx+=barW+gap;
+    });
+    s+='<line x1="'+x0+'" y1="'+(H-50)+'" x2="'+(gx-gap+barW)+'" y2="'+(H-50)+'" stroke="#888"/>';
+    s+='<text x="'+x0+'" y="'+(H-12)+'" font-size="11" fill="#5a6b5e">各方案成本构成（元）；红字为总成本</text>';
+    s+='</svg>';
+    setSVG('m4_chart1',s);
+  }
+  [u,qd].forEach(function(e){e.addEventListener('input',upd1);});
+  $('m4_check_btn').addEventListener('click',function(){
+    var val=+$('m4_check').value; if(!val){$('m4_check_res').textContent='';return;}
+    var ok=Math.abs(val-net)<=Math.max(1,Math.abs(net)*0.005);
+    $('m4_check_res').innerHTML=ok?'<span class="ok">✓ 正确</span>':'<span class="bad">✗ 应为约 '+fmt(net,0)+' 元</span>';
+  });
+  upd1();
+
+  // ---- 陆续到货 ----
+  var d=$('m4_d'),p=$('m4_p');
+  var od=$('m4_d_out'),op=$('m4_p_out');
+  var D2=36000,K2=100,KC2=5, eoq2=1800, tc2=4000;
+  function upd2(){
+    var dv=+d.value, pv=+p.value;
+    od.textContent=dv; op.textContent=pv;
+    var fac=1-dv/pv;
+    eoq2=Math.sqrt(2*D2*K2/(KC2*fac));
+    var oc=(D2/eoq2)*K2, hc=(eoq2/2)*KC2*fac;
+    tc2=oc+hc;
+    $('m4_fac').textContent=fac.toFixed(4);
+    $('m4_eoq2').textContent=fmt(eoq2,0)+' 件';
+    $('m4_tc2').textContent=fmt(tc2,0)+' 元';
+    $('m4_d2').innerHTML='修正因子 <b>'+fac.toFixed(4)+'</b> 拉低了平均库存，经济批量升至 '+fmt(eoq2,0)+
+      ' 件、相关总成本降至 '+fmt(tc2,0)+' 元（比基本模型 6,000 元省 '+fmt(6000-tc2,0)+' 元）。';
+    draw2(dv,pv,fac);
+  }
+  function draw2(dv,pv,fac){
+    var W=640,H=340,L=70,R=20,T=40,B=40;
+    var x0=L,x1=W-R,y0=T,y1=H-B;
+    var Imax=Math.min(eoq2, 2000)*(1-dv/pv); // 示意
+    var scale=(y1-y0)/Math.max(Imax,1);
+    var s='<svg class="chart" viewBox="0 0 '+W+' '+H+'">';
+    s+='<line x1="'+x0+'" y1="'+y1+'" x2="'+x1+'" y2="'+y1+'" stroke="#888"/>';
+    s+='<line x1="'+x0+'" y1="'+y0+'" x2="'+x0+'" y2="'+y1+'" stroke="#888"/>';
+    s+='<text x="'+(x1-2)+'" y="'+(y1+30)+'" font-size="12" fill="#5a6b5e" text-anchor="end">时间</text>';
+    s+='<text x="'+(x0-6)+'" y="'+(y0+4)+'" font-size="12" fill="#5a6b5e" text-anchor="end">库存</text>';
+    // 一个周期锯齿：补货段斜率(p-d)，耗用段斜率(-d)
+    var t1=eoq2/pv; var t2=eoq2/dv; var Tt=t1+t2;
+    var ymax=y1-Imax*scale;
+    var px=x0; var py=y1; var up=(Imax*scale)*(pv-dv)/pv; var down=(Imax*scale)*dv/dv; // 上升段高度=Imax*scale, 下降同理
+    // 用归一化：周期占宽
+    var cycW=x1-x0;
+    function tX(t){return x0+ (t/Tt)*cycW;}
+    var upH=Imax*scale;
+    // 起点 (x0,y1)
+    var path='M '+x0+' '+y1+' L '+tX(t1)+' '+(y1-upH)+' L '+tX(Tt)+' '+y1;
+    s+='<path d="'+path+'" fill="none" stroke="#2e7d32" stroke-width="2.5"/>';
+    s+='<text x="'+tX(t1/2)+'" y="'+(y1-upH/2-6)+'" font-size="12" fill="#2e7d32">边进边用（斜率 p−d）</text>';
+    s+='<text x="'+tX(t1+t2/2)+'" y="'+(y1-upH/2-6)+'" font-size="12" fill="#964600">耗用（斜率 −d）</text>';
+    s+='<text x="'+(x0+4)+'" y="'+(ymax-4)+'" font-size="12" fill="#b00000">最高库存≈'+fmt(Imax,0)+' 件</text>';
+    s+='<text x="'+(x1-2)+'" y="'+(y0+4)+'" font-size="11" fill="#5a6b5e" text-anchor="end">平均库存＝批量÷2×(1−d/p)</text>';
+    s+='</svg>';
+    setSVG('m4_chart2',s);
+  }
+  [d,p].forEach(function(e){e.addEventListener('input',upd2);});
+  $('m4_check2_btn').addEventListener('click',function(){
+    var val=+$('m4_check2').value; if(!val){$('m4_check2_res').textContent='';return;}
+    var ok=Math.abs(val-eoq2)<=Math.max(1,eoq2*0.005);
+    $('m4_check2_res').innerHTML=ok?'<span class="ok">✓ 正确</span>':'<span class="bad">✗ 应为约 '+fmt(eoq2,0)+' 件</span>';
+  });
+  upd2();
+
+  // ---- 再订货点 ----
+  var L=$('m4_L'),d3=$('m4_d3'),B=$('m4_B');
+  var oL=$('m4_L_out'),od3=$('m4_d3_out'),oB=$('m4_B_out');
+  var KC3=5, R=800;
+  function upd3(){
+    var Lv=+L.value, dv=+d3.value, Bv=+B.value;
+    oL.textContent=Lv; od3.textContent=dv; oB.textContent=Bv;
+    var ld=Lv*dv; R=ld+Bv;
+    $('m4_ld').textContent=fmt(ld,0)+' 件';
+    $('m4_R').textContent=fmt(R,0)+' 件';
+    $('m4_Bc').textContent=fmt(Bv*KC3,0)+' 元/年';
+    $('m4_d3').innerHTML='交货期 '+Lv+' 天 × 日耗 '+dv+' 件＝'+fmt(ld,0)+
+      ' 件，加保险储备 '+Bv+' 件，再订货点 R＝'+fmt(R,0)+' 件。'+
+      '保险储备年储存成本 '+fmt(Bv*KC3,0)+' 元——安全有代价，并非越多越安全。';
+    draw3(Lv,dv,Bv,ld,R);
+  }
+  function draw3(Lv,dv,Bv,ld,R){
+    var W=640,H=340,Lm=60,Rm=20,T=40,B=50;
+    var x0=Lm,x1=W-Rm,y0=T,y1=H-B;
+    var Imax=R*1.15;
+    function Y(v){return y1-v/Imax*(y1-y0);}
+    var s='<svg class="chart" viewBox="0 0 '+W+' '+H+'">';
+    s+='<line x1="'+x0+'" y1="'+y1+'" x2="'+x1+'" y2="'+y1+'" stroke="#888"/>';
+    s+='<line x1="'+x0+'" y1="'+y0+'" x2="'+x0+'" y2="'+y1+'" stroke="#888"/>';
+    s+='<text x="'+(x1-2)+'" y="'+(y1+30)+'" font-size="12" fill="#5a6b5e" text-anchor="end">时间（天）</text>';
+    s+='<text x="'+(x0-6)+'" y="'+(y0+4)+'" font-size="12" fill="#5a6b5e" text-anchor="end">库存</text>';
+    // 库存下降线（示意）
+    var endX=x1; var startX=x0+ (x1-x0)*0.15;
+    s+='<line x1="'+startX+'" y1="'+Y(Imax*0.95)+'" x2="'+x1+'" y2="'+Y(Bv*0.6)+'" stroke="#2e7d32" stroke-width="2.5"/>';
+    // 再订货点线
+    s+='<line x1="'+x0+'" y1="'+Y(R)+'" x2="'+x1+'" y2="'+Y(R)+'" stroke="#b00000" stroke-width="2" stroke-dasharray="6 4"/>';
+    s+='<text x="'+(x1-2)+'" y="'+(Y(R)-6)+'" font-size="12" fill="#b00000" text-anchor="end" font-weight="700">再订货点 R＝'+fmt(R,0)+'</text>';
+    // 保险储备带
+    s+='<rect x="'+x0+'" y="'+Y(Bv)+'" width="'+(x1-x0)+'" height="'+(Y(0)-Y(Bv))+'" fill="#c9881a" opacity="0.18"/>';
+    s+='<text x="'+(x0+6)+'" y="'+(Y(Bv/2))+'" font-size="11" fill="#964600">保险储备 '+Bv+' 件</text>';
+    // 交货期标注
+    var lx=x0+(x1-x0)*0.55;
+    s+='<line x1="'+lx+'" y1="'+y1+'" x2="'+lx+'" y2="'+y0+'" stroke="#002060" stroke-width="1.5" stroke-dasharray="4 3"/>';
+    s+='<text x="'+lx+'" y="'+(y0+14)+'" font-size="12" fill="#002060" text-anchor="middle">订货提前期 '+Lv+' 天</text>';
+    s+='</svg>';
+    setSVG('m4_chart3',s);
+  }
+  [L,d3,B].forEach(function(e){e.addEventListener('input',upd3);});
+  $('m4_check3_btn').addEventListener('click',function(){
+    var val=+$('m4_check3').value; if(!val){$('m4_check3_res').textContent='';return;}
+    var ok=Math.abs(val-R)<=Math.max(1,R*0.005);
+    $('m4_check3_res').innerHTML=ok?'<span class="ok">✓ 正确</span>':'<span class="bad">✗ 应为约 '+fmt(R,0)+' 件</span>';
+  });
+  upd3();
+})();
+
+/* ============ 经营决策卡 IIFE ============ */
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var scns=document.querySelectorAll('.scn');
+  var presets={
+    price:{q:'本批鲜穗对外报价定在多少？',a:'单位变动成本2400、月固定21万、月产能300；成本加成政策20%；需求P=5600-8Q（教学拟合）',
+      i:'成本加成底价3720；需求最优价4000（Q=200）；现行价3600（Q=250）；最优价比现行价月边际贡献多20000',
+      r:'以最优价4000为主报价，确认市场接受度；若只肯3600则回成本底价3720检查——压成本或放弃，不破底价',
+      z:'报价低于底价由销售负责人担；最优价能否覆盖固定成本（月营业利润11万）由财务复核'},
+    order:{q:'包装箱一次订多少？是否接受5000件9.5元折扣？',a:'年需36000件、K=100、KC=5、单价10；折扣门槛5000件单价9.5；交货期6天、日耗100、保险储备200',
+      i:'经济批量1200件（相关总成本6000）；折扣批量5000件总成本355220，省10780；再订货点800件',
+      r:'接受折扣（净省10780）；按5000件订并设再订货点800件触发补货',
+      z:'折扣存货占用资金上升由采购担；断货失销由销售担；保险储备成本由仓储复核'}
+  };
+  scns.forEach(function(sp){
+    sp.addEventListener('click',function(){
+      var k=sp.getAttribute('data-scn'); var p=presets[k];
+      $('c_q').value=p.q; $('c_a').value=p.a; $('c_i').value=p.i; $('c_r').value=p.r; $('c_z').value=p.z;
+      $('c_msg').textContent='已载入「'+(k==='price'?'场景一：鲜穗定价':'场景二：包装箱订购')+'」范例，可修改后复制。';
+    });
+  });
+  $('c_copy').addEventListener('click',function(){
+    var txt='【经营决策卡】\n① 问题：'+$('c_q').value+'\n② 假设：'+$('c_a').value+
+      '\n③ 指标变化：'+$('c_i').value+'\n④ 经营建议：'+$('c_r').value+'\n⑤ 风险责任：'+$('c_z').value;
+    var ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select();
+    var done=false;
+    try{ done=document.execCommand('copy'); }catch(e){}
+    if(!done && navigator.clipboard){ navigator.clipboard.writeText(txt).then(function(){},function(){}); }
+    document.body.removeChild(ta);
+    $('c_msg').textContent='已复制决策卡文本（兼容本地打开）。';
+  });
+  $('c_reset').addEventListener('click',function(){
+    ['c_q','c_a','c_i','c_r','c_z'].forEach(function(id){$(id).value='';});
+    $('c_msg').textContent='已清空。';
+  });
+})();
+
+/* ============ 顶部标签切换 ============ */
+(function(){
+  var btns=document.querySelectorAll('#tabs button');
+  btns.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      btns.forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active');
+      var t=btn.getAttribute('data-t');
+      ['m1','m2','m3','m4','card','help'].forEach(function(id){
+        document.getElementById(id).classList.remove('show');
+      });
+      document.getElementById(t).classList.add('show');
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  });
+})();
+</script>
+</body>
+</html>

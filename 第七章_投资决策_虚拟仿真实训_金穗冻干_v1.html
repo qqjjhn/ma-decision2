@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>金穗农业合作社·冻干生产线投资决策实训｜管理会计虚拟仿真</title>
+<style>
+:root{
+  --green:#2e7d32; --green-dk:#1b5e20; --bg:#e8f5e9;
+  --gold:#8a6d1f; --gold-bar:#d9a521; --gold-soft:#fbf3dc;
+  --blue:#1565c0; --blue-soft:#e8f1fb;
+  --red:#c62828; --red-soft:#fdecea;
+  --ink:#22331f; --ink-soft:#5a6b5a; --card:#ffffff; --line:#cfe2cf;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);line-height:1.75;
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Source Han Sans SC","Noto Sans CJK SC",sans-serif;}
+[hidden]{display:none!important}
+.wrap{max-width:980px;margin:0 auto;padding:16px 14px 70px}
+
+/* ---------- 头部 ---------- */
+.hd{background:linear-gradient(135deg,#2e7d32,#1b5e20);color:#fff;border-radius:14px;padding:20px 18px 16px;margin-top:6px}
+.hd .badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.hd .badge{font-size:12px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:2px 10px}
+.hd h1{font-size:clamp(19px,4.6vw,26px);letter-spacing:.5px;line-height:1.4}
+.hd .sub{font-size:13px;opacity:.92;margin-top:6px}
+.goal{background:var(--gold-soft);border:2px solid var(--gold);border-radius:10px;padding:12px 16px;margin:12px 0 4px;font-size:14px}
+.goal b{color:var(--gold)}
+
+/* ---------- 进度步骤 ---------- */
+.steps{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+.step{flex:1 1 150px;min-width:132px;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;color:var(--ink-soft);display:flex;align-items:center;gap:8px}
+.step .no{flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:#e3eee3;color:var(--green-dk);font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.step.cur{border-color:var(--green);color:var(--green-dk);font-weight:600;box-shadow:0 0 0 3px rgba(46,125,50,.12)}
+.step.done{color:var(--green-dk)}
+.step.done .no{background:var(--green);color:#fff}
+
+/* ---------- 卡片通用 ---------- */
+.card{background:var(--card);border-radius:12px;padding:16px;margin:14px 0;box-shadow:0 1px 5px rgba(27,94,32,.08)}
+.card h2{font-size:17px;color:var(--green-dk);margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card h2 .tag{font-size:12px;font-weight:400;color:var(--ink-soft)}
+.em{border:2px solid var(--green);border-radius:10px;padding:14px 16px;background:#f4faf4}
+
+/* ---------- 情境 ---------- */
+.story p{font-size:15px;text-indent:2em;margin-bottom:12px}
+svg.chart,svg.hero{display:block;width:100%;height:auto}
+svg.hero{border-radius:10px}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px}
+.plan{border:1.5px solid var(--line);border-radius:10px;padding:12px;font-size:13px;background:#fcfdfc}
+.plan h3{font-size:15px;margin-bottom:6px}
+.plan.a h3{color:var(--gold)} .plan.b h3{color:var(--green)} .plan.c h3{color:var(--blue)}
+.plan .lim{display:block;margin-top:6px;font-size:12px;color:var(--ink-soft);border-top:1px dashed var(--line);padding-top:6px}
+.databar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.databar span{font-size:12.5px;background:#eef5ee;border-radius:999px;padding:3px 12px;color:var(--green-dk)}
+.cta{margin-top:14px;text-align:center}
+.btn{appearance:none;border:none;cursor:pointer;font-family:inherit;border-radius:10px;font-size:15px;transition:transform .12s ease,box-shadow .12s ease,background .12s ease}
+.btn:active{transform:scale(.97)}
+.btn.solid{background:var(--green);color:#fff;padding:11px 26px;font-weight:600;box-shadow:0 2px 6px rgba(27,94,32,.25)}
+.btn.solid:hover{background:var(--green-dk)}
+.btn.solid:disabled{background:#9db89d;cursor:not-allowed;box-shadow:none}
+.btn.ghost{background:#fff;color:var(--green-dk);border:1.5px solid var(--green);padding:8px 18px}
+.btn.ghost:hover{background:#f0f7f0}
+.btn.sm{font-size:13px;padding:7px 14px}
+
+/* ---------- 方法速览 ---------- */
+details.meth{border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;margin:12px 0;background:#fbfdfb;font-size:13.5px}
+details.meth summary{cursor:pointer;font-weight:600;color:var(--green-dk);list-style:none}
+details.meth summary::-webkit-details-marker{display:none}
+details.meth summary::before{content:"▸ ";color:var(--green)}
+details.meth[open] summary::before{content:"▾ "}
+details.meth ul{margin:8px 0 2px 18px}
+details.meth li{margin:4px 0}
+
+/* ---------- 参数面板 ---------- */
+.sld{margin:12px 0}
+.sld .lab{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;font-size:14px;font-weight:600}
+.sld .lab .val{font-size:13px;font-weight:700;color:var(--green-dk);background:#eef5ee;border-radius:999px;padding:2px 12px}
+.sld .hint{font-size:12px;color:var(--ink-soft);font-weight:400}
+.sld input[type=range]{width:100%;accent-color:var(--green);height:26px;margin-top:4px}
+.presets{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}
+.presets .cap{font-size:13px;color:var(--ink-soft);margin-right:2px}
+.chip{background:#fff;border:1.5px solid var(--gold);color:var(--gold);border-radius:999px;padding:5px 14px;font-size:13px;cursor:pointer;font-family:inherit;transition:background .12s}
+.chip:hover{background:var(--gold-soft)}
+.notice{font-size:12.5px;color:var(--red);margin-top:10px}
+
+/* ---------- 测算区 ---------- */
+.estrow{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.est{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;background:#fff;flex:1 1 150px}
+.est .k{color:var(--ink-soft);font-size:12px}
+.est .v{font-size:clamp(17px,4vw,21px);font-weight:800;font-variant-numeric:tabular-nums;color:var(--green-dk)}
+.est .v.q{color:var(--ink-soft)}
+.est.hide{border-style:dashed;background:#fafcfa}
+.est .src{font-size:11.5px;color:var(--ink-soft);margin-top:2px}
+.chartbox{border:1.5px solid var(--line);border-radius:10px;padding:12px 10px 6px;background:#fff;margin-top:12px}
+.chartbox h4{font-size:14px;color:var(--green-dk);margin-bottom:4px}
+.chartbox .leg{display:flex;flex-wrap:wrap;gap:12px;font-size:11.5px;color:var(--ink-soft);padding:4px 4px 6px}
+.chartbox .leg i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.mcard{border:2px solid var(--line);border-radius:10px;padding:12px 10px;text-align:center;background:#fff}
+.mcard .nm{font-size:13px;font-weight:700;color:var(--ink-soft)}
+.mcard .big{font-size:clamp(19px,4.6vw,25px);font-weight:800;margin:2px 0;font-variant-numeric:tabular-nums;color:var(--green-dk)}
+.mcard .big.q{color:#9db89d}
+.mcard .unit{font-size:11.5px;color:var(--ink-soft)}
+.mcard .brk{font-size:11px;color:var(--ink-soft);margin-top:6px;border-top:1px dashed var(--line);padding-top:6px;line-height:1.5}
+.mcard.good{border-color:var(--green);box-shadow:0 0 0 3px rgba(46,125,50,.15)}
+.mcard.bad{border-color:var(--red);background:var(--red-soft)}
+.mcard.bad .big{color:var(--red)}
+table.cf{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+table.cf th,table.cf td{border:1px solid var(--line);padding:7px 8px;text-align:center}
+table.cf th{background:#eef5ee;color:var(--green-dk);font-weight:700}
+table.cf td.num{font-variant-numeric:tabular-nums}
+table.cf td.q{color:#9db89d;font-weight:700}
+table.cf tr.hl td{background:#eef5ee;font-weight:700}
+
+/* ---------- 现值系数表 ---------- */
+.coefwrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+table.co{width:100%;border-collapse:collapse;font-size:12px}
+table.co th,table.co td{border:1px solid var(--line);padding:4px 3px;text-align:center;font-variant-numeric:tabular-nums}
+table.co th{background:#eef5ee;color:var(--green-dk)}
+table.co td.rh{background:#fafcfa;font-weight:700;color:var(--green-dk)}
+table.co tr.on td{background:var(--gold-soft)}
+table.co tr.on td.rh{background:#f3e3b8}
+
+/* ---------- 决策区 ---------- */
+.q{margin:14px 0;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:#fcfdfc}
+.q .qt{font-size:15px;font-weight:600;margin-bottom:4px}
+.q .qt b{color:var(--green-dk)}
+.q .qh{font-size:12.5px;color:var(--ink-soft);margin-bottom:8px}
+.q .qh code{background:#eef5ee;border-radius:4px;padding:1px 6px;font-family:Consolas,"Courier New",monospace;font-size:12px;color:var(--green-dk)}
+.opts{display:flex;flex-wrap:wrap;gap:10px}
+.opt{flex:1 1 220px;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14px;cursor:pointer;display:flex;gap:8px;align-items:center;background:#fff}
+.opt:hover{border-color:var(--green)}
+.opt input{accent-color:var(--green);width:18px;height:18px}
+.opt.sel{border-color:var(--green);background:#f2f9f2}
+.fillrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.fillrow input{flex:1 1 180px;font-size:16px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;background:#fff;color:var(--ink)}
+.fillrow input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(46,125,50,.12)}
+.fillrow .u{font-size:13px;color:var(--ink-soft)}
+.fb{margin-top:8px;font-size:13.5px;border-radius:8px;padding:8px 12px}
+.fb.ok{background:#e8f5e9;color:var(--green-dk);border:1px solid #bcdcbc}
+.fb.bad{background:var(--red-soft);color:var(--red);border:1px solid #f2c4bd}
+.trynote{font-size:12.5px;color:var(--ink-soft);margin-top:10px}
+.submitrow{margin-top:16px;text-align:center}
+
+/* ---------- 揭晓区 ---------- */
+.reveal-anim{animation:rise .45s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.resline{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+.resline .fb{flex:1 1 260px;margin-top:0}
+details.calc{border:1.5px solid var(--green);border-radius:10px;padding:10px 14px;margin:10px 0;background:#fbfdfb;font-size:14px}
+details.calc summary{cursor:pointer;font-weight:700;color:var(--green-dk);list-style:none}
+details.calc summary::-webkit-details-marker{display:none}
+details.calc summary::before{content:"▸ ";color:var(--green)}
+details.calc[open] summary::before{content:"▾ "}
+.cstep{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;margin:10px 0;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:8px}
+.cstep .k{font-weight:700;color:var(--green-dk)}
+.cstep .v{font-weight:800;font-variant-numeric:tabular-nums}
+.cstep .v.pos{color:var(--green-dk)} .cstep .v.negv{color:var(--red)}
+.callout{border:2px solid var(--gold);background:var(--gold-soft);border-radius:10px;padding:12px 16px;font-size:14px;margin:12px 0}
+.callout b{color:var(--gold)}
+table.rev{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}
+table.rev th,table.rev td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+table.rev th{background:#eef5ee;color:var(--green-dk);font-weight:700}
+table.rev td.num{font-variant-numeric:tabular-nums}
+table.rev tr.better td{background:#e8f5e9;font-weight:700;color:var(--green-dk)}
+.ending{font-size:14.5px;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0}
+.ending p{margin:6px 0}
+.scorebox{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.scorebox .sc{font-size:24px;font-weight:800;color:var(--green-dk);font-variant-numeric:tabular-nums}
+.scorebox .word{font-size:14px;font-weight:700;border-radius:999px;padding:3px 14px}
+.scorebox .word.good{background:#e8f5e9;color:var(--green-dk);border:1px solid #a5d6a7}
+.scorebox .word.mid{background:var(--gold-soft);color:var(--gold);border:1px solid #e3cd8a}
+.scorebox .word.low{background:var(--red-soft);color:var(--red);border:1px solid #f2c4bd}
+.scorebox .best{font-size:12.5px;color:var(--ink-soft);margin-left:auto}
+
+/* ---------- 导出区 ---------- */
+.export.locked{opacity:.55;pointer-events:none}
+.export .locknote{font-size:13px;color:var(--red);margin-bottom:8px}
+.export .locknote[hidden]{display:none!important}
+.export label{font-size:13.5px;font-weight:600;display:block;margin:10px 0 4px}
+.export input{font-size:15px;padding:8px 12px;border:1.5px solid var(--line);border-radius:10px;width:min(320px,100%);font-family:inherit;background:#fff}
+.export textarea{width:100%;min-height:280px;font-size:13px;line-height:1.8;padding:12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;background:#fbfdfb;color:var(--ink);resize:vertical}
+.export .acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.foot{font-size:12px;color:var(--ink-soft);text-align:center;margin-top:22px;line-height:1.8}
+
+/* ---------- 提示浮层 ---------- */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:rgba(27,94,32,.94);color:#fff;font-size:13.5px;border-radius:999px;padding:9px 20px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:99;max-width:86vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:860px){.coefwrap{grid-template-columns:1fr}}
+@media(max-width:640px){
+  .plans{grid-template-columns:1fr}
+  .mgrid{grid-template-columns:repeat(2,1fr)}
+  .step{flex:1 1 100%}
+  .card{padding:13px}
+}
+@media(max-width:400px){.mgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ================= 头部 ================= -->
+  <header class="hd">
+    <div class="badges">
+      <span class="badge">第七章 · 长期投资决策</span>
+      <span class="badge">净现值法</span>
+      <span class="badge">虚拟仿真实训 · 约 12 分钟</span>
+    </div>
+    <h1>金穗农业合作社：草莓冻干生产线，投不投？</h1>
+    <div class="sub">鲜草莓一季只卖 20 天，价压得低。理事会上有人提议建一条冻干生产线，把鲜果做成冻干常年卖。200 万元砸下去，六年能不能回本、能赚多少——今天你说了算。</div>
+  </header>
+
+  <div class="goal">本实训练两样本事：<b>第一，把投资项目的三段现金流量估清楚</b>（初始、营业、终结，别忘折旧抵税）；<b>第二，用净现值法做判断，并盯住临界翻转条件</b>——参数越过哪条线，结论就会反转。</div>
+
+  <div class="steps" id="steps">
+    <div class="step cur" data-step="1"><span class="no">1</span>读懂处境</div>
+    <div class="step" data-step="2"><span class="no">2</span>调准参数</div>
+    <div class="step" data-step="3"><span class="no">3</span>做出决策</div>
+    <div class="step" data-step="4"><span class="no">4</span>核对通过</div>
+    <div class="step" data-step="5"><span class="no">5</span>带走成果</div>
+  </div>
+
+  <!-- ================= 情境 ================= -->
+  <section class="card story" id="secStory">
+    <h2>一、处境 <span class="tag">先读 40 秒，知道要决定什么、手上有什么数据</span></h2>
+    <p>五月的湘南，金穗农业合作社的 300 亩大棚草莓进入了集中上市期。技术员小艾守着冷库发愁：鲜果一窝蜂下来，地头价被压到 15 元/公斤，卖不掉的只能倒进沤肥池。理事长老麦从省城农产品展销会带回一条消息——草莓冻干在电商和奶茶原料市场销路稳定，售价能到 150 元/公斤，6 公斤鲜果出 1 公斤冻干。</p>
+    <p>会计芳姐把方案摊在桌上：新建一条冻干生产线，设备购置 160 万元，另需垫支营运资金 40 万元；设备可用 6 年，预计残值 10 万元；每年其他付现成本（人工、能源、包装、运费）60 万元；所得税率 25%。资金成本按 10% 算。会上争论很凶：有人算不清折旧和税，有人只看了"每年赚 35 万"就拍桌子。老麦把最后一道关留给了你。</p>
+
+    <svg class="hero" viewBox="0 0 640 230" role="img" aria-label="草莓冻干加工车间、冻干设备、鲜果筐、货车与三位合作社成员">
+      <rect width="640" height="230" fill="#fbf6e9"/>
+      <circle cx="576" cy="40" r="22" fill="#f2c84b"/>
+      <path d="M0 120 Q100 88 210 114 T430 106 T640 122 V230 H0 Z" fill="#d9ead9"/>
+      <path d="M0 138 Q160 106 330 134 T640 130 V230 H0 Z" fill="#bcdcbc"/>
+      <rect x="0" y="152" width="640" height="78" fill="#ecd9a0"/>
+      <!-- 厂房（右） -->
+      <g>
+        <rect x="452" y="86" width="176" height="66" rx="3" fill="#e8ded0" stroke="#a89580" stroke-width="2.5"/>
+        <path d="M444 86 L540 58 L636 86 Z" fill="#8d6a4a"/>
+        <rect x="470" y="104" width="34" height="48" rx="2" fill="#cfe2cf" stroke="#7cb57c" stroke-width="2"/>
+        <rect x="516" y="104" width="34" height="48" rx="2" fill="#cfe2cf" stroke="#7cb57c" stroke-width="2"/>
+        <rect x="562" y="104" width="48" height="48" rx="2" fill="#c08a4a" stroke="#7d5222" stroke-width="2"/>
+        <text x="586" y="134" text-anchor="middle" font-size="13" fill="#fff" font-weight="700">冻干</text>
+        <rect x="452" y="76" width="176" height="10" fill="#b5a08a"/>
+      </g>
+      <!-- 烟囱与蒸汽 -->
+      <g stroke="#c9d8c9" stroke-width="3" stroke-linecap="round" fill="none">
+        <path d="M598 58 q-8 -12 2 -20 q10 -8 2 -18"/>
+      </g>
+      <!-- 冻干设备（中） -->
+      <g>
+        <rect x="286" y="104" width="112" height="48" rx="4" fill="#dfe8df" stroke="#7d9a7d" stroke-width="2.5"/>
+        <rect x="298" y="116" width="88" height="28" rx="2" fill="#f4faf4" stroke="#9db89d" stroke-width="1.5"/>
+        <circle cx="316" cy="130" r="6" fill="#c62828"/><circle cx="340" cy="130" r="6" fill="#c62828"/>
+        <circle cx="364" cy="130" r="6" fill="#c62828"/>
+        <path d="M398 118 h20 v10 h-20 Z" fill="#b5c8b5"/>
+        <rect x="274" y="152" width="136" height="8" rx="2" fill="#a89580"/>
+      </g>
+      <!-- 鲜果筐（左） -->
+      <g>
+        <path d="M84 150 h72 l-8 34 h-56 Z" fill="#c08a4a" stroke="#7d5222" stroke-width="2"/>
+        <path d="M84 150 h72" stroke="#7d5222" stroke-width="3"/>
+        <g fill="#c62828">
+          <circle cx="100" cy="142" r="7"/><circle cx="118" cy="138" r="7"/><circle cx="136" cy="142" r="7"/>
+          <circle cx="109" cy="130" r="6"/><circle cx="127" cy="130" r="6"/>
+        </g>
+        <path d="M96 150 q24 -14 48 0" stroke="#7d5222" stroke-width="2" fill="none"/>
+      </g>
+      <!-- 货车 -->
+      <g>
+        <rect x="176" y="126" width="62" height="30" rx="3" fill="#e8f0e8" stroke="#2f4f2f" stroke-width="2.5"/>
+        <path d="M238 136 h22 l10 12 v8 h-32 Z" fill="#cfe2cf" stroke="#2f4f2f" stroke-width="2.5"/>
+        <circle cx="196" cy="160" r="9" fill="#3a3a3a"/><circle cx="252" cy="160" r="9" fill="#3a3a3a"/>
+        <circle cx="196" cy="160" r="3.5" fill="#9db89d"/><circle cx="252" cy="160" r="3.5" fill="#9db89d"/>
+      </g>
+      <!-- 人物 -->
+      <ellipse cx="410" cy="212" rx="92" ry="7" fill="#dcc98e"/>
+      <g fill="#2f4f2f">
+        <circle cx="378" cy="180" r="9"/>
+        <path d="M368 190 q10 -8 20 0 v22 h-20 Z"/>
+        <path d="M387 197 l22 -10" stroke="#2f4f2f" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="414" cy="184" r="8"/>
+        <path d="M405 193 q9 -7 18 0 v19 h-18 Z"/>
+        <circle cx="446" cy="182" r="8"/>
+        <path d="M437 191 q9 -7 18 0 v21 h-18 Z"/>
+        <rect x="454" y="196" width="13" height="10" rx="1.5" fill="#e8f0e8" stroke="#2f4f2f" stroke-width="2"/>
+      </g>
+    </svg>
+
+    <div class="plans">
+      <div class="plan a">
+        <h3>设备与营运资金</h3>
+        冻干生产线设备 160 万元；另垫支营运资金 40 万元（原料备货、应收账款占用），项目结束全额收回。
+        <span class="lim">初始投资合计 200 万元</span>
+      </div>
+      <div class="plan b">
+        <h3>寿命与清理</h3>
+        设备可用 6 年，直线法折旧，预计残值 10 万元；第 6 年末变卖回收残值并收回营运资金。
+        <span class="lim">终结期回收额 50 万元</span>
+      </div>
+      <div class="plan c">
+        <h3>经营与税负</h3>
+        达产年销售收入 300 万元、原料成本 180 万元、其他付现成本 60 万元；所得税率 25%，亏损当年不计税。
+        <span class="lim">资金成本 10%</span>
+      </div>
+    </div>
+
+    <div class="databar">
+      <span>初始投资 200 万元</span>
+      <span>寿命 6 年</span>
+      <span>残值 10 万元</span>
+      <span>所得税率 25%</span>
+      <span>鲜果单耗 6 公斤/公斤</span>
+    </div>
+
+    <details class="meth">
+      <summary>方法速览：净现值法（先点开看方法，再动手决策）</summary>
+      <ul>
+        <li><b>投资项目的现金流量分三段</b>：初始现金流量（设备购置＋营运资金垫支，为流出）、营业净现金流量（寿命期内每年）、终结现金流量（残值回收＋营运资金回收）。</li>
+        <li><b>营业净现金流量＝净利润＋折旧</b>。折旧不付现，但要抵税——所以算税之前必须先扣折旧，算出现金流量时再加回来。</li>
+        <li><b>净现值＝未来报酬总现值−初始投资</b>。未来报酬总现值＝年营业净现金流量×年金现值系数＋终结期回收额×复利现值系数。</li>
+        <li><b>判据：净现值＞0 值得投资；净现值＜0 不值得；净现值＝0 恰好弥补资金成本</b>。单一方案看符号，多个互斥方案选净现值最大者。</li>
+        <li><b>内含报酬率是临界折现率</b>：折现率高于内含报酬率，项目由可行翻转为不可行。净现值随折现率提高而递减。</li>
+        <li>现值系数不硬算，<b>查下方现值系数速查表</b>（n＝6 那一列）。</li>
+      </ul>
+    </details>
+
+    <div class="cta">
+      <button class="btn solid" id="btnStart" type="button">处境清楚了，开始调参</button>
+    </div>
+  </section>
+
+  <!-- ================= 参数面板 ================= -->
+  <section class="card" id="secPanel">
+    <h2>二、调准参数 <span class="tag">拖动滑块，测算区实时重算；提交后再改参数，本轮作答自动重置</span></h2>
+
+    <div class="sld">
+      <div class="lab"><span>折现率（资金成本） <span class="hint">项目的及格线；越高越难达标，临界值就是内含报酬率</span></span><span class="val" id="vRate">10%</span></div>
+      <input type="range" id="sldRate" min="6" max="20" step="2" value="10" aria-label="折现率，百分比">
+    </div>
+
+    <div class="sld">
+      <div class="lab"><span>冻干售价 <span class="hint">影响年销售收入与临界售价</span></span><span class="val" id="vPrice">150 元/kg</span></div>
+      <input type="range" id="sldPrice" min="120" max="180" step="5" value="150" aria-label="冻干售价，元每千克">
+    </div>
+
+    <div class="sld">
+      <div class="lab"><span>鲜果收购价 <span class="hint">合作社内部结算价，直接进原料成本</span></span><span class="val" id="vCost">15.0 元/kg</span></div>
+      <input type="range" id="sldCost" min="10" max="20" step="0.5" value="15" aria-label="鲜果收购价，元每千克">
+    </div>
+
+    <div class="sld">
+      <div class="lab"><span>年加工量 <span class="hint">达产规模，同时放大收入与原料成本</span></span><span class="val" id="vQty">20 吨</span></div>
+      <input type="range" id="sldQty" min="12" max="28" step="1" value="20" aria-label="年加工量，吨">
+    </div>
+
+    <div class="presets">
+      <span class="cap">典型情境一键打版：</span>
+      <button class="chip" type="button" data-rate="10" data-price="150" data-cost="15" data-qty="20">理事会基准版</button>
+      <button class="chip" type="button" data-rate="16" data-price="150" data-cost="15" data-qty="18">规模缩小版</button>
+      <button class="chip" type="button" data-rate="10" data-price="150" data-cost="20" data-qty="20">鲜果涨价版</button>
+      <button class="chip" type="button" data-rate="10" data-price="165" data-cost="14" data-qty="24">销路打开版</button>
+      <button class="chip" type="button" data-rate="18" data-price="150" data-cost="15" data-qty="20">高折现率版</button>
+      <button class="btn ghost sm" id="btnDefault" type="button">恢复默认参数</button>
+    </div>
+    <div class="notice">提示：把折现率从 10% 一路拖到 18%–20%，看四项指标怎么集体翻脸——这就是「临界折现率」要教的事。</div>
+  </section>
+
+  <!-- ================= 测算区 ================= -->
+  <section class="card">
+    <h2>三、估算与看变化 <span class="tag">能直接算的实时显示；要你算的，提交前一律留「？」</span></h2>
+
+    <div class="estrow">
+      <div class="est"><div class="k">年销售收入</div><div class="v" id="eRev">300.00</div><div class="src">＝加工量 × 售价</div></div>
+      <div class="est"><div class="k">年原料成本</div><div class="v" id="eMat">180.00</div><div class="src">＝加工量 × 单耗 6 × 收购价</div></div>
+      <div class="est"><div class="k">年其他付现成本</div><div class="v" id="eOth">60.00</div><div class="src">人工、能源、包装、运费（固定）</div></div>
+    </div>
+
+    <div class="estrow" id="estHide">
+      <div class="est hide"><div class="k">年折旧额</div><div class="v q" id="eDep">？</div><div class="src">第一问</div></div>
+      <div class="est hide"><div class="k">年税前利润</div><div class="v q" id="eEbit">？</div><div class="src">揭晓后显示</div></div>
+      <div class="est hide"><div class="k">年所得税</div><div class="v q" id="eTax">？</div><div class="src">揭晓后显示</div></div>
+      <div class="est hide"><div class="k">年净利润</div><div class="v q" id="eNpft">？</div><div class="src">揭晓后显示</div></div>
+      <div class="est hide"><div class="k">年营业净现金流量</div><div class="v q" id="eNcf">？</div><div class="src">第二问</div></div>
+    </div>
+
+    <div class="chartbox">
+      <h4>项目现金流量时间轴（单位：万元）</h4>
+      <div class="leg">
+        <span><i style="background:#8a6d1f"></i>初始投资（已给出）</span>
+        <span><i style="background:#2e7d32"></i>营业净现金流量</span>
+        <span><i style="background:#1565c0"></i>含终结期回收额</span>
+        <span><i style="background:#c62828"></i>净流出</span>
+        <span><i style="background:#f2f8f2;border:1px dashed #9db89d"></i>待你计算</span>
+      </div>
+      <svg class="chart" viewBox="0 0 640 356" role="img" aria-label="项目现金流量时间轴图，第0年为初始投资流出，第1至第5年为营业净现金流量，第6年含终结期回收额">
+        <g font-size="11" fill="#7d8f7d" text-anchor="end">
+          <text x="60" y="112" id="glUp">100</text>
+          <text x="60" y="184">0</text>
+          <text x="60" y="256" id="glDn">−100</text>
+        </g>
+        <g stroke="#e3eee3" stroke-width="1">
+          <path id="gyUp" d="M70 108 H610"/><path id="gyDn" d="M70 252 H610"/>
+        </g>
+        <path d="M70 180 H610" stroke="#9db89d" stroke-width="2"/>
+        <path id="axY" d="M70 36 V332" stroke="#9db89d" stroke-width="1.5"/>
+        <g font-size="11" fill="#5a6b5a" text-anchor="middle">
+          <text x="111" y="26">初始投资</text>
+          <text x="330" y="26">营业净现金流量（第 1—5 年各年相等）</text>
+          <text x="573" y="26">＋终结回收</text>
+        </g>
+        <g stroke="#c9d8c9" stroke-width="1" stroke-dasharray="3 3">
+          <path d="M111 32 V40"/><path d="M330 32 V40"/><path d="M573 32 V40"/>
+        </g>
+        <g font-size="11.5" fill="#5a6b5a" text-anchor="middle">
+          <text x="111" y="344">第0年</text>
+          <text x="188" y="344">第1年</text>
+          <text x="265" y="344">第2年</text>
+          <text x="342" y="344">第3年</text>
+          <text x="419" y="344">第4年</text>
+          <text x="496" y="344">第5年</text>
+          <text x="573" y="344">第6年</text>
+        </g>
+        <rect id="cf0" x="88" y="180" width="46" height="0" fill="#8a6d1f" rx="3"/>
+        <rect id="cf1" x="165" y="180" width="46" height="0" rx="3"/>
+        <rect id="cf2" x="242" y="180" width="46" height="0" rx="3"/>
+        <rect id="cf3" x="319" y="180" width="46" height="0" rx="3"/>
+        <rect id="cf4" x="396" y="180" width="46" height="0" rx="3"/>
+        <rect id="cf5" x="473" y="180" width="46" height="0" rx="3"/>
+        <rect id="cf6" x="550" y="180" width="46" height="0" fill="#1565c0" rx="3"/>
+        <g font-size="13" font-weight="700" text-anchor="middle" fill="#22331f">
+          <text id="cfv0" x="111" y="180">-200.00</text>
+          <text id="cfv1" x="188" y="180">？</text>
+          <text id="cfv2" x="265" y="180">？</text>
+          <text id="cfv3" x="342" y="180">？</text>
+          <text id="cfv4" x="419" y="180">？</text>
+          <text id="cfv5" x="496" y="180">？</text>
+          <text id="cfv6" x="573" y="180">？</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="mgrid">
+      <div class="mcard" id="mcNpv">
+        <div class="nm">净现值</div>
+        <div class="big q" id="vNpv">？</div>
+        <div class="unit">万元</div>
+        <div class="brk">＞0 值得投资</div>
+      </div>
+      <div class="mcard" id="mcIrr">
+        <div class="nm">内含报酬率</div>
+        <div class="big q" id="vIrr">？</div>
+        <div class="unit">临界折现率</div>
+        <div class="brk">折现率越过它即翻脸</div>
+      </div>
+      <div class="mcard" id="mcPp">
+        <div class="nm">静态回收期</div>
+        <div class="big q" id="vPp">？</div>
+        <div class="unit">年</div>
+        <div class="brk">不考虑资金时间价值</div>
+      </div>
+      <div class="mcard" id="mcPi">
+        <div class="nm">现值指数</div>
+        <div class="big q" id="vPi">？</div>
+        <div class="unit">每元投入的回报</div>
+        <div class="brk">＞1 值得投资</div>
+      </div>
+    </div>
+
+    <details class="meth" id="coefBox">
+      <summary>现值系数速查表（n＝6，随折现率滑块自动高亮当前行）</summary>
+      <div class="coefwrap">
+        <table class="co" id="coPva">
+          <caption style="font-size:12px;color:var(--ink-soft);padding-bottom:4px">年金现值系数（P/A, i, n）＝[1−(1+i)<sup>−n</sup>]÷i</caption>
+          <thead><tr><th>折现率＼年数</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <table class="co" id="coPvf">
+          <caption style="font-size:12px;color:var(--ink-soft);padding-bottom:4px">复利现值系数（P/F, i, n）＝(1+i)<sup>−n</sup></caption>
+          <thead><tr><th>折现率＼年数</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </details>
+  </section>
+
+  <!-- ================= 决策区 ================= -->
+  <section class="card" id="secDecide">
+    <h2>四、做出决策 <span class="tag">六问，先自己算再提交；系统按 ±0.5% 容差核对</span></h2>
+
+    <div class="q">
+      <div class="qt">第一问：设备按直线法计提折旧（不考虑清理费用），<b>每年的折旧额</b>是多少？</div>
+      <div class="qh">年折旧额＝(设备原值−预计残值)÷使用年限 ＝ (160 − 10) ÷ 6</div>
+      <div class="fillrow">
+        <input type="text" id="inpDep" inputmode="decimal" placeholder="填入数字，如 25" aria-label="设备年折旧额">
+        <span class="u">万元</span>
+      </div>
+      <div class="fb" id="fbDep" hidden></div>
+    </div>
+
+    <div class="q">
+      <div class="qt">第二问：达产年的<b>营业净现金流量</b>是多少？</div>
+      <div class="qh">营业净现金流量＝净利润＋折旧。路径：<code>销售收入−原料成本−其他付现成本−折旧＝税前利润</code> → <code>×25%＝所得税</code> → <code>税前−所得税＝净利润</code> → <code>净利润＋折旧</code>。税前利润为负时，当年不计所得税。</div>
+      <div class="fillrow">
+        <input type="text" id="inpNcf" inputmode="decimal" placeholder="填入数字，如 51.25" aria-label="年营业净现金流量">
+        <span class="u">万元</span>
+      </div>
+      <div class="fb" id="fbNcf" hidden></div>
+    </div>
+
+    <div class="q">
+      <div class="qt">第三问：按当前折现率计算，该项目的<b>净现值</b>是多少？</div>
+      <div class="qh">净现值＝未来报酬总现值−初始投资；未来报酬总现值＝年营业净现金流量×(P/A, i, 6) ＋ 终结期回收额 50 ×(P/F, i, 6)。现值系数查上方速查表。</div>
+      <div class="fillrow">
+        <input type="text" id="inpNpv" inputmode="decimal" placeholder="填入数字，如 51.43" aria-label="项目净现值">
+        <span class="u">万元</span>
+      </div>
+      <div class="fb" id="fbNpv" hidden></div>
+    </div>
+
+    <div class="q">
+      <div class="qt">第四问：据此判断，这条冻干生产线<b>值不值得投资</b>？</div>
+      <div class="qh">只看一个符号：净现值是正、是负，还是接近零。</div>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="pick" value="yes"><span>值得投资——净现值为正，抵平资金成本还有剩余</span></label>
+        <label class="opt"><input type="radio" name="pick" value="no"><span>不值得投资——净现值为负，赚不回资金成本</span></label>
+        <label class="opt"><input type="radio" name="pick" value="flat"><span>净现值接近零，需结合非财务因素再定</span></label>
+      </div>
+      <div class="fb" id="fbPick" hidden></div>
+    </div>
+
+    <div class="q">
+      <div class="qt" id="qtPp">第五问：该项目的<b>静态回收期</b>是多少年？</div>
+      <div class="qh" id="qhPp">静态回收期＝初始投资 ÷ 年营业净现金流量（各年营业净现金流量相等时，不考虑资金时间价值）。</div>
+      <div class="fillrow">
+        <input type="text" id="inpPp" inputmode="decimal" placeholder="填入数字，如 3.9" aria-label="静态回收期">
+        <span class="u" id="uPp">年</span>
+      </div>
+      <div class="fb" id="fbPp" hidden></div>
+    </div>
+
+    <div class="q">
+      <div class="qt">第六问：其他参数不变，冻干售价降到多少，这个项目会由可行<b>翻转为不可行</b>？（即令净现值＝0 的临界售价）</div>
+      <div class="qh">先反解「净现值＝0 时需要多大的年营业净现金流量」，再沿「售价 → 销售收入 → 税前利润 → 净利润 → 营业净现金流量」一路倒推回售价。</div>
+      <div class="fillrow">
+        <input type="text" id="inpCp" inputmode="decimal" placeholder="填入数字，如 142.13" aria-label="临界冻干售价">
+        <span class="u">元/kg</span>
+      </div>
+      <div class="fb" id="fbCp" hidden></div>
+    </div>
+
+    <div class="trynote" id="tryNote">提示：第一问别忘了折旧基数是「原值−残值」；第二问的净利润是税后的，别把税前利润当成现金流量；第三问查表时认准 n＝6 那一列；第六问的解一定在「保本售价」之上——净现值为零不等于不亏不赚，还要覆盖资金成本。</div>
+    <div class="submitrow">
+      <button class="btn solid" id="btnSubmit" type="button">提交作答，核对结果</button>
+    </div>
+  </section>
+
+  <!-- ================= 揭晓区 ================= -->
+  <section class="card reveal-anim" id="revealCard" hidden>
+    <h2>五、核对与复盘 <span class="tag">分步过程、临界条件、如果当初</span></h2>
+
+    <div class="resline">
+      <div class="fb" id="resDep" hidden></div>
+      <div class="fb" id="resNcf" hidden></div>
+      <div class="fb" id="resNpv" hidden></div>
+      <div class="fb" id="resPick" hidden></div>
+      <div class="fb" id="resPp" hidden></div>
+      <div class="fb" id="resCp" hidden></div>
+    </div>
+
+    <details class="calc" open>
+      <summary>分步过程一：营业净现金流量的估算（注意折旧抵税）</summary>
+      <div class="cstep"><span class="k">第一步 · 年折旧额</span><span class="f">＝(160 − 10) ÷ 6 ＝</span><span class="v pos" id="sDep">25.00</span><span class="f">万元</span></div>
+      <div class="cstep"><span class="k">第二步 · 年税前利润</span><span class="f">＝销售收入 <span id="sRev">300.00</span> − 原料成本 <span id="sMat">180.00</span> − 其他付现成本 60.00 − 折旧 <span id="sDep2">25.00</span> ＝</span><span class="v pos" id="sEbit">35.00</span><span class="f">万元</span></div>
+      <div class="cstep"><span class="k">第三步 · 年所得税</span><span class="f">＝税前利润 <span id="sEbit2">35.00</span> × 25% ＝</span><span class="v pos" id="sTax">8.75</span><span class="f">万元<b id="sTaxNote" hidden>（税前利润为负，当年不计所得税）</b></span></div>
+      <div class="cstep"><span class="k">第四步 · 年净利润</span><span class="f">＝税前利润 <span id="sEbit3">35.00</span> − 所得税 <span id="sTax2">8.75</span> ＝</span><span class="v pos" id="sNpft">26.25</span><span class="f">万元</span></div>
+      <div class="cstep"><span class="k">第五步 · 年营业净现金流量</span><span class="f">＝净利润 <span id="sNpft2">26.25</span> ＋ 折旧 <span id="sDep3">25.00</span> ＝</span><span class="v pos" id="sNcf">51.25</span><span class="f">万元</span></div>
+      <div class="cstep"><span class="k">第六步 · 终结期回收额</span><span class="f">＝残值回收 10.00 ＋ 营运资金回收 40.00 ＝</span><span class="v pos" id="sRec">50.00</span><span class="f">万元（第 6 年末）</span></div>
+      <div class="callout">为什么算税要先扣折旧、算现金流量又要加回折旧？<b>折旧不付现，但它能少交税</b>——少交的税是真金白银的现金流入，所以营业净现金流量＝净利润＋折旧。</div>
+    </details>
+
+    <details class="calc" open>
+      <summary>分步过程二：折现与净现值</summary>
+      <div class="cstep"><span class="k">第七步 · 查现值系数</span><span class="f">n＝6，折现率 <span id="sRate">10%</span>：年金现值系数 (P/A, i, 6)＝<span id="sPva">4.3553</span>；复利现值系数 (P/F, i, 6)＝<span id="sPvf">0.5645</span></span></div>
+      <div class="cstep"><span class="k">第八步 · 未来报酬总现值</span><span class="f">＝年营业净现金流量 <span id="sNcf2">51.25</span> × <span id="sPva2">4.3553</span> ＋ 终结回收 50.00 × <span id="sPvf2">0.5645</span> ＝ <span id="sTerm1">223.21</span> ＋ <span id="sTerm2">28.22</span> ＝</span><span class="v pos" id="sPvIn">251.43</span><span class="f">万元</span></div>
+      <div class="cstep"><span class="k">第九步 · 净现值</span><span class="f">＝未来报酬总现值 <span id="sPvIn2">251.43</span> − 初始投资 200.00 ＝</span><span class="v pos" id="sNpv">51.43</span><span class="f">万元</span></div>
+      <div class="cstep"><span class="k">辅助指标</span><span class="f">现值指数＝251.43 ÷ 200.00＝<span id="sPi">1.26</span>；平均报酬率＝净利润 26.25 ÷ 200.00＝<span id="sArr">13.12%</span>；静态回收期＝200.00 ÷ 51.25＝<span id="sPp">3.90</span> 年</span></div>
+      <div class="cstep"><span class="k">第十步 · 内含报酬率</span><span class="f">令净现值＝0 反解折现率，得内含报酬率＝<span id="sIrr">17.60%</span>。<b id="sIrrNote" hidden>（当前参数下各年营业净现金流量不足以收回初始投资，内含报酬率不存在）</b></span></div>
+      <div class="callout">临界翻转条件：<b>折现率高于 <span id="cIrr">17.60%</span>，项目由可行翻转为不可行</b>。把折现率滑块从 10% 拖到 18%–20%，看净现值怎么由正转负。</div>
+    </details>
+
+    <h2 style="margin-top:16px">临界条件速览：每个参数各自的红线在哪</h2>
+    <table class="rev">
+      <thead>
+        <tr><th>参数</th><th>当前值</th><th>临界值（令净现值＝0）</th><th>安全方向</th></tr>
+      </thead>
+      <tbody>
+        <tr id="rowRate"><td>折现率</td><td class="num" id="cRate">10%</td><td class="num" id="cRateV">17.60%</td><td id="cRateD"></td></tr>
+        <tr id="rowPrice"><td>冻干售价</td><td class="num" id="cPrice">150 元/kg</td><td class="num" id="cPriceV">142.13 元/kg</td><td id="cPriceD"></td></tr>
+        <tr id="rowCost"><td>鲜果收购价</td><td class="num" id="cCost">15.0 元/kg</td><td class="num" id="cCostV">16.31 元/kg</td><td id="cCostD"></td></tr>
+        <tr id="rowQty"><td>年加工量</td><td class="num" id="cQty">20 吨</td><td class="num" id="cQtyV">17.38 吨</td><td id="cQtyD"></td></tr>
+      </tbody>
+    </table>
+
+    <h2 style="margin-top:16px">如果当初：投，还是不投</h2>
+    <table class="rev">
+      <thead>
+        <tr><th>选择</th><th>净现值（万元）</th><th>说明</th></tr>
+      </thead>
+      <tbody>
+        <tr id="rowYes"><td>投建这条冻干生产线</td><td class="num" id="rvYes">51.43</td><td id="rvYesD"></td></tr>
+        <tr id="rowNo"><td>不投，200 万元按资金成本另作安排</td><td class="num" id="rvNo">0.00</td><td>这是比较的基准线：不投资的机会收益就是折现率本身</td></tr>
+        <tr><td>两者之差</td><td class="num" id="rvDiff">51.43</td><td id="rvDiffD"></td></tr>
+      </tbody>
+    </table>
+
+    <div class="ending" id="endingText"></div>
+
+    <div class="scorebox">
+      <span class="sc" id="scoreVal">0</span><span class="u">分</span>
+      <span class="word" id="scoreWord">待改进</span>
+      <span class="best" id="bestVal"></span>
+    </div>
+
+    <div class="cta" style="margin-top:14px">
+      <button class="btn ghost" id="btnRestart" type="button">重新挑战一轮</button>
+    </div>
+  </section>
+
+  <!-- ================= 导出区 ================= -->
+  <section class="card export locked" id="exportCard">
+    <h2>六、带走成果 <span class="tag">经营决策卡 · 五字段</span></h2>
+    <div class="locknote" id="lockNote">完成决策核对后，此处解锁，可生成并导出你的经营决策卡。</div>
+    <div id="exportBody" hidden>
+      <label for="inpName">姓名 / 学号（填入后写入决策卡）</label>
+      <input type="text" id="inpName" placeholder="如：屈梦汐 20240123">
+      <label for="cardArea">经营决策卡内容（可编辑，导出前请通读一遍）</label>
+      <textarea id="cardArea" aria-label="经营决策卡内容"></textarea>
+      <div class="acts">
+        <button class="btn solid sm" id="btnCopy" type="button">复制决策卡</button>
+        <button class="btn ghost sm" id="btnDownload" type="button">下载为文本文件</button>
+        <button class="btn ghost sm" id="btnRebuild" type="button">按当前参数重建</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">第七章 长期投资决策 · 虚拟仿真实训 第 1 版<br>单文件离线课件，双击即用；案例与数据为教学示例，可按本地实际调整。</div>
+</div>
+
+<div id="toast" role="status"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ================= 数据与参数 ================= */
+var DATA={ eq:160, wc:40, life:6, salv:10, taxr:0.25, other:60, ratio:6 };
+var DEF={ rate:10, price:150, costW:15, qty:20 };
+var P={ rate:DEF.rate, price:DEF.price, costW:DEF.costW, qty:DEF.qty };
+var BEST_KEY='jx_ch7_sim_v1_best';
+var st={ submitted:false, resolved:false,
+  t:{dep:0,ncf:0,npv:0,pick:0,pp:0,cp:0},
+  ok:{dep:false,ncf:false,npv:false,pick:false,pp:false,cp:false},
+  score:0, best:loadBest() };
+
+function loadBest(){ try{ var v=parseInt(localStorage.getItem(BEST_KEY)||'0',10); return isFinite(v)?v:0; }catch(e){ return 0; } }
+function saveBest(v){ try{ localStorage.setItem(BEST_KEY,String(v)); }catch(e){} }
+
+function $(id){ return document.getElementById(id); }
+function fmt(n,d){ d=(d===undefined)?2:d; n=Math.round(n*Math.pow(10,d))/Math.pow(10,d);
+  var s=String(Math.abs(n).toFixed(d)).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  return (n<0?'-':'')+s; }
+function clamp(v,a,b){ return v<a?a:(v>b?b:v); }
+
+var toastTimer=0;
+function toast(msg){
+  var t=$('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove('show'); },2400);
+}
+
+/* ================= 核心计算（全部实时，无写死常量） ================= */
+function pvA(i,n){ var v=Math.pow(1+i,-n); return (1-v)/i; }
+function pvF(i,n){ return Math.pow(1+i,-n); }
+
+function baseOf(price,costW,qty){
+  var rev=qty*0.1*price;
+  var mat=qty*0.6*costW;
+  var dep=(DATA.eq-DATA.salv)/DATA.life;
+  var ebit=rev-mat-DATA.other-dep;
+  var tax=ebit>0?ebit*DATA.taxr:0;
+  var npft=ebit-tax;
+  var ncf=npft+dep;
+  var rec=DATA.salv+DATA.wc;
+  var i0=DATA.eq+DATA.wc;
+  return {rev:rev,mat:mat,dep:dep,ebit:ebit,tax:tax,npft:npft,ncf:ncf,rec:rec,i0:i0};
+}
+function npvAt(price,costW,qty,r){
+  var b=baseOf(price,costW,qty);
+  return b.ncf*pvA(r,DATA.life)+b.rec*pvF(r,DATA.life)-b.i0;
+}
+function calcIrr(price,costW,qty){
+  if(npvAt(price,costW,qty,1e-7)<=0){ return null; }   // 连零折现率都不足 → IRR 不存在
+  var lo=1e-7, hi=3;
+  for(var k=0;k<200;k++){
+    var mid=(lo+hi)/2;
+    if(npvAt(price,costW,qty,mid)>0){ lo=mid; } else { hi=mid; }
+  }
+  return (lo+hi)/2;
+}
+
+function calc(p){
+  var b=baseOf(p.price,p.costW,p.qty);
+  var i=p.rate/100;
+  var pva=pvA(i,DATA.life), pvf=pvF(i,DATA.life);
+  var pvIn=b.ncf*pva+b.rec*pvf;
+  var npv=pvIn-b.i0;
+  var pi=pvIn/b.i0;
+  var pp=b.ncf>0?(b.i0/b.ncf):null;
+  var arr=b.npft/b.i0;
+  var irr=calcIrr(p.price,p.costW,p.qty);
+  /* 临界值：令 NPV＝0 反解 */
+  var ncfStar=(b.i0-b.rec*pvf)/pva;
+  var critPrice=(ncfStar-b.dep+0.75*(b.mat+DATA.other+b.dep))/(p.qty*0.1*0.75);
+  var kQ=0.75*(0.1*p.price-0.6*p.costW);
+  var critQty=kQ>0?(ncfStar-(0.75*(-DATA.other-b.dep)+b.dep))/kQ:null;
+  var critW=(0.75*(0.1*p.qty*p.price-DATA.other-b.dep)+b.dep-ncfStar)/(0.45*p.qty);
+  return {
+    rev:b.rev, mat:b.mat, dep:b.dep, ebit:b.ebit, tax:b.tax, npft:b.npft,
+    ncf:b.ncf, rec:b.rec, i0:b.i0,
+    pva:pva, pvf:pvf, pvIn:pvIn, npv:npv, pi:pi, pp:pp, arr:arr, irr:irr,
+    ncfStar:ncfStar, critPrice:critPrice, critQty:critQty, critW:critW,
+    y6:b.ncf+b.rec
+  };
+}
+
+/* ================= 数字滚动动画（定时缓出，帧率无关） ================= */
+/* 绘图区：零线 ZY；上方可用至 TOP（避开顶部引注），下方可用至 BOT（避开花年份标签） */
+var ZY=180, TOP=62, BOT=332, SCL=0.72;
+var disp={ncf:0,y6:0,npv:0,pp:0,pi:0,irr:0}, tgt={ncf:0,y6:0,npv:0,pp:0,pi:0,irr:0};
+var anim={active:false,t0:0,dur:460,from:null};
+/* 自适应缩放：默认参数保持 0.72 原样；极端参数下整体缩小区，保证柱体与数值标签不出画布 */
+function layoutChart(r){
+  var posMx=Math.max(r.ncf,r.y6,0), negMx=Math.max(Math.abs(r.i0),Math.abs(r.ncf),Math.abs(r.y6),0);
+  var s=Math.min(0.72,(ZY-TOP)/Math.max(posMx,1),(BOT-ZY)/Math.max(negMx,1));
+  SCL=s;
+  var up=ZY-100*s, dn=ZY+100*s;
+  $('gyUp').setAttribute('d','M70 '+up+' H610');
+  $('gyDn').setAttribute('d','M70 '+dn+' H610');
+  $('glUp').setAttribute('y',up+4);
+  $('glDn').setAttribute('y',dn+4);
+}
+function paintTweened(){
+  setCFBar(1,disp.ncf); setCFBar(2,disp.ncf); setCFBar(3,disp.ncf);
+  setCFBar(4,disp.ncf); setCFBar(5,disp.ncf); setCFBar(6,disp.y6);
+  if(st.resolved){
+    $('vNpv').textContent=fmt(disp.npv);
+    $('vPp').textContent=(disp.pp>0?fmt(disp.pp,2):'无法回收');
+    $('vPi').textContent=fmt(disp.pi,2);
+    $('vIrr').textContent=(disp.irr>0?fmt(disp.irr*100,2)+'%':'不存在');
+  }
+}
+function setCFBar(idx,v){
+  var rect=$('cf'+idx), lab=$('cfv'+idx);
+  var h=Math.abs(v)*SCL;
+  if(v>=0){ rect.setAttribute('y',ZY-h); rect.setAttribute('height',h); }
+  else{ rect.setAttribute('y',ZY); rect.setAttribute('height',h); }
+  /* 配色：第0年初始投资＝金；营业年负值＝红；第6年含回收＝蓝；其余营业年正值＝绿 */
+  var col=(idx===0)?'#8a6d1f':(v<0?'#c62828':(idx===6?'#1565c0':'#2e7d32'));
+  rect.setAttribute('fill', col);
+  rect.removeAttribute('stroke'); rect.removeAttribute('stroke-dasharray'); rect.removeAttribute('stroke-width');
+  lab.textContent=fmt(v);
+  if(v>=0){
+    lab.setAttribute('y',ZY-h-8); lab.setAttribute('fill', v<0?'#c62828':'#22331f');
+  }else{
+    lab.setAttribute('y',ZY+h-7); lab.setAttribute('fill','#ffffff');
+  }
+}
+function placeholderBar(idx){
+  var rect=$('cf'+idx), lab=$('cfv'+idx);
+  var ph=56;
+  rect.setAttribute('y',ZY-ph); rect.setAttribute('height',ph);
+  rect.setAttribute('fill','#f2f8f2'); rect.setAttribute('stroke','#9db89d');
+  rect.setAttribute('stroke-dasharray','5 4'); rect.setAttribute('stroke-width','1.5');
+  lab.textContent='？'; lab.setAttribute('y',ZY-ph-8); lab.setAttribute('fill','#5a6b5a');
+}
+function animStep(){
+  var now=(window.performance&&performance.now)?performance.now():Date.now();
+  var k=clamp((now-anim.t0)/anim.dur,0,1);
+  var e=1-Math.pow(1-k,3);
+  ['ncf','y6','npv','pp','pi','irr'].forEach(function(key){
+    disp[key]=anim.from[key]+(tgt[key]-anim.from[key])*e;
+  });
+  paintTweened();
+  if(k<1){ requestAnimationFrame(animStep); }
+  else{
+    anim.active=false;
+    ['ncf','y6','npv','pp','pi','irr'].forEach(function(key){ disp[key]=tgt[key]; });
+    paintTweened();
+  }
+}
+function kick(){
+  var r=calc(P);
+  layoutChart(r);
+  setCFBar(0,-r.i0);
+  if(st.resolved){
+    tgt.ncf=r.ncf; tgt.y6=r.y6; tgt.npv=r.npv; tgt.pp=(r.pp===null?0:r.pp);
+    tgt.pi=r.pi; tgt.irr=(r.irr===null?0:r.irr);
+    anim.from={ncf:disp.ncf,y6:disp.y6,npv:disp.npv,pp:disp.pp,pi:disp.pi,irr:disp.irr};
+    anim.t0=(window.performance&&performance.now)?performance.now():Date.now();
+    if(!anim.active){ anim.active=true; requestAnimationFrame(animStep); }
+  }else{
+    for(var k2=1;k2<=6;k2++){ placeholderBar(k2); }
+  }
+  renderStatic(r);
+}
+
+/* ================= 静态渲染（就地更新，不整体重渲染） ================= */
+function renderStatic(r){
+  $('vRate').textContent=P.rate+'%';
+  $('vPrice').textContent=P.price+' 元/kg';
+  $('vCost').textContent=P.costW.toFixed(1)+' 元/kg';
+  $('vQty').textContent=P.qty+' 吨';
+
+  $('eRev').textContent=fmt(r.rev);
+  $('eMat').textContent=fmt(r.mat);
+  $('eOth').textContent=fmt(DATA.other);
+
+  if(st.resolved){
+    $('eDep').textContent=fmt(r.dep); $('eDep').classList.remove('q');
+    $('eEbit').textContent=fmt(r.ebit); $('eEbit').classList.remove('q');
+    $('eTax').textContent=fmt(r.tax); $('eTax').classList.remove('q');
+    $('eNpft').textContent=fmt(r.npft); $('eNpft').classList.remove('q');
+    $('eNcf').textContent=fmt(r.ncf); $('eNcf').classList.remove('q');
+    $('estHide').querySelectorAll('.est').forEach(function(el){ el.classList.remove('hide'); });
+    $('mcNpv').classList.toggle('good', r.npv>0);
+    $('mcNpv').classList.toggle('bad', r.npv<=0);
+    $('mcIrr').classList.toggle('good', r.irr!==null&&r.irr>P.rate/100);
+    $('mcIrr').classList.toggle('bad', r.irr===null||r.irr<=P.rate/100);
+    $('mcPp').classList.toggle('good', r.pp!==null&&r.pp<DATA.life);
+    $('mcPp').classList.toggle('bad', r.pp===null||r.pp>=DATA.life);
+    $('mcPi').classList.toggle('good', r.pi>1);
+    $('mcPi').classList.toggle('bad', r.pi<=1);
+    ['vNpv','vIrr','vPp','vPi'].forEach(function(id){ $(id).classList.remove('q'); });
+  }else{
+    ['eDep','eEbit','eTax','eNpft','eNcf'].forEach(function(id){ $(id).textContent='？'; $(id).classList.add('q'); });
+    $('estHide').querySelectorAll('.est').forEach(function(el){ el.classList.add('hide'); });
+    ['mcNpv','mcIrr','mcPp','mcPi'].forEach(function(id){
+      $(id).classList.remove('good','bad');
+      $(id).querySelector('.big').classList.add('q');
+    });
+    $('vNpv').textContent='？'; $('vIrr').textContent='？'; $('vPp').textContent='？'; $('vPi').textContent='？';
+  }
+
+  /* 第五问：年营业净现金流量不为正时，问法切换为「能否收回」 */
+  var ppNum=r.ncf>0;
+  $('qtPp').innerHTML=ppNum
+    ? '第五问：该项目的<b>静态回收期</b>是多少年？'
+    : '第五问：当前参数下年营业净现金流量已不为正，6 年寿命期内<b>能否收回</b> 200 万元初始投资？请填「能」或「不能」。';
+  $('qhPp').textContent=ppNum
+    ? '静态回收期＝初始投资 ÷ 年营业净现金流量（各年营业净现金流量相等时，不考虑资金时间价值）。'
+    : '提示：营业净现金流量是流回项目的现金。它不为正时，初始投资就收不回来。';
+  $('uPp').textContent=ppNum?'年':'';
+  $('inpPp').setAttribute('placeholder', ppNum?'填入数字，如 3.9':'填入「能」或「不能」');
+
+  highlightCoef();
+}
+
+/* ================= 现值系数速查表 ================= */
+var CO_RATES=[6,8,10,12,14,16,18,20];
+(function buildCoef(){
+  function fill(tblId,fn){
+    var tb=$(tblId).querySelector('tbody');
+    var html='';
+    for(var k=0;k<CO_RATES.length;k++){
+      html+='<tr data-r="'+CO_RATES[k]+'"><td class="rh">'+CO_RATES[k]+'%</td>';
+      for(var n=1;n<=6;n++){ html+='<td>'+fn(CO_RATES[k]/100,n).toFixed(4)+'</td>'; }
+      html+='</tr>';
+    }
+    tb.innerHTML=html;
+  }
+  fill('coPva',function(i,n){ return pvA(i,n); });
+  fill('coPvf',function(i,n){ return pvF(i,n); });
+})();
+function highlightCoef(){
+  var rows=document.querySelectorAll('#coPva tbody tr, #coPvf tbody tr');
+  for(var i=0;i<rows.length;i++){
+    rows[i].classList.toggle('on', rows[i].getAttribute('data-r')===String(P.rate));
+  }
+}
+
+/* ================= 进度步骤 ================= */
+function setStep(n){
+  var els=document.querySelectorAll('#steps .step');
+  for(var i=0;i<els.length;i++){
+    var s=i+1;
+    els[i].classList.toggle('done', s<n);
+    els[i].classList.toggle('cur', s===n);
+  }
+}
+
+/* ================= 轮次控制 ================= */
+var IDS={dep:'inpDep',ncf:'inpNcf',npv:'inpNpv',pick:null,pp:'inpPp',cp:'inpCp'};
+function resetRound(byParam){
+  st.submitted=false; st.resolved=false;
+  st.t={dep:0,ncf:0,npv:0,pick:0,pp:0,cp:0};
+  st.ok={dep:false,ncf:false,npv:false,pick:false,pp:false,cp:false};
+  st.score=0;
+  $('revealCard').hidden=true;
+  ['fbDep','fbNcf','fbNpv','fbPick','fbPp','fbCp'].forEach(function(id){ $(id).hidden=true; });
+  ['resDep','resNcf','resNpv','resPick','resPp','resCp'].forEach(function(id){ $(id).hidden=true; });
+  $('tryNote').textContent='提示：第一问别忘了折旧基数是「原值−残值」；第二问的净利润是税后的，别把税前利润当成现金流量；第三问查表时认准 n＝6 那一列；第六问的解一定在「保本售价」之上——净现值为零不等于不亏不赚，还要覆盖资金成本。';
+  var radios=document.querySelectorAll('input[name=pick]');
+  for(var i=0;i<radios.length;i++){ radios[i].disabled=false; radios[i].checked=false; }
+  document.querySelectorAll('.opt').forEach(function(el){ el.classList.remove('sel'); });
+  ['inpDep','inpNcf','inpNpv','inpPp','inpCp'].forEach(function(id){ $(id).disabled=false; $(id).value=''; });
+  $('btnSubmit').disabled=false;
+  lockExport(true);
+  setStep(2);
+  if(byParam){ toast('参数已变动，本轮作答已重置'); }
+}
+
+/* ================= 提交与判定 ================= */
+function readChoice(){
+  var el=document.querySelector('input[name=pick]:checked');
+  return el?el.value:null;
+}
+function numOf(id){
+  var v=$(id).value.replace(/[^\d.\-]/g,'');
+  return parseFloat(v);
+}
+/* 核对容差：相对 ±0.5%；答案接近 0 时退到绝对 ±0.05，避免分母趋零无法通过 */
+function near(a,b){
+  if(!isFinite(a)){ return false; }
+  var denom=Math.max(Math.abs(b),1e-9);
+  return Math.abs(a-b)/denom<=0.005 || Math.abs(a-b)<=0.05;
+}
+function gradeItem(key,fbId,ok,msgOk,msgBad,tries){
+  if(st.t[key]>=3){ return false; }        /* 已三次未过，该问锁定 */
+  var fb=$(fbId);
+  fb.hidden=false;
+  if(ok){
+    st.ok[key]=true;
+    fb.className='fb ok';
+    fb.innerHTML=msgOk;
+    if(IDS[key]){ $(IDS[key]).disabled=true; }
+    return true;
+  }
+  st.t[key]++;
+  if(st.t[key]>=3){
+    fb.className='fb bad';
+    fb.innerHTML=msgBad;
+    if(IDS[key]){ $(IDS[key]).disabled=true; }
+  }else{
+    fb.className='fb bad';
+    fb.innerHTML='不对，再算一次。'+tries[st.t[key]-1];
+  }
+  return false;
+}
+function grade(){
+  if(st.resolved){ return; }
+  var r=calc(P);
+  var anyAction=false;
+  var done={};
+
+  /* 第一问：年折旧额（±0.5%） */
+  if(!st.ok.dep && $(IDS.dep).value.replace(/\s/g,'')!==''){
+    anyAction=true;
+    var v=numOf('inpDep');
+    gradeItem('dep','fbDep', near(v,r.dep),
+      '计算正确：年折旧额 '+fmt(r.dep)+' 万元，容差核对通过。',
+      '三次未算对，年折旧额是 <b>'+fmt(r.dep)+'</b> 万元＝(160−10)÷6，推导看下方分步过程。',
+      ['折旧的基数是「原值−残值」，不是原值： (160 − 10) ÷ 6。',
+       '再算一次：(160 − 10) ÷ 6 ＝ 150 ÷ 6。']);
+  }
+  /* 第二问：年营业净现金流量（±0.5%） */
+  if(!st.ok.ncf && $(IDS.ncf).value.replace(/\s/g,'')!==''){
+    anyAction=true;
+    var v2=numOf('inpNcf');
+    gradeItem('ncf','fbNcf', near(v2,r.ncf),
+      '计算正确：年营业净现金流量 '+fmt(r.ncf)+' 万元，容差核对通过。',
+      '三次未算对，年营业净现金流量是 <b>'+fmt(r.ncf)+'</b> 万元，推导看下方分步过程。',
+      ['先算税前利润＝'+fmt(r.rev)+' − '+fmt(r.mat)+' − 60 − 25，再乘 25% 算税，最后净利润加回折旧。',
+       '营业净现金流量＝净利润＋折旧。净利润是税后的，别拿税前利润直接加折旧。']);
+  }
+  /* 第三问：净现值（±0.5%） */
+  if(!st.ok.npv && $(IDS.npv).value.replace(/\s/g,'')!==''){
+    anyAction=true;
+    var v3=numOf('inpNpv');
+    gradeItem('npv','fbNpv', near(v3,r.npv),
+      '计算正确：净现值 '+fmt(r.npv)+' 万元，容差核对通过。',
+      '三次未算对，净现值是 <b>'+fmt(r.npv)+'</b> 万元，推导看下方分步过程。',
+      ['未来报酬总现值＝年营业净现金流量×(P/A, i, 6)＋终结回收 50×(P/F, i, 6)，现值系数查速查表 n＝6 那一列。',
+       '净现值＝未来报酬总现值 − 初始投资 200。别忘了减去初始投资。']);
+  }
+  /* 第四问：投资判断 */
+  if(!st.ok.pick && st.t.pick<3){
+    var ch=readChoice();
+    if(ch!==null){
+      anyAction=true;
+      var want=r.npv>0.01?'yes':(r.npv<-0.01?'no':'flat');
+      var fb=$('fbPick'); fb.hidden=false;
+      if(ch===want){
+        st.ok.pick=true;
+        fb.className='fb ok';
+        fb.innerHTML='判断正确：净现值 '+fmt(r.npv)+' 万元，'+(want==='yes'?'为正，值得投资。':(want==='no'?'为负，不值得投资。':'接近零，需结合非财务因素再定。'));
+        disableChoice();
+      }else{
+        st.t.pick++;
+        if(st.t.pick>=3){
+          fb.className='fb bad';
+          fb.innerHTML='三次未判断对，正确答案是<b>'+(want==='yes'?'值得投资':(want==='no'?'不值得投资':'接近零，需结合非财务因素'))+'</b>——只看净现值的符号。';
+          disableChoice();
+        }else{
+          fb.className='fb bad';
+          fb.innerHTML='不对，再想想。'+(st.t.pick===1
+            ?'先把你第三问算出的净现值拿出来，看它是正还是负。'
+            :'判据只有一个：净现值＞0 值得，净现值＜0 不值得，净现值＝0 恰好弥补资金成本。');
+        }
+      }
+    }
+  }
+  /* 第五问：静态回收期 / 能否收回 */
+  if(!st.ok.pp && $(IDS.pp).value.replace(/\s/g,'')!==''){
+    anyAction=true;
+    var raw=$('inpPp').value.replace(/\s/g,'');
+    var fbP=$('fbPp'); fbP.hidden=false;
+    if(r.ncf>0){
+      var v5=numOf('inpPp');
+      gradeItem('pp','fbPp', isFinite(v5)&&near(v5,r.pp),
+        '计算正确：静态回收期 '+fmt(r.pp)+' 年，容差核对通过。',
+        '三次未算对，静态回收期是 <b>'+fmt(r.pp)+'</b> 年，推导看下方分步过程。',
+        ['静态回收期＝初始投资 ÷ 年营业净现金流量 ＝ 200 ÷ '+fmt(r.ncf)+'。',
+         '注意静态回收期不考虑资金时间价值，也不用现值系数；初始投资是 200 万元（设备 160＋营运资金 40）。']);
+    }else{
+      gradeItem('pp','fbPp', raw==='不能'||raw==='收不回'||raw==='否',
+        '判断正确：年营业净现金流量不为正，初始投资收不回来。',
+        '三次未答对，正确答案是<b>不能</b>——营业净现金流量不为正时，200 万元初始投资无法通过营业现金流量收回。',
+        ['营业净现金流量是每年流回项目的现金。它为负或为零时，投出去的钱就回不来。',
+         '填「不能」。第 1—6 年累计流回的现金不足以抵平 200 万元初始投资。']);
+    }
+  }
+  /* 第六问：临界冻干售价（±0.5%） */
+  if(!st.ok.cp && $(IDS.cp).value.replace(/\s/g,'')!==''){
+    anyAction=true;
+    var v6=numOf('inpCp');
+    gradeItem('cp','fbCp', near(v6,r.critPrice),
+      '计算正确：临界冻干售价 '+fmt(r.critPrice)+' 元/kg，容差核对通过。',
+      '三次未算对，临界冻干售价是 <b>'+fmt(r.critPrice)+'</b> 元/kg，推导看下方分步过程。',
+      ['先反解临界营业净现金流量：NCF*＝(200 − 50×复利现值系数) ÷ 年金现值系数 ＝ '+fmt(r.ncfStar)+' 万元。',
+       '再沿链倒推：NCF*＝0.75×(0.1×加工量×售价 − 原料 − 60 − 25) ＋ 25，解出售价。']);
+  }
+
+  if(!anyAction){ toast('六问都作答完才能提交'); return; }
+  st.submitted=true;
+  setStep(3);
+
+  var allDone=true;
+  ['dep','ncf','npv','pick','pp','cp'].forEach(function(k){
+    if(!(st.ok[k]||st.t[k]>=3)){ allDone=false; }
+  });
+  if(allDone){ resolveAll(r); }
+}
+function disableChoice(){
+  var radios=document.querySelectorAll('input[name=pick]');
+  for(var i=0;i<radios.length;i++){ radios[i].disabled=true; }
+}
+
+/* ================= 完全揭晓 ================= */
+function resolveAll(r){
+  st.resolved=true;
+  $('revealCard').hidden=false;
+  $('btnSubmit').disabled=true;
+  setStep(4);
+
+  /* 分步过程一 */
+  $('sDep').textContent=fmt(r.dep);
+  $('sRev').textContent=fmt(r.rev);
+  $('sMat').textContent=fmt(r.mat);
+  $('sDep2').textContent=fmt(r.dep);
+  $('sEbit').textContent=fmt(r.ebit);
+  $('sEbit').className='v '+(r.ebit>=0?'pos':'negv');
+  $('sEbit2').textContent=fmt(r.ebit);
+  $('sEbit3').textContent=fmt(r.ebit);
+  $('sTax').textContent=fmt(r.tax);
+  $('sTaxNote').hidden=!(r.ebit<=0);
+  $('sTax2').textContent=fmt(r.tax);
+  $('sNpft').textContent=fmt(r.npft);
+  $('sNpft').className='v '+(r.npft>=0?'pos':'negv');
+  $('sNpft2').textContent=fmt(r.npft);
+  $('sDep3').textContent=fmt(r.dep);
+  $('sNcf').textContent=fmt(r.ncf);
+  $('sNcf').className='v '+(r.ncf>=0?'pos':'negv');
+  $('sRec').textContent=fmt(r.rec);
+
+  /* 分步过程二 */
+  $('sRate').textContent=P.rate+'%';
+  $('sPva').textContent=r.pva.toFixed(4);
+  $('sPva2').textContent=r.pva.toFixed(4);
+  $('sPvf').textContent=r.pvf.toFixed(4);
+  $('sPvf2').textContent=r.pvf.toFixed(4);
+  $('sNcf2').textContent=fmt(r.ncf);
+  $('sTerm1').textContent=fmt(r.ncf*r.pva);
+  $('sTerm2').textContent=fmt(r.rec*r.pvf);
+  $('sPvIn').textContent=fmt(r.pvIn);
+  $('sPvIn2').textContent=fmt(r.pvIn);
+  $('sNpv').textContent=fmt(r.npv);
+  $('sNpv').className='v '+(r.npv>=0?'pos':'negv');
+  $('sPi').textContent=fmt(r.pi,2);
+  $('sArr').textContent=fmt(r.arr*100,2)+'%';
+  $('sPp').textContent=(r.pp===null?'无法回收':fmt(r.pp));
+  $('sIrr').textContent=(r.irr===null?'不存在':fmt(r.irr*100,2)+'%');
+  $('sIrrNote').hidden=(r.irr!==null);
+  $('cIrr').textContent=(r.irr===null?'—':fmt(r.irr*100,2)+'%');
+
+  /* 临界条件表 */
+  $('cRate').textContent=P.rate+'%';
+  $('cRateV').textContent=(r.irr===null?'不存在':fmt(r.irr*100,2)+'%');
+  $('cRateD').textContent=(r.irr===null)
+    ? '各年营业净现金流量不足以收回初始投资'
+    : (P.rate/100<r.irr?'折现率低于内含报酬率，项目可行':'折现率已高于内含报酬率，项目不可行');
+  $('cPrice').textContent=P.price+' 元/kg';
+  $('cPriceV').textContent=fmt(r.critPrice)+' 元/kg';
+  $('cPriceD').textContent=(P.price>=r.critPrice)?'售价高于临界价，项目可行':'售价已跌破临界价，项目不可行';
+  $('cCost').textContent=P.costW.toFixed(1)+' 元/kg';
+  $('cCostV').textContent=fmt(r.critW)+' 元/kg';
+  $('cCostD').textContent=(P.costW<=r.critW)?'收购价低于临界价，项目可行':'收购价已越过临界价，项目不可行';
+  $('cQty').textContent=P.qty+' 吨';
+  $('cQtyV').textContent=(r.critQty===null)?'不存在':fmt(r.critQty)+' 吨';
+  $('cQtyD').textContent=(r.critQty===null)
+    ? '售价连原料成本都盖不住'
+    : (P.qty>=r.critQty?'加工量高于临界量，项目可行':'加工量已跌破临界量，项目不可行');
+  ['rowRate','rowPrice','rowCost','rowQty'].forEach(function(id){
+    $(id).classList.remove('better');
+  });
+  $('rowRate').classList.toggle('better', r.irr!==null&&P.rate/100<r.irr);
+  $('rowPrice').classList.toggle('better', P.price>=r.critPrice);
+  $('rowCost').classList.toggle('better', P.costW<=r.critW);
+  $('rowQty').classList.toggle('better', r.critQty!==null&&P.qty>=r.critQty);
+
+  /* 投 / 不投复盘表 */
+  $('rvYes').textContent=fmt(r.npv);
+  $('rvYesD').textContent=(r.npv>0)?'超出资金成本的剩余收益':'低于资金成本的亏损';
+  $('rvDiff').textContent=fmt(r.npv);
+  $('rvDiffD').textContent=(r.npv>0)?'投比不投多赚这么多':'不投反而更优';
+  $('rowYes').classList.toggle('better', r.npv>0);
+  $('rowNo').classList.toggle('better', r.npv<=0);
+
+  /* 逐项结果 */
+  function res(id,key,txtOk,txtBad){
+    var el=$(id); el.hidden=false;
+    if(st.ok[key]){ el.className='fb ok'; el.innerHTML=txtOk; }
+    else{ el.className='fb bad'; el.innerHTML=txtBad; }
+  }
+  res('resDep','dep','第一问 · <b>计算正确</b>：年折旧额 '+fmt(r.dep)+' 万元。','第一问 · <b>未算对</b>，年折旧额 '+fmt(r.dep)+' 万元，推导见上。');
+  res('resNcf','ncf','第二问 · <b>计算正确</b>：年营业净现金流量 '+fmt(r.ncf)+' 万元。','第二问 · <b>未算对</b>，年营业净现金流量 '+fmt(r.ncf)+' 万元，推导见上。');
+  res('resNpv','npv','第三问 · <b>计算正确</b>：净现值 '+fmt(r.npv)+' 万元。','第三问 · <b>未算对</b>，净现值 '+fmt(r.npv)+' 万元，推导见上。');
+  res('resPick','pick','第四问 · <b>判断正确</b>：净现值 '+fmt(r.npv)+' 万元，'+(r.npv>0?'值得投资':(r.npv<0?'不值得投资':'接近零，需再论证'))+'。','第四问 · <b>未判断对</b>，净现值 '+fmt(r.npv)+' 万元，推导见上。');
+  res('resPp','pp', r.ncf>0
+      ? '第五问 · <b>计算正确</b>：静态回收期 '+fmt(r.pp)+' 年。'
+      : '第五问 · <b>判断正确</b>：营业净现金流量不为正，初始投资收不回来。',
+      r.ncf>0
+      ? '第五问 · <b>未算对</b>，静态回收期 '+fmt(r.pp)+' 年，推导见上。'
+      : '第五问 · <b>未答对</b>，正确答案是「不能」，推导见上。');
+  res('resCp','cp','第六问 · <b>计算正确</b>：临界冻干售价 '+fmt(r.critPrice)+' 元/kg。','第六问 · <b>未算对</b>，临界冻干售价 '+fmt(r.critPrice)+' 元/kg，推导见上。');
+
+  /* 结局叙事（随参数生成） */
+  $('endingText').innerHTML=buildEnding(r);
+
+  /* 计分：答对按尝试次数折算（第1次15、第2次8、第3次5），未答对0分；六问均一次通过另加10 */
+  function itemScore(ok,tries){ if(!ok){ return 0; } return tries===0?15:(tries===1?8:5); }
+  var sc=0, firstAll=true;
+  ['dep','ncf','npv','pick','pp','cp'].forEach(function(k){
+    sc+=itemScore(st.ok[k],st.t[k]);
+    if(!st.ok[k]||st.t[k]>0){ firstAll=false; }
+  });
+  if(firstAll){ sc+=10; }
+  st.score=sc;
+  $('scoreVal').textContent=sc;
+  var w=$('scoreWord');
+  if(sc>=90){ w.textContent='优秀'; w.className='word good'; }
+  else if(sc>=60){ w.textContent='合格'; w.className='word mid'; }
+  else{ w.textContent='待改进'; w.className='word low'; }
+  var isBest=sc>st.best;
+  if(isBest){ st.best=sc; saveBest(sc); }
+  $('bestVal').textContent='历史最佳 '+st.best+' 分'+(isBest?'（新纪录）':'');
+
+  lockExport(false);
+  kick();
+  buildCard();
+}
+function buildEnding(r){
+  var p=[];
+  var good=r.npv>0;
+  if(good){
+    p.push('三个月后，冻干生产线在合作社院里立了起来。第一锅冻干草莓出机，小艾掰一块放进嘴里，脆得响。');
+    p.push('芳姐的台账记下：初始投资 200 万元，六年营业净现金流量每年 '+fmt(r.ncf)+' 万元，第 6 年末再收回 '+fmt(r.rec)+' 万元；按 '+P.rate+'% 折现，净现值 '+fmt(r.npv)+' 万元——这笔钱投得不冤。');
+  }else{
+    p.push('理事会最终按下缓建键。老麦的理由写进了会议纪要：按 '+P.rate+'% 的资金成本折现，净现值 '+fmt(r.npv)+' 万元，投下去就是拿社员的钱贴利息。');
+    p.push('鲜草莓仍然一季只卖 20 天，但合作社先把力气花在错峰上市和预售订单上——芳姐说，等售价或规模过了临界线，这条方案随时可以重新上会。');
+  }
+  if(r.ebit<=0){
+    p.push('注意：当前参数下年税前利润为负，项目连盈亏平衡都没做到，更谈不上回收期；按假设亏损当年不计所得税。');
+  }
+  if(r.irr!==null&&P.rate/100>=r.irr){
+    p.push('翻脸点就在这里：折现率 '+P.rate+'% 已经越过内含报酬率 '+fmt(r.irr*100,2)+'%。资金成本再降一点，或者售价再抬一点，结论就会翻回来。');
+  }
+  if(good&&r.pp!==null&&r.pp<3){
+    p.push('顺带一提：静态回收期只有 '+fmt(r.pp)+' 年，在 6 年寿命内回本后还有富余——这也是老麦敢拍板的底气之一。');
+  }
+  if(good&&r.pp!==null&&r.pp>5){
+    p.push('但要留神：静态回收期 '+fmt(r.pp)+' 年，已逼近 6 年寿命末年，回本太晚，风险集中在后段。');
+  }
+  if(r.critPrice>0&&P.price<r.critPrice){
+    p.push('临界提示：冻干售价已跌破临界价 '+fmt(r.critPrice)+' 元/kg。售价每往上走一点，都是在往可行区挪。');
+  }
+  var html='';
+  for(var i=0;i<p.length;i++){ html+='<p>'+p[i]+'</p>'; }
+  return html;
+}
+
+/* ================= 决策卡导出 ================= */
+function lockExport(on){
+  $('exportCard').classList.toggle('locked',on);
+  $('lockNote').hidden=!on;
+  $('exportBody').hidden=on;
+}
+function buildCard(){
+  var r=calc(P);
+  var who=$('inpName').value.replace(/^\s+|\s+$/g,'')||'（未填）';
+  var now=new Date();
+  function pad(n){ return (n<10?'0':'')+n; }
+  var ts=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes());
+  var verdict=r.npv>0?'值得投资（净现值为正）':(r.npv<0?'不值得投资（净现值为负）':'接近盈亏临界，需结合非财务因素再定');
+  var adv=[];
+  if(r.npv>0){
+    adv.push('按当前参数，项目净现值 '+fmt(r.npv)+' 万元、现值指数 '+fmt(r.pi,2)+'、内含报酬率 '+fmt(r.irr*100,2)+'%，均支持投建。');
+    adv.push('落地要点：① 先锁冻干售价长期协议，售价是四个参数里最敏感的；② 与社员签鲜果保底收购价，把原料成本波动关在笼子里；③ 营运资金 40 万元单独列账，专款专用。');
+  }else{
+    adv.push('按当前参数，项目净现值 '+fmt(r.npv)+' 万元，暂不具备投建条件。');
+    adv.push('整改方向：售价抬到临界价 '+fmt(r.critPrice)+' 元/kg 以上，或加工量提到临界量 '+(r.critQty===null?'（当前售价连原料成本都盖不住，需先提价）':fmt(r.critQty)+' 吨以上')+'，或把资金成本压到内含报酬率 '+(r.irr===null?'（当前不存在）':fmt(r.irr*100,2)+'%')+' 以下，任一条达成即可重新上会。');
+  }
+  adv.push('临界监控线：折现率 '+(r.irr===null?'—':fmt(r.irr*100,2)+'%')+'、冻干售价 '+fmt(r.critPrice)+' 元/kg、鲜果收购价 '+fmt(r.critW)+' 元/kg、年加工量 '+(r.critQty===null?'—':fmt(r.critQty)+' 吨')+'。越过任一条线，结论翻转。');
+  var L=[];
+  L.push('经营决策卡｜第七章 长期投资决策 · 净现值法');
+  L.push('姓名/学号：'+who);
+  L.push('生成时间：'+ts);
+  L.push('————————————');
+  L.push('【问题】金穗农业合作社是否投建草莓冻干生产线：鲜果集中上市价低（15 元/kg），冻干售价可达 150 元/kg、单耗 6 公斤鲜果/公斤冻干。初始投资 200 万元，寿命 6 年。');
+  L.push('【假设】① 折现率（资金成本）'+P.rate+'%；② 冻干售价 '+P.price+' 元/kg；③ 鲜果收购价 '+P.costW.toFixed(1)+' 元/kg；④ 年加工量 '+P.qty+' 吨；⑤ 固定数据：设备原值 160 万元、营运资金垫支 40 万元、残值 10 万元、寿命 6 年、直线法折旧、其他付现成本 60 万元/年、所得税率 25%（亏损当年不计税）、单耗 6 公斤/公斤；⑥ 各年营业净现金流量相等。');
+  L.push('【指标变化】年销售收入 '+fmt(r.rev)+' 万元、年原料成本 '+fmt(r.mat)+' 万元、年折旧 '+fmt(r.dep)+' 万元、年税前利润 '+fmt(r.ebit)+' 万元、年所得税 '+fmt(r.tax)+' 万元、年净利润 '+fmt(r.npft)+' 万元、年营业净现金流量 '+fmt(r.ncf)+' 万元、终结期回收额 '+fmt(r.rec)+' 万元；年金现值系数 '+r.pva.toFixed(4)+'、复利现值系数 '+r.pvf.toFixed(4)+'；未来报酬总现值 '+fmt(r.pvIn)+' 万元；净现值 '+fmt(r.npv)+' 万元；现值指数 '+fmt(r.pi,2)+'；平均报酬率 '+fmt(r.arr*100,2)+'%；静态回收期 '+(r.pp===null?'无法回收':fmt(r.pp)+' 年')+'；内含报酬率 '+(r.irr===null?'不存在':fmt(r.irr*100,2)+'%')+'。');
+  L.push('【经营建议】结论：'+verdict+'。'+adv.join(''));
+  L.push('【风险责任】① 鲜果集中上市导致原料质量与供应不稳——技术员小艾负责分级入库与错峰催熟；② 冻干售价随电商波动——理事长老麦负责签订长期供货协议并预留 10% 产能机动；③ 设备故障与能源涨价——设专项维保基金，会计芳姐按季计提；④ 6 年技术迭代风险——第 4 年做一次设备残值重估与更新论证；⑤ 营运资金 40 万元被挤占——单独列账，理事会年度审计。');
+  L.push('————————————');
+  L.push('自评：本场得分 '+st.score+' 分（'+$('scoreWord').textContent+'）。');
+  $('cardArea').value=L.join('\n');
+}
+function copyCard(){
+  var text=$('cardArea').value;
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.left='-9999px'; ta.style.top='0';
+  document.body.appendChild(ta); ta.select();
+  var ok=false;
+  try{ ok=document.execCommand('copy'); }catch(e){ ok=false; }
+  document.body.removeChild(ta);
+  if(ok){ toast('决策卡已复制到剪贴板'); }
+  else{
+    $('cardArea').focus();
+    if($('cardArea').select){ $('cardArea').select(); }
+    toast('自动复制未成功，已为你选中全文，请直接复制');
+  }
+  setStep(5);
+}
+function downloadCard(){
+  try{
+    var blob=new Blob([$('cardArea').value],{type:'text/plain;charset=utf-8'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    var who=$('inpName').value.replace(/^\s+|\s+$/g,'');
+    a.download=(who?who:'决策卡')+'-第七章-决策卡.txt';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ try{ URL.revokeObjectURL(a.href); }catch(e){} },1000);
+    toast('决策卡文本已开始下载');
+  }catch(e){
+    copyCard();
+  }
+  setStep(5);
+}
+
+/* ================= 事件绑定 ================= */
+function syncSliders(){
+  $('sldRate').value=String(P.rate);
+  $('sldPrice').value=String(P.price);
+  $('sldCost').value=String(P.costW);
+  $('sldQty').value=String(P.qty);
+}
+function onParamChange(){
+  if(st.submitted){ resetRound(true); }
+  kick();
+}
+function bindSlider(id,key,parse){
+  $(id).addEventListener('input',function(){
+    P[key]=parse(this.value);
+    onParamChange();
+  });
+}
+bindSlider('sldRate','rate',parseFloat);
+bindSlider('sldPrice','price',parseFloat);
+bindSlider('sldCost','costW',parseFloat);
+bindSlider('sldQty','qty',parseInt);
+
+var presetBtns=document.querySelectorAll('.presets .chip');
+for(var i=0;i<presetBtns.length;i++){
+  presetBtns[i].addEventListener('click',function(){
+    P.rate=parseFloat(this.getAttribute('data-rate'));
+    P.price=parseFloat(this.getAttribute('data-price'));
+    P.costW=parseFloat(this.getAttribute('data-cost'));
+    P.qty=parseInt(this.getAttribute('data-qty'),10);
+    syncSliders();
+    onParamChange();
+    toast('已打版：'+this.textContent);
+  });
+}
+
+$('btnDefault').addEventListener('click',function(){
+  P.rate=DEF.rate; P.price=DEF.price; P.costW=DEF.costW; P.qty=DEF.qty;
+  syncSliders();
+  onParamChange();
+  toast('已恢复默认参数');
+});
+
+$('btnStart').addEventListener('click',function(){
+  setStep(2);
+  var el=$('secPanel');
+  if(el.scrollIntoView){ el.scrollIntoView({behavior:'smooth',block:'start'}); }
+});
+
+$('btnSubmit').addEventListener('click',grade);
+
+$('btnRestart').addEventListener('click',function(){
+  P.rate=DEF.rate; P.price=DEF.price; P.costW=DEF.costW; P.qty=DEF.qty;
+  syncSliders();
+  resetRound(false);
+  kick();
+  setStep(2);
+  toast('新一轮开始，参数已恢复默认');
+  var el=$('secDecide');
+  if(el.scrollIntoView){ el.scrollIntoView({behavior:'smooth',block:'start'}); }
+});
+
+$('btnCopy').addEventListener('click',copyCard);
+$('btnDownload').addEventListener('click',downloadCard);
+$('btnRebuild').addEventListener('click',function(){ buildCard(); toast('已按当前参数重建决策卡'); });
+
+/* 选项高亮（不改计算，只改观感） */
+var optEls=document.querySelectorAll('.opt');
+for(var j=0;j<optEls.length;j++){
+  optEls[j].addEventListener('click',function(){
+    document.querySelectorAll('.opt').forEach(function(el){ el.classList.remove('sel'); });
+    this.classList.add('sel');
+  });
+}
+
+/* ================= 启动 ================= */
+syncSliders();
+lockExport(true);
+setStep(1);
+kick();
+})();
+</script>
+</body>
+</html>

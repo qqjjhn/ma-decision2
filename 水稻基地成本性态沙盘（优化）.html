@@ -648,7 +648,7 @@ function gameAnswer(ans){
 document.getElementById('btnGameFixed').addEventListener('click',()=>gameAnswer('fixed'));
 document.getElementById('btnGameVar').addEventListener('click',()=>gameAnswer('var'));
 document.getElementById('btnGameMixed').addEventListener('click',()=>gameAnswer('mixed'));
-document.getElementById('btnGameNext').addEventListener('click',gameRender);
+document.getElementById('btnGameNext').addEventListener('click',()=>{gameIdx++;gameRender();});
 document.getElementById('btnGameRestart').addEventListener('click',gameStart);
 gameStart();
 
@@ -722,7 +722,7 @@ function submitCalc(){
     let msg='<span class="badge no">🔁 有错，请复核</span><ul class="small">';
     if(!checks.CM)     msg+=`<li>贡献边际应为 ${Math.round(g.CM).toLocaleString()} 元（= 销量×单价 − 销量×v − 销量×vs）</li>`;
     if(!checks.OPvc)   msg+=`<li>变动成本法营业利润应为 ${Math.round(g.OPvc).toLocaleString()} 元</li>`;
-    if(!checks.unitFC) msg+=`<li>完全成本法单位产品成本 = v + Fm/产量 = ${v} + ${Math.round(g.Fm/g.P)} = ${g.unitFC.toFixed(2)} 元</li>`;
+    if(!checks.unitFC) msg+=`<li>完全成本法单位产品成本 = v + Fm/产量 = ${g.v} + ${(g.Fm/g.P).toFixed(2)} = ${g.unitFC.toFixed(2)} 元</li>`;
     if(!checks.Gross)  msg+=`<li>完全成本法毛利应为 ${Math.round(g.Gross).toLocaleString()} 元</li>`;
     if(!checks.OPfc)   msg+=`<li>完全成本法营业利润应为 ${Math.round(g.OPfc).toLocaleString()} 元</li>`;
     if(!checks.Diff)   msg+=`<li>利润差额应为 ${Math.round(g.Diff).toLocaleString()} 元</li>`;

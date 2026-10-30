@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>金穗农业合作社·鲜食玉米成本差异实训｜管理会计虚拟仿真</title>
+<style>
+:root{
+  --green:#2e7d32; --green-dk:#1b5e20; --bg:#e8f5e9;
+  --gold:#8a6d1f; --gold-bar:#d9a521; --gold-soft:#fbf3dc;
+  --blue:#1565c0; --blue-soft:#e8f1fb;
+  --red:#c62828; --red-soft:#fdecea;
+  --ink:#22331f; --ink-soft:#5a6b5a; --card:#ffffff; --line:#cfe2cf;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);line-height:1.75;
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Source Han Sans SC","Noto Sans CJK SC",sans-serif;}
+[hidden]{display:none!important}
+.wrap{max-width:980px;margin:0 auto;padding:16px 14px 70px}
+
+/* ---------- 头部 ---------- */
+.hd{background:linear-gradient(135deg,#2e7d32,#1b5e20);color:#fff;border-radius:14px;padding:20px 18px 16px;margin-top:6px}
+.hd .badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.hd .badge{font-size:12px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:2px 10px}
+.hd h1{font-size:clamp(19px,4.6vw,26px);letter-spacing:.5px;line-height:1.4}
+.hd .sub{font-size:13px;opacity:.92;margin-top:6px}
+.goal{background:var(--gold-soft);border:2px solid var(--gold);border-radius:10px;padding:12px 16px;margin:12px 0 4px;font-size:14px}
+.goal b{color:var(--gold)}
+
+/* ---------- 进度步骤 ---------- */
+.steps{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+.step{flex:1 1 150px;min-width:132px;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;color:var(--ink-soft);display:flex;align-items:center;gap:8px}
+.step .no{flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:#e3eee3;color:var(--green-dk);font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.step.cur{border-color:var(--green);color:var(--green-dk);font-weight:600;box-shadow:0 0 0 3px rgba(46,125,50,.12)}
+.step.done{color:var(--green-dk)}
+.step.done .no{background:var(--green);color:#fff}
+
+/* ---------- 卡片通用 ---------- */
+.card{background:var(--card);border-radius:12px;padding:16px;margin:14px 0;box-shadow:0 1px 5px rgba(27,94,32,.08)}
+.card h2{font-size:17px;color:var(--green-dk);margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card h2 .tag{font-size:12px;font-weight:400;color:var(--ink-soft)}
+
+/* ---------- 情境 ---------- */
+.story p{font-size:15px;text-indent:2em;margin-bottom:12px}
+svg.chart,svg.hero{display:block;width:100%;height:auto}
+svg.hero{border-radius:10px}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px}
+.plan{border:1.5px solid var(--line);border-radius:10px;padding:12px;font-size:13px;background:#fcfdfc}
+.plan h3{font-size:15px;margin-bottom:6px}
+.plan.a h3{color:var(--gold)} .plan.b h3{color:var(--green)} .plan.c h3{color:var(--blue)}
+.plan .lim{display:block;margin-top:6px;font-size:12px;color:var(--ink-soft);border-top:1px dashed var(--line);padding-top:6px}
+.databar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.databar span{font-size:12.5px;background:#eef5ee;border-radius:999px;padding:3px 12px;color:var(--green-dk)}
+.cta{margin-top:14px;text-align:center}
+.btn{appearance:none;border:none;cursor:pointer;font-family:inherit;border-radius:10px;font-size:15px;transition:transform .12s ease,box-shadow .12s ease,background .12s ease}
+.btn:active{transform:scale(.97)}
+.btn.solid{background:var(--green);color:#fff;padding:11px 26px;font-weight:600;box-shadow:0 2px 6px rgba(27,94,32,.25)}
+.btn.solid:hover{background:var(--green-dk)}
+.btn.solid:disabled{background:#9db89d;cursor:not-allowed;box-shadow:none}
+.btn.ghost{background:#fff;color:var(--green-dk);border:1.5px solid var(--green);padding:8px 18px}
+.btn.ghost:hover{background:#f0f7f0}
+.btn.sm{font-size:13px;padding:7px 14px}
+
+/* ---------- 方法速览 ---------- */
+details.meth{border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;margin:12px 0;background:#fbfdfb;font-size:13.5px}
+details.meth summary{cursor:pointer;font-weight:600;color:var(--green-dk);list-style:none}
+details.meth summary::-webkit-details-marker{display:none}
+details.meth summary::before{content:"▸ ";color:var(--green)}
+details.meth[open] summary::before{content:"▾ "}
+details.meth ul{margin:8px 0 2px 18px}
+details.meth li{margin:4px 0}
+
+/* ---------- 参数面板 ---------- */
+.sld{margin:12px 0}
+.sld .lab{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;font-size:14px;font-weight:600}
+.sld .lab .val{font-size:13px;font-weight:700;color:var(--green-dk);background:#eef5ee;border-radius:999px;padding:2px 12px}
+.sld .hint{font-size:12px;color:var(--ink-soft);font-weight:400}
+.sld input[type=range]{width:100%;accent-color:var(--green);height:26px;margin-top:4px}
+.presets{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}
+.presets .cap{font-size:13px;color:var(--ink-soft);margin-right:2px}
+.chip{background:#fff;border:1.5px solid var(--gold);color:var(--gold);border-radius:999px;padding:5px 14px;font-size:13px;cursor:pointer;font-family:inherit;transition:background .12s}
+.chip:hover{background:var(--gold-soft)}
+.notice{font-size:12.5px;color:var(--red);margin-top:10px}
+
+/* ---------- 测算区 ---------- */
+.estrow{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.est{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;background:#fff;flex:1 1 150px}
+.est .k{color:var(--ink-soft);font-size:12px}
+.est .v{font-size:clamp(17px,4vw,21px);font-weight:800;font-variant-numeric:tabular-nums;color:var(--green-dk)}
+.est .v.q{color:var(--ink-soft)}
+.est.hide{border-style:dashed;background:#fafcfa}
+.est .src{font-size:11.5px;color:var(--ink-soft);margin-top:2px}
+.chartbox{border:1.5px solid var(--line);border-radius:10px;padding:12px 10px 6px;background:#fff;margin-top:12px}
+.chartbox h4{font-size:14px;color:var(--green-dk);margin-bottom:4px}
+.chartbox .leg{display:flex;flex-wrap:wrap;gap:12px;font-size:11.5px;color:var(--ink-soft);padding:4px 4px 6px}
+.chartbox .leg i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.mcard{border:2px solid var(--line);border-radius:10px;padding:12px 10px;text-align:center;background:#fff}
+.mcard .nm{font-size:13px;font-weight:700;color:var(--ink-soft)}
+.mcard .big{font-size:clamp(19px,4.6vw,25px);font-weight:800;margin:2px 0;font-variant-numeric:tabular-nums;color:var(--green-dk)}
+.mcard .big.q{color:#9db89d}
+.mcard .unit{font-size:11.5px;color:var(--ink-soft)}
+.mcard .brk{font-size:11px;color:var(--ink-soft);margin-top:6px;border-top:1px dashed var(--line);padding-top:6px;line-height:1.5}
+.mcard.good{border-color:var(--green);box-shadow:0 0 0 3px rgba(46,125,50,.15)}
+.mcard.bad{border-color:var(--red);background:var(--red-soft)}
+.mcard.bad .big{color:var(--red)}
+table.cf{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+table.cf th,table.cf td{border:1px solid var(--line);padding:7px 8px;text-align:center}
+table.cf th{background:#eef5ee;color:var(--green-dk);font-weight:700}
+table.cf td.num{font-variant-numeric:tabular-nums}
+table.cf td.q{color:#9db89d;font-weight:700}
+table.cf tr.hl td{background:#eef5ee;font-weight:700}
+
+/* ---------- 现值系数表 ---------- */
+
+/* ---------- 决策区 ---------- */
+.q{margin:14px 0;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:#fcfdfc}
+.q .qt{font-size:15px;font-weight:600;margin-bottom:4px}
+.q .qt b{color:var(--green-dk)}
+.q .qh{font-size:12.5px;color:var(--ink-soft);margin-bottom:8px}
+.q .qh code{background:#eef5ee;border-radius:4px;padding:1px 6px;font-family:Consolas,"Courier New",monospace;font-size:12px;color:var(--green-dk)}
+.opts{display:flex;flex-wrap:wrap;gap:10px}
+.opt{flex:1 1 220px;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14px;cursor:pointer;display:flex;gap:8px;align-items:center;background:#fff}
+.opt:hover{border-color:var(--green)}
+.opt input{accent-color:var(--green);width:18px;height:18px}
+.opt.sel{border-color:var(--green);background:#f2f9f2}
+.fillrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.fillrow input{flex:1 1 180px;font-size:16px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;background:#fff;color:var(--ink)}
+.fillrow input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(46,125,50,.12)}
+.fillrow .u{font-size:13px;color:var(--ink-soft)}
+.fb{margin-top:8px;font-size:13.5px;border-radius:8px;padding:8px 12px}
+.fb.ok{background:#e8f5e9;color:var(--green-dk);border:1px solid #bcdcbc}
+.fb.bad{background:var(--red-soft);color:var(--red);border:1px solid #f2c4bd}
+.trynote{font-size:12.5px;color:var(--ink-soft);margin-top:10px}
+.submitrow{margin-top:16px;text-align:center}
+
+/* ---------- 揭晓区 ---------- */
+.reveal-anim{animation:rise .45s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.resline{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+.resline .fb{flex:1 1 260px;margin-top:0}
+details.calc{border:1.5px solid var(--green);border-radius:10px;padding:10px 14px;margin:10px 0;background:#fbfdfb;font-size:14px}
+details.calc summary{cursor:pointer;font-weight:700;color:var(--green-dk);list-style:none}
+details.calc summary::-webkit-details-marker{display:none}
+details.calc summary::before{content:"▸ ";color:var(--green)}
+details.calc[open] summary::before{content:"▾ "}
+.cstep{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;margin:10px 0;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:8px}
+.cstep .k{font-weight:700;color:var(--green-dk)}
+.cstep .v{font-weight:800;font-variant-numeric:tabular-nums}
+.cstep .v.pos{color:var(--green-dk)} .cstep .v.negv{color:var(--red)}
+.callout{border:2px solid var(--gold);background:var(--gold-soft);border-radius:10px;padding:12px 16px;font-size:14px;margin:12px 0}
+.callout b{color:var(--gold)}
+table.rev{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}
+table.rev th,table.rev td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+table.rev th{background:#eef5ee;color:var(--green-dk);font-weight:700}
+table.rev td.num{font-variant-numeric:tabular-nums}
+table.rev tr.better td{background:#e8f5e9;font-weight:700;color:var(--green-dk)}
+.ending{font-size:14.5px;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0}
+.ending p{margin:6px 0}
+.scorebox{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.scorebox .sc{font-size:24px;font-weight:800;color:var(--green-dk);font-variant-numeric:tabular-nums}
+.scorebox .word{font-size:14px;font-weight:700;border-radius:999px;padding:3px 14px}
+.scorebox .word.good{background:#e8f5e9;color:var(--green-dk);border:1px solid #a5d6a7}
+.scorebox .word.mid{background:var(--gold-soft);color:var(--gold);border:1px solid #e3cd8a}
+.scorebox .word.low{background:var(--red-soft);color:var(--red);border:1px solid #f2c4bd}
+.scorebox .best{font-size:12.5px;color:var(--ink-soft);margin-left:auto}
+
+/* ---------- 导出区 ---------- */
+.export.locked{opacity:.55;pointer-events:none}
+.export .locknote{font-size:13px;color:var(--red);margin-bottom:8px}
+.export .locknote[hidden]{display:none!important}
+.export label{font-size:13.5px;font-weight:600;display:block;margin:10px 0 4px}
+.export input{font-size:15px;padding:8px 12px;border:1.5px solid var(--line);border-radius:10px;width:min(320px,100%);font-family:inherit;background:#fff}
+.export textarea{width:100%;min-height:280px;font-size:13px;line-height:1.8;padding:12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;background:#fbfdfb;color:var(--ink);resize:vertical}
+.export .acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.foot{font-size:12px;color:var(--ink-soft);text-align:center;margin-top:22px;line-height:1.8}
+
+/* ---------- 提示浮层 ---------- */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:rgba(27,94,32,.94);color:#fff;font-size:13.5px;border-radius:999px;padding:9px 20px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:99;max-width:86vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:860px){}
+@media(max-width:640px){
+  .plans{grid-template-columns:1fr}
+  .mgrid{grid-template-columns:repeat(2,1fr)}
+  .step{flex:1 1 100%}
+  .card{padding:13px}
+}
+@media(max-width:400px){.mgrid{grid-template-columns:1fr}}
+/* ---------- 云收口提交（新增） ---------- */
+.subcloud{border:2px solid var(--green);border-radius:10px;padding:14px 16px;margin-top:16px;background:#f4faf4}
+.subcloud .subhr{border:none;border-top:1px dashed var(--line);margin:2px 0 12px}
+.subcloud .subttl{font-size:15px;font-weight:700;color:var(--green-dk);margin-bottom:6px}
+.subcloud .subint{font-size:12.5px;color:var(--ink-soft);margin:0 0 10px}
+.subcloud .fillrow{margin-bottom:10px}
+.subcloud .acts{margin-top:4px}
+.risk-demo{font-size:12.5px;color:var(--gold);background:var(--gold-soft);border:1px dashed var(--gold);border-radius:8px;padding:8px 10px;margin:2px 0 8px;line-height:1.6}
+
+/* ---------- 第8章 标准成本法 增补样式 ---------- */
+table.cf input{width:96px;font-size:15px;padding:6px 8px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;background:#fff;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums}
+table.cf input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(46,125,50,.12)}
+table.cf input:disabled{background:#f2f8f2;color:var(--green-dk);font-weight:700}
+table.cf td.inpcell{text-align:center}
+.chip.on{background:var(--gold);color:#fff}
+.chip.on:hover{background:#6f5716}
+.sldgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
+table.rev td.fav{color:var(--green-dk);font-weight:700}
+table.rev td.adv{color:var(--red);font-weight:700}
+@media(max-width:720px){.sldgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ================= 头部 ================= -->
+  <header class="hd">
+    <div class="badges">
+      <span class="badge">第八章 · 标准成本法</span>
+      <span class="badge">成本差异分析</span>
+      <span class="badge">虚拟仿真实训 · 约 15 分钟</span>
+    </div>
+    <h1>金穗农业合作社：鲜食玉米加工车间，这个月成本管得怎么样？</h1>
+    <div class="sub">车间的标准成本卡年初就定好了，每件产品该耗多少、该花多少，全写在卡上。月末，会计芳姐把实际发生额摊在桌上——材料多花了多少、人工效率如何、设备为什么闲着，全靠差异说话。今天你当一回成本会计，把九项差异算清楚，再决定下个月找谁谈话。</div>
+  </header>
+
+  <div class="goal">本实训练两样本事：<b>第一，按「用量标准×价格标准」编制标准成本卡</b>（制造费用先算标准分配率）；<b>第二，把总差异分解成价格差异与用量差异</b>——说清每项差异是赚是赔、该找谁负责。</div>
+
+  <div class="steps" id="steps">
+    <div class="step cur" data-step="1"><span class="no">1</span>读懂处境</div>
+    <div class="step" data-step="2"><span class="no">2</span>调准参数</div>
+    <div class="step" data-step="3"><span class="no">3</span>算出差异</div>
+    <div class="step" data-step="4"><span class="no">4</span>核对通过</div>
+    <div class="step" data-step="5"><span class="no">5</span>带走成果</div>
+  </div>
+
+  <!-- ================= 情境 ================= -->
+  <section class="card story" id="secStory">
+    <h2>一、处境 <span class="tag">先读 40 秒，知道要算什么、手上有什么数据</span></h2>
+    <p>金穗农业合作社的鲜食玉米加工车间开了三年。年初，技术员小艾带着生产骨干做了工艺测定，会计芳姐对照预算，给车间的甲产品——速冻鲜食玉米（每件 10 千克）——定下一张标准成本卡：直接材料、直接人工、变动制造费用、固定制造费用，四项各按「用量标准×价格标准」核定，合起来就是每件产品的标准成本。理事会定了规矩：每月月末拿实际发生额和标准比一比，差异就是下个月改进的靶子。</p>
+    <p>六月末，芳姐把报表搬上桌：本月实际生产 900 件；A 材料（鲜玉米穗）实际耗用 8,800 千克、实际单价 10.5 元/千克；实际用工 9,500 小时、实际工资总额 361,000 元；变动制造费用实际发生 77,900 元，固定制造费用实际发生 115,000 元。预算基础摆在旁边：变动制造费用每月预算 80,000 元、固定制造费用预算 120,000 元，车间正常产能为每月 10,000 直接人工工时。老麦说：别急着下结论，先把差异一项一项算出来。</p>
+
+    <svg class="hero" viewBox="0 0 640 230" role="img" aria-label="鲜食玉米加工车间、速冻设备、玉米筐、账本与三位合作社成员">
+      <rect width="640" height="230" fill="#fbf6e9"/>
+      <circle cx="576" cy="40" r="22" fill="#f2c84b"/>
+      <path d="M0 120 Q100 88 210 114 T430 106 T640 122 V230 H0 Z" fill="#d9ead9"/>
+      <path d="M0 138 Q160 106 330 134 T640 130 V230 H0 Z" fill="#bcdcbc"/>
+      <rect x="0" y="152" width="640" height="78" fill="#ecd9a0"/>
+      <!-- 厂房（右） -->
+      <g>
+        <rect x="452" y="86" width="176" height="66" rx="3" fill="#e8ded0" stroke="#a89580" stroke-width="2.5"/>
+        <path d="M444 86 L540 58 L636 86 Z" fill="#8d6a4a"/>
+        <rect x="470" y="104" width="34" height="48" rx="2" fill="#cfe2cf" stroke="#7cb57c" stroke-width="2"/>
+        <rect x="516" y="104" width="34" height="48" rx="2" fill="#cfe2cf" stroke="#7cb57c" stroke-width="2"/>
+        <rect x="562" y="104" width="48" height="48" rx="2" fill="#c08a4a" stroke="#7d5222" stroke-width="2"/>
+        <text x="586" y="134" text-anchor="middle" font-size="13" fill="#fff" font-weight="700">加工</text>
+        <rect x="452" y="76" width="176" height="10" fill="#b5a08a"/>
+      </g>
+      <!-- 速冻设备（中） -->
+      <g>
+        <rect x="286" y="104" width="112" height="48" rx="4" fill="#dfe8df" stroke="#7d9a7d" stroke-width="2.5"/>
+        <rect x="298" y="116" width="88" height="28" rx="2" fill="#f4faf4" stroke="#9db89d" stroke-width="1.5"/>
+        <g stroke="#1565c0" stroke-width="2" stroke-linecap="round">
+          <path d="M318 122 v16 M312 126 h12 M324 122 v16"/>
+          <path d="M342 122 v16 M336 126 h12 M348 122 v16"/>
+        </g>
+        <path d="M398 118 h20 v10 h-20 Z" fill="#b5c8b5"/>
+        <rect x="274" y="152" width="136" height="8" rx="2" fill="#a89580"/>
+      </g>
+      <!-- 玉米筐（左） -->
+      <g>
+        <path d="M84 150 h72 l-8 34 h-56 Z" fill="#c08a4a" stroke="#7d5222" stroke-width="2"/>
+        <path d="M84 150 h72" stroke="#7d5222" stroke-width="3"/>
+        <g fill="#f2c84b" stroke="#c99a1f" stroke-width="1.5">
+          <rect x="94" y="128" width="14" height="24" rx="6"/>
+          <rect x="112" y="124" width="14" height="28" rx="6"/>
+          <rect x="130" y="128" width="14" height="24" rx="6"/>
+        </g>
+        <g stroke="#7cb57c" stroke-width="2" fill="none">
+          <path d="M101 130 q-6 -8 -12 -8"/>
+          <path d="M119 126 q-6 -8 -12 -8"/>
+          <path d="M137 130 q-6 -8 -12 -8"/>
+        </g>
+        <path d="M96 150 q24 -14 48 0" stroke="#7d5222" stroke-width="2" fill="none"/>
+      </g>
+      <!-- 账本与计算器（左前） -->
+      <g>
+        <rect x="150" y="176" width="58" height="30" rx="2" fill="#fff" stroke="#a89580" stroke-width="2"/>
+        <rect x="156" y="168" width="46" height="12" rx="2" fill="#cfe2cf" stroke="#7cb57c" stroke-width="2"/>
+        <g stroke="#c9d8c9" stroke-width="1.5"><path d="M158 186 h42 M158 192 h42 M158 198 h30"/></g>
+        <rect x="214" y="184" width="22" height="22" rx="3" fill="#e8f0e8" stroke="#2f4f2f" stroke-width="2"/>
+        <g fill="#5a6b5a"><rect x="218" y="188" width="5" height="4"/><rect x="226" y="188" width="5" height="4"/><rect x="218" y="194" width="5" height="4"/><rect x="226" y="194" width="5" height="4"/><rect x="218" y="200" width="14" height="3"/></g>
+      </g>
+      <!-- 人物 -->
+      <ellipse cx="410" cy="212" rx="92" ry="7" fill="#dcc98e"/>
+      <g fill="#2f4f2f">
+        <circle cx="378" cy="180" r="9"/>
+        <path d="M368 190 q10 -8 20 0 v22 h-20 Z"/>
+        <path d="M387 197 l22 -10" stroke="#2f4f2f" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="414" cy="184" r="8"/>
+        <path d="M405 193 q9 -7 18 0 v19 h-18 Z"/>
+        <circle cx="446" cy="182" r="8"/>
+        <path d="M437 191 q9 -7 18 0 v21 h-18 Z"/>
+        <rect x="454" y="196" width="13" height="10" rx="1.5" fill="#fff" stroke="#2f4f2f" stroke-width="2"/>
+      </g>
+    </svg>
+
+    <div class="plans">
+      <div class="plan a">
+        <h3>标准成本卡（甲产品·每件 10 千克）</h3>
+        直接材料（A 材料·鲜玉米穗）10 千克×10 元/千克；直接人工 10.5 小时×40 元/小时；变动制造费用 10.5 小时×8 元/工时；固定制造费用 10.5 小时×12 元/工时。
+        <span class="lim">四项之和＝单位产品标准成本</span>
+      </div>
+      <div class="plan b">
+        <h3>预算与正常产能</h3>
+        变动制造费用预算 80,000 元/月、固定制造费用预算 120,000 元/月；车间正常产能 10,000 直接人工工时/月。制造费用标准分配率按正常产能计算。
+        <span class="lim">标准分配率 8 元/工时、12 元/工时</span>
+      </div>
+      <div class="plan c">
+        <h3>本月实际发生额</h3>
+        产量 900 件；A 材料 8,800 千克×10.5 元/千克；实耗工时 9,500 小时、工资总额 361,000 元；变动制造费用 77,900 元；固定制造费用 115,000 元。
+        <span class="lim">差异计算的实际侧数据</span>
+      </div>
+    </div>
+
+    <details class="meth">
+      <summary>方法速览：标准成本法与差异分解（先点开看方法，再动手算差异）</summary>
+      <ul>
+        <li><b>标准成本卡</b>：单位产品标准成本＝用量标准×价格标准，逐项核定再汇总；制造费用标准分配率＝制造费用预算÷正常产能（变动 80,000÷10,000＝8 元/工时；固定 120,000÷10,000＝12 元/工时）。</li>
+        <li><b>总差异＝实际成本−标准成本</b>。约定：结果为正是不利差异（超支），为负是有利差异（节约）。</li>
+        <li><b>价格差异＋用量差异＝总差异</b>：价格差异＝（实际价格−标准价格）×实际用量；用量差异＝（实际用量−标准用量）×标准价格。标准用量＝实际产量×用量标准。</li>
+        <li><b>变动制造费用</b>：耗费差异＝实际变动制造费用−实际工时×标准分配率；效率差异＝（实际工时−标准工时）×标准分配率。</li>
+        <li><b>固定制造费用（三差异法）</b>：耗费差异＝实际−预算；闲置能量差异＝（正常产能工时−实际工时）×标准分配率；效率差异＝（实际工时−标准工时）×标准分配率。二因素分析法下，能量差异＝闲置能量差异＋效率差异。</li>
+        <li><b>例外管理</b>：差异规模大、趋势走坏、发生频率高的才重点追；定责任先看可控性——价格波动往往不可控，用量与工时的浪费通常可控。</li>
+      </ul>
+    </details>
+
+    <div class="cta">
+      <button class="btn solid" id="btnStart" type="button">处境清楚了，开始调参</button>
+    </div>
+  </section>
+
+  <!-- ================= 参数面板 ================= -->
+  <section class="card" id="secPanel">
+    <h2>二、调准参数 <span class="tag">拖动滑块，测算区实时重算；提交后再改参数，本轮作答自动重置</span></h2>
+
+    <div class="sldgrid">
+      <div class="sld">
+        <div class="lab"><span>实际产量 <span class="hint">标准用量＝产量×用量标准</span></span><span class="val" id="vQ">900 件</span></div>
+        <input type="range" id="sldQ" min="600" max="1200" step="10" value="900" aria-label="实际产量，件">
+      </div>
+      <div class="sld">
+        <div class="lab"><span>A 材料实际用量 <span class="hint">与标准用量比，出用量差异</span></span><span class="val" id="vAQ">8,800 千克</span></div>
+        <input type="range" id="sldAQ" min="7000" max="11000" step="50" value="8800" aria-label="A 材料实际用量，千克">
+      </div>
+      <div class="sld">
+        <div class="lab"><span>A 材料实际单价 <span class="hint">与标准单价比，出价格差异</span></span><span class="val" id="vAP">10.5 元/千克</span></div>
+        <input type="range" id="sldAP" min="8" max="13" step="0.1" value="10.5" aria-label="A 材料实际单价，元每千克">
+      </div>
+      <div class="sld">
+        <div class="lab"><span>实耗工时 <span class="hint">与标准工时比，出人工与制造费用效率差异</span></span><span class="val" id="vAH">9,500 小时</span></div>
+        <input type="range" id="sldAH" min="7000" max="10000" step="50" value="9500" aria-label="实耗工时，小时">
+      </div>
+      <div class="sld">
+        <div class="lab"><span>实际工资总额 <span class="hint">÷实耗工时＝实际小时工资率</span></span><span class="val" id="vLabW">361,000 元</span></div>
+        <input type="range" id="sldLabW" min="300000" max="420000" step="1000" value="361000" aria-label="实际工资总额，元">
+      </div>
+      <div class="sld">
+        <div class="lab"><span>实际变动制造费用 <span class="hint">与「工时×标准分配率」比，出耗费差异</span></span><span class="val" id="vVOH">77,900 元</span></div>
+        <input type="range" id="sldVOH" min="60000" max="95000" step="100" value="77900" aria-label="实际变动制造费用，元">
+      </div>
+      <div class="sld">
+        <div class="lab"><span>实际固定制造费用 <span class="hint">与预算比，出耗费差异</span></span><span class="val" id="vFOH">115,000 元</span></div>
+        <input type="range" id="sldFOH" min="100000" max="135000" step="500" value="115000" aria-label="实际固定制造费用，元">
+      </div>
+    </div>
+
+    <div class="presets">
+      <span class="cap">典型情境一键打版：</span>
+      <button class="chip" type="button" data-q="900" data-aq="8800" data-ap="10.5" data-ah="9500" data-labw="361000" data-voh="77900" data-foh="115000">课件原例</button>
+      <button class="chip" type="button" data-q="900" data-aq="8900" data-ap="11.5" data-ah="9500" data-labw="361000" data-voh="77900" data-foh="115000">鲜穗涨价月</button>
+      <button class="chip" type="button" data-q="900" data-aq="8600" data-ap="10.5" data-ah="9100" data-labw="345800" data-voh="73000" data-foh="115000">效率提升月</button>
+      <button class="chip" type="button" data-q="820" data-aq="8200" data-ap="10.5" data-ah="8600" data-labw="326800" data-voh="70500" data-foh="115000">产能闲置月</button>
+      <button class="chip" type="button" data-q="900" data-aq="8800" data-ap="10.5" data-ah="9500" data-labw="384750" data-voh="77900" data-foh="115000">工资上浮月</button>
+      <button class="btn ghost sm" id="btnDefault" type="button">恢复默认参数</button>
+    </div>
+    <div class="notice">提示：只动「实际单价」看价格差异翻身，只动「实际用量」看用量差异翻身——两项相加永远等于材料总差异；把「实耗工时」往下拖，看闲置能量差异怎么一口吃掉固定费用的节约。</div>
+  </section>
+
+  <!-- ================= 测算区 ================= -->
+  <section class="card">
+    <h2>三、估算与看变化 <span class="tag">实际侧数据实时显示；要你算的，提交前一律留「？」</span></h2>
+
+    <div class="estrow">
+      <div class="est"><div class="k">A 材料实际成本</div><div class="v" id="eActMat">92,400</div><div class="src">＝实际用量 × 实际单价</div></div>
+      <div class="est"><div class="k">实际人工成本</div><div class="v" id="eActLab">361,000</div><div class="src">＝实耗工时 × 实际工资率</div></div>
+      <div class="est"><div class="k">实际小时工资率</div><div class="v" id="eAR">38.00</div><div class="src">＝工资总额 ÷ 实耗工时</div></div>
+    </div>
+    <div class="estrow">
+      <div class="est"><div class="k">实际变动制造费用</div><div class="v" id="eActVOH">77,900</div><div class="src">本月实际发生额</div></div>
+      <div class="est"><div class="k">实际固定制造费用</div><div class="v" id="eActFOH">115,000</div><div class="src">本月实际发生额</div></div>
+      <div class="est"><div class="k">本月实际总成本</div><div class="v" id="eActTotal">646,300</div><div class="src">＝四项实际成本之和</div></div>
+    </div>
+
+    <div class="chartbox" id="wfBox">
+      <h4>九项成本差异全景图（单位：元，提交并通过核对后显示）</h4>
+      <div class="leg">
+        <span><i style="background:#c62828"></i>不利差异（超支，向上）</span>
+        <span><i style="background:#2e7d32"></i>有利差异（节约，向下）</span>
+        <span><i style="background:#f2f8f2;border:1px dashed #9db89d"></i>待你计算</span>
+      </div>
+      <svg class="chart" viewBox="0 0 640 344" role="img" aria-label="九项成本差异条形图，横轴为材料价格、材料用量、工资率、人工效率、变动耗费、变动效率、固定耗费、闲置能量、固定效率九项差异，纵轴正方向为不利差异、负方向为有利差异">
+        <g font-size="11" fill="#7d8f7d" text-anchor="end">
+          <text x="60" y="16" id="wflUp">—</text>
+          <text x="60" y="164">0</text>
+          <text x="60" y="314" id="wflDn">—</text>
+        </g>
+        <g stroke="#e3eee3" stroke-width="1">
+          <path id="wfUp" d="M70 20 H620"/><path id="wfDn" d="M70 300 H620"/>
+        </g>
+        <path d="M70 160 H620" stroke="#9db89d" stroke-width="2"/>
+        <g font-size="11.5" fill="#5a6b5a" text-anchor="middle">
+          <text x="104" y="332">料价</text>
+          <text x="162" y="332">料量</text>
+          <text x="220" y="332">工率</text>
+          <text x="278" y="332">工效</text>
+          <text x="336" y="332">变耗</text>
+          <text x="394" y="332">变效</text>
+          <text x="452" y="332">固耗</text>
+          <text x="510" y="332">固闲</text>
+          <text x="568" y="332">固效</text>
+        </g>
+        <g>
+          <rect id="wf0" x="84" y="134" width="40" height="52" rx="3" fill="#f2f8f2" stroke="#9db89d" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <rect id="wf1" x="142" y="134" width="40" height="52" rx="3" fill="#f2f8f2" stroke="#9db89d" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <rect id="wf2" x="200" y="134" width="40" height="52" rx="3" fill="#f2f8f2" stroke="#9db89d" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <rect id="wf3" x="258" y="134" width="40" height="52" rx="3" fill="#f2f8f2" stroke="#9db89d" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <rect id="wf4" x="316" y="134" width="40" height="52" rx="3" fill="#f2f8f2" stroke="#9db89d" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <rect id="wf5" x="374" y="134" width="40" height="52" rx="3" fill="#f2f8f2" stroke="#9db89d" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <rect id="wf6" x="432" y="134" width="40" height="52" rx="3" fill="#f2f8f2" stroke="#9db89d" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <rect id="wf7" x="490" y="134" width="40" height="52" rx="3" fill="#f2f8f2" stroke="#9db89d" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <rect id="wf8" x="548" y="134" width="40" height="52" rx="3" fill="#f2f8f2" stroke="#9db89d" stroke-width="1.5" stroke-dasharray="5 4"/>
+        </g>
+        <g font-size="12" font-weight="700" text-anchor="middle" fill="#5a6b5a">
+          <text id="wfv0" x="104" y="126">？</text>
+          <text id="wfv1" x="162" y="126">？</text>
+          <text id="wfv2" x="220" y="126">？</text>
+          <text id="wfv3" x="278" y="126">？</text>
+          <text id="wfv4" x="336" y="126">？</text>
+          <text id="wfv5" x="394" y="126">？</text>
+          <text id="wfv6" x="452" y="126">？</text>
+          <text id="wfv7" x="510" y="126">？</text>
+          <text id="wfv8" x="568" y="126">？</text>
+        </g>
+      </svg>
+      <div class="leg" style="padding-top:0"><span>柱高按九项差异中最大者等比缩放，数值以标签为准；先算后核对，通过后图中数值才会显示。</span></div>
+    </div>
+
+    <div class="mgrid">
+      <div class="mcard" id="mcTotal">
+        <div class="nm">成本总差异</div>
+        <div class="big q" id="vTotal">？</div>
+        <div class="unit">元（负数＝有利）</div>
+        <div class="brk">实际总成本−标准总成本</div>
+      </div>
+      <div class="mcard" id="mcFav">
+        <div class="nm">有利差异合计</div>
+        <div class="big q" id="vFav">？</div>
+        <div class="unit">元</div>
+        <div class="brk">节约项加总</div>
+      </div>
+      <div class="mcard" id="mcAdv">
+        <div class="nm">不利差异合计</div>
+        <div class="big q" id="vAdv">？</div>
+        <div class="unit">元</div>
+        <div class="brk">超支项加总</div>
+      </div>
+      <div class="mcard" id="mcUnit">
+        <div class="nm">实际单位成本</div>
+        <div class="big q" id="vUnit">？</div>
+        <div class="unit">元/件</div>
+        <div class="brk">与单位标准成本比</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 决策区 ================= -->
+  <section class="card" id="secDecide">
+    <h2>四、算出差异 <span class="tag">六问＋加分题，先自己算再提交；系统按 ±0.5% 容差核对</span></h2>
+
+    <div class="q">
+      <div class="qt">第一问：编制标准成本卡——<b>四项标准成本各是多少？单位产品标准成本合计多少？</b></div>
+      <div class="qh" id="qhM">标准成本＝用量标准×价格标准。提示：制造费用标准分配率要先算——变动制造费用标准分配率＝预算 80,000÷正常产能 10,000 工时＝8 元/工时；固定制造费用标准分配率＝120,000÷10,000＝12 元/工时。</div>
+      <table class="cf">
+        <thead><tr><th>成本项目</th><th>用量标准</th><th>价格标准</th><th>标准成本（元/件）</th></tr></thead>
+        <tbody>
+          <tr><td>直接材料（A 材料·鲜玉米穗）</td><td class="num">10 千克</td><td class="num">10 元/千克</td><td class="inpcell"><input type="text" id="inpM1" inputmode="decimal" placeholder="？" aria-label="直接材料标准成本"></td></tr>
+          <tr><td>直接人工</td><td class="num">10.5 小时</td><td class="num">40 元/小时</td><td class="inpcell"><input type="text" id="inpM2" inputmode="decimal" placeholder="？" aria-label="直接人工标准成本"></td></tr>
+          <tr><td>变动制造费用</td><td class="num">10.5 小时</td><td class="num">8 元/工时</td><td class="inpcell"><input type="text" id="inpM3" inputmode="decimal" placeholder="？" aria-label="变动制造费用标准成本"></td></tr>
+          <tr><td>固定制造费用</td><td class="num">10.5 小时</td><td class="num">12 元/工时</td><td class="inpcell"><input type="text" id="inpM4" inputmode="decimal" placeholder="？" aria-label="固定制造费用标准成本"></td></tr>
+          <tr class="hl"><td>单位产品标准成本</td><td class="num">—</td><td class="num">—</td><td class="inpcell"><input type="text" id="inpM5" inputmode="decimal" placeholder="？" aria-label="单位产品标准成本合计"></td></tr>
+        </tbody>
+      </table>
+      <div class="fb" id="fbM" hidden></div>
+    </div>
+
+    <div class="q">
+      <div class="qt">第二问：直接材料成本差异——<b>价格差异、用量差异、总差异各是多少元？</b></div>
+      <div class="qh" id="qhMat"></div>
+      <div class="fillrow">
+        <input type="text" id="inpMP" inputmode="decimal" placeholder="价格差异" aria-label="直接材料价格差异">
+        <span class="u">元</span>
+        <input type="text" id="inpMQ" inputmode="decimal" placeholder="用量差异" aria-label="直接材料用量差异">
+        <span class="u">元</span>
+        <input type="text" id="inpMT" inputmode="decimal" placeholder="总差异" aria-label="直接材料总差异">
+        <span class="u">元</span>
+      </div>
+      <div class="fb" id="fbMat" hidden></div>
+    </div>
+
+    <div class="q">
+      <div class="qt">第三问：直接人工成本差异——<b>工资率差异、效率差异、总差异各是多少元？</b></div>
+      <div class="qh" id="qhLab"></div>
+      <div class="fillrow">
+        <input type="text" id="inpLR" inputmode="decimal" placeholder="工资率差异" aria-label="直接人工工资率差异">
+        <span class="u">元</span>
+        <input type="text" id="inpLE" inputmode="decimal" placeholder="效率差异" aria-label="直接人工效率差异">
+        <span class="u">元</span>
+        <input type="text" id="inpLT" inputmode="decimal" placeholder="总差异" aria-label="直接人工总差异">
+        <span class="u">元</span>
+      </div>
+      <div class="fb" id="fbLab" hidden></div>
+    </div>
+
+    <div class="q">
+      <div class="qt">第四问：变动制造费用差异——<b>耗费差异、效率差异、总差异各是多少元？</b></div>
+      <div class="qh" id="qhVoh"></div>
+      <div class="fillrow">
+        <input type="text" id="inpVS" inputmode="decimal" placeholder="耗费差异" aria-label="变动制造费用耗费差异">
+        <span class="u">元</span>
+        <input type="text" id="inpVE" inputmode="decimal" placeholder="效率差异" aria-label="变动制造费用效率差异">
+        <span class="u">元</span>
+        <input type="text" id="inpVT" inputmode="decimal" placeholder="总差异" aria-label="变动制造费用总差异">
+        <span class="u">元</span>
+      </div>
+      <div class="fb" id="fbVoh" hidden></div>
+    </div>
+
+    <div class="q">
+      <div class="qt">第五问：固定制造费用差异（三差异法）——<b>耗费差异、闲置能量差异、效率差异、总差异各是多少元？</b></div>
+      <div class="qh" id="qhFoh"></div>
+      <div class="fillrow">
+        <input type="text" id="inpFS" inputmode="decimal" placeholder="耗费差异" aria-label="固定制造费用耗费差异">
+        <span class="u">元</span>
+        <input type="text" id="inpFI" inputmode="decimal" placeholder="闲置能量差异" aria-label="固定制造费用闲置能量差异">
+        <span class="u">元</span>
+        <input type="text" id="inpFE" inputmode="decimal" placeholder="效率差异" aria-label="固定制造费用效率差异">
+        <span class="u">元</span>
+        <input type="text" id="inpFT" inputmode="decimal" placeholder="总差异" aria-label="固定制造费用总差异">
+        <span class="u">元</span>
+      </div>
+      <div class="fb" id="fbFoh" hidden></div>
+    </div>
+
+    <div class="q">
+      <div class="qt">第六问：汇总与归因——<b>本月成本总差异是多少元？整体属于有利差异还是不利差异？闲置能量差异主要说明了什么问题？</b></div>
+      <div class="qh" id="qhSum"></div>
+      <div class="fillrow">
+        <input type="text" id="inpSum" inputmode="decimal" placeholder="成本总差异" aria-label="本月成本总差异">
+        <span class="u">元</span>
+      </div>
+      <div class="opts" style="margin-top:8px">
+        <label class="opt"><input type="radio" name="sumDir" value="fav"><span>有利差异——实际比标准省钱了</span></label>
+        <label class="opt"><input type="radio" name="sumDir" value="adv"><span>不利差异——实际比标准超支了</span></label>
+      </div>
+      <div class="opts" style="margin-top:8px">
+        <label class="opt"><input type="radio" name="idleWhy" value="cap"><span>实际工时未达到正常产能，设备与产能闲着</span></label>
+        <label class="opt"><input type="radio" name="idleWhy" value="eff"><span>工人干活太慢，工时浪费在无效劳动上</span></label>
+        <label class="opt"><input type="radio" name="idleWhy" value="price"><span>农资采购价格偏高，预算超支</span></label>
+      </div>
+      <div class="fb" id="fbSum" hidden></div>
+    </div>
+
+    <div class="q">
+      <div class="qt">加分题（10 分）：<b>① 本月 A 材料实际单位耗用量是多少千克/件？② 若按二因素分析法，固定制造费用能量差异是多少元？</b></div>
+      <div class="qh">提示：① 实际单位耗用量＝实际用量÷实际产量，和标准用量 10 千克比一比；② 能量差异＝闲置能量差异＋效率差异（二因素分析法把闲置与效率合并成一项）。</div>
+      <div class="fillrow">
+        <input type="text" id="inpB1" inputmode="decimal" placeholder="实际单位耗用量" aria-label="A 材料实际单位耗用量">
+        <span class="u">千克/件</span>
+        <input type="text" id="inpB2" inputmode="decimal" placeholder="能量差异" aria-label="固定制造费用能量差异">
+        <span class="u">元</span>
+      </div>
+      <div class="fb" id="fbBonus" hidden></div>
+    </div>
+
+    <div class="trynote" id="tryNote">提示：第一问分配率要先算；第二至五问的差异带正负号——正不利、负有利；第四问耗费差异是「实际−实际工时×标准分配率」；第五问先算标准固定制造费用；第六问标准总成本＝实际产量×单位标准成本。</div>
+    <div class="submitrow">
+      <button class="btn solid" id="btnSubmit" type="button">提交作答，核对结果</button>
+    </div>
+  </section>
+
+  <!-- ================= 揭晓区 ================= -->
+  <section class="card reveal-anim" id="revealCard" hidden>
+    <h2>五、核对与复盘 <span class="tag">分步过程、差异全景、责任归属、如果当初</span></h2>
+
+    <div class="resline">
+      <div class="fb" id="resM" hidden></div>
+      <div class="fb" id="resMat" hidden></div>
+      <div class="fb" id="resLab" hidden></div>
+      <div class="fb" id="resVoh" hidden></div>
+      <div class="fb" id="resFoh" hidden></div>
+      <div class="fb" id="resSum" hidden></div>
+      <div class="fb" id="resBonus" hidden></div>
+    </div>
+
+    <details class="calc" open>
+      <summary>分步过程一：标准成本卡的编制（分配率先算）</summary>
+      <div class="cstep"><span class="k">第一步 · 变动制造费用标准分配率</span><span class="f">＝预算 80,000 ÷ 正常产能 10,000 工时 ＝</span><span class="v pos" id="sVohRate">8</span><span class="f">元/工时</span></div>
+      <div class="cstep"><span class="k">第二步 · 固定制造费用标准分配率</span><span class="f">＝预算 120,000 ÷ 正常产能 10,000 工时 ＝</span><span class="v pos" id="sFohRate">12</span><span class="f">元/工时</span></div>
+      <div class="cstep"><span class="k">第三步 · 四项标准成本</span><span class="f">直接材料 10×10＝</span><span class="v pos" id="sM1">100</span><span class="f">；直接人工 10.5×40＝</span><span class="v pos" id="sM2">420</span><span class="f">；变动制造费用 10.5×8＝</span><span class="v pos" id="sM3">84</span><span class="f">；固定制造费用 10.5×12＝</span><span class="v pos" id="sM4">126</span><span class="f">（元/件）</span></div>
+      <div class="cstep"><span class="k">第四步 · 单位产品标准成本</span><span class="f">＝100＋420＋84＋126 ＝</span><span class="v pos" id="sM5">730</span><span class="f">元/件</span></div>
+      <div class="callout">制造费用的价格标准是<b>标准分配率</b>，它来自预算÷正常产能——所以固定制造费用的「价格」背后是产能决策，这也是后文闲置能量差异的根源。</div>
+    </details>
+
+    <details class="calc" open>
+      <summary>分步过程二：材料与人工差异（价格差异＋用量差异＝总差异）</summary>
+      <div class="cstep"><span class="k">材料价格差异</span><span class="f" id="sMatPf"></span><span class="v" id="sMatP"></span><span class="f">元</span></div>
+      <div class="cstep"><span class="k">材料用量差异</span><span class="f" id="sMatQf"></span><span class="v" id="sMatQ"></span><span class="f">元</span></div>
+      <div class="cstep"><span class="k">材料总差异</span><span class="f" id="sMatTf"></span><span class="v" id="sMatT"></span><span class="f">元</span></div>
+      <div class="cstep"><span class="k">人工工资率差异</span><span class="f" id="sLabRf"></span><span class="v" id="sLabR"></span><span class="f">元</span></div>
+      <div class="cstep"><span class="k">人工效率差异</span><span class="f" id="sLabEf"></span><span class="v" id="sLabE"></span><span class="f">元</span></div>
+      <div class="cstep"><span class="k">人工总差异</span><span class="f" id="sLabTf"></span><span class="v" id="sLabT"></span><span class="f">元</span></div>
+      <div class="callout">核对恒等式：<b>价格差异＋用量差异＝总差异＝实际成本−标准成本</b>。哪项算完对不上总数，一定是某一项符号或标准用量用错了。</div>
+    </details>
+
+    <details class="calc" open>
+      <summary>分步过程三：制造费用差异（变动两项、固定三项）</summary>
+      <div class="cstep"><span class="k">变动耗费差异</span><span class="f" id="sVohSf"></span><span class="v" id="sVohS"></span><span class="f">元</span></div>
+      <div class="cstep"><span class="k">变动效率差异</span><span class="f" id="sVohEf"></span><span class="v" id="sVohE"></span><span class="f">元</span></div>
+      <div class="cstep"><span class="k">标准固定制造费用</span><span class="f" id="sFohCostf"></span><span class="v pos" id="sFohCost"></span><span class="f">元</span></div>
+      <div class="cstep"><span class="k">固定耗费差异</span><span class="f" id="sFohSf"></span><span class="v" id="sFohS"></span><span class="f">元</span></div>
+      <div class="cstep"><span class="k">闲置能量差异</span><span class="f" id="sFohIf"></span><span class="v" id="sFohI"></span><span class="f">元</span></div>
+      <div class="cstep"><span class="k">固定效率差异</span><span class="f" id="sFohEf"></span><span class="v" id="sFohE"></span><span class="f">元</span></div>
+      <div class="cstep"><span class="k">固定总差异</span><span class="f" id="sFohTf"></span><span class="v" id="sFohT"></span><span class="f">元（三项之和，也等于实际 − 标准）</span></div>
+      <div class="cstep"><span class="k">二因素口径 · 能量差异</span><span class="f">＝闲置能量差异 ＋ 固定效率差异 ＝</span><span class="v pos" id="sEnergy"></span><span class="f">元</span></div>
+    </details>
+
+    <h2 style="margin-top:16px">差异汇总与责任归属</h2>
+    <table class="rev">
+      <thead>
+        <tr><th>差异项</th><th>计算过程</th><th>金额（元）</th><th>方向</th><th>主要责任归属</th></tr>
+      </thead>
+      <tbody id="diffBody"></tbody>
+    </table>
+    <div class="callout">定责先看可控性：价格波动往往超出管理人员的可控范围，用量与工时的浪费通常可控；闲置能量差异要看是计划排产不足，还是市场订单未达预期——后者不能全怪生产部门。</div>
+
+    <h2 style="margin-top:16px">如果当初：下个月找谁谈话</h2>
+    <table class="rev">
+      <thead>
+        <tr><th>抓手</th><th>对应差异</th><th>金额（元）</th><th>说明</th></tr>
+      </thead>
+      <tbody>
+        <tr id="rowBuy"><td>采购谈判 · 鲜穗收购价</td><td>材料价格差异</td><td class="num" id="rvBuy"></td><td id="rvBuyD"></td></tr>
+        <tr id="rowProd"><td>工艺纪律 · 单位耗用与工时</td><td>材料用量差异＋人工效率差异</td><td class="num" id="rvProd"></td><td id="rvProdD"></td></tr>
+        <tr id="rowPlan"><td>排产与订单 · 产能利用</td><td>闲置能量差异</td><td class="num" id="rvPlan"></td><td id="rvPlanD"></td></tr>
+      </tbody>
+    </table>
+
+    <div class="ending" id="endingText"></div>
+
+    <div class="scorebox">
+      <span class="sc" id="scoreVal">0</span><span class="u">分</span>
+      <span class="word" id="scoreWord">待改进</span>
+      <span class="best" id="bestVal"></span>
+    </div>
+
+    <div class="cta" style="margin-top:14px">
+      <button class="btn ghost" id="btnRestart" type="button">重新挑战一轮</button>
+    </div>
+  </section>
+
+  <!-- ================= 导出区 ================= -->
+  <section class="card export locked" id="exportCard">
+    <h2>六、带走成果 <span class="tag">经营决策卡 · 五字段</span></h2>
+    <div class="locknote" id="lockNote">完成差异核对后，此处解锁，可生成并导出你的经营决策卡。</div>
+    <div id="exportBody" hidden>
+      <label for="inpName">姓名 / 学号（填入后写入决策卡）</label>
+      <input type="text" id="inpName" placeholder="如：屈梦汐 20240123">
+      <label for="inpRisk">风险责任（先看一条示范，再任选一个风险点写你自己的）</label>
+      <div class="risk-demo">示范写法：① 农资价格波动风险：鲜穗收购价随行就市，价格差异可能由市场推高而非采购失职——采购员小穗负责锁季签价与分级折价系数。请按「序号 + 风险类别：具体描述——责任人 + 应对措施」的格式，从「农资价格 / 季节性用工 / 设备检修 / 标准修订 / 订单不足」中任选一点，写你自己的一条。</div>
+      <textarea id="inpRisk" placeholder="任选一个风险点，写「风险—责任人—应对」。"></textarea>
+      <label for="cardArea">经营决策卡内容（可编辑，导出前请通读一遍）</label>
+      <textarea id="cardArea" aria-label="经营决策卡内容"></textarea>
+      <div class="acts">
+        <button class="btn solid sm" id="btnCopy" type="button">复制决策卡</button>
+        <button class="btn ghost sm" id="btnDownload" type="button">下载为文本文件</button>
+        <button class="btn ghost sm" id="btnRebuild" type="button">按当前参数重建</button>
+      </div>
+      <div class="subcloud" id="subCloud">
+        <div class="subhr"></div>
+        <div class="subttl">提交到教师后台（数据收口）</div>
+        <p class="subint">完成差异核对后，可把经营决策卡五字段、你的学号/姓名/班级与得分提交到教师后台，用于批改与统计。</p>
+        <div class="fillrow">
+          <input type="text" id="subStuId" placeholder="学号" aria-label="学号">
+          <input type="text" id="subName" placeholder="姓名" aria-label="姓名">
+          <input type="text" id="subClass" placeholder="班级" aria-label="班级">
+        </div>
+        <div class="acts">
+          <button class="btn solid sm" id="btnSubmitCloud" type="button">提交到教师后台</button>
+        </div>
+        <div class="fb" id="cloudMsg" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">第八章 标准成本法 · 虚拟仿真实训 第 1 版<br>单文件离线课件，双击即用；案例与数据为教学示例，可按本地实际调整。</div>
+</div>
+
+<div id="toast" role="status"></div>
+
+
+<script>
+/* ==== CLOUD-SDK-INLINE v1（@tencent-ai/workbuddy-cloud-sdk@dev）==== */
+var WorkBuddyCloud=(()=>{var ie=Object.defineProperty;var _t=Object.getOwnPropertyDescriptor;var Tt=Object.getOwnPropertyNames;var Ot=Object.prototype.hasOwnProperty;var a=(r,e)=>ie(r,"name",{value:e,configurable:!0});var At=(r,e)=>{for(var t in e)ie(r,t,{get:e[t],enumerable:!0})},Rt=(r,e,t,s)=>{if(e&&typeof e=="object"||typeof e=="function")for(let n of Tt(e))!Ot.call(r,n)&&n!==t&&ie(r,n,{get:()=>e[n],enumerable:!(s=_t(e,n))||s.enumerable});return r};var $t=r=>Rt(ie({},"__esModule",{value:!0}),r);var nr={};At(nr,{AuthModule:()=>D,CLOUD_MODULE_PATHS:()=>R,CLOUD_PATH_PREFIX:()=>j,CloudOpenAIError:()=>x,CloudStoragePathError:()=>w,DEFAULT_SIGNED_URL_TTL_SECONDS:()=>ge,LlmModule:()=>M,MAX_SIGNED_URL_TTL_SECONDS:()=>ye,PUBLISHABLE_KEY_HEADER:()=>be,RUNTIME_STORAGE_BUCKET:()=>W,WorkBuddyCloudClient:()=>se,WorkBuddyCloudConfigError:()=>T,WorkBuddyDatabaseModule:()=>J,WorkBuddyStorageBucket:()=>H,WorkBuddyStorageDownload:()=>te,WorkBuddyStorageModule:()=>re,anonymousTokenProvider:()=>oe,createMemoryStorage:()=>ke,createWorkBuddyCloud:()=>vt,getModelCapability:()=>Oe,getModelDisplayName:()=>Te,shouldClearCredentials:()=>Pt});var T=class extends Error{static{a(this,"WorkBuddyCloudConfigError")}constructor(e){super(e),this.name="WorkBuddyCloudConfigError"}};var Ut=/^wbpk_/;function Le(r,e){if(typeof r!="string"||r.trim()==="")throw new T(`${e} is required and must be a non-empty string.`);let t=r.trim(),s;try{s=new URL(t)}catch{throw new T(`${e} must be an absolute URL, received: ${t}`)}if(s.protocol!=="https:"&&s.protocol!=="http:")throw new T(`${e} must use http(s), received protocol: ${s.protocol}`);return t.replace(/\/+$/,"")}a(Le,"normalizeHttpUrl");function It(r){if(r!=null&&r!=="")return Le(r,"endpoint");let e=globalThis.location?.origin;if(typeof e!="string"||e==="")throw new T("endpoint is required outside browsers (no location.origin to fall back to).");return e.replace(/\/+$/,"")}a(It,"resolveEndpoint");function Ct(r){if(typeof r!="string"||r.trim()==="")throw new T("publishableKey is required and must be a non-empty string.");let e=r.trim();if(!Ut.test(e))throw new T('publishableKey must start with "wbpk_".');return e}a(Ct,"normalizePublishableKey");function Lt(r){if(r)return r;if(typeof globalThis.fetch!="function")throw new T("Global fetch is unavailable in this runtime; pass options.fetch explicitly.");return globalThis.fetch.bind(globalThis)}a(Lt,"resolveFetch");function je(r){if(!r||typeof r!="object")throw new T("createWorkBuddyCloud requires publishableKey.");return Object.freeze({endpoint:It(r.endpoint),oauthRelayBaseUrl:r.oauthRelayBaseUrl?Le(r.oauthRelayBaseUrl,"oauthRelayBaseUrl"):"",publishableKey:Ct(r.publishableKey),fetch:Lt(r.fetch)})}a(je,"resolveRuntimeConfig");var be="x-wb-webapp-access-key";function we(r,e){return async(t,s)=>{let n=new Headers(s?.headers);if(n.set(be,r.publishableKey),!n.has("Authorization")){let i=await e();i&&n.set("Authorization",`Bearer ${i}`)}return r.fetch(t,{...s,headers:n})}}a(we,"createCloudFetch");var oe=a(()=>Promise.resolve(void 0),"anonymousTokenProvider");var j="/.cloud",R=Object.freeze({auth:`${j}/auth`,database:`${j}/database/rest`,storage:`${j}/storage`,llm:`${j}/llm`});var jt="workbuddy-cloud.pkce.workbuddy.",Bt="workbuddy-cloud.pkce-done.workbuddy.";function Be(r){let e="";for(let t of r)e+=String.fromCharCode(t);return btoa(e).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")}a(Be,"base64UrlEncode");function De(){let r=globalThis.crypto;return typeof r?.getRandomValues=="function"&&typeof r?.subtle?.digest=="function"&&typeof globalThis.btoa=="function"}a(De,"hasWebCrypto");function Ne(){let r=new Uint8Array(32);return globalThis.crypto.getRandomValues(r),Be(r)}a(Ne,"createCodeVerifier");async function Me(r){let e=new TextEncoder().encode(r),t=await globalThis.crypto.subtle.digest("SHA-256",e);return Be(new Uint8Array(t))}a(Me,"computeS256Challenge");var ae=class{static{a(this,"WorkBuddyPkceStore")}verifierKey;consumedKey;constructor(e){this.verifierKey=jt+e,this.consumedKey=Bt+e}usable(){let e=this.storage();if(!e)return!1;try{let t=`${this.verifierKey}.probe`;return e.setItem(t,"1"),e.removeItem(t),!0}catch{return!1}}saveVerifier(e){try{let t=this.storage();return t?(t.setItem(this.verifierKey,e),t.removeItem(this.consumedKey),!0):!1}catch{return!1}}readVerifier(){try{return this.storage()?.getItem(this.verifierKey)??null}catch{return null}}clearVerifier(){try{this.storage()?.removeItem(this.verifierKey)}catch{}}markConsumed(e){try{this.storage()?.setItem(this.consumedKey,e)}catch{}}isConsumed(e){try{return!!e&&this.storage()?.getItem(this.consumedKey)===e}catch{return!1}}storage(){try{return globalThis.sessionStorage??null}catch{return null}}};var b={signUp:"/v1/signup",signIn:"/v1/signin",signInWithProvider:"/v1/signin/with/provider",token:"/v1/token",loginWechat:"/v1/login-wechat",loginWechatWeb:"/v1/login-wechat-web",loginWorkBuddy:"/v1/login-workbuddy",loginWorkBuddyMiniProgram:"/v1/login-workbuddy-miniprogram",signOut:"/v1/user/signout",userMe:"/v1/user/me",verification:"/v1/verification",verificationVerify:"/v1/verification/verify",resetPassword:"/v1/reset",sudo:"/v1/user/sudo",userPassword:"/v1/user/password"};function Se(r,e){let t=r??{},s=typeof t.access_token=="string"?t.access_token:"";if(!s)throw Mt("response has no access_token");let n=typeof t.refresh_token=="string"?t.refresh_token:"",i=typeof t.expires_in=="number"?t.expires_in:0;return{accessToken:s,refreshToken:n,expiresAt:e+i*1e3,user:Dt(t)}}a(Se,"parseSession");function Dt(r){let e=r.is_anonymous===!0;return{id:typeof r.sub=="string"?r.sub:"",name:O(r.name),avatarUrl:O(r.avatar_url),isAnonymous:e,raw:r}}a(Dt,"userFromSessionPayload");function Fe(r){let e=r??{},t=typeof e.sub=="string"?e.sub:typeof e.uid=="string"?e.uid:"",s=e.user_metadata??{};return{id:t,email:O(e.email)??O(s.email),phone:O(e.phone_number)??O(e.phone),name:O(e.name),avatarUrl:O(e.avatar_url),isAnonymous:e.is_anonymous===!0||e.scope==="anonymous",raw:e}}a(Fe,"parseUser");function O(r){return typeof r=="string"&&r!==""?r:void 0}a(O,"pickString");function qe(r,e){let t=e??{},s=typeof t.error=="string"?t.error:void 0,n=O(t.error_description)??O(t.message)??O(t.msg)??`HTTP ${r}`;return{kind:Nt(r,s),message:n,status:r,code:s,cause:e}}a(qe,"normalizeHttpError");function Nt(r,e){if(e==="invalid_grant")return"unauthenticated";switch(r){case 400:return"invalid-request";case 401:return"unauthenticated";case 403:return"permission-denied";case 404:return"not-found";case 429:return"rate-limited";case 501:return"unimplemented";case 503:return"backend-unavailable";default:return r>=500?"backend-unavailable":"unknown"}}a(Nt,"errorKind");function K(r){return{kind:"network",message:`request failed before a response was received: ${r instanceof Error?r.message:String(r)}`,status:0,cause:r}}a(K,"normalizeNetworkError");function Mt(r){let e=new Error(`workbuddy-cloud auth: ${r}`);return e.kind="unknown",e.status=0,e}a(Mt,"sessionShapeError");var ce=class{static{a(this,"SessionManager")}store;refresh;emit;isCredentialsRejected;now;inflight=null;signOutEpoch=0;lastFailure=null;constructor(e){this.store=e.store,this.refresh=e.refresh,this.emit=e.emit,this.isCredentialsRejected=e.isCredentialsRejected,this.now=e.now??Date.now}peek(){return this.store.read()}async ensure(){let e=this.store.read();return e?this.isExpiring(e)?e.refreshToken?this.refreshOnce(e):this.abandon():e:null}async forceRefresh(){let e=this.store.read();return e?.refreshToken?this.refreshOnce(e,{ignoreCooldown:!0}):null}commitSignIn(e){return this.lastFailure=null,this.store.write(e),this.emit("SIGNED_IN",e),e}commitUserUpdate(e){return this.store.write(e),this.emit("USER_UPDATED",e),e}clear(){this.signOutEpoch+=1,this.lastFailure=null,this.inflight=null,this.store.clear(),this.emit("SIGNED_OUT",null)}isExpiring(e){return typeof e.expiresAt!="number"?!0:e.expiresAt-this.now()<9e4}refreshOnce(e,t={}){if(this.inflight)return this.inflight;if(!t.ignoreCooldown&&this.inCooldown(e.refreshToken))return Promise.resolve(null);let s=this.doRefresh(e).finally(()=>{this.inflight=null});return this.inflight=s,s}inCooldown(e){let t=this.lastFailure;return t!==null&&t.token===e&&this.now()-t.at<6e4}async doRefresh(e){let t=this.signOutEpoch,s=e.refreshToken,n;try{n=await this.refresh(s)}catch(o){return this.onRefreshFailed(s,o)}if(this.signOutEpoch!==t)return this.store.clear(),null;let i=this.store.read();return i&&i.refreshToken!==s?i:(this.lastFailure=null,this.store.write(n),this.emit("TOKEN_REFRESHED",n),n)}onRefreshFailed(e,t){return this.isCredentialsRejected(t)?this.abandon():(this.lastFailure={token:e,at:this.now()},null)}abandon(){return this.store.clear(),this.lastFailure=null,this.emit("SIGNED_OUT",null),null}};var Ft="workbuddy-cloud.session.";function ke(){let r=new Map;return{getItem:a(e=>r.get(e)??null,"getItem"),setItem:a((e,t)=>{r.set(e,t)},"setItem"),removeItem:a(e=>{r.delete(e)},"removeItem")}}a(ke,"createMemoryStorage");function We(r){if(r)return r;try{let e="__workbuddy_probe__";return globalThis.localStorage.setItem(e,"1"),globalThis.localStorage.removeItem(e),globalThis.localStorage}catch{return ke()}}a(We,"resolveStorage");var ue=class{static{a(this,"SessionStore")}storage;key;constructor(e,t){this.storage=e,this.key=Ft+t}read(){let e;try{e=this.storage.getItem(this.key)}catch{return null}if(!e)return null;try{let t=JSON.parse(e);return qt(t)?t:this.discard()}catch{return this.discard()}}write(e){try{this.storage.setItem(this.key,JSON.stringify(e))}catch{}}clear(){try{this.storage.removeItem(this.key)}catch{}}discard(){return this.clear(),null}};function qt(r){if(!r||typeof r!="object")return!1;let e=r;return typeof e.accessToken=="string"&&e.accessToken!==""&&typeof e.refreshToken=="string"&&typeof e.expiresAt=="number"&&!!e.user&&typeof e.user=="object"}a(qt,"isStoredSession");function B(r,e){let t=r.email??"",s=r.phone??"";return!!t==!!s?{data:null,error:{kind:"invalid-request",message:`${e} requires exactly one of email or phone`,status:0}}:{data:t?{kind:"email",value:t,username:t}:{kind:"phone",value:s,username:Wt(s)},error:null}}a(B,"resolveAuthIdentifier");function Wt(r){let t=r.replace(/\D/g,"");return t.startsWith("0086")?t=t.slice(4):t.startsWith("86")&&t.length===13&&(t=t.slice(2)),/^1\d{10}$/.test(t)?`+86 ${t}`:r}a(Wt,"normalizePhone");var He="wx907c65e5e107ddcf",Ht="subpackages/secondary/oauth-authorize/index";var de=class{static{a(this,"WorkBuddyMiniProgramAuth")}storage;platform;exchange;key;starting;exchanges=new Map;constructor(e,t,s,n){this.storage=t,this.platform=s,this.exchange=n,this.key=`workbuddy-cloud.miniprogram-workbuddy.${e}`}async signIn(e){if(this.starting)return this.starting;let t=this.start(e);this.starting=t;try{return await t}finally{this.starting=void 0}}async start(e){if(typeof e?.redirectPath!="string"||!e.redirectPath.trim())return P("invalid_request","WorkBuddy login requires redirectPath");let t=this.platform.applicationId;if(typeof t!="string"||!t.trim())return P("invalid_request","WorkBuddy login requires publicConfig.workBuddyOAuthClientId");try{let s=this.platform.getEnvVersion?.(),n=await this.platform.createState(),i={state:n,appId:He,expiresAt:Date.now()+6e5},o=JSON.stringify(i);if(this.storage.setItem(this.key,o),this.storage.getItem(this.key)!==o)return P("storage_unavailable","Could not persist WorkBuddy login; sign in again");let c=await this.platform.navigate({appId:He,path:`${Ht}?client_id=${encodeURIComponent(t)}&redirect_uri=${encodeURIComponent(e.redirectPath)}&state=${encodeURIComponent(n)}`+(s?`&envVersion=${s}`:""),envVersion:"release"});return c.error&&this.storage.removeItem(this.key),c}catch(s){return P("miniprogram_login_failed",xe(s))}}async handleCallback(e){let t=e?.referrerInfo,s=Ke(t?.extraData);if(!s||!s.code&&!s.error)return{data:null,error:null};let n=typeof s.state=="string"?this.exchanges.get(s.state):void 0;if(n)return t?.appId===n.appId?n.task:P("invalid_request","WorkBuddy callback does not match the login source");let i;try{i=this.readPending()}catch(c){return P("storage_unavailable",xe(c))}if(!i)return{data:null,error:null};if(typeof s.state!="string"||!s.state)return P("invalid_request","WorkBuddy callback requires state");if(t?.appId!==i.appId||s.state!==i.state)return P("invalid_request","WorkBuddy callback does not match the login source or state");if(!(typeof s.code=="string"&&s.code)&&!(typeof s.error=="string"&&s.error))return P("invalid_request","WorkBuddy callback has no authorization code");if(!s.error&&(typeof s.redirect_uri!="string"||!s.redirect_uri.trim()))return P("invalid_request","WorkBuddy callback requires redirect_uri");try{if(this.storage.removeItem(this.key),this.storage.getItem(this.key)!==null)return P("storage_unavailable","Could not consume WorkBuddy login; sign in again")}catch(c){return P("storage_unavailable",xe(c))}if(i.expiresAt<=Date.now())return P("invalid_grant","WorkBuddy login expired; sign in again","unauthenticated");if(s.error)return P(String(s.error),typeof s.error_description=="string"?s.error_description:"WorkBuddy authorization was not completed","permission-denied");let o=this.exchange({code:s.code,state:i.state,shortlink:s.redirect_uri});this.exchanges.set(i.state,{appId:i.appId,task:o});try{return await o}finally{this.exchanges.delete(i.state)}}readPending(){let e=this.storage.getItem(this.key);if(!e)return null;let t=Ke(JSON.parse(e));if(!t||typeof t.state!="string"||typeof t.appId!="string"||typeof t.expiresAt!="number")throw new Error("Invalid saved WorkBuddy login; sign in again");return t}};function Ke(r){return r!==null&&typeof r=="object"&&!Array.isArray(r)?r:null}a(Ke,"record");function P(r,e,t="invalid-request"){return{data:null,error:{kind:t,code:r,message:e,status:0}}}a(P,"failure");function xe(r){return r instanceof Error?r.message:String(r)}a(xe,"describe");var Ge=200;function Je(r,e){let t=Array.from(r);return t.length<=e?r:`${t.slice(0,e).join("")}\u2026`}a(Je,"truncateMessage");function Ee(r){let e=r.get("error");if(!e)return null;let t=r.get("error_description"),s=t?`oauth provider rejected the request: ${e}: ${t}`:`oauth provider rejected the request: ${e}`;return Je(s,Ge)}a(Ee,"oauthProviderRejectMessage");var D=class{static{a(this,"AuthModule")}fetch;baseUrl;sessions;storage;oauthRelayBaseUrl;workBuddyPkce;workBuddyMiniProgram;workBuddyExchanges=new Map;listeners=new Map;nextListenerId=1;constructor(e,t,s={}){this.fetch=t,this.baseUrl=`${e.endpoint}${R.auth}`,this.oauthRelayBaseUrl=e.oauthRelayBaseUrl,this.storage=We(s.storage),this.workBuddyPkce=new ae(e.publishableKey),this.sessions=new ce({store:new ue(this.storage,e.publishableKey),refresh:a(n=>this.exchangeRefreshHandle(n),"refresh"),emit:a((n,i)=>this.notify(n,i),"emit"),isCredentialsRejected:a(n=>le(n)&&Ve(n),"isCredentialsRejected")}),s.workBuddyMiniProgram&&(this.workBuddyMiniProgram=new de(e.publishableKey,this.storage,s.workBuddyMiniProgram,n=>this.postForSession(b.loginWorkBuddyMiniProgram,n)))}async getAccessToken(){return(await this.sessions.ensure())?.accessToken}async signInWithWorkBuddyMiniProgram(e){return this.workBuddyMiniProgram?this.workBuddyMiniProgram.signIn(e):h({kind:"unimplemented",status:0,message:"Use createMiniProgramWorkBuddyCloud for WorkBuddy mini program login"})}async handleWorkBuddyMiniProgramCallback(e){return this.workBuddyMiniProgram?this.workBuddyMiniProgram.handleCallback(e):h({kind:"unimplemented",status:0,message:"Use createMiniProgramWorkBuddyCloud for WorkBuddy mini program login"})}async signInWithPassword(e){if(!e.password)return h(p("signInWithPassword requires a password"));let t=B(e,"signInWithPassword");return t.error?h(t.error):this.postForSession(b.signIn,{username:t.data.username,password:e.password})}async signInWithWechat(e,t){return e?t?this.postForSession(b.loginWechat,{code:e,appid:t}):h(p("signInWithWechat requires appid")):h(p("signInWithWechat requires code"))}async signUp(e){let t=B(e,"signUp");if(t.error)return h(t.error);if(!e.verificationToken)return h(p("signUp requires a verificationToken; run sendOtp + verifyOtp first (the provider rejects username+password-only signup)"));let s={verification_token:e.verificationToken};return t.data.kind==="phone"?s.phone_number=t.data.username:s.email=t.data.username,e.password&&(s.password=e.password),this.postForSession(b.signUp,s)}async sendOtp(e){let t=B(e,"sendOtp");if(t.error)return h(t.error);let s={};t.data.kind==="phone"?(s.phone_number=t.data.username,s.target="ANY"):(s.email=t.data.username,s.usage="email",e.emailRedirectTo&&(s.email_redirect_to=e.emailRedirectTo));let n=await this.request(b.verification,{method:"POST",body:s});if(n.error)return h(n.error);let i=n.data??{},o=typeof i.verification_id=="string"?i.verification_id:"";return o?S({verificationId:o,isExistingUser:i.is_user===!0}):h(p("provider returned no verification_id"))}async signInWithOtp(e){let t=B(e,"signInWithOtp");if(t.error)return h(t.error);let s=await this.sendOtp(e);if(s.error)return h(s.error);let{verificationId:n,isExistingUser:i}=s.data,o=t.data.kind==="phone"?{phone:t.data.username}:{email:t.data.username};return S({verificationId:n,isExistingUser:i,isUser:i,verify:a(({token:c,password:u})=>this.verifyOtp({verificationId:n,token:c,...o,isExistingUser:i,password:u}),"verify")})}async verifyOtp(e){let t=B(e,"verifyOtp");if(t.error)return h(t.error);if(!e.verificationId||!e.token)return h(p("verifyOtp requires verificationId and token"));let s=await this.request(b.verificationVerify,{method:"POST",body:{verification_id:e.verificationId,verification_code:e.token}});if(s.error)return h(s.error);let n=s.data??{},i=typeof n.verification_token=="string"?n.verification_token:"";if(!i)return h(p("provider returned no verification_token"));if(e.isExistingUser)return this.postForSession(b.signIn,{username:t.data.username,verification_token:i});let o=t.data.kind==="phone"?{phone:t.data.value,password:e.password}:{email:t.data.value,password:e.password};return this.signUp({...o,verificationToken:i})}async signInWithOAuth(e){if(!this.oauthRelayBaseUrl)return h(p("signInWithOAuth requires oauthRelayBaseUrl"));if(e.provider!=="google"&&e.provider!=="wechat"&&e.provider!=="workbuddy")return h(p("\u5F53\u524D SDK \u4E0D\u652F\u6301\u8BE5\u767B\u5F55\u65B9\u5F0F\uFF0C\u8BF7\u68C0\u67E5 SDK \u7248\u672C\u4E0E\u767B\u5F55\u914D\u7F6E\u3002"));let t=e.redirectTo??zt();return t?this.startRelayOAuth(e,t):h(p("signInWithOAuth requires redirectTo outside a browser environment"))}parseCallbackQuery(e){try{let t=/^https?:\/\//i.test(e)?new URL(e).search:e;return S(new URLSearchParams(t))}catch{return h(p("oauth callback URL is invalid"))}}async handleOAuthCallback(e){let t=this.parseCallbackQuery(e??ve());if(t.error||!t.data)return h(t.error??p("oauth callback URL is invalid"));let s=t.data,n=Ee(s);if(n)return h({kind:"unauthenticated",message:n,status:0});let i=s.get("code");if(!i)return S(null);let o=s.get("state")??"";if(!o)return h(p("oauth callback requires state"));let c=s.get("provider_id");if(c!=="custom-oauth")return h(p("oauth callback requires provider_id=custom-oauth"));let u={provider_id:c,provider_code:i,state:o,provider_params:{state:o}};return this.postForSession(b.signInWithProvider,u)}async handleWechatWebCallback(e){let t=this.parseCallbackQuery(e??ve());if(t.error||!t.data)return h(t.error??p("oauth callback URL is invalid"));let s=t.data,n=Ee(s);if(n)return h({kind:"unauthenticated",message:n,status:0});let i=s.get("code");if(!i)return S(null);let o=s.get("state")??"";if(!o)return h(p("oauth callback requires state"));let c=s.get("provider");return c&&c!=="wechat"?h(p("wechat callback requires provider=wechat")):s.get("provider_id")==="custom-oauth"?h(p("wechat callback must not use provider_id=custom-oauth")):this.postForSession(b.loginWechatWeb,{code:i,state:o})}async handleWorkBuddyCallback(e){let t=this.parseCallbackQuery(e??ve());if(t.error||!t.data)return h(t.error??p("oauth callback URL is invalid"));let s=t.data,n=s.get("provider");if(n&&n!=="workbuddy")return S(null);let i=Ee(s);if(i)return this.workBuddyPkce.clearVerifier(),h({kind:"unauthenticated",message:i,status:0});let o=s.get("code");if(!o)return S(null);let c=s.get("state")??"";if(!c)return h(p("workbuddy callback requires state"));if(s.get("provider_id")==="custom-oauth")return h(p("workbuddy callback must not use provider_id=custom-oauth"));if(this.workBuddyPkce.isConsumed(c))return S(null);let u=this.workBuddyExchanges.get(c);if(u)return u;let d=this.workBuddyPkce.readVerifier();if(!d)return h(p("workbuddy callback has no local PKCE verifier; sign in again in this tab"));this.workBuddyPkce.clearVerifier();let l=this.exchangeWorkBuddyCode(o,c,d);this.workBuddyExchanges.set(c,l);try{return await l}finally{this.workBuddyExchanges.delete(c)}}async exchangeWorkBuddyCode(e,t,s){let n=await this.postForSession(b.loginWorkBuddy,{code:e,state:t,code_verifier:s});return n.data&&this.workBuddyPkce.markConsumed(t),n}async resetPasswordForEmail(e){if(!e)return h(p("resetPasswordForEmail requires email"));let t=await this.request(b.verification,{method:"POST",body:{email:e,usage:"PASSWORD_RESET",target:"USER"}});if(t.error)return h(t.error);let s=t.data??{},n=typeof s.verification_id=="string"?s.verification_id:"";return n?S({updateUser:a(async({nonce:i,password:o})=>{let c=await this.request(b.verificationVerify,{method:"POST",body:{verification_id:n,verification_code:i}});if(c.error)return h(c.error);let u=c.data??{},d=typeof u.verification_token=="string"?u.verification_token:"";if(!d)return h(p("provider returned no verification_token"));let l=await this.request(b.resetPassword,{method:"POST",body:{email:e,new_password:o,verification_token:d}});if(l.error)return h(l.error);let f=await this.signInWithPassword({email:e,password:o});return f.error||this.notify("PASSWORD_RECOVERY",f.data),f},"updateUser")}):h(p("provider returned no verification_id"))}async resetPasswordForOld(e){let t=await this.getAccessToken();if(!t)return h({kind:"unauthenticated",message:"no active session",status:0});let s=await this.request(b.sudo,{method:"POST",token:t,body:{password:e.oldPassword}});if(s.error)return h(s.error);let n=s.data??{},i=typeof n.sudo_token=="string"?n.sudo_token:"";if(!i)return h(p("provider returned no sudo_token"));let o=await this.request(b.userPassword,{method:"PATCH",token:t,body:{sudo_token:i,new_password:e.newPassword}});if(o.error)return h(o.error);let c=await this.getSession();return c.data?(this.notify("USER_UPDATED",c.data),S(c.data)):h(c.error??{kind:"unauthenticated",message:"no active session",status:0})}async getSession(){try{return S(await this.sessions.ensure())}catch(e){return h(le(e)?e:K(e))}}async refreshSession(){try{return S(await this.sessions.forceRefresh())}catch(e){return h(le(e)?e:K(e))}}async getUser(){let e=await this.getAccessToken();if(!e)return h({kind:"unauthenticated",message:"no active session",status:0});let t=await this.request(b.userMe,{method:"GET",token:e});return t.error?(Ve(t.error)&&this.sessions.clear(),h(t.error)):S(Fe(t.data))}async signOut(){let e=this.sessions.peek();return e?.accessToken&&await this.request(b.signOut,{method:"POST",body:{},token:e.accessToken}),this.sessions.clear(),S(null)}onAuthStateChange(e){let t=this.nextListenerId++;return this.listeners.set(t,e),ze(e,"INITIAL_SESSION",this.sessions.peek()),()=>{this.listeners.delete(t)}}async startRelayOAuth(e,t){let s;try{s=new URL(t)}catch{return h(p("signInWithOAuth requires an absolute redirectTo URL"))}let n=new URL(`${this.oauthRelayBaseUrl}/authorize`);if(n.searchParams.set("provider",e.provider),n.searchParams.set("callback_url",s.toString()),e.provider==="workbuddy"){let i=await this.createWorkBuddyProof();if(i.error||!i.data)return h(i.error??p("signInWithOAuth could not create PKCE"));n.searchParams.set("code_challenge",i.data),n.searchParams.set("code_challenge_method","S256")}return S({url:n.toString()})}async createWorkBuddyProof(){if(!De())return h(p("workbuddy sign-in requires WebCrypto; it is unavailable in this runtime (an insecure http:// origin disables it \u2014 serve the app over https)"));if(!this.workBuddyPkce.usable())return h(p("workbuddy sign-in requires sessionStorage to keep the PKCE verifier across the redirect; it is unavailable in this runtime"));let e,t;try{e=Ne(),t=await Me(e)}catch(s){return h(p(`workbuddy sign-in could not create a PKCE proof: ${Kt(s)}`))}return this.workBuddyPkce.saveVerifier(e)?S(t):h(p("workbuddy sign-in could not persist the PKCE verifier"))}async exchangeRefreshHandle(e){let t=await this.request(b.token,{method:"POST",body:{grant_type:"refresh_token",refresh_token:e}});if(t.error)throw t.error;return Se(t.data,Date.now())}async postForSession(e,t,s={}){let n=await this.request(e,{method:"POST",body:t,headers:s.headers});if(n.error)return h(n.error);try{return S(this.sessions.commitSignIn(Se(n.data,Date.now())))}catch(i){return h(le(i)?i:K(i))}}async request(e,t){let s={...t.headers};t.body!==void 0&&(s["Content-Type"]="application/json"),t.token&&(s.Authorization=`Bearer ${t.token}`);let n;try{n=await this.fetch(this.baseUrl+e,{method:t.method,headers:s,body:t.body===void 0?void 0:JSON.stringify(t.body)})}catch(o){return h(K(o))}let i=await Vt(n);return n.ok?S(i):h(qe(n.status,i))}notify(e,t){for(let s of this.listeners.values())ze(s,e,t)}};function S(r){return{data:r,error:null}}a(S,"ok");function h(r){return{data:null,error:r}}a(h,"fail");function p(r){return{kind:"invalid-request",message:r,status:0}}a(p,"badRequest");function Kt(r){return Je(r instanceof Error?r.message:String(r),Ge)}a(Kt,"describeError");function le(r){return!!r&&typeof r=="object"&&typeof r.kind=="string"}a(le,"isCloudError");function Ve(r){return r.kind==="unauthenticated"||r.code==="invalid_grant"}a(Ve,"rejectedCredentials");async function Vt(r){let e=await r.text();if(!e)return null;try{return JSON.parse(e)}catch{return{message:e}}}a(Vt,"readBody");function ze(r,e,t){try{r(e,t)}catch{}}a(ze,"safeInvoke");function zt(){let r=globalThis.location;return r?r.origin+r.pathname:""}a(zt,"currentPageUrl");function ve(){return globalThis.location?.search??""}a(ve,"currentPageSearch");var Pe=a(r=>Math.min(1e3*2**r,3e4),"getRetryDelay"),Ye=[520,503],_e=["GET","HEAD","OPTIONS"];var I=class extends Error{static{a(this,"PostgrestError")}details;hint;code;constructor(e){super(e.message),this.name="PostgrestError",this.details=e.details,this.hint=e.hint,this.code=e.code}toJSON(){return{name:this.name,message:this.message,details:this.details,hint:this.hint,code:this.code}}};function Xe(r,e){return new Promise(t=>{if(e?.aborted){t();return}let s=setTimeout(()=>{e?.removeEventListener("abort",n),t()},r);function n(){clearTimeout(s),t()}a(n,"onAbort"),e?.addEventListener("abort",n)})}a(Xe,"sleep");function Gt(r,e,t,s){return!(!s||t>=3||!_e.includes(r)||!Ye.includes(e))}a(Gt,"shouldRetry");var V=class{static{a(this,"PostgrestBuilder")}method;url;headers;schema;body;shouldThrowOnError=!1;signal;fetch;isMaybeSingle;shouldStripNulls;urlLengthLimit;retryEnabled=!0;constructor(e){this.method=e.method,this.url=e.url,this.headers=new Headers(e.headers),this.schema=e.schema,this.body=e.body,this.shouldThrowOnError=e.shouldThrowOnError??!1,this.signal=e.signal,this.isMaybeSingle=e.isMaybeSingle??!1,this.shouldStripNulls=e.shouldStripNulls??!1,this.urlLengthLimit=e.urlLengthLimit??8e3,this.retryEnabled=e.retry??!0,e.fetch?this.fetch=e.fetch:this.fetch=fetch}throwOnError(){return this.shouldThrowOnError=!0,this}stripNulls(){if(this.headers.get("Accept")==="text/csv")throw new Error("stripNulls() cannot be used with csv()");return this.shouldStripNulls=!0,this}setHeader(e,t){return this.headers=new Headers(this.headers),this.headers.set(e,t),this}retry(e){return this.retryEnabled=e,this}then(e,t){if(this.schema===void 0||(["GET","HEAD"].includes(this.method)?this.headers.set("Accept-Profile",this.schema):this.headers.set("Content-Profile",this.schema)),this.method!=="GET"&&this.method!=="HEAD"&&this.headers.set("Content-Type","application/json"),this.shouldStripNulls){let o=this.headers.get("Accept");o==="application/vnd.pgrst.object+json"?this.headers.set("Accept","application/vnd.pgrst.object+json;nulls=stripped"):(!o||o==="application/json")&&this.headers.set("Accept","application/vnd.pgrst.array+json;nulls=stripped")}let s=this.fetch,i=a(async()=>{let o=0;for(;;){let c={};this.headers.forEach((d,l)=>{c[l]=d}),o>0&&(c["X-Retry-Count"]=String(o));let u;try{u=await s(this.url.toString(),{method:this.method,headers:c,body:JSON.stringify(this.body,(d,l)=>typeof l=="bigint"?l.toString():l),signal:this.signal})}catch(d){if(d?.name==="AbortError"||d?.code==="ABORT_ERR"||!_e.includes(this.method))throw d;if(this.retryEnabled&&o<3){let l=Pe(o);o++,await Xe(l,this.signal);continue}throw d}if(Gt(this.method,u.status,o,this.retryEnabled)){let d=u.headers?.get("Retry-After")??null,l=d!==null?Math.max(0,parseInt(d,10)||0)*1e3:Pe(o);await u.text(),o++,await Xe(l,this.signal);continue}return await this.processResponse(u)}},"executeWithRetry")();return this.shouldThrowOnError||(i=i.catch(o=>{let c="",u="",d="",l=o?.cause;if(l){let g=l?.message??"",y=l?.code??"";c=`${o?.name??"FetchError"}: ${o?.message}`,c+=`
+
+Caused by: ${l?.name??"Error"}: ${g}`,y&&(c+=` (${y})`),l?.stack&&(c+=`
+${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name==="AbortError"||o?.code==="ABORT_ERR"?(d="",u="Request was aborted (timeout or manual cancellation)",f>this.urlLengthLimit&&(u+=`. Note: Your request URL is ${f} characters, which may exceed server limits. If selecting many fields, consider using views. If filtering with large arrays (e.g., .in('id', [many IDs])), consider using an RPC function to pass values server-side.`)):(l?.name==="HeadersOverflowError"||l?.code==="UND_ERR_HEADERS_OVERFLOW")&&(d="",u="HTTP headers exceeded server limits (typically 16KB)",f>this.urlLengthLimit&&(u+=`. Your request URL is ${f} characters. If selecting many fields, consider using views. If filtering with large arrays (e.g., .in('id', [200+ IDs])), consider using an RPC function instead.`)),{success:!1,error:{message:`${o?.name??"FetchError"}: ${o?.message}`,details:c,hint:u,code:d},data:null,count:null,status:0,statusText:""}})),i.then(e,t)}async processResponse(e){let t=null,s=null,n=null,i=e.status,o=e.statusText;if(e.ok){if(this.method!=="HEAD"){let d=await e.text();if(d!=="")if(this.headers.get("Accept")==="text/csv")s=d;else if(this.headers.get("Accept")&&this.headers.get("Accept")?.includes("application/vnd.pgrst.plan+text"))s=d;else try{s=JSON.parse(d)}catch{if(t={message:d},s=null,this.shouldThrowOnError)throw new I({message:d,details:"",hint:"",code:""})}}let c=this.headers.get("Prefer")?.match(/count=(exact|planned|estimated)/),u=e.headers.get("content-range")?.split("/");if(c&&u&&u.length>1&&(n=parseInt(u[1])),this.isMaybeSingle&&Array.isArray(s))if(s.length>1){if(t={code:"PGRST116",details:`Results contain ${s.length} rows, application/vnd.pgrst.object+json requires 1 row`,hint:null,message:"JSON object requested, multiple (or no) rows returned"},s=null,n=null,i=406,o="Not Acceptable",this.shouldThrowOnError)throw new I({...t,hint:t.hint??""})}else s.length===1?s=s[0]:s=null}else{let c=await e.text();try{t=JSON.parse(c),Array.isArray(t)&&e.status===404&&(s=[],t=null,i=200,o="OK")}catch{e.status===404&&c===""?(i=204,o="No Content"):t={message:c}}if(t&&this.shouldThrowOnError)throw new I(t)}return{success:t===null,error:t,data:s,count:n,status:i,statusText:o}}returns(){return this}overrideTypes(){return this}};var z=class extends V{static{a(this,"PostgrestTransformBuilder")}throwOnError(){return super.throwOnError()}select(e){let t=!1,s=(e??"*").split("").map(n=>/\s/.test(n)&&!t?"":(n==='"'&&(t=!t),n)).join("");return this.url.searchParams.set("select",s),this.headers.append("Prefer","return=representation"),this}order(e,{ascending:t=!0,nullsFirst:s,foreignTable:n,referencedTable:i=n}={}){let o=i?`${i}.order`:"order",c=this.url.searchParams.get(o);return this.url.searchParams.set(o,`${c?`${c},`:""}${e}.${t?"asc":"desc"}${s===void 0?"":s?".nullsfirst":".nullslast"}`),this}limit(e,{foreignTable:t,referencedTable:s=t}={}){let n=typeof s>"u"?"limit":`${s}.limit`;return this.url.searchParams.set(n,`${e}`),this}range(e,t,{foreignTable:s,referencedTable:n=s}={}){let i=typeof n>"u"?"offset":`${n}.offset`,o=typeof n>"u"?"limit":`${n}.limit`;return this.url.searchParams.set(i,`${e}`),this.url.searchParams.set(o,`${t-e+1}`),this}abortSignal(e){return this.signal=e,this}single(){return this.headers.set("Accept","application/vnd.pgrst.object+json"),this}maybeSingle(){return this.isMaybeSingle=!0,this}csv(){return this.headers.set("Accept","text/csv"),this}geojson(){return this.headers.set("Accept","application/geo+json"),this}explain({analyze:e=!1,verbose:t=!1,settings:s=!1,buffers:n=!1,wal:i=!1,format:o="text"}={}){let c=[e?"analyze":null,t?"verbose":null,s?"settings":null,n?"buffers":null,i?"wal":null].filter(Boolean).join("|"),u=this.headers.get("Accept")??"application/json";return this.headers.set("Accept",`application/vnd.pgrst.plan+${o}; for="${u}"; options=${c};`),o==="json"?this:this}rollback(){return this.headers.append("Prefer","tx=rollback"),this}returns(){return this}maxAffected(e){return this.headers.append("Prefer","handling=strict"),this.headers.append("Prefer",`max-affected=${e}`),this}};var Ze=new RegExp("[,()]"),A=class extends z{static{a(this,"PostgrestFilterBuilder")}throwOnError(){return super.throwOnError()}eq(e,t){return this.url.searchParams.append(e,`eq.${t}`),this}neq(e,t){return this.url.searchParams.append(e,`neq.${t}`),this}gt(e,t){return this.url.searchParams.append(e,`gt.${t}`),this}gte(e,t){return this.url.searchParams.append(e,`gte.${t}`),this}lt(e,t){return this.url.searchParams.append(e,`lt.${t}`),this}lte(e,t){return this.url.searchParams.append(e,`lte.${t}`),this}like(e,t){return this.url.searchParams.append(e,`like.${t}`),this}likeAllOf(e,t){return this.url.searchParams.append(e,`like(all).{${t.join(",")}}`),this}likeAnyOf(e,t){return this.url.searchParams.append(e,`like(any).{${t.join(",")}}`),this}ilike(e,t){return this.url.searchParams.append(e,`ilike.${t}`),this}ilikeAllOf(e,t){return this.url.searchParams.append(e,`ilike(all).{${t.join(",")}}`),this}ilikeAnyOf(e,t){return this.url.searchParams.append(e,`ilike(any).{${t.join(",")}}`),this}regexMatch(e,t){return this.url.searchParams.append(e,`match.${t}`),this}regexIMatch(e,t){return this.url.searchParams.append(e,`imatch.${t}`),this}is(e,t){return this.url.searchParams.append(e,`is.${t}`),this}isDistinct(e,t){return this.url.searchParams.append(e,`isdistinct.${t}`),this}in(e,t){let s=Array.from(new Set(t)).map(n=>typeof n=="string"&&Ze.test(n)?`"${n}"`:`${n}`).join(",");return this.url.searchParams.append(e,`in.(${s})`),this}notIn(e,t){let s=Array.from(new Set(t)).map(n=>typeof n=="string"&&Ze.test(n)?`"${n}"`:`${n}`).join(",");return this.url.searchParams.append(e,`not.in.(${s})`),this}contains(e,t){return typeof t=="string"?this.url.searchParams.append(e,`cs.${t}`):Array.isArray(t)?this.url.searchParams.append(e,`cs.{${t.join(",")}}`):this.url.searchParams.append(e,`cs.${JSON.stringify(t)}`),this}containedBy(e,t){return typeof t=="string"?this.url.searchParams.append(e,`cd.${t}`):Array.isArray(t)?this.url.searchParams.append(e,`cd.{${t.join(",")}}`):this.url.searchParams.append(e,`cd.${JSON.stringify(t)}`),this}rangeGt(e,t){return this.url.searchParams.append(e,`sr.${t}`),this}rangeGte(e,t){return this.url.searchParams.append(e,`nxl.${t}`),this}rangeLt(e,t){return this.url.searchParams.append(e,`sl.${t}`),this}rangeLte(e,t){return this.url.searchParams.append(e,`nxr.${t}`),this}rangeAdjacent(e,t){return this.url.searchParams.append(e,`adj.${t}`),this}overlaps(e,t){return typeof t=="string"?this.url.searchParams.append(e,`ov.${t}`):this.url.searchParams.append(e,`ov.{${t.join(",")}}`),this}textSearch(e,t,{config:s,type:n}={}){let i="";n==="plain"?i="pl":n==="phrase"?i="ph":n==="websearch"&&(i="w");let o=s===void 0?"":`(${s})`;return this.url.searchParams.append(e,`${i}fts${o}.${t}`),this}match(e){return Object.entries(e).filter(([t,s])=>s!==void 0).forEach(([t,s])=>{this.url.searchParams.append(t,`eq.${s}`)}),this}not(e,t,s){return this.url.searchParams.append(e,`not.${t}.${s}`),this}or(e,{foreignTable:t,referencedTable:s=t}={}){let n=s?`${s}.or`:"or";return this.url.searchParams.append(n,`(${e})`),this}filter(e,t,s){return this.url.searchParams.append(e,`${t}.${s}`),this}};var G=class{static{a(this,"PostgrestQueryBuilder")}url;headers;schema;signal;fetch;urlLengthLimit;retry;constructor(e,{headers:t={},schema:s,fetch:n,urlLengthLimit:i=8e3,retry:o}){this.url=e,this.headers=new Headers(t),this.schema=s,this.fetch=n,this.urlLengthLimit=i,this.retry=o}cloneRequestState(){return{url:new URL(this.url.toString()),headers:new Headers(this.headers)}}select(e,t){let{head:s=!1,count:n}=t??{},i=s?"HEAD":"GET",o=!1,c=(e??"*").split("").map(l=>/\s/.test(l)&&!o?"":(l==='"'&&(o=!o),l)).join(""),{url:u,headers:d}=this.cloneRequestState();return u.searchParams.set("select",c),n&&d.append("Prefer",`count=${n}`),new A({method:i,url:u,headers:d,schema:this.schema,fetch:this.fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}insert(e,{count:t,defaultToNull:s=!0}={}){let n="POST",{url:i,headers:o}=this.cloneRequestState();if(t&&o.append("Prefer",`count=${t}`),s||o.append("Prefer","missing=default"),Array.isArray(e)){let c=e.reduce((u,d)=>u.concat(Object.keys(d)),[]);if(c.length>0){let u=[...new Set(c)].map(d=>`"${d}"`);i.searchParams.set("columns",u.join(","))}}return new A({method:n,url:i,headers:o,schema:this.schema,body:e,fetch:this.fetch??fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}upsert(e,{onConflict:t,ignoreDuplicates:s=!1,count:n,defaultToNull:i=!0}={}){let o="POST",{url:c,headers:u}=this.cloneRequestState();if(u.append("Prefer",`resolution=${s?"ignore":"merge"}-duplicates`),t!==void 0&&c.searchParams.set("on_conflict",t),n&&u.append("Prefer",`count=${n}`),i||u.append("Prefer","missing=default"),Array.isArray(e)){let d=e.reduce((l,f)=>l.concat(Object.keys(f)),[]);if(d.length>0){let l=[...new Set(d)].map(f=>`"${f}"`);c.searchParams.set("columns",l.join(","))}}return new A({method:o,url:c,headers:u,schema:this.schema,body:e,fetch:this.fetch??fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}update(e,{count:t}={}){let s="PATCH",{url:n,headers:i}=this.cloneRequestState();return t&&i.append("Prefer",`count=${t}`),new A({method:s,url:n,headers:i,schema:this.schema,body:e,fetch:this.fetch??fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}delete({count:e}={}){let t="DELETE",{url:s,headers:n}=this.cloneRequestState();return e&&n.append("Prefer",`count=${e}`),new A({method:t,url:s,headers:n,schema:this.schema,fetch:this.fetch??fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}};var N=class r{static{a(this,"PostgrestClient")}url;headers;schemaName;fetch;urlLengthLimit;retry;constructor(e,{headers:t={},schema:s,fetch:n,timeout:i,urlLengthLimit:o=8e3,retry:c}={}){this.url=e,this.headers=new Headers(t),this.schemaName=s,this.urlLengthLimit=o;let u=n??globalThis.fetch;i!==void 0&&i>0?this.fetch=(d,l)=>{let f=new AbortController,g=setTimeout(()=>f.abort(),i),y=l?.signal;if(y){if(y.aborted)return clearTimeout(g),u(d,l);let ne=a(()=>{clearTimeout(g),f.abort()},"abortHandler");return y.addEventListener("abort",ne,{once:!0}),u(d,{...l,signal:f.signal}).finally(()=>{clearTimeout(g),y.removeEventListener("abort",ne)})}return u(d,{...l,signal:f.signal}).finally(()=>clearTimeout(g))}:this.fetch=u,this.retry=c}from(e){if(!e||typeof e!="string"||e.trim()==="")throw new Error("Invalid relation name: relation must be a non-empty string.");let t=new URL(`${this.url}/${e}`);return new G(t,{headers:new Headers(this.headers),schema:this.schemaName,fetch:this.fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}schema(e){return new r(this.url,{headers:this.headers,schema:e,fetch:this.fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}rpc(e,t={},{head:s=!1,get:n=!1,count:i}={}){let o,c=new URL(`${this.url}/rpc/${e}`),u,d=a(g=>g!==null&&typeof g=="object"&&(!Array.isArray(g)||g.some(d)),"_isObject"),l=s&&Object.values(t).some(d);l?(o="POST",u=t):s||n?(o=s?"HEAD":"GET",Object.entries(t).filter(([g,y])=>y!==void 0).map(([g,y])=>[g,Array.isArray(y)?`{${y.join(",")}}`:`${y}`]).forEach(([g,y])=>{c.searchParams.append(g,y)})):(o="POST",u=t);let f=new Headers(this.headers);return l?f.set("Prefer",i?`count=${i},return=minimal`:"return=minimal"):i&&f.set("Prefer",`count=${i}`),new A({method:o,url:c,headers:f,schema:this.schemaName,body:u,fetch:this.fetch??fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}};var J=class{static{a(this,"WorkBuddyDatabaseModule")}client;constructor(e,t){this.client=new N(`${e.endpoint}${R.database}`,{fetch:t}),this.from=this.client.from.bind(this.client),this.rpc=this.client.rpc.bind(this.client)}from;rpc;get url(){return this.client.url}};function et(r,e){return new J(r,e)}a(et,"createDatabaseModule");var x=class extends Error{static{a(this,"CloudOpenAIError")}error;status;requestId;retryAfterMs;constructor(e,t={}){let s=typeof e=="string"?{message:e,type:"server_error",param:null,code:null}:e;super(s.message),this.name="CloudOpenAIError",this.error=s,this.status=t.status,this.requestId=t.requestId,this.retryAfterMs=t.retryAfterMs,t.cause!==void 0&&("cause"in this||Object.defineProperty(this,"cause",{value:t.cause,writable:!1,enumerable:!1,configurable:!1}))}};function tt(r){if(!r)return;let e=r.trim(),t=Number(e);if(!isNaN(t)&&t>=0&&Number.isInteger(t))return t*1e3;let s=Date.parse(e);if(!isNaN(s)){let n=s-Date.now();return n>0?n:0}}a(tt,"parseRetryAfter");function m(...r){return r.find(e=>typeof e=="string"&&e.length>0)}a(m,"stringField");function k(...r){return r.find(e=>typeof e=="number"&&Number.isFinite(e))}a(k,"numberField");function E(...r){return r.find(e=>typeof e=="boolean")}a(E,"booleanField");function rt(...r){for(let e of r){if(typeof e=="number"&&Number.isFinite(e))return e;if(e!==null&&typeof e=="object"&&!Array.isArray(e))return Jt(e)}}a(rt,"contextWindowField");function Jt(r){let e={};for(let[t,s]of Object.entries(r)){if(t==="supportedLengths"){Array.isArray(s)&&(e.supportedLengths=s.filter(n=>typeof n=="number"&&Number.isFinite(n)));continue}if(t==="defaultLength"){typeof s=="number"&&Number.isFinite(s)&&(e.defaultLength=s);continue}Object.defineProperty(e,t,{value:s,writable:!0,enumerable:!0,configurable:!0})}return e}a(Jt,"normalizeContextWindowObject");function st(r){if(!r||typeof r!="object")return;let e=r,t=Array.isArray(e.input)?e.input.filter(n=>typeof n=="string"):void 0,s=Array.isArray(e.output)?e.output.filter(n=>typeof n=="string"):void 0;return t?.length||s?.length?{...t?.length?{input:t}:{},...s?.length?{output:s}:{}}:void 0}a(st,"modalitiesField");function nt(r){if(!r||typeof r!="object")return;let t=Object.entries(r).filter(([,s])=>typeof s=="boolean");return t.length?Object.fromEntries(t):void 0}a(nt,"capabilitiesField");function it(r){if(!r||typeof r!="object")return;let e=r,t={...m(e.currency)?{currency:e.currency}:{},...k(e.inputPerMillionTokens)!==void 0?{inputPerMillionTokens:e.inputPerMillionTokens}:{},...k(e.outputPerMillionTokens)!==void 0?{outputPerMillionTokens:e.outputPerMillionTokens}:{},...m(e.displayText)?{displayText:e.displayText}:{}};return Object.keys(t).length?t:void 0}a(it,"pricingField");function ot(r){if(!r||typeof r!="object")return;let e=r,t={},s=m(e.effort);s!==void 0&&(t.effort=s);let n=m(e.defaultEffort);n!==void 0&&(t.defaultEffort=n),Array.isArray(e.supportedEfforts)&&(t.supportedEfforts=e.supportedEfforts.filter(c=>typeof c=="string"));let i=m(e.summary);i!==void 0&&(i==="auto"||i==="concise"||i==="detailed")&&(t.summary=i);let o=E(e.canDisableThinking);return o!==void 0&&(t.canDisableThinking=o),Object.keys(t).length>0?t:void 0}a(ot,"reasoningField");function Yt(r){let e=m(r.id,r.ID);if(!e)return null;let t=E(r.enabled,r.Enabled),s=E(r.disabled,r.Disabled),n,i;return t!==void 0?(n=t,s!==void 0&&(i=s)):s!==void 0?(i=s,n=!s):n=!0,{id:e,name:m(r.name,r.Name)??e,...m(r.provider,r.Provider)?{provider:m(r.provider,r.Provider)}:{},...m(r.vendor,r.Vendor)?{vendor:m(r.vendor,r.Vendor)}:{},...m(r.family,r.Family)?{family:m(r.family,r.Family)}:{},...m(r.version,r.Version)?{version:m(r.version,r.Version)}:{},...m(r.description,r.Description)?{description:m(r.description,r.Description)}:{},...m(r.descriptionZh,r.DescriptionZh)?{descriptionZh:m(r.descriptionZh,r.DescriptionZh)}:{},...m(r.descriptionEn,r.DescriptionEn)?{descriptionEn:m(r.descriptionEn,r.DescriptionEn)}:{},...m(r.iconUrl,r.IconURL)?{iconUrl:m(r.iconUrl,r.IconURL)}:{},...rt(r.contextWindow,r.ContextWindow)!==void 0?{contextWindow:rt(r.contextWindow,r.ContextWindow)}:{},...k(r.maxInputTokens,r.MaxInputTokens)!==void 0?{maxInputTokens:k(r.maxInputTokens,r.MaxInputTokens)}:{},...k(r.maxOutputTokens,r.MaxOutputTokens)!==void 0?{maxOutputTokens:k(r.maxOutputTokens,r.MaxOutputTokens)}:{},...st(r.modalities??r.Modalities)?{modalities:st(r.modalities??r.Modalities)}:{},...nt(r.capabilities??r.Capabilities)?{capabilities:nt(r.capabilities??r.Capabilities)}:{},enabled:n,...i!==void 0?{disabled:i}:{},...E(r.isDefault,r.IsDefault)!==void 0?{isDefault:E(r.isDefault,r.IsDefault)}:{},...k(r.sortOrder,r.SortOrder)!==void 0?{sortOrder:k(r.sortOrder,r.SortOrder)}:{},...it(r.pricing??r.Pricing)?{pricing:it(r.pricing??r.Pricing)}:{},...m(r.credits,r.Credits)?{credits:m(r.credits,r.Credits)}:{},...k(r.maxAllowedSize,r.MaxAllowedSize)!==void 0?{maxAllowedSize:k(r.maxAllowedSize,r.MaxAllowedSize)}:{},...E(r.disabledMultimodal,r.DisabledMultimodal)!==void 0?{disabledMultimodal:E(r.disabledMultimodal,r.DisabledMultimodal)}:{},...E(r.supportsImages,r.SupportsImages)!==void 0?{supportsImages:E(r.supportsImages,r.SupportsImages)}:{},...E(r.supportsToolCall,r.SupportsToolCall)!==void 0?{supportsToolCall:E(r.supportsToolCall,r.SupportsToolCall)}:{},...E(r.supportsReasoning,r.SupportsReasoning)!==void 0?{supportsReasoning:E(r.supportsReasoning,r.SupportsReasoning)}:{},...E(r.onlyReasoning,r.OnlyReasoning)!==void 0?{onlyReasoning:E(r.onlyReasoning,r.OnlyReasoning)}:{},...ot(r.reasoning??r.Reasoning)?{reasoning:ot(r.reasoning??r.Reasoning)}:{},...k(r.temperature,r.Temperature)!==void 0?{temperature:k(r.temperature,r.Temperature)}:{},...k(r.top_k,r.Top_K)!==void 0?{top_k:k(r.top_k,r.Top_K)}:{},...k(r.top_p,r.Top_P)!==void 0?{top_p:k(r.top_p,r.Top_P)}:{},...k(r.repetition_penalty,r.Repetition_Penalty)!==void 0?{repetition_penalty:k(r.repetition_penalty,r.Repetition_Penalty)}:{}}}a(Yt,"normalizeModel");function Te(r){return r.name||r.id}a(Te,"getModelDisplayName");function Oe(r,e){return r.capabilities?.[e]}a(Oe,"getModelCapability");var he=class{static{a(this,"ModelsAPI")}baseUrl;fetch;constructor(e,t){this.baseUrl=e,this.fetch=t}async list(e){let t;try{t=await this.fetch(`${this.baseUrl}/models`,{method:"GET",headers:{Accept:"application/json"},signal:e})}catch(c){throw c instanceof Error&&c.name==="AbortError"?c:new x({message:`Network error: ${c?.message??"unknown"}`,type:"server_error",param:null,code:"gateway_network_error"},{cause:c})}if(!t.ok)throw await Ae(t);let s=await t.text(),n;try{n=JSON.parse(s)}catch{throw new x({message:"Failed to parse models response: invalid JSON",type:"server_error",param:null,code:"gateway_invalid_response"})}let i=Array.isArray(n)?n:Array.isArray(n?.data)?n.data:[],o=[];for(let c of i){let u=Yt(c);u&&o.push(u)}return o}};async function Ae(r){let e=await r.text().catch(()=>""),t;try{let i=JSON.parse(e);if(i&&typeof i=="object"&&i.error){let o=i.error;t={message:typeof o.message=="string"?o.message:`HTTP ${r.status}`,type:typeof o.type=="string"?o.type:"server_error",param:o.param===void 0?null:o.param,code:o.code===void 0?null:o.code}}else t={message:typeof i=="string"?i:`HTTP ${r.status}`,type:"server_error",param:null,code:null}}catch{t={message:e||`HTTP ${r.status}`,type:"server_error",param:null,code:null}}let s=r.headers.get("x-request-id")??void 0,n=tt(r.headers.get("retry-after"));return new x(t,{status:r.status,requestId:s,retryAfterMs:n})}a(Ae,"httpError");var fe=class{static{a(this,"Utf8Decoder")}codePoint=0;bytesNeeded=0;bytesSeen=0;lowerBoundary=128;upperBoundary=191;bomSeen=!1;streaming=!1;resetSequence(){this.codePoint=0,this.bytesNeeded=0,this.bytesSeen=0,this.lowerBoundary=128,this.upperBoundary=191}decode(e=new Uint8Array,t={}){this.streaming||(this.resetSequence(),this.bomSeen=!1),this.streaming=t.stream===!0;let s="",n=a(i=>{!this.bomSeen&&(this.bomSeen=!0,i===65279)||(s+=String.fromCodePoint(i))},"emit");for(let i=0;i<e.length;i++){let o=e[i];if(this.bytesNeeded===0){o<=127?n(o):o>=194&&o<=223?(this.bytesNeeded=1,this.codePoint=o&31):o>=224&&o<=239?(this.bytesNeeded=2,this.codePoint=o&15,o===224&&(this.lowerBoundary=160),o===237&&(this.upperBoundary=159)):o>=240&&o<=244?(this.bytesNeeded=3,this.codePoint=o&7,o===240&&(this.lowerBoundary=144),o===244&&(this.upperBoundary=143)):n(65533);continue}if(o<this.lowerBoundary||o>this.upperBoundary){this.resetSequence(),n(65533),i--;continue}this.lowerBoundary=128,this.upperBoundary=191,this.codePoint=this.codePoint<<6|o&63,this.bytesSeen++,this.bytesSeen===this.bytesNeeded&&(n(this.codePoint),this.resetSequence())}return!this.streaming&&this.bytesNeeded>0&&(n(65533),this.resetSequence()),s}};var Xt=class{static{a(this,"SSEDecoder")}event=null;dataParts=[];decode(e){let t=e;if(t.endsWith("\r")&&(t=t.slice(0,-1)),t===""){if(this.event===null&&this.dataParts.length===0)return null;let o={event:this.event,data:this.dataParts.join(`
+`)};return this.event=null,this.dataParts=[],o}if(t.startsWith(":"))return null;let s=t.indexOf(":"),n,i;if(s===-1)n=t,i="";else{n=t.slice(0,s);let o=t.slice(s+1);o.startsWith(" ")&&(o=o.slice(1)),i=o}return n==="event"?this.event=i:n==="data"&&this.dataParts.push(i),null}flush(){if(this.event===null&&this.dataParts.length===0)return null;let e={event:this.event,data:this.dataParts.join(`
+`)};return this.event=null,this.dataParts=[],e}},Qt=class{static{a(this,"LineDecoder")}buffer=new Uint8Array;decoder;constructor(){this.decoder=typeof TextDecoder>"u"?new fe:new TextDecoder("utf-8")}decode(e){let t=new Uint8Array(this.buffer.length+e.length);t.set(this.buffer),t.set(e,this.buffer.length),this.buffer=t;let s=[],n=0;for(let i=0;i<this.buffer.length;i++)if(this.buffer[i]===10||this.buffer[i]===13){let o=this.buffer.subarray(n,i),c=this.decoder.decode(o,{stream:!0});s.push(c),this.buffer[i]===13&&i+1<this.buffer.length&&this.buffer[i+1]===10&&i++,n=i+1}return n>0&&(this.buffer=this.buffer.slice(n)),s}flush(){if(this.buffer.length===0){let t=this.decoder.decode();return t?[t]:[]}let e=this.decoder.decode(this.buffer,{stream:!1});return this.buffer=new Uint8Array,e?[e]:[]}},at="[DONE]";async function*ct(r,e){let t=new Xt,s=new Qt,n=r.getReader(),i=!1,o=a(()=>{i=!0,n.cancel().catch(()=>{})},"onAbort");if(e){if(e.aborted)return;e.addEventListener("abort",o,{once:!0})}try{for(;;){if(i)return;let u;try{u=await n.read()}catch(f){if(i||f instanceof Error&&f.name==="AbortError")return;throw f}let{done:d,value:l}=u;if(d)break;for(let f of s.decode(l)){let g=t.decode(f);g&&(yield g)}}for(let u of s.flush()){let d=t.decode(u);d&&(yield d)}let c=t.flush();c&&(yield c)}finally{e&&e.removeEventListener("abort",o);try{n.releaseLock()}catch{}}}a(ct,"iterSSEEvents");function Zt(r,e){let t=e?{requestId:e}:{};try{let s=JSON.parse(r);if(s&&typeof s=="object"){let n=s.error??s;if(n&&typeof n=="object")return new x({message:typeof n.message=="string"?n.message:"Stream error",type:typeof n.type=="string"?n.type:"server_error",param:n.param===void 0?null:n.param,code:n.code===void 0?null:n.code},t)}}catch{}return new x({message:r||"Stream error",type:"server_error",param:null,code:null},t)}a(Zt,"extractSSEError");var pe=class{static{a(this,"ChatCompletionsAPI")}baseUrl;fetch;constructor(e,t){this.baseUrl=e,this.fetch=t}create(e){if(e.stream!==!0)throw new x({message:"stream must be true; non-streaming chat completions are not supported",type:"invalid_request_error",param:"stream",code:"request_stream_required"});return this.createStreaming(e)}async*createStreaming(e){let{signal:t,conversationId:s,...n}=e;n.stream=!0;let i;try{i=await this.fetch(`${this.baseUrl}/chat/completions`,{method:"POST",headers:{Accept:"text/event-stream","Content-Type":"application/json",...s!==void 0?{"X-Conversation-ID":s}:{}},body:JSON.stringify(n),signal:t})}catch(d){if(d instanceof Error&&d.name==="AbortError")return;throw new x({message:`Network error: ${d?.message??"unknown"}`,type:"server_error",param:null,code:"gateway_network_error"},{cause:d})}if(!i.ok)throw await Ae(i);if(!i.body)throw new x({message:"Response body is empty \u2014 streaming not supported",type:"server_error",param:null,code:"gateway_invalid_response"},{requestId:i.headers.get("x-request-id")??void 0});let o=i.headers.get("x-request-id")??void 0,c=!1,u=!1;try{for await(let d of ct(i.body,t)){if(d.event==="error")throw u=!0,Zt(d.data,o);if(d.event===null||d.event===""){if(d.data===at){c=!0;return}if(!d.data)continue;let l;try{l=JSON.parse(d.data)}catch{throw u=!0,new x({message:`Failed to parse SSE data: ${d.data}`,type:"server_error",param:null,code:"gateway_invalid_response"},{requestId:o})}if(l&&typeof l=="object"&&"error"in l){u=!0;let f=l.error;throw new x({message:typeof f?.message=="string"?f.message:"Stream error",type:typeof f?.type=="string"?f.type:"server_error",param:f?.param===void 0?null:f.param,code:f?.code===void 0?null:f.code},{requestId:o})}yield l}}}catch(d){if(d instanceof Error&&d.name==="AbortError")return;throw u=!0,d}if(!c&&!u&&!t?.aborted)throw new x({message:"\u6D41\u5F0F\u54CD\u5E94\u4E2D\u65AD\u3002",type:"server_error",param:null,code:"gateway_stream_interrupted"},{requestId:o})}};var M=class{static{a(this,"LlmModule")}fetch;baseUrl;models;chat;constructor(e,t){this.fetch=t,this.baseUrl=`${e.endpoint}${R.llm}`,this.models=new he(this.baseUrl,this.fetch),this.chat={completions:new pe(this.baseUrl,this.fetch)}}};var F=class extends Error{static{a(this,"StorageError")}__isStorageError=!0;namespace;status;statusCode;constructor(e,t="storage",s,n){super(e),this.namespace=t,this.name=t==="vectors"?"StorageVectorsError":"StorageError",this.status=s,this.statusCode=n}toJSON(){return{name:this.name,message:this.message,status:this.status,statusCode:this.statusCode}}};function U(r){return typeof r=="object"&&r!==null&&"__isStorageError"in r}a(U,"isStorageError");var C=class extends F{static{a(this,"StorageApiError")}status;statusCode;code;constructor(e,t,s,n="storage",i){super(e,n,t,s),this.name=n==="vectors"?"StorageVectorsApiError":"StorageApiError",this.status=t,this.statusCode=s,this.code=i}toJSON(){return{...super.toJSON(),code:this.code}}},q=class extends F{static{a(this,"StorageUnknownError")}originalError;constructor(e,t,s="storage"){super(e,s),this.name=s==="vectors"?"StorageVectorsUnknownError":"StorageUnknownError",this.originalError=t}};function L(r,e,t){let s={...r},n=e.toLowerCase();for(let i of Object.keys(s))i.toLowerCase()===n&&delete s[i];return s[n]=t,s}a(L,"setHeader");function ut(r){let e={};for(let[t,s]of Object.entries(r))e[t.toLowerCase()]=s;return e}a(ut,"normalizeHeaders");var dt=a(r=>r?(...e)=>r(...e):(...e)=>fetch(...e),"resolveFetch");var lt=a(r=>{if(typeof r!="object"||r===null)return!1;let e=Object.getPrototypeOf(r);return(e===null||e===Object.prototype||Object.getPrototypeOf(e)===null)&&!(Symbol.toStringTag in r)&&!(Symbol.iterator in r)},"isPlainObject"),me=a(r=>{if(Array.isArray(r))return r.map(t=>me(t));if(typeof r=="function"||r!==Object(r))return r;let e={};return Object.entries(r).forEach(([t,s])=>{let n=t.replace(/([-_][a-z])/gi,i=>i.toUpperCase().replace(/[-_]/g,""));e[n]=me(s)}),e},"recursiveToCamel");var ht=a(r=>r.split("/").map(encodeURIComponent).join("/"),"encodeStoragePath");var ft=a(r=>{if(typeof r=="object"&&r!==null){let e=r;if(typeof e.msg=="string")return e.msg;if(typeof e.message=="string")return e.message;if(typeof e.error_description=="string")return e.error_description;if(typeof e.error=="string")return e.error;if(typeof e.error=="object"&&e.error!==null){let t=e.error;if(typeof t.message=="string")return t.message}}return JSON.stringify(r)},"_getErrorMessage"),er=a(async(r,e,t,s)=>{if(r!==null&&typeof r=="object"&&"json"in r&&typeof r.json=="function"){let i=r,o=parseInt(String(i.status),10);Number.isFinite(o)||(o=500),i.json().then(c=>{let u=c?.statusCode||c?.code||o+"";e(new C(ft(c),o,u,s,c?.code))}).catch(()=>{let c=o+"",u=i.statusText||`HTTP ${o} error`;e(new C(u,o,c,s))})}else e(new q(ft(r),r,s))},"handleError"),tr=a((r,e,t,s)=>{let n={method:r,headers:e?.headers||{}};if(r==="GET"||r==="HEAD"||!s)return{...n,...t};if(lt(s)){let i=e?.headers||{},o;for(let[c,u]of Object.entries(i))c.toLowerCase()==="content-type"&&(o=u);n.headers=L(i,"Content-Type",o??"application/json"),n.body=JSON.stringify(s)}else n.body=s;return e?.duplex&&(n.duplex=e.duplex),{...n,...t}},"_getRequestParams");async function Y(r,e,t,s,n,i,o){return new Promise((c,u)=>{r(t,tr(e,s,n,i)).then(d=>{if(!d.ok)throw d;if(s?.noResolveJson)return d;if(o==="vectors"){let l=d.headers.get("content-type");if(d.headers.get("content-length")==="0"||d.status===204)return{};if(!l||!l.includes("application/json"))return{}}return d.json()}).then(d=>c(d)).catch(d=>er(d,u,s,o))})}a(Y,"_handleRequest");function pt(r="storage"){return{get:a(async(e,t,s,n)=>Y(e,"GET",t,s,n,void 0,r),"get"),post:a(async(e,t,s,n,i)=>Y(e,"POST",t,n,i,s,r),"post"),put:a(async(e,t,s,n,i)=>Y(e,"PUT",t,n,i,s,r),"put"),head:a(async(e,t,s,n)=>Y(e,"HEAD",t,{...s,noResolveJson:!0},n,void 0,r),"head"),remove:a(async(e,t,s,n,i)=>Y(e,"DELETE",t,n,i,s,r),"remove")}}a(pt,"createFetchApi");var rr=pt("storage"),{get:Re,post:$,put:$e,head:mt,remove:Ue}=rr,Ms=pt("vectors");var X=class{static{a(this,"BaseApiClient")}url;headers;fetch;shouldThrowOnError=!1;namespace;constructor(e,t={},s,n="storage"){this.url=e,this.headers=ut(t),this.fetch=dt(s),this.namespace=n}throwOnError(){return this.shouldThrowOnError=!0,this}setHeader(e,t){return this.headers=L(this.headers,e,t),this}async handleOperation(e){try{return{data:await e(),error:null}}catch(t){if(this.shouldThrowOnError)throw t;if(U(t))return{data:null,error:t};throw t}}};var Q=class{static{a(this,"StreamDownloadBuilder")}downloadFn;shouldThrowOnError;[Symbol.toStringTag]="StreamDownloadBuilder";promise=null;constructor(e,t){this.downloadFn=e,this.shouldThrowOnError=t}then(e,t){return this.getPromise().then(e,t)}catch(e){return this.getPromise().catch(e)}finally(e){return this.getPromise().finally(e)}getPromise(){return this.promise||(this.promise=this.execute()),this.promise}async execute(){try{return{data:(await this.downloadFn()).body,error:null}}catch(e){if(this.shouldThrowOnError)throw e;if(U(e))return{data:null,error:e};throw e}}};var Z=class{static{a(this,"BlobDownloadBuilder")}downloadFn;shouldThrowOnError;[Symbol.toStringTag]="BlobDownloadBuilder";promise=null;constructor(e,t){this.downloadFn=e,this.shouldThrowOnError=t}asStream(){return new Q(this.downloadFn,this.shouldThrowOnError)}then(e,t){return this.getPromise().then(e,t)}catch(e){return this.getPromise().catch(e)}finally(e){return this.getPromise().finally(e)}getPromise(){return this.promise||(this.promise=this.execute()),this.promise}async execute(){try{return{data:await(await this.downloadFn()).blob(),error:null}}catch(e){if(this.shouldThrowOnError)throw e;if(U(e))return{data:null,error:e};throw e}}};var Ie={limit:100,offset:0,sortBy:{column:"name",order:"asc"}},gt={cacheControl:"3600",contentType:"text/plain;charset=UTF-8",upsert:!1},ee=class extends X{static{a(this,"StorageFileApi")}bucketId;constructor(e,t={},s,n){super(e,t,n,"storage"),this.bucketId=s}async uploadOrUpdate(e,t,s,n){return this.handleOperation(async()=>{let i,o={...gt,...n},c={...this.headers,...e==="POST"&&{"x-upsert":String(o.upsert)}},u=o.metadata;if(typeof Blob<"u"&&s instanceof Blob?(i=new FormData,i.append("cacheControl",o.cacheControl),u&&i.append("metadata",this.encodeMetadata(u)),i.append("",s)):typeof FormData<"u"&&s instanceof FormData?(i=s,i.has("cacheControl")||i.append("cacheControl",o.cacheControl),u&&!i.has("metadata")&&i.append("metadata",this.encodeMetadata(u))):(i=s,c["cache-control"]=`max-age=${o.cacheControl}`,c["content-type"]=o.contentType,u&&(c["x-metadata"]=this.toBase64(this.encodeMetadata(u))),(typeof ReadableStream<"u"&&i instanceof ReadableStream||i&&typeof i=="object"&&"pipe"in i&&typeof i.pipe=="function")&&!o.duplex&&(o.duplex="half")),n?.headers)for(let[g,y]of Object.entries(n.headers))c=L(c,g,y);let d=this._removeEmptyFolders(t),l=this._getFinalPath(d),f=await(e=="PUT"?$e:$)(this.fetch,`${this.url}/object/${l}`,i,{headers:c,...o?.duplex?{duplex:o.duplex}:{}});return{path:d,id:f.Id,fullPath:f.Key}})}async upload(e,t,s){return this.uploadOrUpdate("POST",e,t,s)}async uploadToSignedUrl(e,t,s,n){let i=this._removeEmptyFolders(e),o=this._getFinalPath(i),c=new URL(this.url+`/object/upload/sign/${o}`);return c.searchParams.set("token",t),this.handleOperation(async()=>{let u,d={...gt,...n},l={...this.headers,"x-upsert":String(d.upsert)},f=d.metadata;if(typeof Blob<"u"&&s instanceof Blob?(u=new FormData,u.append("cacheControl",d.cacheControl),f&&u.append("metadata",this.encodeMetadata(f)),u.append("",s)):typeof FormData<"u"&&s instanceof FormData?(u=s,u.has("cacheControl")||u.append("cacheControl",d.cacheControl),f&&!u.has("metadata")&&u.append("metadata",this.encodeMetadata(f))):(u=s,l["cache-control"]=`max-age=${d.cacheControl}`,l["content-type"]=d.contentType,f&&(l["x-metadata"]=this.toBase64(this.encodeMetadata(f))),(typeof ReadableStream<"u"&&u instanceof ReadableStream||u&&typeof u=="object"&&"pipe"in u&&typeof u.pipe=="function")&&!d.duplex&&(d.duplex="half")),n?.headers)for(let[y,ne]of Object.entries(n.headers))l=L(l,y,ne);let g=await $e(this.fetch,c.toString(),u,{headers:l,...d?.duplex?{duplex:d.duplex}:{}});return{path:i,fullPath:g.Key}})}async createSignedUploadUrl(e,t){return this.handleOperation(async()=>{let s=this._getFinalPath(e),n={...this.headers};t?.upsert&&(n["x-upsert"]="true");let i=await $(this.fetch,`${this.url}/object/upload/sign/${s}`,{},{headers:n}),o=new URL(this.url+i.url),c=o.searchParams.get("token");if(!c)throw new F("No token returned by API");return{signedUrl:o.toString(),path:e,token:c}})}async update(e,t,s){return this.uploadOrUpdate("PUT",e,t,s)}async move(e,t,s){return this.handleOperation(async()=>await $(this.fetch,`${this.url}/object/move`,{bucketId:this.bucketId,sourceKey:e,destinationKey:t,destinationBucket:s?.destinationBucket},{headers:this.headers}))}async copy(e,t,s){return this.handleOperation(async()=>({path:(await $(this.fetch,`${this.url}/object/copy`,{bucketId:this.bucketId,sourceKey:e,destinationKey:t,destinationBucket:s?.destinationBucket},{headers:this.headers})).Key}))}async createSignedUrl(e,t,s){return this.handleOperation(async()=>{let n=this._getFinalPath(e),i=typeof s?.transform=="object"&&s.transform!==null&&Object.keys(s.transform).length>0,o=await $(this.fetch,`${this.url}/object/sign/${n}`,{expiresIn:t,...i?{transform:s.transform}:{}},{headers:this.headers}),c=new URLSearchParams;s?.download&&c.set("download",s.download===!0?"":s.download),s?.cacheNonce!=null&&c.set("cacheNonce",String(s.cacheNonce));let u=c.toString();return{signedUrl:encodeURI(`${this.url}${o.signedURL}${u?`&${u}`:""}`)}})}async createSignedUrls(e,t,s){return this.handleOperation(async()=>{let n=await $(this.fetch,`${this.url}/object/sign/${this.bucketId}`,{expiresIn:t,paths:e},{headers:this.headers}),i=new URLSearchParams;s?.download&&i.set("download",s.download===!0?"":s.download),s?.cacheNonce!=null&&i.set("cacheNonce",String(s.cacheNonce));let o=i.toString();return n.map(c=>({...c,signedUrl:c.signedURL?encodeURI(`${this.url}${c.signedURL}${o?`&${o}`:""}`):null}))})}download(e,t,s){let i=typeof t?.transform=="object"&&t.transform!==null&&Object.keys(t.transform).length>0?"render/image/authenticated":"object",o=new URLSearchParams;t?.transform&&this.applyTransformOptsToQuery(o,t.transform),t?.cacheNonce!=null&&o.set("cacheNonce",String(t.cacheNonce));let c=o.toString(),u=this._getFinalPath(e),d=a(()=>Re(this.fetch,`${this.url}/${i}/${u}${c?`?${c}`:""}`,{headers:this.headers,noResolveJson:!0},s),"downloadFn");return new Z(d,this.shouldThrowOnError)}async info(e){let t=this._getFinalPath(e);return this.handleOperation(async()=>{let s=await Re(this.fetch,`${this.url}/object/info/${t}`,{headers:this.headers});return me(s)})}async exists(e){let t=this._getFinalPath(e);try{return await mt(this.fetch,`${this.url}/object/${t}`,{headers:this.headers}),{data:!0,error:null}}catch(s){if(this.shouldThrowOnError)throw s;if(U(s)){let n=s instanceof C?s.status:s instanceof q?s.originalError?.status:void 0;if(n!==void 0&&[400,404].includes(n))return{data:!1,error:s}}throw s}}getPublicUrl(e,t){let s=this._getFinalPath(e),n=new URLSearchParams;t?.download&&n.set("download",t.download===!0?"":t.download),t?.transform&&this.applyTransformOptsToQuery(n,t.transform),t?.cacheNonce!=null&&n.set("cacheNonce",String(t.cacheNonce));let i=n.toString(),c=typeof t?.transform=="object"&&t.transform!==null&&Object.keys(t.transform).length>0?"render/image":"object";return{data:{publicUrl:encodeURI(`${this.url}/${c}/public/${s}`)+(i?`?${i}`:"")}}}async remove(e){return this.handleOperation(async()=>await Ue(this.fetch,`${this.url}/object/${this.bucketId}`,{prefixes:e},{headers:this.headers}))}async purgeCache(e,t,s){return this.handleOperation(async()=>{let n=ht(this._getFinalPath(e)),i=new URLSearchParams;t?.transformations&&i.set("transformations","true");let o=i.toString();return await Ue(this.fetch,`${this.url}/cdn/${n}${o?`?${o}`:""}`,{},{headers:this.headers},s)})}async list(e,t,s){return this.handleOperation(async()=>{let n=t?.sortBy?{...Ie.sortBy,...t.sortBy}:Ie.sortBy,i={...Ie,...t,sortBy:n,prefix:e||""};return await $(this.fetch,`${this.url}/object/list/${this.bucketId}`,i,{headers:this.headers},s)})}async listV2(e,t){return this.handleOperation(async()=>{let s={...e};return await $(this.fetch,`${this.url}/object/list-v2/${this.bucketId}`,s,{headers:this.headers},t)})}encodeMetadata(e){return JSON.stringify(e)}toBase64(e){return typeof Buffer<"u"?Buffer.from(e).toString("base64"):btoa(e)}_getFinalPath(e){return`${this.bucketId}/${e.replace(/^\/+/,"")}`}_removeEmptyFolders(e){return e.replace(/^\/|\/$/g,"").replace(/\/+/g,"/")}applyTransformOptsToQuery(e,t){return t.width&&e.set("width",t.width.toString()),t.height&&e.set("height",t.height.toString()),t.resize&&e.set("resize",t.resize),t.format&&e.set("format",t.format),t.quality&&e.set("quality",t.quality.toString()),e}};var yt="2.112.3";var bt={"X-Client-Info":`storage-js/${yt}`};var W="runtime",ge=600,ye=3600,w=class extends Error{static{a(this,"CloudStoragePathError")}constructor(e){super(e),this.name="CloudStoragePathError"}},te=class{static{a(this,"WorkBuddyStorageDownload")}blob;stream;[Symbol.toStringTag]="WorkBuddyStorageDownload";constructor(e,t){this.blob=e,this.stream=t}asStream(){return this.stream()}then(e,t){return this.blob().then(e,t)}catch(e){return this.blob().catch(e)}finally(e){return this.blob().finally(e)}},H=class{static{a(this,"WorkBuddyStorageBucket")}fileApi;constructor(e){this.fileApi=e}upload(e,t,s){return _(this.fileApi.upload(v(e),t,s))}update(e,t,s){return _(this.fileApi.update(v(e),t,s))}list(e="",t){return _(this.fileApi.list(St(e),t))}listPage(e){return _(this.fileApi.listV2({...e,prefix:St(e?.prefix??"")}))}info(e){return _(this.fileApi.info(v(e)))}async exists(e){let t=await this.fileApi.exists(v(e));return t.error?{data:null,error:Et(t.error)}:{data:t.data,error:null}}download(e){let t=this.fileApi.download(v(e));return new te(()=>_(t),()=>_(t.asStream()))}remove(e){if(e.length===0)throw new w("remove requires at least one object path.");return _(this.fileApi.remove(e.map(v)))}copy(e,t){return _(this.fileApi.copy(v(e),v(t)))}move(e,t){return _(this.fileApi.move(v(e),v(t)))}createSignedUrl(e,t=ge){return _(this.fileApi.createSignedUrl(v(e),kt(t)))}createSignedUrls(e,t=ge){if(e.length===0)throw new w("createSignedUrls requires at least one object path.");return _(this.fileApi.createSignedUrls(e.map(v),kt(t)))}createSignedUploadUrl(e,t){return _(this.fileApi.createSignedUploadUrl(v(e),{upsert:t?.upsert??!1}))}uploadToSignedUrl(e,t,s,n){if(!t)throw new w("signed upload token is required.");return _(this.fileApi.uploadToSignedUrl(v(e),t,s,n))}},re=class extends H{static{a(this,"WorkBuddyStorageModule")}runtime;constructor(e){let s=e.from(W);super(s),this.runtime=new H(s)}from(e=W){if(e!==W)throw new w(`Only the "${W}" storage bucket is available.`);return this.runtime}userPath(e,t){return wt("users",e,t)}sharedPath(e,t){return wt("shared",e,t)}};function xt(r,e){let t={from:a(s=>new ee(`${r.endpoint}${R.storage}`,bt,s,e),"from")};return new re(t)}a(xt,"createStorageModule");function wt(r,e,t){let s=sr(e,"owner/user id"),n=Ce(t,!1);return v(`${r}/${s}/${n}`)}a(wt,"scopedPath");function v(r){let e=Ce(r,!1);if(!e.includes("/"))throw new w("Object paths must use users/<uid>/... or shared/<ownerUid>/....");let[t,s,...n]=e.split("/");if(t!=="users"&&t!=="shared"||!s||n.length===0)throw new w("Object paths must use users/<uid>/... or shared/<ownerUid>/....");return e}a(v,"validateObjectPath");function St(r){if(r==="")return"";let e=Ce(r,!0),[t,s]=e.split("/");if(t==="shared"&&!s)return"shared";if(t!=="users"&&t!=="shared"||!s)throw new w("List prefixes must start with users/<uid> or shared/<ownerUid>.");return e}a(St,"validateObjectPrefix");function Ce(r,e){if(typeof r!="string"||r.trim()==="")throw new w("Storage path must be a non-empty relative path.");let t=r.trim();for(let i=0;i<3;i+=1)try{let o=decodeURIComponent(t);if(o===t)break;t=o}catch{throw new w("Storage path contains invalid URL encoding.")}if(t.startsWith("/")||t.includes("\\")||t.includes("\0")||t.includes("//")||!e&&t.endsWith("/"))throw new w("Storage path is not a safe relative object path.");let s=e?t.replace(/\/+$/,""):t;if(s.split("/").some(i=>i===""||i==="."||i===".."))throw new w("Storage path traversal is not allowed.");return s}a(Ce,"validatePath");function sr(r,e){if(!r)throw new w(`${e} is not a valid storage path segment.`);let t=r;for(let s=0;s<3;s+=1)try{let n=decodeURIComponent(t);if(n===t)break;t=n}catch{throw new w(`${e} contains invalid URL encoding.`)}if(t.includes("/")||t.includes("\\")||t.includes("\0")||t==="."||t==="..")throw new w(`${e} is not a valid storage path segment.`);return t}a(sr,"validatePathSegment");function kt(r){if(!Number.isInteger(r)||r<=0||r>ye)throw new w(`Signed URL expiry must be an integer between 1 and ${ye} seconds.`);return r}a(kt,"validateSignedURLTTL");async function _(r){let e=await r;return e.error?{data:null,error:Et(e.error)}:e.data===null?{data:null,error:{name:"CloudStorageResponseError",message:"Storage API returned neither data nor an error."}}:{data:e.data,error:null}}a(_,"mapStorageResult");function Et(r){if(r instanceof Error){let e=r;return{name:e.name,message:e.message,status:e.status,statusCode:e.statusCode,code:e.code,cause:r}}return{name:"CloudStorageError",message:String(r),cause:r}}a(Et,"normalizeStorageError");var se=class{static{a(this,"WorkBuddyCloudClient")}config;database;auth;storage;llm;constructor(e,t={}){this.config=e,this.auth=new D(e,we(e,oe),{storage:t.storage,workBuddyMiniProgram:t.workBuddyMiniProgram});let s=we(e,()=>this.auth.getAccessToken());this.database=et(e,s),this.storage=xt(e,s),this.llm=new M(e,s)}get endpoint(){return this.config.endpoint}get oauthRelayBaseUrl(){return this.config.oauthRelayBaseUrl}};function vt(r){return new se(je(r),{storage:r.storage})}a(vt,"createWorkBuddyCloud");function Pt(r){return r.kind==="unauthenticated"||r.code==="invalid_grant"}a(Pt,"shouldClearCredentials");return $t(nr);})();
+
+</script>
+
+<script>
+(function(){
+'use strict';
+
+/* ================= 数据与参数 ================= */
+/* 标准（课件原例：甲产品·速冻鲜食玉米，每件 10 千克）与预算基础为案例给定数据 */
+var STD={ matQ:10, matP:10, labH:10.5, labR:40, vohR:8, fohR:12 };
+var BUD={ voh:80000, foh:120000, cap:10000 };
+/* 七个实际侧参数（滑块） */
+var DEF={ q:900, aq:8800, ap:10.5, ah:9500, labW:361000, voh:77900, foh:115000 };
+var P={ q:DEF.q, aq:DEF.aq, ap:DEF.ap, ah:DEF.ah, labW:DEF.labW, voh:DEF.voh, foh:DEF.foh };
+var BEST_KEY='jx_ch8_sim_v1_best';
+var ITEM_PTS={ card:12, mat:13, lab:13, voh:13, foh:14, sum:15, bonus:10 };
+var ITEM_KEYS=['card','mat','lab','voh','foh','sum','bonus'];
+var st={ submitted:false, resolved:false,
+  t:{card:0,mat:0,lab:0,voh:0,foh:0,sum:0,bonus:0},
+  ok:{card:false,mat:false,lab:false,voh:false,foh:false,sum:false,bonus:false},
+  score:0, best:loadBest() };
+
+function loadBest(){ try{ var v=parseInt(localStorage.getItem(BEST_KEY)||'0',10); return isFinite(v)?v:0; }catch(e){ return 0; } }
+function saveBest(v){ try{ localStorage.setItem(BEST_KEY,String(v)); }catch(e){} }
+
+function $(id){ return document.getElementById(id); }
+function fmt(n,d){ d=(d===undefined)?2:d; n=Math.round(n*Math.pow(10,d))/Math.pow(10,d);
+  var s=String(Math.abs(n).toFixed(d)).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  return (n<0?'-':'')+s; }
+
+var toastTimer=0;
+function toast(msg){
+  var t=$('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove('show'); },2400);
+}
+
+/* ================= 核心计算（全部实时，无写死结果常量） ================= */
+function calc(p){
+  /* 标准侧 */
+  var stdMat=STD.matQ*STD.matP;          /* 100 */
+  var stdLab=STD.labH*STD.labR;          /* 420 */
+  var stdVoh=STD.labH*STD.vohR;          /* 84  */
+  var stdFoh=STD.labH*STD.fohR;          /* 126 */
+  var stdUnit=stdMat+stdLab+stdVoh+stdFoh;
+  var stdQ=p.q*STD.matQ;                 /* 实际产量下的材料标准用量 */
+  var stdH=p.q*STD.labH;                 /* 实际产量下的标准工时 */
+  /* 实际侧 */
+  var ar=p.ah>0?(p.labW/p.ah):0;         /* 实际小时工资率 */
+  var actMat=p.aq*p.ap, actLab=p.labW, actVoh=p.voh, actFoh=p.foh;
+  var actTotal=actMat+actLab+actVoh+actFoh;
+  var stdTotal=p.q*stdUnit;
+  var stdFohCost=stdH*STD.fohR;          /* 标准固定制造费用 */
+  /* 差异 */
+  var dMatP=(p.ap-STD.matP)*p.aq;
+  var dMatQ=(p.aq-stdQ)*STD.matP;
+  var dMatT=dMatP+dMatQ;
+  var dLabR=(ar-STD.labR)*p.ah;
+  var dLabE=(p.ah-stdH)*STD.labR;
+  var dLabT=dLabR+dLabE;
+  var dVohS=p.voh-p.ah*STD.vohR;
+  var dVohE=(p.ah-stdH)*STD.vohR;
+  var dVohT=dVohS+dVohE;
+  var dFohS=p.foh-BUD.foh;
+  var dFohI=(BUD.cap-p.ah)*STD.fohR;
+  var dFohE=(p.ah-stdH)*STD.fohR;
+  var dFohT=dFohS+dFohI+dFohE;
+  var energy=(BUD.cap-stdH)*STD.fohR;    /* 二因素口径：能量差异＝闲置＋效率 */
+  var total=actTotal-stdTotal;
+  var diffs=[dMatP,dMatQ,dLabR,dLabE,dVohS,dVohE,dFohS,dFohI,dFohE];
+  var fav=0, adv=0, i;
+  for(i=0;i<diffs.length;i++){ if(diffs[i]<0){ fav+=-diffs[i]; } else { adv+=diffs[i]; } }
+  return {
+    stdMat:stdMat, stdLab:stdLab, stdVoh:stdVoh, stdFoh:stdFoh, stdUnit:stdUnit,
+    stdQ:stdQ, stdH:stdH, ar:ar,
+    actMat:actMat, actLab:actLab, actVoh:actVoh, actFoh:actFoh, actTotal:actTotal,
+    stdTotal:stdTotal, stdFohCost:stdFohCost,
+    dMatP:dMatP, dMatQ:dMatQ, dMatT:dMatT,
+    dLabR:dLabR, dLabE:dLabE, dLabT:dLabT,
+    dVohS:dVohS, dVohE:dVohE, dVohT:dVohT,
+    dFohS:dFohS, dFohI:dFohI, dFohE:dFohE, dFohT:dFohT,
+    energy:energy, total:total, fav:fav, adv:adv,
+    diffs:diffs, unitAct:actTotal/p.q, unitCons:p.aq/p.q
+  };
+}
+
+/* ================= 差异全景图（零线居中：不利向上、有利向下） ================= */
+var WZY=160, WHALF=140;
+function wfMax(r){
+  var mx=0;
+  for(var i=0;i<r.diffs.length;i++){ mx=Math.max(mx,Math.abs(r.diffs[i])); }
+  return mx;
+}
+function placeholderWF(){
+  for(var i=0;i<9;i++){
+    var rect=$('wf'+i), lab=$('wfv'+i);
+    rect.setAttribute('y',WZY-26); rect.setAttribute('height',52);
+    rect.setAttribute('fill','#f2f8f2'); rect.setAttribute('stroke','#9db89d');
+    rect.setAttribute('stroke-dasharray','5 4'); rect.setAttribute('stroke-width','1.5');
+    lab.textContent='？'; lab.setAttribute('y',WZY-34); lab.setAttribute('fill','#5a6b5a');
+  }
+  $('wflUp').textContent='—'; $('wflDn').textContent='—';
+}
+function drawWF(r){
+  var mx=wfMax(r);
+  var s=mx>0?(WHALF/mx):1;
+  $('wflUp').textContent=fmt(mx,0);
+  $('wflDn').textContent='-'+fmt(mx,0);
+  for(var i=0;i<9;i++){
+    var d=r.diffs[i], rect=$('wf'+i), lab=$('wfv'+i);
+    var h=Math.abs(d)*s;
+    if(h<3&&h>0){ h=3; }              /* 极小差异保底可见，数值以标签为准 */
+    if(d>0){
+      rect.setAttribute('y',WZY-h); rect.setAttribute('height',h);
+      rect.setAttribute('fill','#c62828');
+      rect.removeAttribute('stroke'); rect.removeAttribute('stroke-dasharray'); rect.removeAttribute('stroke-width');
+      lab.textContent='+'+fmt(d,0); lab.setAttribute('y',WZY-h-6); lab.setAttribute('fill','#c62828');
+    }else if(d<0){
+      rect.setAttribute('y',WZY); rect.setAttribute('height',h);
+      rect.setAttribute('fill','#2e7d32');
+      rect.removeAttribute('stroke'); rect.removeAttribute('stroke-dasharray'); rect.removeAttribute('stroke-width');
+      lab.textContent='-'+fmt(-d,0); lab.setAttribute('y',WZY+h+14); lab.setAttribute('fill','#1b5e20');
+    }else{
+      rect.setAttribute('y',WZY-2); rect.setAttribute('height',4);
+      rect.setAttribute('fill','#9db89d');
+      rect.removeAttribute('stroke'); rect.removeAttribute('stroke-dasharray'); rect.removeAttribute('stroke-width');
+      lab.textContent='0'; lab.setAttribute('y',WZY-8); lab.setAttribute('fill','#5a6b5a');
+    }
+  }
+  var box=$('wfBox');
+  box.classList.remove('reveal-anim');
+  void box.offsetWidth;
+  box.classList.add('reveal-anim');
+}
+
+/* ================= 静态渲染（就地更新，不整体重渲染） ================= */
+function renderStatic(r){
+  $('vQ').textContent=fmt(P.q,0)+' 件';
+  $('vAQ').textContent=fmt(P.aq,0)+' 千克';
+  $('vAP').textContent=P.ap.toFixed(1)+' 元/千克';
+  $('vAH').textContent=fmt(P.ah,0)+' 小时';
+  $('vLabW').textContent=fmt(P.labW,0)+' 元';
+  $('vVOH').textContent=fmt(P.voh,0)+' 元';
+  $('vFOH').textContent=fmt(P.foh,0)+' 元';
+
+  $('eActMat').textContent=fmt(r.actMat,0);
+  $('eActLab').textContent=fmt(r.actLab,0);
+  $('eAR').textContent=r.ar.toFixed(2);
+  $('eActVOH').textContent=fmt(r.actVoh,0);
+  $('eActFOH').textContent=fmt(r.actFoh,0);
+  $('eActTotal').textContent=fmt(r.actTotal,0);
+
+  /* 问2—问6 提示语：代入式随当前参数实时生成（结果一律不给） */
+  $('qhMat').innerHTML='价格差异＝（实际单价 '+P.ap.toFixed(1)+' − 标准单价 10）× 实际用量 '+fmt(P.aq,0)
+    +'；用量差异＝（实际用量 '+fmt(P.aq,0)+' − 标准用量 '+fmt(r.stdQ,0)+'）× 标准单价 10'
+    +'；总差异＝价格差异＋用量差异。约定：正数为不利差异（超支），负数为有利差异（节约），填数带正负号。';
+  $('qhLab').innerHTML='实际小时工资率＝实际工资总额 '+fmt(P.labW,0)+' ÷ 实耗工时 '+fmt(P.ah,0)+' ＝ '+r.ar.toFixed(2)+' 元/小时'
+    +'；工资率差异＝（实际工资率 − 标准工资率 40）× 实际工时 '+fmt(P.ah,0)
+    +'；效率差异＝（实际工时 '+fmt(P.ah,0)+' − 标准工时 '+fmt(r.stdH,0)+'）× 标准工资率 40；总差异＝两者之和。';
+  $('qhVoh').innerHTML='耗费差异＝实际变动制造费用 '+fmt(P.voh,0)+' − 实际工时 '+fmt(P.ah,0)+' × 标准分配率 8'
+    +'；效率差异＝（实际工时 '+fmt(P.ah,0)+' − 标准工时 '+fmt(r.stdH,0)+'）× 标准分配率 8；总差异＝两者之和。';
+  $('qhFoh').innerHTML='标准固定制造费用＝实际产量标准工时 '+fmt(r.stdH,0)+' × 标准分配率 12'
+    +'；耗费差异＝实际 '+fmt(P.foh,0)+' − 预算 120,000'
+    +'；闲置能量差异＝（正常产能 10,000 − 实际工时 '+fmt(P.ah,0)+'）× 12'
+    +'；效率差异＝（实际工时 '+fmt(P.ah,0)+' − 标准工时 '+fmt(r.stdH,0)+'）× 12；总差异＝三项之和。';
+  $('qhSum').innerHTML='实际总成本 '+fmt(r.actTotal,0)+' 元；标准总成本＝实际产量 '+fmt(P.q,0)+' × 单位产品标准成本（第一问的合计）；成本总差异＝实际总成本 − 标准总成本。闲置能量差异衡量「实际工时与正常产能的差距」，和「干活快慢」是两回事。';
+
+  if(st.resolved){
+    $('vTotal').textContent=fmt(r.total,0); $('vTotal').classList.remove('q');
+    $('vFav').textContent=fmt(r.fav,0); $('vFav').classList.remove('q');
+    $('vAdv').textContent=fmt(r.adv,0); $('vAdv').classList.remove('q');
+    $('vUnit').textContent=fmt(r.unitAct,2); $('vUnit').classList.remove('q');
+    $('mcTotal').classList.toggle('good', r.total<0);
+    $('mcTotal').classList.toggle('bad', r.total>0);
+  }else{
+    ['vTotal','vFav','vAdv','vUnit'].forEach(function(id){ $(id).textContent='？'; $(id).classList.add('q'); });
+    ['mcTotal'].forEach(function(id){ $(id).classList.remove('good','bad'); });
+  }
+
+  syncPresets();
+}
+
+/* ================= 进度步骤 ================= */
+function setStep(n){
+  var els=document.querySelectorAll('#steps .step');
+  for(var i=0;i<els.length;i++){
+    var s=i+1;
+    els[i].classList.toggle('done', s<n);
+    els[i].classList.toggle('cur', s===n);
+  }
+}
+
+/* ================= 轮次控制 ================= */
+var INPUT_IDS=['inpM1','inpM2','inpM3','inpM4','inpM5',
+  'inpMP','inpMQ','inpMT','inpLR','inpLE','inpLT',
+  'inpVS','inpVE','inpVT','inpFS','inpFI','inpFE','inpFT',
+  'inpSum','inpB1','inpB2'];
+function resetRound(byParam){
+  st.submitted=false; st.resolved=false;
+  st.t={card:0,mat:0,lab:0,voh:0,foh:0,sum:0,bonus:0};
+  st.ok={card:false,mat:false,lab:false,voh:false,foh:false,sum:false,bonus:false};
+  st.score=0;
+  $('revealCard').hidden=true;
+  ['fbM','fbMat','fbLab','fbVoh','fbFoh','fbSum','fbBonus'].forEach(function(id){ $(id).hidden=true; });
+  ['resM','resMat','resLab','resVoh','resFoh','resSum','resBonus'].forEach(function(id){ $(id).hidden=true; });
+  var radios=document.querySelectorAll('input[name=sumDir],input[name=idleWhy]');
+  for(var i=0;i<radios.length;i++){ radios[i].disabled=false; radios[i].checked=false; }
+  document.querySelectorAll('.opt').forEach(function(el){ el.classList.remove('sel'); });
+  INPUT_IDS.forEach(function(id){ $(id).disabled=false; $(id).value=''; });
+  $('btnSubmit').disabled=false;
+  lockExport(true);
+  setStep(2);
+  placeholderWF();
+  renderStatic(calc(P));
+  if(byParam){ toast('参数已变动，本轮作答已重置'); }
+}
+
+/* ================= 提交与判定 ================= */
+function numOf(id){
+  var v=$(id).value.replace(/[^\d.\-]/g,'');
+  return parseFloat(v);
+}
+function filled(id){ return $(id).value.replace(/\s/g,'')!==''; }
+function readRadio(name){
+  var el=document.querySelector('input[name='+name+']:checked');
+  return el?el.value:null;
+}
+/* 核对容差：相对 ±0.5%；答案接近 0 时退到绝对 ±0.05，避免分母趋零无法通过 */
+function near(a,b){
+  if(!isFinite(a)){ return false; }
+  var denom=Math.max(Math.abs(b),1e-9);
+  return Math.abs(a-b)/denom<=0.005 || Math.abs(a-b)<=0.05;
+}
+/* 部分填空提示：任一空已填但未填齐时提醒（不记尝试次数） */
+function partialHint(fbId,ids,names){
+  var any=false;
+  for(var i=0;i<ids.length;i++){ if(filled(ids[i])){ any=true; } }
+  if(any&&!st.submitted){
+    var fb=$(fbId); fb.hidden=false; fb.className='fb bad';
+    fb.innerHTML='这一问的 '+ids.length+' 个空（'+names+'）要全部填上再核对。';
+  }
+}
+/* 单问判定：parts=[{id,ans}] 全部填齐且全部在容差内才算对 */
+function gradeQ(key,fbId,parts,labelOk,labelAns,hints){
+  var fb=$(fbId);
+  var empty=0, i;
+  for(i=0;i<parts.length;i++){ if(!filled(parts[i].id)){ empty++; } }
+  if(empty>0){
+    if(!st.submitted){
+      fb.hidden=false; fb.className='fb bad';
+      fb.innerHTML='这一问的 '+parts.length+' 个空要全部填上再核对（还差 '+empty+' 个）。';
+    }
+    return false;
+  }
+  if(st.t[key]>=3){ return false; }
+  fb.hidden=false;
+  var wrong=-1;
+  for(i=0;i<parts.length;i++){ if(!near(numOf(parts[i].id),parts[i].ans)){ wrong=i; break; } }
+  if(wrong<0){
+    st.ok[key]=true;
+    fb.className='fb ok';
+    fb.innerHTML=labelOk;
+    for(i=0;i<parts.length;i++){ $(parts[i].id).disabled=true; }
+    return true;
+  }
+  st.t[key]++;
+  if(st.t[key]>=3){
+    fb.className='fb bad';
+    fb.innerHTML=labelAns;
+    for(i=0;i<parts.length;i++){ $(parts[i].id).disabled=true; }
+  }else{
+    fb.className='fb bad';
+    fb.innerHTML='不对，再算一次。'+hints[st.t[key]-1];
+  }
+  return false;
+}
+
+function grade(){
+  if(st.resolved){ return; }
+  var r=calc(P);
+  var anyAction=false;
+
+  /* 第一问：标准成本卡（五个空） */
+  if(!st.ok.card){
+    var mIds=['inpM1','inpM2','inpM3','inpM4','inpM5'];
+    var mAns=[r.stdMat,r.stdLab,r.stdVoh,r.stdFoh,r.stdUnit];
+    var mNames=['直接材料','直接人工','变动制造费用','固定制造费用','单位产品标准成本'];
+    var mFml=['10 千克×10 元/千克','10.5 小时×40 元/小时','10.5 小时×8 元/工时','10.5 小时×12 元/工时','四项相加'];
+    var mEmpty=0, k;
+    for(k=0;k<mIds.length;k++){ if(!filled(mIds[k])){ mEmpty++; } }
+    if(mEmpty>0){
+      if(!st.submitted){
+        var fb0=$('fbM'); fb0.hidden=false; fb0.className='fb bad';
+        fb0.innerHTML='标准成本卡要填满 5 个空再核对（还差 '+mEmpty+' 个）。';
+      }
+    }else{
+      anyAction=true;
+      var parts=[], j;
+      for(j=0;j<mIds.length;j++){ parts.push({id:mIds[j],ans:mAns[j]}); }
+      var firstWrong=-1;
+      for(j=0;j<parts.length;j++){ if(!near(numOf(parts[j].id),parts[j].ans)){ firstWrong=j; break; } }
+      gradeQ('card','fbM',parts,
+        '计算正确：直接材料 '+fmt(r.stdMat,0)+'、直接人工 '+fmt(r.stdLab,0)+'、变动制造费用 '+fmt(r.stdVoh,0)+'、固定制造费用 '+fmt(r.stdFoh,0)+' 元/件，单位产品标准成本 '+fmt(r.stdUnit,0)+' 元/件，容差核对通过。',
+        '三次未算对，正确答案是：直接材料 '+fmt(r.stdMat,0)+'、直接人工 '+fmt(r.stdLab,0)+'、变动制造费用 '+fmt(r.stdVoh,0)+'、固定制造费用 '+fmt(r.stdFoh,0)+'、合计 '+fmt(r.stdUnit,0)+' 元/件，推导看下方分步过程。',
+        ['标准成本＝用量标准×价格标准，逐行算：10×10、10.5×40、10.5×8、10.5×12，最后求和。',
+         '分配率是先算出来的：变动 80,000÷10,000＝8 元/工时，固定 120,000÷10,000＝12 元/工时；再 10.5×8、10.5×12。']);
+      if(!st.ok.card&&firstWrong>=0&&st.t.card<3){
+        $('fbM').innerHTML='不对，再算一次。「'+mNames[firstWrong]+'」这一行：'+mFml[firstWrong]+'。';
+      }
+    }
+  }
+
+  /* 第二问：直接材料差异 */
+  if(!st.ok.mat){
+    if(filled('inpMP')&&filled('inpMQ')&&filled('inpMT')){
+      anyAction=true;
+      gradeQ('mat','fbMat',[{id:'inpMP',ans:r.dMatP},{id:'inpMQ',ans:r.dMatQ},{id:'inpMT',ans:r.dMatT}],
+        '计算正确：价格差异 '+fmt(r.dMatP,0)+' 元、用量差异 '+fmt(r.dMatQ,0)+' 元、总差异 '+fmt(r.dMatT,0)+' 元，容差核对通过。',
+        '三次未算对，正确答案是：价格差异 '+fmt(r.dMatP,0)+' 元、用量差异 '+fmt(r.dMatQ,0)+' 元、总差异 '+fmt(r.dMatT,0)+' 元，推导看下方分步过程。',
+        ['价格差异＝（实际单价−标准单价）×实际用量；用量差异＝（实际用量−标准用量）×标准单价，标准用量＝'+fmt(P.q,0)+'×10。',
+         '注意符号：正数不利、负数有利；总差异＝价格差异＋用量差异。']);
+    }else{ partialHint('fbMat',['inpMP','inpMQ','inpMT'],'价格、用量、总差异'); }
+  }
+
+  /* 第三问：直接人工差异 */
+  if(!st.ok.lab){
+    if(filled('inpLR')&&filled('inpLE')&&filled('inpLT')){
+      anyAction=true;
+      gradeQ('lab','fbLab',[{id:'inpLR',ans:r.dLabR},{id:'inpLE',ans:r.dLabE},{id:'inpLT',ans:r.dLabT}],
+        '计算正确：工资率差异 '+fmt(r.dLabR,0)+' 元、效率差异 '+fmt(r.dLabE,0)+' 元、总差异 '+fmt(r.dLabT,0)+' 元，容差核对通过。',
+        '三次未算对，正确答案是：工资率差异 '+fmt(r.dLabR,0)+' 元、效率差异 '+fmt(r.dLabE,0)+' 元、总差异 '+fmt(r.dLabT,0)+' 元，推导看下方分步过程。',
+        ['先算实际小时工资率＝工资总额÷实耗工时＝'+r.ar.toFixed(2)+' 元/小时，再算（实际−标准）×实际工时。',
+         '效率差异用标准工资率 40，不用实际工资率；标准工时＝'+fmt(P.q,0)+'×10.5。']);
+    }else{ partialHint('fbLab',['inpLR','inpLE','inpLT'],'工资率、效率、总差异'); }
+  }
+
+  /* 第四问：变动制造费用差异 */
+  if(!st.ok.voh){
+    if(filled('inpVS')&&filled('inpVE')&&filled('inpVT')){
+      anyAction=true;
+      gradeQ('voh','fbVoh',[{id:'inpVS',ans:r.dVohS},{id:'inpVE',ans:r.dVohE},{id:'inpVT',ans:r.dVohT}],
+        '计算正确：耗费差异 '+fmt(r.dVohS,0)+' 元、效率差异 '+fmt(r.dVohE,0)+' 元、总差异 '+fmt(r.dVohT,0)+' 元，容差核对通过。',
+        '三次未算对，正确答案是：耗费差异 '+fmt(r.dVohS,0)+' 元、效率差异 '+fmt(r.dVohE,0)+' 元、总差异 '+fmt(r.dVohT,0)+' 元，推导看下方分步过程。',
+        ['耗费差异＝实际 − 实际工时×标准分配率 8，别拿预算 80,000 直接减。',
+         '效率差异＝（实际工时−标准工时）×8；标准工时＝'+fmt(P.q,0)+'×10.5。']);
+    }else{ partialHint('fbVoh',['inpVS','inpVE','inpVT'],'耗费、效率、总差异'); }
+  }
+
+  /* 第五问：固定制造费用差异（三差异法） */
+  if(!st.ok.foh){
+    if(filled('inpFS')&&filled('inpFI')&&filled('inpFE')&&filled('inpFT')){
+      anyAction=true;
+      gradeQ('foh','fbFoh',[{id:'inpFS',ans:r.dFohS},{id:'inpFI',ans:r.dFohI},{id:'inpFE',ans:r.dFohE},{id:'inpFT',ans:r.dFohT}],
+        '计算正确：耗费差异 '+fmt(r.dFohS,0)+' 元、闲置能量差异 '+fmt(r.dFohI,0)+' 元、效率差异 '+fmt(r.dFohE,0)+' 元、总差异 '+fmt(r.dFohT,0)+' 元，容差核对通过。',
+        '三次未算对，正确答案是：耗费差异 '+fmt(r.dFohS,0)+' 元、闲置能量差异 '+fmt(r.dFohI,0)+' 元、效率差异 '+fmt(r.dFohE,0)+' 元、总差异 '+fmt(r.dFohT,0)+' 元，推导看下方分步过程。',
+        ['耗费＝实际 − 预算 120,000；闲置＝（10,000 − 实际工时）×12；效率＝（实际工时 − 标准工时）×12。',
+         '总差异＝三项之和，也等于实际 − 标准固定制造费用（'+fmt(r.stdFohCost,0)+' 元）。']);
+    }else{ partialHint('fbFoh',['inpFS','inpFI','inpFE','inpFT'],'耗费、闲置、效率、总差异'); }
+  }
+
+  /* 第六问：汇总与归因（数值＋两个选择） */
+  if(!st.ok.sum){
+    var dir=readRadio('sumDir'), why=readRadio('idleWhy');
+    if(filled('inpSum')&&dir!==null&&why!==null){
+      anyAction=true;
+      var wantDir=r.total<0?'fav':'adv';
+      var okSum=near(numOf('inpSum'),r.total);
+      var okDir=(dir===wantDir);
+      var okWhy=(why==='cap');
+      var fb6=$('fbSum'); fb6.hidden=false;
+      if(okSum&&okDir&&okWhy){
+        st.ok.sum=true;
+        fb6.className='fb ok';
+        fb6.innerHTML='判断正确：成本总差异 '+fmt(r.total,0)+' 元，整体属于'+(wantDir==='fav'?'有利差异':'不利差异')+'；闲置能量差异说明实际工时未达到正常产能。';
+        $('inpSum').disabled=true;
+        disableRadios('sumDir'); disableRadios('idleWhy');
+      }else{
+        st.t.sum++;
+        var msgs=[];
+        if(!okSum){ msgs.push('总差异＝实际总成本 '+fmt(r.actTotal,0)+' − 标准总成本 '+fmt(r.stdTotal,0)+'，注意符号。'); }
+        if(!okDir){ msgs.push('方向看总差异的符号：负数是有利差异（节约），正数是不利差异（超支）。'); }
+        if(!okWhy){ msgs.push('闲置能量差异的分母是「正常产能 10,000 工时」——它衡量产能有没有用起来，不是干活快慢，也不是采购价格。'); }
+        if(st.t.sum>=3){
+          fb6.className='fb bad';
+          fb6.innerHTML='三次未答对，正确答案：成本总差异 '+fmt(r.total,0)+' 元，整体属于'+(wantDir==='fav'?'有利差异':'不利差异')+'；闲置能量差异说明实际工时未达到正常产能、产能闲着。';
+          $('inpSum').disabled=true;
+          disableRadios('sumDir'); disableRadios('idleWhy');
+        }else{
+          fb6.className='fb bad';
+          fb6.innerHTML='不对，再想想。'+msgs[0];
+        }
+      }
+    }else if(!st.submitted&&(filled('inpSum')||dir!==null||why!==null)){
+      var fb7=$('fbSum'); fb7.hidden=false; fb7.className='fb bad';
+      fb7.innerHTML='第六问三处都要完成：填总差异、选「有利/不利」、选「闲置能量差异说明什么」。';
+    }
+  }
+
+  /* 加分题：实际单位耗用量＋二因素能量差异 */
+  if(!st.ok.bonus){
+    if(filled('inpB1')&&filled('inpB2')){
+      anyAction=true;
+      gradeQ('bonus','fbBonus',[{id:'inpB1',ans:r.unitCons},{id:'inpB2',ans:r.energy}],
+        '加分题正确：A 材料实际单位耗用量 '+fmt(r.unitCons,2)+' 千克/件；二因素分析法下能量差异 '+fmt(r.energy,0)+' 元。',
+        '三次未答对，正确答案：实际单位耗用量 '+fmt(r.unitCons,2)+' 千克/件；能量差异 '+fmt(r.energy,0)+' 元。',
+        ['实际单位耗用量＝实际用量 '+fmt(P.aq,0)+' ÷ 实际产量 '+fmt(P.q,0)+'；能量差异＝闲置＋效率。',
+         '能量差异把「产能没用起来」和「干活快慢」合成一项，所以它等于闲置能量差异加固定效率差异。']);
+    }else{ partialHint('fbBonus',['inpB1','inpB2'],'单位耗用、能量差异'); }
+  }
+
+  if(!anyAction){ toast('七项都作答完才能提交'); return; }
+  st.submitted=true;
+  setStep(3);
+
+  var allDone=true;
+  ITEM_KEYS.forEach(function(k){
+    if(!(st.ok[k]||st.t[k]>=3)){ allDone=false; }
+  });
+  if(allDone){ resolveAll(r); }
+}
+function disableRadios(name){
+  var els=document.querySelectorAll('input[name='+name+']');
+  for(var i=0;i<els.length;i++){ els[i].disabled=true; }
+}
+
+/* ================= 完全揭晓 ================= */
+function resolveAll(r){
+  st.resolved=true;
+  $('revealCard').hidden=false;
+  $('btnSubmit').disabled=true;
+  setStep(4);
+
+  /* 分步过程一：标准成本卡 */
+  $('sVohRate').textContent=fmt(STD.vohR,0);
+  $('sFohRate').textContent=fmt(STD.fohR,0);
+  $('sM1').textContent=fmt(r.stdMat,0);
+  $('sM2').textContent=fmt(r.stdLab,0);
+  $('sM3').textContent=fmt(r.stdVoh,0);
+  $('sM4').textContent=fmt(r.stdFoh,0);
+  $('sM5').textContent=fmt(r.stdUnit,0);
+
+  /* 分步过程二：材料与人工 */
+  $('sMatPf').innerHTML='＝（实际单价 '+P.ap.toFixed(1)+' − 标准单价 10）× 实际用量 '+fmt(P.aq,0)+' ＝';
+  $('sMatP').textContent=fmt(r.dMatP,0); $('sMatP').className='v '+(r.dMatP<0?'pos':'negv');
+  $('sMatQf').innerHTML='＝（实际用量 '+fmt(P.aq,0)+' − 标准用量 '+fmt(r.stdQ,0)+'）× 标准单价 10 ＝';
+  $('sMatQ').textContent=fmt(r.dMatQ,0); $('sMatQ').className='v '+(r.dMatQ<0?'pos':'negv');
+  $('sMatTf').innerHTML='＝价格差异 '+fmt(r.dMatP,0)+' ＋ 用量差异 '+fmt(r.dMatQ,0)+' ＝';
+  $('sMatT').textContent=fmt(r.dMatT,0); $('sMatT').className='v '+(r.dMatT<0?'pos':'negv');
+  $('sLabRf').innerHTML='＝（实际工资率 '+r.ar.toFixed(2)+' − 标准工资率 40）× 实际工时 '+fmt(P.ah,0)+' ＝';
+  $('sLabR').textContent=fmt(r.dLabR,0); $('sLabR').className='v '+(r.dLabR<0?'pos':'negv');
+  $('sLabEf').innerHTML='＝（实际工时 '+fmt(P.ah,0)+' − 标准工时 '+fmt(r.stdH,0)+'）× 标准工资率 40 ＝';
+  $('sLabE').textContent=fmt(r.dLabE,0); $('sLabE').className='v '+(r.dLabE<0?'pos':'negv');
+  $('sLabTf').innerHTML='＝工资率差异 '+fmt(r.dLabR,0)+' ＋ 效率差异 '+fmt(r.dLabE,0)+' ＝';
+  $('sLabT').textContent=fmt(r.dLabT,0); $('sLabT').className='v '+(r.dLabT<0?'pos':'negv');
+
+  /* 分步过程三：制造费用 */
+  $('sVohSf').innerHTML='＝实际变动制造费用 '+fmt(P.voh,0)+' − 实际工时 '+fmt(P.ah,0)+' × 标准分配率 8 ＝';
+  $('sVohS').textContent=fmt(r.dVohS,0); $('sVohS').className='v '+(r.dVohS<0?'pos':'negv');
+  $('sVohEf').innerHTML='＝（实际工时 '+fmt(P.ah,0)+' − 标准工时 '+fmt(r.stdH,0)+'）× 标准分配率 8 ＝';
+  $('sVohE').textContent=fmt(r.dVohE,0); $('sVohE').className='v '+(r.dVohE<0?'pos':'negv');
+  $('sFohCostf').innerHTML='＝实际产量标准工时 '+fmt(r.stdH,0)+' × 标准分配率 12 ＝';
+  $('sFohCost').textContent=fmt(r.stdFohCost,0);
+  $('sFohSf').innerHTML='＝实际固定制造费用 '+fmt(P.foh,0)+' − 预算 120,000 ＝';
+  $('sFohS').textContent=fmt(r.dFohS,0); $('sFohS').className='v '+(r.dFohS<0?'pos':'negv');
+  $('sFohIf').innerHTML='＝（正常产能 10,000 − 实际工时 '+fmt(P.ah,0)+'）× 标准分配率 12 ＝';
+  $('sFohI').textContent=fmt(r.dFohI,0); $('sFohI').className='v '+(r.dFohI<0?'pos':'negv');
+  $('sFohEf').innerHTML='＝（实际工时 '+fmt(P.ah,0)+' − 标准工时 '+fmt(r.stdH,0)+'）× 标准分配率 12 ＝';
+  $('sFohE').textContent=fmt(r.dFohE,0); $('sFohE').className='v '+(r.dFohE<0?'pos':'negv');
+  $('sFohTf').innerHTML='＝耗费 '+fmt(r.dFohS,0)+' ＋ 闲置能量 '+fmt(r.dFohI,0)+' ＋ 效率 '+fmt(r.dFohE,0)+' ＝';
+  $('sFohT').textContent=fmt(r.dFohT,0); $('sFohT').className='v '+(r.dFohT<0?'pos':'negv');
+  $('sEnergy').textContent=fmt(r.energy,0);
+
+  /* 差异汇总与责任归属表 */
+  var rows=[
+    {n:'直接材料价格差异',f:'（'+P.ap.toFixed(1)+'−10）× '+fmt(P.aq,0),v:r.dMatP,o:'采购部门（价格谈判与供应商选择）'},
+    {n:'直接材料用量差异',f:'（'+fmt(P.aq,0)+'−'+fmt(r.stdQ,0)+'）× 10',v:r.dMatQ,o:'生产车间（工艺与耗用控制）'},
+    {n:'直接人工工资率差异',f:'（'+r.ar.toFixed(2)+'−40）× '+fmt(P.ah,0),v:r.dLabR,o:'人事与用工安排（用工结构、加班）'},
+    {n:'直接人工效率差异',f:'（'+fmt(P.ah,0)+'−'+fmt(r.stdH,0)+'）× 40',v:r.dLabE,o:'生产车间（工时利用）'},
+    {n:'变动制造费用耗费差异',f:fmt(P.voh,0)+' − '+fmt(P.ah,0)+'×8',v:r.dVohS,o:'生产车间（能耗与辅料利用）'},
+    {n:'变动制造费用效率差异',f:'（'+fmt(P.ah,0)+'−'+fmt(r.stdH,0)+'）× 8',v:r.dVohE,o:'生产车间（随工时发生）'},
+    {n:'固定制造费用耗费差异',f:fmt(P.foh,0)+' − 120,000',v:r.dFohS,o:'职能部门（预算执行）'},
+    {n:'固定制造费用闲置能量差异',f:'（10,000−'+fmt(P.ah,0)+'）× 12',v:r.dFohI,o:'生产计划与产能利用'},
+    {n:'固定制造费用效率差异',f:'（'+fmt(P.ah,0)+'−'+fmt(r.stdH,0)+'）× 12',v:r.dFohE,o:'生产车间（工时利用）'}
+  ];
+  var html='';
+  for(var i=0;i<rows.length;i++){
+    var row=rows[i];
+    var dirTxt=row.v<0?'有利':'不利';
+    var dirCls=row.v<0?'fav':'adv';
+    html+='<tr><td>'+row.n+'</td><td class="num">'+row.f+'</td><td class="num">'+fmt(row.v,0)+'</td><td class="'+dirCls+'">'+dirTxt+'</td><td>'+row.o+'</td></tr>';
+  }
+  html+='<tr class="hl"><td>合计（成本总差异）</td><td class="num">实际 '+fmt(r.actTotal,0)+' − 标准 '+fmt(r.stdTotal,0)+'</td><td class="num">'+fmt(r.total,0)+'</td><td class="'+(r.total<0?'fav':'adv')+'">'+(r.total<0?'有利':'不利')+'</td><td>有利 '+fmt(r.fav,0)+' ／ 不利 '+fmt(r.adv,0)+'</td></tr>';
+  $('diffBody').innerHTML=html;
+
+  /* 下个月找谁谈话 */
+  $('rvBuy').textContent=fmt(r.dMatP,0);
+  $('rvBuyD').textContent=(r.dMatP>0)?'收购价高于标准，下月锁季签价、分级折价要先谈':(r.dMatP<0?'收购价低于标准，采购立功，注意别牺牲原料质量':'采购价与标准持平');
+  $('rvProd').textContent=fmt(r.dMatQ+r.dLabE,0);
+  $('rvProdD').textContent=((r.dMatQ+r.dLabE)>0)?'用料与工时都超了，工艺纪律要抓':((r.dMatQ+r.dLabE)<0?'用料与工时都省了，保持工艺纪律':'用料与工时基本达标');
+  $('rvPlan').textContent=fmt(r.dFohI,0);
+  $('rvPlanD').textContent=(r.dFohI>0)?'产能没用起来，设备与厂房的固定成本白背了':(r.dFohI<0?'超正常产能运转，注意设备检修与用工成本':'产能利用恰好达标');
+  $('rowBuy').classList.toggle('better', r.dMatP<0);
+  $('rowProd').classList.toggle('better', (r.dMatQ+r.dLabE)<0);
+  $('rowPlan').classList.toggle('better', r.dFohI<0);
+
+  /* 逐项结果 */
+  function res(id,key,txtOk,txtBad){
+    var el=$(id); el.hidden=false;
+    if(st.ok[key]){ el.className='fb ok'; el.innerHTML=txtOk; }
+    else{ el.className='fb bad'; el.innerHTML=txtBad; }
+  }
+  res('resM','card','第一问 · <b>计算正确</b>：标准成本卡合计 '+fmt(r.stdUnit,0)+' 元/件。','第一问 · <b>未算对</b>，推导见上。');
+  res('resMat','mat','第二问 · <b>计算正确</b>：材料差异 价 '+fmt(r.dMatP,0)+'／量 '+fmt(r.dMatQ,0)+'／总 '+fmt(r.dMatT,0)+' 元。','第二问 · <b>未算对</b>，推导见上。');
+  res('resLab','lab','第三问 · <b>计算正确</b>：人工差异 率 '+fmt(r.dLabR,0)+'／效 '+fmt(r.dLabE,0)+'／总 '+fmt(r.dLabT,0)+' 元。','第三问 · <b>未算对</b>，推导见上。');
+  res('resVoh','voh','第四问 · <b>计算正确</b>：变动差异 耗 '+fmt(r.dVohS,0)+'／效 '+fmt(r.dVohE,0)+'／总 '+fmt(r.dVohT,0)+' 元。','第四问 · <b>未算对</b>，推导见上。');
+  res('resFoh','foh','第五问 · <b>计算正确</b>：固定差异 耗 '+fmt(r.dFohS,0)+'／闲 '+fmt(r.dFohI,0)+'／效 '+fmt(r.dFohE,0)+'／总 '+fmt(r.dFohT,0)+' 元。','第五问 · <b>未算对</b>，推导见上。');
+  res('resSum','sum','第六问 · <b>判断正确</b>：成本总差异 '+fmt(r.total,0)+' 元，整体'+(r.total<0?'有利':'不利')+'。','第六问 · <b>未答对</b>，推导见上。');
+  res('resBonus','bonus','加分题 · <b>正确</b>：单位耗用 '+fmt(r.unitCons,2)+' 千克/件，能量差异 '+fmt(r.energy,0)+' 元。','加分题 · <b>未答对</b>，推导见上。');
+
+  /* 结局叙事（随参数生成） */
+  $('endingText').innerHTML=buildEnding(r);
+
+  /* 计分：首次答对得满分，第二次按 50%、第三次按 30% 折算；七项均首次答对另加 10 分 */
+  function itemScore(pts,tries){ if(tries===0){ return pts; } return tries===1?Math.round(pts*0.5):Math.round(pts*0.3); }
+  var sc=0, firstAll=true;
+  ITEM_KEYS.forEach(function(k){
+    sc+=itemScore(ITEM_PTS[k],st.t[k]);
+    if(!st.ok[k]||st.t[k]>0){ firstAll=false; }
+  });
+  if(firstAll){ sc+=10; }
+  st.score=sc;
+  $('scoreVal').textContent=sc;
+  var wd=$('scoreWord');
+  if(sc>=90){ wd.textContent='优秀'; wd.className='word good'; }
+  else if(sc>=60){ wd.textContent='合格'; wd.className='word mid'; }
+  else{ wd.textContent='待改进'; wd.className='word low'; }
+  var isBest=sc>st.best;
+  if(isBest){ st.best=sc; saveBest(sc); }
+  $('bestVal').textContent='历史最佳 '+st.best+' 分'+(isBest?'（新纪录）':'');
+
+  lockExport(false);
+  renderStatic(r);
+  drawWF(r);
+  buildCard();
+}
+function buildEnding(r){
+  var p=[];
+  if(r.total<0){
+    p.push('芳姐在台账上记下：本月实际总成本 '+fmt(r.actTotal,0)+' 元，标准总成本 '+fmt(r.stdTotal,0)+' 元，成本总差异 '+fmt(r.total,0)+' 元——总体有利，这个月没超支。');
+    p.push('但别被总数蒙了：有利差异合计 '+fmt(r.fav,0)+' 元、不利差异合计 '+fmt(r.adv,0)+' 元，一进一出才是 '+fmt(r.total,0)+' 元——有利是哪里省的、不利是哪里漏的，得分家说清。');
+  }else{
+    p.push('芳姐在台账上记下：本月实际总成本 '+fmt(r.actTotal,0)+' 元，标准总成本 '+fmt(r.stdTotal,0)+' 元，成本总差异 '+fmt(r.total,0)+' 元——总体超支，下个月得拿项开刀。');
+    p.push('不利差异合计 '+fmt(r.adv,0)+' 元、有利差异合计 '+fmt(r.fav,0)+' 元。超支从不是平均分布的，先抓数额最大、趋势最坏的那一两项。');
+  }
+  if(Math.abs(r.dMatP)>1000){
+    p.push('材料价格差异 '+fmt(r.dMatP,0)+' 元：'+(r.dMatP>0?'鲜穗收购价高于标准价，下月采购要锁季签价，分级折价系数也要重谈。':'收购价谈得漂亮，但得留神低价有没有换来等外的原料。'));
+  }
+  if(Math.abs(r.dMatQ)>500){
+    p.push('材料用量差异 '+fmt(r.dMatQ,0)+' 元：'+(r.dMatQ>0?'单位耗用升到 '+fmt(r.unitCons,2)+' 千克/件，损耗和返工要查。':'单位耗用降到 '+fmt(r.unitCons,2)+' 千克/件，工艺纪律保持得住。'));
+  }
+  if(Math.abs(r.dLabR)>1000){
+    p.push('工资率差异 '+fmt(r.dLabR,0)+' 元：'+(r.dLabR>0?'小时工资率 '+r.ar.toFixed(2)+' 元已越过标准 40 元，加班和用工结构要复盘。':'季节性用工价格低，是本月最大的节约来源——但要核对熟练度有没有跟着掉。'));
+  }
+  if(r.dFohI>3000){
+    p.push('闲置能量差异 '+fmt(r.dFohI,0)+' 元是最大的不利项：设备与厂房按 10,000 工时买了单，实际只干了 '+fmt(P.ah,0)+' 小时——产能没用起来，固定成本就得由更少的产品背着。');
+  }
+  if(r.dVohS>1000){
+    p.push('变动制造费用耗费差异 '+fmt(r.dVohS,0)+' 元不利：能耗与辅料超了标准分配率，车间逐项查水电气。');
+  }
+  var html='';
+  for(var i=0;i<p.length;i++){ html+='<p>'+p[i]+'</p>'; }
+  return html;
+}
+
+/* ================= 决策卡导出 ================= */
+function lockExport(on){
+  $('exportCard').classList.toggle('locked',on);
+  $('lockNote').hidden=!on;
+  $('exportBody').hidden=on;
+}
+function buildCard(){
+  var r=calc(P);
+  var who=$('inpName').value.replace(/^\s+|\s+$/g,'')||'（未填）';
+  var now=new Date();
+  function pad(n){ return (n<10?'0':'')+n; }
+  var ts=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes());
+  var verdict=r.total<0?'成本控制整体有利（实际比标准省 '+fmt(-r.total,0)+' 元）':(r.total>0?'成本控制整体不利（实际比标准超 '+fmt(r.total,0)+' 元）':'实际与标准恰好持平');
+  var adv=[];
+  adv.push('结论：'+verdict+'。有利差异合计 '+fmt(r.fav,0)+' 元、不利差异合计 '+fmt(r.adv,0)+' 元；实际单位成本 '+fmt(r.unitAct,2)+' 元/件，单位标准成本 '+fmt(r.stdUnit,0)+' 元/件。');
+  adv.push('归因要点：① 材料价格差异 '+fmt(r.dMatP,0)+' 元——找采购，锁季签价、重谈分级折价；② 材料用量差异 '+fmt(r.dMatQ,0)+' 元、人工效率差异 '+fmt(r.dLabE,0)+' 元——找生产车间，抓工艺纪律与工时利用；③ 闲置能量差异 '+fmt(r.dFohI,0)+' 元——找排产与订单，产能没用起来固定成本就白背；④ 工资率差异 '+fmt(r.dLabR,0)+' 元——核对用工结构与加班。');
+  adv.push('例外管理：每月只追规模大、趋势坏、频率高的差异；定责先看可控性，价格波动不可控，用量与工时的浪费通常可控。下月监控线：鲜穗收购价 10 元/千克、单位耗用 10 千克/件、单位工时 10.5 小时/件、正常产能 10,000 工时/月，越过任一条，对应差异就会翻身。');
+  var L=[];
+  L.push('经营决策卡｜第八章 标准成本法 · 成本差异分析');
+  L.push('姓名/学号：'+who);
+  L.push('生成时间：'+ts);
+  L.push('————————————');
+  L.push('【问题】金穗农业合作社鲜食玉米加工车间六月成本控制：标准成本卡既定（甲产品·速冻鲜食玉米，每件 10 千克），本月实际产量 '+fmt(P.q,0)+' 件发生后，各项成本差异几何、下月整改从哪下手？');
+  L.push('【假设】① 标准数据：A 材料 10 千克×10 元/千克；直接人工 10.5 小时×40 元/小时；变动制造费用 10.5 小时×8 元/工时（预算 80,000÷正常产能 10,000）；固定制造费用 10.5 小时×12 元/工时（预算 120,000÷10,000）；单位产品标准成本 '+fmt(r.stdUnit,0)+' 元/件；② 实际数据：产量 '+fmt(P.q,0)+' 件、A 材料 '+fmt(P.aq,0)+' 千克×'+P.ap.toFixed(1)+' 元/千克、实耗工时 '+fmt(P.ah,0)+' 小时、工资总额 '+fmt(P.labW,0)+' 元（折合 '+r.ar.toFixed(2)+' 元/小时）、变动制造费用 '+fmt(P.voh,0)+' 元、固定制造费用 '+fmt(P.foh,0)+' 元；③ 正常产能 10,000 工时/月；④ 差异符号约定：正数为不利差异（超支），负数为有利差异（节约）。');
+  L.push('【指标变化】实际总成本 '+fmt(r.actTotal,0)+' 元、标准总成本 '+fmt(r.stdTotal,0)+' 元（标准固定制造费用 '+fmt(r.stdFohCost,0)+' 元）、成本总差异 '+fmt(r.total,0)+' 元；材料价格差异 '+fmt(r.dMatP,0)+' 元、材料用量差异 '+fmt(r.dMatQ,0)+' 元；工资率差异 '+fmt(r.dLabR,0)+' 元、人工效率差异 '+fmt(r.dLabE,0)+' 元；变动耗费差异 '+fmt(r.dVohS,0)+' 元、变动效率差异 '+fmt(r.dVohE,0)+' 元；固定耗费差异 '+fmt(r.dFohS,0)+' 元、闲置能量差异 '+fmt(r.dFohI,0)+' 元、固定效率差异 '+fmt(r.dFohE,0)+' 元；有利差异合计 '+fmt(r.fav,0)+' 元、不利差异合计 '+fmt(r.adv,0)+' 元；实际单位成本 '+fmt(r.unitAct,2)+' 元/件、A 材料实际单位耗用 '+fmt(r.unitCons,2)+' 千克/件。');
+  L.push('【经营建议】'+adv.join(''));
+  var riskTxt=($('inpRisk')&&$('inpRisk').value.trim())||'（尚未填写风险责任，请在决策卡上方补写）';
+  L.push('【风险责任】示范：① 农资价格波动风险：鲜穗收购价随行就市，价格差异可能由市场推高而非采购失职——采购员小穗负责锁季签价与分级折价系数；我的判断：'+riskTxt);
+  L.push('————————————');
+  L.push('自评：本场得分 '+st.score+' 分（'+$('scoreWord').textContent+'）。');
+  $('cardArea').value=L.join('\n');
+}
+function copyCard(){
+  var text=$('cardArea').value;
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.left='-9999px'; ta.style.top='0';
+  document.body.appendChild(ta); ta.select();
+  var ok=false;
+  try{ ok=document.execCommand('copy'); }catch(e){ ok=false; }
+  document.body.removeChild(ta);
+  if(ok){ toast('决策卡已复制到剪贴板'); }
+  else{
+    $('cardArea').focus();
+    if($('cardArea').select){ $('cardArea').select(); }
+    toast('自动复制未成功，已为你选中全文，请直接复制');
+  }
+  setStep(5);
+}
+function downloadCard(){
+  try{
+    var blob=new Blob([$('cardArea').value],{type:'text/plain;charset=utf-8'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    var who=$('inpName').value.replace(/^\s+|\s+$/g,'');
+    a.download=(who?who:'决策卡')+'-第八章-决策卡.txt';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ try{ URL.revokeObjectURL(a.href); }catch(e){} },1000);
+    toast('决策卡文本已开始下载');
+  }catch(e){
+    copyCard();
+  }
+  setStep(5);
+}
+
+/* ================= 事件绑定 ================= */
+function syncSliders(){
+  $('sldQ').value=String(P.q);
+  $('sldAQ').value=String(P.aq);
+  $('sldAP').value=String(P.ap);
+  $('sldAH').value=String(P.ah);
+  $('sldLabW').value=String(P.labW);
+  $('sldVOH').value=String(P.voh);
+  $('sldFOH').value=String(P.foh);
+}
+function onParamChange(){
+  if(st.submitted){ resetRound(true); }
+  else{ renderStatic(calc(P)); }
+}
+function bindSlider(id,key,parse){
+  $(id).addEventListener('input',function(){
+    P[key]=parse(this.value);
+    onParamChange();
+  });
+}
+bindSlider('sldQ','q',parseFloat);
+bindSlider('sldAQ','aq',parseFloat);
+bindSlider('sldAP','ap',parseFloat);
+bindSlider('sldAH','ah',parseFloat);
+bindSlider('sldLabW','labW',parseFloat);
+bindSlider('sldVOH','voh',parseFloat);
+bindSlider('sldFOH','foh',parseFloat);
+
+/* 预设打版：与当前参数一致者高亮 */
+function syncPresets(){
+  var chips=document.querySelectorAll('.presets .chip');
+  for(var i=0;i<chips.length;i++){
+    var c=chips[i];
+    var on=(P.q===parseFloat(c.getAttribute('data-q'))
+      &&P.aq===parseFloat(c.getAttribute('data-aq'))
+      &&P.ap===parseFloat(c.getAttribute('data-ap'))
+      &&P.ah===parseFloat(c.getAttribute('data-ah'))
+      &&P.labW===parseFloat(c.getAttribute('data-labw'))
+      &&P.voh===parseFloat(c.getAttribute('data-voh'))
+      &&P.foh===parseFloat(c.getAttribute('data-foh')));
+    c.classList.toggle('on',on);
+  }
+}
+var presetBtns=document.querySelectorAll('.presets .chip');
+for(var pi=0;pi<presetBtns.length;pi++){
+  presetBtns[pi].addEventListener('click',function(){
+    P.q=parseFloat(this.getAttribute('data-q'));
+    P.aq=parseFloat(this.getAttribute('data-aq'));
+    P.ap=parseFloat(this.getAttribute('data-ap'));
+    P.ah=parseFloat(this.getAttribute('data-ah'));
+    P.labW=parseFloat(this.getAttribute('data-labw'));
+    P.voh=parseFloat(this.getAttribute('data-voh'));
+    P.foh=parseFloat(this.getAttribute('data-foh'));
+    syncSliders();
+    onParamChange();
+    toast('已打版：'+this.textContent);
+  });
+}
+
+$('btnDefault').addEventListener('click',function(){
+  P.q=DEF.q; P.aq=DEF.aq; P.ap=DEF.ap; P.ah=DEF.ah; P.labW=DEF.labW; P.voh=DEF.voh; P.foh=DEF.foh;
+  syncSliders();
+  onParamChange();
+  toast('已恢复默认参数');
+});
+
+$('btnStart').addEventListener('click',function(){
+  setStep(2);
+  var el=$('secPanel');
+  if(el.scrollIntoView){ el.scrollIntoView({behavior:'smooth',block:'start'}); }
+});
+
+$('btnSubmit').addEventListener('click',grade);
+
+$('btnRestart').addEventListener('click',function(){
+  P.q=DEF.q; P.aq=DEF.aq; P.ap=DEF.ap; P.ah=DEF.ah; P.labW=DEF.labW; P.voh=DEF.voh; P.foh=DEF.foh;
+  syncSliders();
+  resetRound(false);
+  setStep(2);
+  toast('新一轮开始，参数已恢复默认');
+  var el=$('secDecide');
+  if(el.scrollIntoView){ el.scrollIntoView({behavior:'smooth',block:'start'}); }
+});
+
+$('btnCopy').addEventListener('click',copyCard);
+$('btnDownload').addEventListener('click',downloadCard);
+$('btnRebuild').addEventListener('click',function(){ buildCard(); toast('已按当前参数重建决策卡'); });
+
+/* 选项高亮（不改计算，只改观感） */
+var optEls=document.querySelectorAll('.opt');
+for(var j=0;j<optEls.length;j++){
+  optEls[j].addEventListener('click',function(){
+    document.querySelectorAll('.opt').forEach(function(el){ el.classList.remove('sel'); });
+    this.classList.add('sel');
+  });
+}
+
+/* ================= 启动 ================= */
+syncSliders();
+lockExport(true);
+setStep(1);
+renderStatic(calc(P));
+placeholderWF();
+
+/* ================= 云收口提交（路径A：在线 + 后端自动收口） ================= */
+var cloud=null;
+try{
+  cloud=WorkBuddyCloud.createWorkBuddyCloud({
+    endpoint:'https://ma-lab-submit.app.workbuddy.host',
+    oauthRelayBaseUrl:'https://www.workbuddy.cn/v2/as/genie-baas/oauth',
+    publishableKey:'wbpk_J2ivIU3MBpwtd9XeOywJFz_geY4Jq9Xkb8yaRlNYZy4orirmOoPPXET'
+  });
+}catch(e){ cloud=null; }
+
+function parseCard(text){
+  function g(mark){
+    var m=text.match(new RegExp('【'+mark+'】([^\\n]*)'));
+    return m?m[1].trim():'';
+  }
+  return {
+    question:g('问题'), assumption:g('假设'), metric:g('指标变化'),
+    suggestion:g('经营建议'), risk:g('风险责任')
+  };
+}
+
+var cloudSubmitted=false;
+$('btnSubmitCloud').addEventListener('click',function(){
+  if(cloudSubmitted){ toast('本场已提交，无需重复'); return; }
+  var sid=$('subStuId').value.replace(/\s/g,'');
+  var nm=$('subName').value.replace(/^\s+|\s+$/g,'');
+  var cls=$('subClass').value.replace(/^\s+|\s+$/g,'');
+  var msg=$('cloudMsg');
+  if(!sid||!nm||!cls){
+    msg.hidden=false; msg.className='fb bad';
+    msg.textContent='请先填全学号、姓名、班级三项，再提交。';
+    return;
+  }
+  $('inpName').value=(nm+' '+sid).trim();
+  buildCard();
+  var f=parseCard($('cardArea').value);
+  var riskVal=($('inpRisk')&&$('inpRisk').value.trim())||'';
+  var btn=$('btnSubmitCloud'); btn.disabled=true;
+  msg.hidden=false; msg.className='fb ok'; msg.textContent='正在提交…';
+  if(!riskVal){
+    msg.className='fb bad';
+    msg.textContent='请先在决策卡上方"风险责任"栏写下你的分析，再提交。';
+    btn.disabled=false; return;
+  }
+  if(!cloud){
+    msg.className='fb bad';
+    msg.textContent='提交失败：当前环境未能连接教师后台。请改用手机自带浏览器（Safari / Chrome）重新打开本页，或用电脑浏览器打开后重试；也可先下载决策卡文本交回。';
+    btn.disabled=false; return;
+  }
+  cloud.database.rpc('submit_decision_card', {
+    p_task_id:'ch8-standard-cost-corn',
+    p_student_id:sid, p_class_name:cls, p_student_name:nm,
+    p_card_question:f.question, p_card_assumption:f.assumption,
+    p_card_metric:f.metric, p_card_suggestion:f.suggestion,
+    p_card_risk:riskVal, p_score:st.score
+  }).then(function(res){
+    if(res.error){
+      var code=res.error.code||'';
+      if(code==='23505'){ msg.className='fb bad'; msg.textContent='这份提交已存在，请勿重复提交。'; }
+      else if(code==='42501'){ msg.className='fb bad'; msg.textContent='权限不足，无法写入后台，请联系教师检查配置。'; }
+      else { msg.className='fb bad'; msg.textContent='提交未成功：'+(res.error.message||'未知错误')+'（可先下载决策卡文本交回）'; }
+      btn.disabled=false; return;
+    }
+    cloudSubmitted=true;
+    msg.className='fb ok';
+    msg.textContent='已成功提交到教师后台，谢谢！可继续复制或下载决策卡留存。';
+    toast('提交成功');
+  }).catch(function(err){
+    msg.className='fb bad';
+    msg.textContent='网络异常，提交失败：'+(err&&err.message?err.message:'请检查网络')+'（可先下载决策卡文本交回）';
+    btn.disabled=false;
+  });
+});
+})();
+
+</script>
+</body>
+</html>

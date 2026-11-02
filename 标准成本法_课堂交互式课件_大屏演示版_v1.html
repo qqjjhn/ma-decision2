@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第八章 标准成本法 · 课堂交互式课件（大屏演示版）</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#2e7d32; --green-d:#1b5e20; --green-l:#eaf4ea; --green-b:#cfe6d1;
+  --gold:#b8860b; --gold-l:#fff6df; --gold-b:#f0d89a;
+  --blue:#1f3c88; --blue-l:#eaf0fb; --blue-b:#c9d6f0;
+  --red:#c62828; --red-l:#fdeceb; --red-b:#f3c9c6;
+  --ink:#17251a; --ink2:#4a5b4d; --ink3:#7a8a7c;
+  --line:#dbe4da; --bg:#f2f6f1; --card:#ffffff;
+  --fs: clamp(15px, 1.26vw, 30px);
+  --nav-h: 64px; --foot-h: 58px;
+}
+html.proj{ --fs: clamp(19px, 1.66vw, 38px); --nav-h: 58px; --foot-h: 52px; }
+html.proj .card{ padding:.5rem .6rem; border-width:2px }
+html.proj .pg-tip{ font-size:calc(var(--fs)*.78) }
+body{
+  font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB","Heiti SC",sans-serif;
+  background:var(--bg); color:var(--ink); font-size:var(--fs);
+  line-height:1.7; -webkit-font-smoothing:antialiased;
+}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+
+/* ---------- 布局 ---------- */
+#app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+#top{display:flex;align-items:center;gap:.6rem;height:var(--nav-h);flex-shrink:0;
+  padding:0 .9rem;background:linear-gradient(180deg,#ffffff 0%,#f7faf6 100%);
+  border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(20,50,25,.06);z-index:50}
+#brand{display:flex;flex-direction:column;line-height:1.25;min-width:10.5rem;flex-shrink:0}
+#brand .b1{font-size:calc(var(--fs)*.62);color:var(--ink3);letter-spacing:.02em}
+#brand .b2{font-size:calc(var(--fs)*.98);font-weight:800;color:var(--green-d);white-space:nowrap}
+#tabs{display:flex;gap:.35rem;flex:1;min-width:0;overflow-x:auto}
+.tab{
+  flex:1;min-width:7.2rem;white-space:nowrap;border:1px solid var(--line);border-radius:9px;
+  background:#fbfdfa;color:var(--ink2);cursor:pointer;padding:.4rem .5rem;font-family:inherit;
+  font-size:calc(var(--fs)*.66);font-weight:700;transition:.16s;display:flex;flex-direction:column;align-items:center;gap:.05rem;
+}
+.tab .tn{font-size:calc(var(--fs)*.55);color:var(--ink3)}
+.tab:hover{border-color:var(--green);color:var(--green-d)}
+.tab.on{background:var(--green);color:#fff;border-color:var(--green)}
+.tab.on .tn{color:#d9efda}
+#top .r{display:flex;gap:.35rem;flex-shrink:0}
+.tbtn{border:1px solid var(--line);background:#fff;color:var(--ink2);border-radius:8px;
+  padding:.3rem .55rem;font-size:calc(var(--fs)*.62);cursor:pointer;font-family:inherit}
+.tbtn:hover{border-color:var(--green);color:var(--green-d);background:var(--green-l)}
+.tbtn.on{background:var(--green);color:#fff;border-color:var(--green)}
+
+#stage{flex:1;min-height:0;overflow:auto;padding:.9rem 1.4rem 1rem}
+@media (max-height:820px){
+  #stage{padding:.6rem 1.1rem .65rem}
+  .mod-fn{padding:.4rem .6rem;margin-bottom:.42rem}
+  .mod-head{margin-bottom:.35rem}
+  .card{padding:.55rem .7rem}
+  .cue{margin-top:.5rem;padding:.4rem .65rem}
+}
+#stage::-webkit-scrollbar{width:9px} #stage::-webkit-scrollbar-thumb{background:#c8d6c8;border-radius:4px}
+.mod{display:none}
+.mod.act{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+/* ---------- 通用组件 ---------- */
+.row{display:flex;gap:.7rem;flex-wrap:wrap}
+.row>*{flex:1;min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:.7rem .85rem;box-shadow:0 1px 3px rgba(25,60,30,.05)}
+.card.hl{border-color:var(--green);background:linear-gradient(180deg,#fbfefb,#f2f9f3)}
+.card.gold{border-color:var(--gold-b);background:var(--gold-l)}
+.card.red{border-color:var(--red-b);background:var(--red-l)}
+.card.blue{border-color:var(--blue-b);background:var(--blue-l)}
+.ct{display:flex;align-items:center;gap:.35rem}
+.ct.g{color:var(--green-d)} .ct.r{color:var(--red)} .ct.b{color:var(--blue)} .ct.y{color:#8a6206}
+.sm{font-size:calc(var(--fs)*.74);color:var(--ink2);line-height:1.6}
+.sm.mute{color:var(--ink3)}
+ul.li{margin:.25rem 0 .25rem 1.15rem;font-size:calc(var(--fs)*.82);line-height:1.7}
+ul.li li{margin-bottom:.12rem}
+.big{font-size:calc(var(--fs)*2.35);font-weight:800;line-height:1.15;color:var(--green-d)}
+.big.r{color:var(--red)} .big.y{color:#8a6206} .big.b{color:var(--blue)}
+.bigwrap{text-align:center;padding:.35rem 0}
+.bigwrap .lb{font-size:calc(var(--fs)*.72);color:var(--ink2);margin-top:.1rem}
+.eq{font-family:Consolas,"Courier New",monospace;background:#f4f8f4;border-left:4px solid var(--green);
+  padding:.35rem .6rem;border-radius:0 8px 8px 0;font-size:calc(var(--fs)*.88);margin:.3rem 0;white-space:nowrap;overflow-x:auto}
+.eq.wrap{white-space:normal}
+.eq.gold{border-left-color:var(--gold);background:var(--gold-l)}
+.eq.red{border-left-color:var(--red);background:var(--red-l)}
+table.tb{width:100%;border-collapse:collapse;font-size:calc(var(--fs)*.76);margin:.3rem 0}
+table.tb th,table.tb td{border:1px solid var(--line);padding:.24rem .45rem;text-align:center;line-height:1.5}
+table.tb th{background:var(--green-l);color:var(--green-d);font-weight:800}
+table.tb td.l,table.tb th.l{text-align:left}
+table.tb tr.tot td{background:#f6faf6;font-weight:800}
+table.tb td.g{background:var(--green-l);font-weight:700;color:var(--green-d)}
+table.tb td.r{background:var(--red-l);font-weight:700;color:var(--red)}
+table.tb td.y{background:var(--gold-l);font-weight:700;color:#7a5a06}
+table.tb td.b{background:var(--blue-l)}
+table.tb td.dim{color:var(--ink3)}
+.chip{display:inline-block;font-size:calc(var(--fs)*.68);padding:.05rem .5rem;border-radius:14px;
+  background:var(--green-l);color:var(--green-d);font-weight:700;border:1px solid var(--green-b);margin:.08rem .18rem .08rem 0}
+.chip.y{background:var(--gold-l);color:#7a5a06;border-color:var(--gold-b)}
+.chip.r{background:var(--red-l);color:var(--red);border-color:var(--red-b)}
+.chip.b{background:var(--blue-l);color:var(--blue);border-color:var(--blue-b)}
+.chip.gray{background:#f0f2ef;color:var(--ink2);border-color:var(--line)}
+.note{border-left:4px solid var(--gold);background:var(--gold-l);padding:.35rem .6rem;
+  border-radius:0 8px 8px 0;font-size:calc(var(--fs)*.78);margin:.35rem 0;line-height:1.6}
+.note.r{border-left-color:var(--red);background:var(--red-l)}
+.note.g{border-left-color:var(--green);background:var(--green-l)}
+.note.b{border-left-color:var(--blue);background:var(--blue-l)}
+.cue{margin-top:.7rem;border:1px dashed var(--gold-b);background:#fffdf5;border-radius:10px;padding:.5rem .75rem;font-size:calc(var(--fs)*.8);color:#6b5320;line-height:1.65}
+.cue b{color:#8a6206}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;align-items:stretch}
+.mod[data-mod="5"] .grid2>.card{display:flex;flex-direction:column}
+.mod[data-mod="5"] .buckets{flex:1}
+.mod[data-mod="5"] .bucket{display:flex;flex-direction:column}
+.mod[data-mod="5"] .bucket .drop{flex:1}
+.mod[data-mod="4"] .ob{padding:.3rem .5rem}
+.mod[data-mod="3"] .ctl{margin-bottom:.34rem}
+.mod[data-mod="3"] .srow{margin:.1rem 0;line-height:1.5}
+.mod[data-mod="3"] .card{padding:.5rem .7rem}
+.mod[data-mod="3"] .track{gap:.5rem}
+.mod[data-mod="3"] .trk{padding:.45rem .6rem}
+.mod[data-mod="3"] .mod-fn{margin-bottom:.45rem}
+.mod[data-mod="5"] .bucket{min-height:8.5rem}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
+@media (max-width:900px){.grid4{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
+svg{display:block;max-width:100%}
+
+/* ---------- 控件 ---------- */
+.sim{display:grid;grid-template-columns:minmax(250px,320px) 1fr;gap:.85rem;align-items:start}
+@media (max-width:1000px){.sim{grid-template-columns:1fr}}
+.ctl{margin-bottom:.62rem}
+.ctl label{display:flex;justify-content:space-between;font-size:calc(var(--fs)*.74);color:var(--ink2);margin-bottom:.12rem}
+.ctl label b{color:var(--green-d);font-size:calc(var(--fs)*.86)}
+input[type=range]{width:100%;height:1.5rem;-webkit-appearance:none;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:.42rem;background:#dfe8de;border-radius:.3rem}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:1.35rem;height:1.35rem;border-radius:50%;background:var(--green);margin-top:-.46rem;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-track{height:.42rem;background:#dfe8de;border-radius:.3rem}
+input[type=range]::-moz-range-thumb{width:1.35rem;height:1.35rem;border-radius:50%;background:var(--green);border:3px solid #fff}
+input[type=number]{font-family:inherit;font-size:calc(var(--fs)*.8);width:100%;border:1px solid var(--line);
+  border-radius:8px;padding:.22rem .45rem;color:var(--green-d);font-weight:700;background:#fff}
+.out{display:grid;grid-template-columns:repeat(2,1fr);gap:.45rem;margin-top:.3rem}
+@media (max-width:760px){.out{grid-template-columns:1fr}}
+.ob{border:1px solid var(--line);border-radius:10px;padding:.35rem .55rem;background:#fff}
+.ob .ol{font-size:calc(var(--fs)*.68);color:var(--ink2);line-height:1.35}
+.ob .ov{font-size:calc(var(--fs)*1.22);font-weight:800;color:var(--green-d);line-height:1.25}
+.ob.r .ov{color:var(--red)} .ob.y .ov{color:#8a6206} .ob.b .ov{color:var(--blue)}
+.ob.r{border-color:var(--red-b);background:var(--red-l)}
+.ob.y{border-color:var(--gold-b);background:var(--gold-l)}
+.ob.g{border-color:var(--green-b);background:var(--green-l)}
+.legend{font-size:calc(var(--fs)*.68);color:var(--ink2);margin-top:.25rem;display:flex;gap:.7rem;flex-wrap:wrap}
+.legend i{display:inline-block;width:.7rem;height:.7rem;border-radius:3px;margin-right:.2rem}
+.btn{font-family:inherit;font-size:calc(var(--fs)*.74);padding:.3rem .7rem;border-radius:9px;
+  border:1px solid var(--green);background:var(--green);color:#fff;cursor:pointer}
+.btn:hover{background:var(--green-d)}
+.btn.ghost{background:#fff;color:var(--green-d)}
+.btn.ghost:hover{background:var(--green-l)}
+.btn.red{background:var(--red);border-color:var(--red)}
+.btn.red:hover{background:#a01f1f}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+/* 模块头 */
+.mod-head{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.5rem}
+.mod-no{font-size:calc(var(--fs)*.66);font-weight:800;color:#fff;background:var(--green);
+  border-radius:20px;padding:.1rem .7rem;white-space:nowrap}
+.mod-no.act1{background:var(--gold);color:#4a3800}
+.mod-h{font-size:calc(var(--fs)*1.32);font-weight:800;color:var(--green-d);line-height:1.3;flex:1;min-width:8rem}
+.mod-fn{font-size:calc(var(--fs)*.78);color:var(--ink2);background:#fff;border:1px solid var(--line);
+  border-radius:9px;padding:.5rem .7rem;margin-bottom:.6rem;line-height:1.6}
+.mod-fn b{color:var(--green-d)}
+
+/* 堆叠条 */
+.stack{display:flex;height:calc(var(--fs)*2.2);border-radius:9px;overflow:hidden;border:1px solid var(--line)}
+.stack .sg{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;
+  font-size:calc(var(--fs)*.7);transition:width .25s;white-space:nowrap;overflow:hidden}
+.stack .sg.s1{background:#2e7d32} .stack .sg.s2{background:#4f9a52}
+.stack .sg.s3{background:#b8860b} .stack .sg.s4{background:#8a6206}
+
+/* 双轨卡 */
+.track{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+@media (max-width:900px){.track{grid-template-columns:1fr}}
+.trk{border:2px solid var(--line);border-radius:12px;padding:.6rem .7rem;background:#fff}
+.trk.price{border-color:var(--gold-b);background:var(--gold-l)}
+.trk.qty{border-color:var(--green-b);background:var(--green-l)}
+.trk h4{font-size:calc(var(--fs)*.9);color:#8a6206;margin-bottom:.25rem}
+.trk.qty h4{color:var(--green-d)}
+.step{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.6rem}
+.sbtn{font-family:inherit;font-size:calc(var(--fs)*.7);padding:.18rem .6rem;border-radius:20px;
+  border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer;font-weight:700}
+.sbtn.on{background:var(--green);color:#fff;border-color:var(--green)}
+.srow{margin:.22rem 0;font-size:calc(var(--fs)*.78);line-height:1.6}
+.srow .lb{color:var(--ink3);font-size:calc(var(--fs)*.68);margin-right:.25rem}
+.arrow{font-weight:800;font-size:calc(var(--fs)*1.05)}
+
+/* T型账户 */
+.tchips{display:flex;gap:.45rem;flex-wrap:wrap;margin:.4rem 0}
+.tchip{border:2px solid var(--line);border-radius:10px;background:#fff;padding:.3rem .6rem;cursor:grab;
+  font-size:calc(var(--fs)*.76);font-weight:700;color:var(--ink);user-select:none}
+.tchip .amt{font-size:calc(var(--fs)*.9);margin-left:.3rem}
+.tchip.sel{border-color:var(--green);box-shadow:0 0 0 3px rgba(46,125,50,.18)}
+.tchip.ok{border-color:var(--green);background:var(--green-l)}
+.tchip.no{border-color:var(--red);background:var(--red-l)}
+.buckets{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.4rem}
+@media (max-width:760px){.buckets{grid-template-columns:1fr}}
+.bucket{border:2px dashed var(--line);border-radius:12px;padding:.5rem .6rem;min-height:5.4rem;background:#fbfdfa}
+.bucket h4{font-size:calc(var(--fs)*.8);color:var(--green-d);margin-bottom:.2rem}
+.bucket.over{border-color:var(--green);background:var(--green-l)}
+.bucket .drop{min-height:2.2rem;display:flex;gap:.35rem;flex-wrap:wrap;align-items:flex-start}
+.tform{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.4rem;font-family:Consolas,"Courier New",monospace;
+  font-size:calc(var(--fs)*.8)}
+.tform .d,.tform .c{border:1px solid var(--line);border-radius:8px;padding:.35rem .5rem;background:#fff;line-height:1.6}
+.tform .h{font-family:inherit;font-weight:800;color:var(--green-d);font-size:calc(var(--fs)*.74)}
+
+/* ---------- 底部 ---------- */
+#foot{display:flex;align-items:center;gap:.5rem;height:var(--foot-h);flex-shrink:0;
+  padding:0 .9rem;background:#fff;border-top:1px solid var(--line);z-index:50}
+#bb{font-size:calc(var(--fs)*.64);color:#7a5a06;background:var(--gold-l);border:1px solid var(--gold-b);
+  border-radius:8px;padding:.2rem .55rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw}
+#foot .hint{font-size:calc(var(--fs)*.6);color:var(--ink3);margin-right:auto;white-space:nowrap}
+#foot .hint kbd{background:#f0f3ef;border:1px solid var(--line);border-radius:5px;padding:0 .28rem;font-family:inherit}
+#navBtn{display:flex;gap:.35rem}
+
+/* ---------- 浮层 ---------- */
+.overlay{position:fixed;inset:0;background:rgba(16,32,18,.55);z-index:90;display:none;
+  align-items:center;justify-content:center;padding:1.2rem;backdrop-filter:blur(2px)}
+.overlay.on{display:flex}
+.panel{background:#fff;border-radius:16px;max-width:min(1100px,96vw);max-height:92vh;overflow:auto;
+  box-shadow:0 18px 50px rgba(10,30,15,.35);padding:1.1rem 1.3rem;width:100%}
+.panel h3{font-size:calc(var(--fs)*1.15);color:var(--green-d);margin-bottom:.5rem}
+.panel .ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
+.xbtn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:.2rem .6rem;cursor:pointer;
+  font-family:inherit;font-size:calc(var(--fs)*.75)}
+.xbtn:hover{background:var(--red-l);border-color:var(--red);color:var(--red)}
+#cdOv{background:rgba(10,20,12,.9);flex-direction:column;color:#fff}
+#cdNum{font-size:min(30vw,26vh);font-weight:800;line-height:1;letter-spacing:.02em}
+#cdNum.warn{color:#ffca28} #cdNum.over{color:#ff6b6b;animation:blink .8s infinite}
+#cdTip{font-size:min(4vw,30px);color:#cfe6d1;margin-top:.6rem;text-align:center}
+#cdCtl{margin-top:1rem;display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center}
+#cdCtl button{font-family:inherit;font-size:min(2.2vw,20px);padding:.35rem .9rem;border-radius:10px;
+  border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
+#cdCtl button:hover{background:rgba(255,255,255,.24)}
+@keyframes blink{50%{opacity:.45}}
+.timerow{display:flex;gap:.5rem;flex-wrap:wrap;margin:.3rem 0}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div id="top">
+    <div id="brand">
+      <div class="b1">管理会计 · B422L02000 · 2026秋</div>
+      <div class="b2">第八章 标准成本法 · 课堂交互</div>
+    </div>
+    <div id="tabs"></div>
+    <div class="r">
+      <button class="tbtn" id="btnProj" title="投影模式（M）">投影 M</button>
+      <button class="tbtn" id="btnFull" title="全屏（F）">全屏 F</button>
+      <button class="tbtn" id="btnTimer" title="课堂计时（T）">计时 T</button>
+      <button class="tbtn" id="btnHelp" title="模块说明与快捷键（?）">说明 ?</button>
+    </div>
+  </div>
+
+  <div id="stage">
+
+    <!-- ============ 模块零：课堂导航 ============ -->
+    <section class="mod act" data-mod="0" data-bb="板书：右上角首判区三行留白｜中栏标准成本卡 730 元/件｜右栏九项差异">
+      <div class="mod-head">
+        <span class="mod-no">导航</span>
+        <span class="mod-h">这节课怎么用这套课件</span>
+        <span class="chip y">教学进度第 11 周 · 线下 2 课时</span>
+      </div>
+
+      <div class="grid3">
+        <div class="card hl">
+          <div class="ct g"><b>课堂节奏与模块挂点</b></div>
+          <table class="tb" style="margin-top:.3rem">
+            <tr><th class="l">环节</th><th class="l">内容</th><th>挂点</th></tr>
+            <tr><td class="l">一</td><td class="l">情境与首判（不给答案）</td><td class="dim">—</td></tr>
+            <tr><td class="l">二</td><td class="l">标准成本的两层含义与标准卡</td><td class="y">模块一</td></tr>
+            <tr><td class="l">三</td><td class="l">总差异与一般模型拆解</td><td class="y">模块二·三</td></tr>
+            <tr><td class="l">四</td><td class="l">制造费用差异（只报方向）</td><td class="y">模块四</td></tr>
+            <tr><td class="l">五</td><td class="l">责任归属与账务走向</td><td class="y">模块五</td></tr>
+            <tr><td class="l">六</td><td class="l">复判：把首判拿回来改一遍</td><td class="dim">回到 P24</td></tr>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="ct g"><b>本月数据锚点（全课不换数）</b></div>
+          <div class="out" style="margin-top:.3rem">
+            <div class="ob g"><div class="ol">单位标准成本</div><div class="ov num">730 元/件</div></div>
+            <div class="ob"><div class="ol">实际产量</div><div class="ov num">900 件</div></div>
+            <div class="ob"><div class="ol">实际产量标准成本</div><div class="ov num">657,000 元</div></div>
+            <div class="ob r"><div class="ol">实际总成本</div><div class="ov num">646,300 元</div></div>
+          </div>
+          <div class="note" style="margin-top:.45rem">总差异 <b>−10,700 元</b>（有利）——就是首判时那个“看着像超支、其实是节约”的总数。四个数课末还要用，中途不要改。</div>
+        </div>
+
+        <div class="card">
+          <div class="ct g"><b>六模块清单与建设状态</b></div>
+          <table class="tb" style="margin-top:.3rem">
+            <tr><th class="l">模块</th><th class="l">名称</th><th>状态</th></tr>
+            <tr><td>一</td><td class="l">标准成本卡搭建器</td><td class="g">本次新建</td></tr>
+            <tr><td>二</td><td class="l">一般模型拆解器</td><td class="g">本次新建</td></tr>
+            <tr><td>三</td><td class="l">材料／人工差异双轨卡</td><td class="g">本次新建</td></tr>
+            <tr><td>四</td><td class="l">九项差异方向盘（课堂版）</td><td class="g">本次新建</td></tr>
+            <tr><td>五</td><td class="l">差异账务 T 型账户</td><td class="g">本次新建</td></tr>
+            <tr><td>—</td><td class="l">九项全景图·改参打版器</td><td class="y">实训已有</td></tr>
+          </table>
+          <div class="sm mute" style="margin-top:.3rem">最后一行是学生课后自学闭环，课堂不重复演示；课堂只做到“方向＋金额勾稽”，把改参留给线上。</div>
+        </div>
+      </div>
+
+      <div class="card gold" style="margin-top:.7rem">
+        <b>使用说明</b>
+        <div class="sm" style="margin-top:.2rem">
+          ① 投影到大屏，教师鼠标操作，学生观看；关键动作配口头讲解（“大家看，我把实耗工时往下拖，闲置能量差异在变大……”）。<br>
+          ② 本课件只做演示与演练，框架与计算过程在 PPT；两者用 <b>Alt+Tab</b> 切换，课件讲的数就是 PPT 上的数。<br>
+          ③ 每个模块底部有<b>板书同步</b>提示，拖完参数顺手把关键数值写到黑板对应栏。<br>
+          ④ 快捷键：<b>1—6</b> 切换模块，<b>←／→</b> 前后翻，<b>M</b> 投影模式，<b>F</b> 全屏，<b>T</b> 计时，<b>?</b> 本页。
+        </div>
+      </div>
+    
+      <div class="cue"><b>课堂口令</b>　这条主线先立住：先判后算。环节一我不给答案，谁先算出 730，也先别急着报结论——先写进首判卡第①列，课末再改。</div>
+    </section>
+
+    <!-- ============ 模块一：标准成本卡搭建器 ============ -->
+    <section class="mod" data-mod="1" data-bb="板书·中栏：材料 10 千克×10＝100；人工 10.5 小时×40＝420；变动 10.5×8＝84；固定 10.5×12＝126；合计 730 元/件">
+      <div class="mod-head">
+        <span class="mod-no">模块一</span>
+        <span class="mod-h">标准成本卡搭建器</span>
+        <span class="chip">线下环节二</span>
+        <span class="chip y">意图：让学生看见 730 元怎么层层加出来</span>
+      </div>
+      <div class="mod-fn">四项标准各是一个“用量×价格”：材料与人工直接给定，制造费用靠<b>预算÷正常产能</b>推。拖滑块看单位标准成本怎么变，再点开<b>分配率推导</b>。</div>
+
+      <div class="sim">
+        <div class="card">
+          <div class="ctl">
+            <label>材料用量标准 <b><span id="v_matQ">10</span> 千克/件</b></label>
+            <input type="range" id="r_matQ" min="8" max="12" step="0.5" value="10">
+          </div>
+          <div class="ctl">
+            <label>材料价格标准 <b><span id="v_matP">10</span> 元/千克</b></label>
+            <input type="range" id="r_matP" min="8" max="13" step="0.5" value="10">
+          </div>
+          <div class="ctl">
+            <label>单位产品工时标准 <b><span id="v_labQ">10.5</span> 小时/件</b></label>
+            <input type="range" id="r_labQ" min="8" max="12" step="0.5" value="10.5">
+          </div>
+          <div class="ctl">
+            <label>标准工资率 <b><span id="v_labP">40</span> 元/小时</b></label>
+            <input type="range" id="r_labP" min="30" max="50" step="1" value="40">
+          </div>
+          <div class="ctl">
+            <label>本月实际产量 <b><span id="v_out">900</span> 件</b></label>
+            <input type="range" id="r_out" min="600" max="1200" step="50" value="900">
+          </div>
+          <div class="timerow">
+            <button class="btn ghost" id="btnReset1">复位原例</button>
+            <button class="btn ghost" id="btnRate">分配率推导 ▾</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="card hl">
+            <div class="out">
+              <div class="ob"><div class="ol">材料标准成本 用量×价格</div><div class="ov num"><span id="o_mat">100</span> 元</div></div>
+              <div class="ob"><div class="ol">人工标准成本 工时×工资率</div><div class="ov num"><span id="o_lab">420</span> 元</div></div>
+              <div class="ob y"><div class="ol">变动制造费用 工时×分配率</div><div class="ov num"><span id="o_var">84</span> 元</div></div>
+              <div class="ob y"><div class="ol">固定制造费用 工时×分配率</div><div class="ov num"><span id="o_fix">126</span> 元</div></div>
+            </div>
+            <div class="bigwrap" style="margin-top:.35rem">
+              <div class="big num"><span id="o_unit">730</span> 元/件</div>
+              <div class="lb">甲产品单位标准成本（四项之和）</div>
+            </div>
+            <div class="eq">实际产量标准成本 ＝ <span id="e_unit">730</span> × <span id="e_out">900</span> ＝ <b class="num" id="o_stdtotal">657,000</b> 元</div>
+            <div class="sm mute">这一行就是“两层含义”的第二层：同一个标准，乘上实际产量才是全月应发生的成本。</div>
+          </div>
+
+          <div class="card" style="margin-top:.55rem">
+            <div class="sm"><b>成本卡（括号内为占 730 元的份额）</b></div>
+            <div class="stack" style="margin-top:.3rem">
+              <div class="sg s1" id="sg1" style="width:13.7%">材料</div>
+              <div class="sg s2" id="sg2" style="width:57.5%">人工</div>
+              <div class="sg s3" id="sg3" style="width:11.5%">变动</div>
+              <div class="sg s4" id="sg4" style="width:17.3%">固定</div>
+            </div>
+            <div class="legend">
+              <span><i style="background:#2e7d32"></i>材料 <b id="p1">13.7</b>%</span>
+              <span><i style="background:#4f9a52"></i>人工 <b id="p2">57.5</b>%</span>
+              <span><i style="background:#b8860b"></i>变动 <b id="p3">11.5</b>%</span>
+              <span><i style="background:#8a6206"></i>固定 <b id="p4">17.3</b>%</span>
+            </div>
+            <div class="note" id="hint1">人工占了大头：单位工时一改，人工、变动、固定三项同时动，材料只动一项。这就是“标准卡里最敏感的那个数”。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card gold" id="ratePanel" style="margin-top:.6rem;display:none">
+        <div class="ct g"><b>制造费用标准分配率怎么来：预算数 ÷ 正常产能</b></div>
+        <div class="sim" style="grid-template-columns:minmax(240px,300px) 1fr;margin-top:.4rem">
+          <div>
+            <div class="ctl"><label>变动制造费用预算（元）</label><input type="number" id="n_varB" value="80000" step="5000"></div>
+            <div class="ctl"><label>固定制造费用预算（元）</label><input type="number" id="n_fixB" value="120000" step="5000"></div>
+            <div class="ctl"><label>正常产能（工时）</label><input type="number" id="n_cap" value="10000" step="500"></div>
+          </div>
+          <div>
+            <div class="eq">变动分配率 ＝ 80,000 ÷ 10,000 ＝ <b id="o_vr">8</b> 元/小时</div>
+            <div class="eq gold">固定分配率 ＝ 120,000 ÷ 10,000 ＝ <b id="o_fr">12</b> 元/小时</div>
+            <div class="note">分母用<b>正常产能</b>而不是实际产量：分配率是“事先定的一把尺子”，不能在月底按实际产量回头改。<br>改一下预算或产能，看单位标准成本怎么跟着变——这就是标准卡编制时真正在谈的两个数。</div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="cue"><b>课堂口令</b>　别急着报 730。先问一句：这四项里，改哪一项会让三项一起动？</div>
+    </section>
+
+    <!-- ============ 模块二：一般模型拆解器 ============ -->
+    <section class="mod" data-mod="2" data-bb="板书·中栏：总差异＝AP×AQ−SP×SQ＝（AP−SP）AQ＋（AQ−SQ）SP">
+      <div class="mod-head">
+        <span class="mod-no">模块二</span>
+        <span class="mod-h">一般模型拆解器</span>
+        <span class="chip">线下环节三</span>
+        <span class="chip y">意图：把代数拆解变成看得见的面积拆分</span>
+      </div>
+      <div class="mod-fn">从三块面积出发：<b>AP×AQ</b> 是实际发生的，<b>SP×SQ</b> 是应该发生的，中间那块 <b>SP×AQ</b> 是桥。相邻两块相减得价格差异与用量差异，首尾相减得总差异。</div>
+
+      <div class="row" style="margin-bottom:.5rem">
+        <div class="card" style="flex:0 0 auto">
+          <div class="timerow" style="margin:0">
+            <button class="btn ghost sbtn on" id="btnMat2" data-k="mat">用材料例</button>
+            <button class="btn ghost sbtn" id="btnLab2" data-k="lab">用人工例</button>
+          </div>
+        </div>
+        <div class="card" style="flex:1">
+          <div class="out" style="grid-template-columns:repeat(3,1fr);margin:0">
+            <div class="ob"><div class="ol" id="lbl1">① AP×AQ 实际成本</div><div class="ov num" id="v_a1">92,400</div></div>
+            <div class="ob b"><div class="ol" id="lbl2">② SP×AQ 桥</div><div class="ov num" id="v_a2">88,000</div></div>
+            <div class="ob g"><div class="ol" id="lbl3">③ SP×SQ 标准成本</div><div class="ov num" id="v_a3">90,000</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="card hl">
+          <div class="sm"><b>图形解（长度即金额：同宽看高度差，同高看宽度差）</b></div>
+          <div id="svgBox" style="margin-top:.2rem"></div>
+          <div class="legend">
+            <span><i style="background:#cfe6d1"></i>① 实际</span>
+            <span><i style="background:#8fbf92"></i>② 桥</span>
+            <span><i style="background:#f0d89a"></i>③ 标准</span>
+            <span><i style="background:#e07b78"></i>价格差异</span>
+            <span><i style="background:#7fb887"></i>用量差异</span>
+          </div>
+          <div class="timerow" style="margin-top:.4rem">
+            <button class="btn ghost" id="btnWrong">切换“错误的交叉相乘法”</button>
+          </div>
+          <div class="note r" id="wrongNote" style="display:none"></div>
+        </div>
+
+        <div class="card">
+          <div class="sm"><b>相邻相减 → 两块差异</b></div>
+          <div class="eq" id="e_price">① − ② ＝（AP−SP）×AQ ＝（10.5−10）×8,800 ＝ <b>＋4,400</b> 元（不利）</div>
+          <div class="eq gold" id="e_qty">② − ③ ＝（AQ−SQ）×SP ＝（8,800−9,000）×10 ＝ <b>−2,000</b> 元（有利）</div>
+          <div class="eq red" id="e_sum">① − ③ ＝ 92,400 − 90,000 ＝ <b>＋2,400</b> 元（不利，与两块之和相等）</div>
+          <div class="note b">
+            <b>为什么价格差异乘的是 AQ 而不是 SQ？</b>因为价格差异算的是“实际买了这么多”里被价格多收/少收的钱；用量差异乘的是 SP，因为多用或少用的量按<b>标准价</b>折成钱。两个差异分别只让一个因素动——这就是“因素分析”的规矩。
+          </div>
+          <div class="sm mute">恒等式自检：价格差异 ＋ 用量差异 ＝ 总差异。这一条是学生算错时最快的找错工具，也是课末复判的依据。</div>
+        </div>
+      </div>
+    
+      <div class="cue"><b>课堂口令</b>　先看 ① 和 ③ 的缺口，再问：这 2,400 里，多少是买贵了、多少是用多了？——把总差异拆开，为的就是这一问。</div>
+    </section>
+
+    <!-- ============ 模块三：料工双轨卡 ============ -->
+    <section class="mod" data-mod="3" data-bb="板书·右栏：材料 价差＋4,400（不利·采购）／量差−2,000（有利·生产）；人工 率差−19,000（有利·人事）／效差＋2,000（不利·车间）">
+      <div class="mod-head">
+        <span class="mod-no">模块三</span>
+        <span class="mod-h">材料／人工差异双轨卡</span>
+        <span class="chip">线下环节三</span>
+        <span class="chip y">意图：四步流程可视化，减少符号误判</span>
+      </div>
+
+      <div class="card gold" style="padding:.4rem .7rem;margin-bottom:.5rem">
+        <div class="sm" style="color:#7a5a06">
+          <b>符号约定（常驻，全课不擦）</b>：价格差异＝（AP−SP）×AQ　用量差异＝（AQ−SQ）×SP　｜　
+          <b style="color:#c62828">正＝不利（超支，红）</b>　<b style="color:#1b5e20">负＝有利（节约，绿）</b>　｜　
+          价格差异＋用量差异＝总差异
+        </div>
+      </div>
+
+      <div class="step" id="steps">
+        <span class="sm mute" style="margin-right:.3rem">演示到第几步：</span>
+        <button class="sbtn on" data-step="1">① 公式</button>
+        <button class="sbtn on" data-step="2">② 代入</button>
+        <button class="sbtn on" data-step="3">③ 判向</button>
+        <button class="sbtn on" data-step="4">④ 归因</button>
+      </div>
+
+      <div class="sim" style="grid-template-columns:minmax(230px,290px) 1fr">
+        <div class="card">
+          <div class="sm"><b>本月实际数据（可改参试算）</b></div>
+          <div class="ctl" style="margin-top:.3rem">
+            <label>材料实耗量 AQ <b><span id="v_aqM">8,800</span> 千克</b></label>
+            <input type="range" id="r_aqM" min="8000" max="9800" step="50" value="8800">
+          </div>
+          <div class="ctl">
+            <label>材料实际单价 AP <b><span id="v_apM">10.5</span> 元/千克</b></label>
+            <input type="range" id="r_apM" min="9" max="12" step="0.1" value="10.5">
+          </div>
+          <div class="ctl">
+            <label>实际工时 AQ <b><span id="v_aqL">9,500</span> 小时</b></label>
+            <input type="range" id="r_aqL" min="9000" max="10200" step="50" value="9500">
+          </div>
+          <div class="ctl">
+            <label>实际工资总额 <b><span id="v_wage">361,000</span> 元</b></label>
+            <input type="range" id="r_wage" min="330000" max="420000" step="1000" value="361000">
+          </div>
+          <div class="eq gold wrap" id="e_rate">先除后代：实际工资率 ＝ 361,000 ÷ 9,500 ＝ <b id="v_apL">38.00</b> 元/小时</div>
+          <div class="timerow"><button class="btn ghost" id="btnReset3">复位原例</button></div>
+          <div class="note r" id="signWarn" style="display:none">价格差异为负，不代表“价格降了就好”，还要回到能不能买到来判断；符号只表示对成本的方向。</div>
+        </div>
+
+        <div>
+          <div class="card" style="margin-bottom:.55rem">
+            <div class="ct g"><b>直接材料</b><span class="chip gray">SQ＝900×10＝9,000 千克　SP＝10 元</span></div>
+            <div class="track" style="margin-top:.35rem">
+              <div class="trk price">
+                <h4>左轨 · 材料价格差异</h4>
+                <div class="srow" data-step="1"><span class="lb">公式</span>（AP−SP）×AQ</div>
+                <div class="srow" data-step="2"><span class="lb">代入</span>（<span class="num" id="i_apM">10.5</span>−10）×<span class="num" id="i_aqM">8,800</span></div>
+                <div class="srow" data-step="3"><span class="lb">判向</span><span class="num" id="i_pM">＋4,400</span> 元 <span class="arrow" id="a_pM" style="color:#c62828">↑ 不利</span></div>
+                <div class="srow" data-step="4"><span class="lb">归因</span><span id="i_pMg">采购部门：市场涨价、供应商选择、批量失去折扣</span></div>
+              </div>
+              <div class="trk qty">
+                <h4>右轨 · 材料用量差异</h4>
+                <div class="srow" data-step="1"><span class="lb">公式</span>（AQ−SQ）×SP</div>
+                <div class="srow" data-step="2"><span class="lb">代入</span>（<span class="num" id="i_aqM2">8,800</span>−9,000）×10</div>
+                <div class="srow" data-step="3"><span class="lb">判向</span><span class="num" id="i_qM">−2,000</span> 元 <span class="arrow" id="a_qM" style="color:#1b5e20">↓ 有利</span></div>
+                <div class="srow" data-step="4"><span class="lb">归因</span><span id="i_qMg">生产车间：工艺改进、原料品质好、损耗下降</span></div>
+              </div>
+            </div>
+            <div class="eq" id="e_mat">材料小计 ＝ 价格差异 ＋ 用量差异 ＝ <b id="i_matSum">＋2,400</b> 元（不利）</div>
+          </div>
+
+          <div class="card">
+            <div class="ct g"><b>直接人工</b><span class="chip gray">SQ＝900×10.5＝9,450 小时　SP＝40 元</span></div>
+            <div class="track" style="margin-top:.35rem">
+              <div class="trk price">
+                <h4>左轨 · 人工工资率差异</h4>
+                <div class="srow" data-step="1"><span class="lb">公式</span>（AP−SP）×AQ</div>
+                <div class="srow" data-step="2"><span class="lb">代入</span>（<span class="num" id="i_apL">38.00</span>−40）×<span class="num" id="i_aqL">9,500</span></div>
+                <div class="srow" data-step="3"><span class="lb">判向</span><span class="num" id="i_pL">−19,000</span> 元 <span class="arrow" id="a_pL" style="color:#1b5e20">↓ 有利</span></div>
+                <div class="srow" data-step="4"><span class="lb">归因</span><span id="i_pLg">人事与用工安排：农闲用工顶上、低级别工替代</span></div>
+              </div>
+              <div class="trk qty">
+                <h4>右轨 · 人工效率差异</h4>
+                <div class="srow" data-step="1"><span class="lb">公式</span>（AQ−SQ）×SP</div>
+                <div class="srow" data-step="2"><span class="lb">代入</span>（<span class="num" id="i_aqL2">9,500</span>−9,450）×40</div>
+                <div class="srow" data-step="3"><span class="lb">判向</span><span class="num" id="i_qL">＋2,000</span> 元 <span class="arrow" id="a_qL" style="color:#c62828">↑ 不利</span></div>
+                <div class="srow" data-step="4"><span class="lb">归因</span><span id="i_qLg">车间：新手多、排班不连续、设备停机返工</span></div>
+              </div>
+            </div>
+            <div class="eq" id="e_lab">人工小计 ＝ 工资率差异 ＋ 效率差异 ＝ <b id="i_labSum">−17,000</b> 元（有利）</div>
+          </div>
+
+
+        </div>
+      </div>
+    
+      <div class="cue"><b>课堂口令</b>　我先只给公式，你们在纸上写代入；我数三个数，再一起揭晓判向和归因。</div>
+    </section>
+
+    <!-- ============ 模块四：九项方向盘 ============ -->
+    <section class="mod" data-mod="4" data-bb="板书·右栏：制造费用方向 变动＋／＋；固定−／＋／＋（不给金额）；九项总差异 −10,700（有利）">
+      <div class="mod-head">
+        <span class="mod-no">模块四</span>
+        <span class="mod-h">九项差异方向盘（课堂版）</span>
+        <span class="chip">线下环节四·五</span>
+        <span class="chip y">意图：料工报金额，制造费用只报正负</span>
+      </div>
+      <div class="mod-fn">九项一次亮齐，但<b>只让料工四项带金额</b>；制造费用五项只给方向，金额留给线上实训——学生带着方向去算数，才不会先抄答案。</div>
+
+      <div class="grid2">
+        <div class="card">
+          <table class="tb">
+            <tr><th>序</th><th class="l">差异项目</th><th>金额（元）</th><th>方向</th><th class="l">指向谁</th></tr>
+            <tbody id="nineBody"></tbody>
+          </table>
+          <div class="legend"><span class="chip r">＋ 不利</span><span class="chip">− 有利</span><span class="chip y">方向课堂给，金额线上算</span></div>
+        </div>
+
+        <div>
+          <div class="card hl">
+            <div class="out" style="grid-template-columns:1fr 1fr">
+              <div class="ob"><div class="ol">料工四项小计</div><div class="ov num" id="o_labor4">−14,600</div></div>
+              <div class="ob y"><div class="ol">制造费用五项（线上拆解）</div><div class="ov num" id="o_mfg5">＋3,900</div></div>
+            </div>
+            <div class="bigwrap" style="margin-top:.3rem">
+              <div class="big" id="o_nineTotal">−10,700 元</div>
+              <div class="lb" id="o_nineLb">九项总差异（有利）· 与首判看到的总数一致</div>
+            </div>
+            <div class="eq gold">总差异 ＝ 实际总成本 − 实际产量标准成本 ＝ 646,300 − 657,000 ＝ <b>−10,700</b> 元</div>
+            <div class="note" id="nineNote">料工四项已经把 −14,600 元说清楚了；剩下的 ＋3,900 元全在制造费用五项里。方向已经在表上了，金额是要线上算的——这就是课后实训的入口。</div>
+          </div>
+
+          <div class="card" style="margin-top:.55rem">
+            <div class="ct g"><b>复判用一句话（板书右上角改写）</b></div>
+            <div class="sm" style="margin-top:.2rem">原判“超支 10,700”　→　现判“<b>节约</b> 10,700，但内部有三处超支（料价、工效、闲置能量）”</div>
+            <div class="note r">别把总差异当结论：总数是有利的，可四个责任部门里三个在超支。差异是线索，不是判决书。</div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="card" style="margin-top:.55rem">
+        <div class="ct g"><b>总数是有利的，但这三处在超支——可控性不同，别把它们记到同一个部门头上</b></div>
+        <div class="grid3" style="margin-top:.35rem">
+          <div class="ob r"><div class="ol">材料价格差异 ＋4,400</div><div class="ov num" style="font-size:calc(var(--fs)*.9)">采购部门</div><div class="sm">市场价上涨、批量不够；车间无从下手，可控性弱。</div></div>
+          <div class="ob r"><div class="ol">人工效率差异 ＋2,000</div><div class="ov num" style="font-size:calc(var(--fs)*.9)">生产车间</div><div class="sm">排班、新手、返工；车间能管，可控性强。</div></div>
+          <div class="ob r"><div class="ol">固定制造费用闲置能量差异（不利·金额线上算）</div><div class="ov num" style="font-size:calc(var(--fs)*.9)">计划与产能</div><div class="sm">产能没用满；不是车间的账，是接单与排产的账。</div></div>
+        </div>
+      </div>
+
+      <div class="cue"><b>课堂口令</b>　制造费用我只给方向、不给金额。方向先记住，金额留到线上——那里有七参数滑块等着你们。</div>
+    </section>
+
+    <!-- ============ 模块五：T型账户 ============ -->
+    <section class="mod" data-mod="5" data-bb="板书·右栏：有利差异记贷方、不利差异记借方；期末净额 −10,700 结转冲减销货成本">
+      <div class="mod-head">
+        <span class="mod-no">模块五</span>
+        <span class="mod-h">差异账务处理 T 型账户</span>
+        <span class="chip">线上任务 1·2</span>
+        <span class="chip y">意图：把账务走向做成人人可试的方向练习</span>
+      </div>
+      <div class="mod-fn">规则只有一条：<b>不利差异记借方，有利差异记贷方</b>。先让学生说该放哪边，再拖上去验证；错的那一枚会告诉你错在哪。</div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="sm"><b>四枚差异（点一下选中，再点下方借方／贷方；也可直接拖动）</b></div>
+          <div class="tchips" id="chipBox"></div>
+          <div class="buckets">
+            <div class="bucket" id="bD" data-side="D"><h4>借方（不利·超支）</h4><div class="sm mute">让成本增加 → 记借方</div><div class="drop" id="dD"></div></div>
+            <div class="bucket" id="bC" data-side="C"><h4>贷方（有利·节约）</h4><div class="sm mute">让成本减少 → 记贷方</div><div class="drop" id="dC"></div></div>
+          </div>
+          <div class="timerow" style="margin-top:.45rem">
+            <button class="btn" id="btnCheck">核对方向</button>
+            <button class="btn ghost" id="btnReset5">打乱重来</button>
+          </div>
+          <div class="note" id="chkNote">还没核对。让学生先说结论，再按按钮。</div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="ct g"><b>期末结转：把四个差异账户清干净</b></div>
+            <table class="tb" style="margin-top:.2rem">
+              <tr><th style="width:50%">借　方</th><th style="width:50%">贷　方</th></tr>
+              <tr>
+                <td class="l">材料价格差异<span style="float:right" class="num">4,400</span></td>
+                <td class="l">材料用量差异<span style="float:right" class="num">2,000</span></td>
+              </tr>
+              <tr>
+                <td class="l">人工效率差异<span style="float:right" class="num">2,000</span></td>
+                <td class="l">人工工资率差异<span style="float:right" class="num">19,000</span></td>
+              </tr>
+              <tr class="tot">
+                <td class="l">借方合计<span style="float:right" class="num">6,400</span></td>
+                <td class="l">贷方合计<span style="float:right" class="num">21,000</span></td>
+              </tr>
+            </table>
+            <div class="eq gold">净额 ＝ 6,400 − 21,000 ＝ <b>−14,600</b>（贷方余额，有利）</div>
+            <div class="sm">结转分录（简化口径：差异全部结转当期）：</div>
+            <div class="eq">借：生产成本差异（净额）14,600　贷：主营业务成本 14,600</div>
+            <div class="note g">有利差异把销货成本<b>冲减</b>下来，所以贷方余额要借记差异账户、贷记主营业务成本。若按存货与销货成本比例分摊，则按存销比例拆，本期不展开。</div>
+          </div>
+
+          <div class="card gold" style="margin-top:.55rem">
+            <div class="sm"><b>一个常错点</b></div>
+            <div class="sm">把“有利”理解成“账户方向为正”——错。有利只说明对成本的方向，与借贷方向无关；<b>借贷看的是差异让成本增加还是减少</b>：让成本增加（不利）就记借，让成本减少（有利）就记贷。</div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="cue"><b>课堂口令</b>　先别看借贷。先问：这笔差异让成本增加还是减少？增加的记借方，减少的记贷方。</div>
+    </section>
+
+  </div>
+
+  <div id="foot">
+    <div id="bb">板书同步</div>
+    <div class="hint"><kbd>1—6</kbd> 模块　<kbd>←/→</kbd> 翻页　<kbd>M</kbd> 投影　<kbd>F</kbd> 全屏　<kbd>T</kbd> 计时</div>
+    <div id="navBtn">
+      <button class="btn ghost" id="btnPrev">← 上一模块</button>
+      <button class="btn" id="btnNext">下一模块 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- 说明浮层 -->
+<div class="overlay" id="ovHelp">
+  <div class="panel">
+    <div class="ph"><h3>模块说明与数据口径</h3><button class="xbtn" data-close="ovHelp">关闭</button></div>
+    <table class="tb">
+      <tr><th>模块</th><th class="l">对应环节</th><th class="l">课堂上做什么</th></tr>
+      <tr><td>一</td><td class="l">线下环节二</td><td class="l">拖四项标准滑块，看 730 元怎么加出来；点开分配率推导，讲清“预算÷正常产能”</td></tr>
+      <tr><td>二</td><td class="l">线下环节三</td><td class="l">从三块面积讲拆解，再用“错误的交叉相乘法”做反例</td></tr>
+      <tr><td>三</td><td class="l">线下环节三</td><td class="l">四步揭晓：公式→代入→判向→归因；改实耗量与工资总额做试算</td></tr>
+      <tr><td>四</td><td class="l">线下环节四·五</td><td class="l">九项一次亮齐，料工带金额、制造费用只给方向</td></tr>
+      <tr><td>五</td><td class="l">线上任务 1·2</td><td class="l">拖金额判借贷方向，再把净额结转讲清</td></tr>
+    </table>
+    <div class="note b" style="margin-top:.5rem">
+      <b>数据口径</b>：甲产品单位标准成本 730 元/件（材料 10 千克×10；人工 10.5 小时×40；变动 10.5×8；固定 10.5×12）；本月实际 900 件、材料 8,800 千克×10.5 元、工时 9,500 小时、工资 361,000 元、变动制造费用 77,900 元、固定制造费用 115,000 元、固定预算 120,000 元、正常产能 10,000 小时。差异与教学设计、任务单 v3 同源。
+    </div>
+    <div class="note">本课件只演示，不判分；学生自主练习与九项金额核对在《金穗鲜食玉米成本差异虚拟仿真实训》完成。</div>
+  </div>
+</div>
+
+<!-- 计时浮层 -->
+<div class="overlay" id="ovTimer">
+  <div class="panel" style="max-width:520px">
+    <div class="ph"><h3>课堂计时</h3><button class="xbtn" data-close="ovTimer">关闭</button></div>
+    <div class="timerow">
+      <button class="btn ghost" data-min="2">2 分钟</button>
+      <button class="btn ghost" data-min="3">3 分钟</button>
+      <button class="btn ghost" data-min="5">5 分钟</button>
+      <button class="btn ghost" data-min="8">8 分钟</button>
+    </div>
+    <div class="timerow">
+      <input type="number" id="custMin" value="4" min="1" max="30" style="max-width:6rem">
+      <button class="btn" id="custGo">自定义开始</button>
+    </div>
+    <div class="sm mute">建议：模块三试算 3 分钟、模块五拖拽 2 分钟、纸笔标准卡 5 分钟。</div>
+  </div>
+</div>
+
+<div class="overlay" id="cdOv">
+  <div id="cdNum">00:00</div>
+  <div id="cdTip">计时</div>
+  <div id="cdCtl">
+    <button data-cd="pause">暂停</button>
+    <button data-cd="resume">继续</button>
+    <button data-cd="plus">＋30 秒</button>
+    <button data-cd="minus">−30 秒</button>
+    <button data-cd="reset">重来</button>
+    <button data-cd="close">关闭</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  function fmt(n,d){
+    d=(d===undefined?0:d);
+    var s=Math.abs(n).toFixed(d).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+    return (n<0?'−':'')+s;
+  }
+  function sgn(n,d){ return (n>0?'＋':(n<0?'−':''))+Math.abs(n).toFixed(d===undefined?0:d).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+  /* 一位小数，整数不留 .0 */
+  function f1(n){
+    var s=Math.abs(n).toFixed(1);
+    if(/\.0$/.test(s)) s=s.slice(0,-2);
+    s=s.replace(/\B(?=(\d{3})+(?!\d))/g,',');
+    return (n<0?'−':'')+s;
+  }
+  function mmss(s){ if(s<0)s=0; var m=Math.floor(s/60),x=Math.floor(s%60); return (m<10?'0':'')+m+':'+(x<10?'0':'')+x; }
+
+  /* ================= 状态 ================= */
+  var BASE={
+    matQ:10, matP:10, labQ:10.5, labP:40, out:900,
+    varB:80000, fixB:120000, cap:10000,
+    aqM:8800, apM:10.5, aqL:9500, wage:361000
+  };
+  var S={
+    matQ:10, matP:10, labQ:10.5, labP:40, out:900,
+    varB:80000, fixB:120000, cap:10000,
+    aqM:8800, apM:10.5, aqL:9500, wage:361000,
+    varRate:8, fixRate:12, m2:'mat', wrong:false, step:4
+  };
+  var SQ_M=9000, SP_M=10, SQ_L=9450, SP_L=40;
+
+  /* ================= 导航 ================= */
+  var MODS=[
+    {no:'导航',name:'课堂节奏'},
+    {no:'模块一',name:'标准成本卡搭建器'},
+    {no:'模块二',name:'一般模型拆解器'},
+    {no:'模块三',name:'料工双轨卡'},
+    {no:'模块四',name:'九项方向盘'},
+    {no:'模块五',name:'账务 T 型账户'}
+  ];
+  var tabsBox=$('#tabs');
+  MODS.forEach(function(m,i){
+    var b=document.createElement('button');
+    b.className='tab'; b.setAttribute('data-mod',i);
+    b.innerHTML='<span class="tn">'+m.no+'</span>'+m.name;
+    b.addEventListener('click',function(){ showMod(i); });
+    tabsBox.appendChild(b);
+  });
+  var modEls=$$('.mod');
+  var cur=0;
+  function showMod(i){
+    i=Math.max(0,Math.min(MODS.length-1,i)); cur=i;
+    modEls.forEach(function(el){ el.classList.toggle('act', +el.getAttribute('data-mod')===i); });
+    $$('.tab').forEach(function(t){ t.classList.toggle('on', +t.getAttribute('data-mod')===i); });
+    $('#stage').scrollTop=0;
+    $('#bb').textContent='板书 · '+(modEls[i].getAttribute('data-bb')||'');
+    if(i===2){ drawM2(); }
+    if(i===4){ renderNine(); }
+  }
+  $('#btnNext').addEventListener('click',function(){ showMod(cur+1); });
+  $('#btnPrev').addEventListener('click',function(){ showMod(cur-1); });
+
+  /* ================= 模块一 ================= */
+  function unitCost(){
+    var mat=S.matQ*S.matP, lab=S.labQ*S.labP, v=S.labQ*S.varRate, f=S.labQ*S.fixRate;
+    return {mat:mat,lab:lab,v:v,f:f,unit:mat+lab+v+f};
+  }
+  function renderM1(){
+    S.varRate = S.varB/S.cap;
+    S.fixRate = S.fixB/S.cap;
+    var u=unitCost();
+    $('#v_matQ').textContent=S.matQ; $('#v_matP').textContent=S.matP;
+    $('#v_labQ').textContent=S.labQ; $('#v_labP').textContent=S.labP;
+    $('#v_out').textContent=S.out;
+    $('#o_mat').textContent=fmt(u.mat); $('#o_lab').textContent=fmt(u.lab);
+    $('#o_var').textContent=f1(u.v); $('#o_fix').textContent=f1(u.f);
+    $('#o_unit').textContent=f1(u.unit);
+    $('#e_unit').textContent=f1(u.unit); $('#e_out').textContent=fmt(S.out);
+    $('#o_stdtotal').textContent=fmt(u.unit*S.out);
+    var tot=u.unit||1;
+    var p=[u.mat/tot*100,u.lab/tot*100,u.v/tot*100,u.f/tot*100];
+    ['sg1','sg2','sg3','sg4'].forEach(function(id,k){
+      var el=$('#'+id); el.style.width=p[k].toFixed(1)+'%';
+      el.textContent=p[k]>7?['材料','人工','变动','固定'][k]:'';
+    });
+    ['p1','p2','p3','p4'].forEach(function(id,k){ $('#'+id).textContent=p[k].toFixed(1); });
+    var lab3=u.lab+u.v+u.f;
+    $('#hint1').innerHTML='单位工时 '+S.labQ+' 小时撑着三项：人工 '+f1(u.lab)+'＋变动 '+f1(u.v)+'＋固定 '+f1(u.f)+'＝<b>'+f1(lab3)+' 元</b>。'+
+      (Math.abs(S.labQ-10.5)<0.001?'这就是标准卡里最敏感的那个数——改它，三项一起动。':'现在三项已经跟着工时变了，材料纹丝不动。');
+    $('#o_vr').textContent=(S.varB/S.cap).toFixed(2).replace(/\.00$/,'');
+    $('#o_fr').textContent=(S.fixB/S.cap).toFixed(2).replace(/\.00$/,'');
+  }
+  ['matQ','matP','labQ','labP','out'].forEach(function(k){
+    $('#r_'+k).addEventListener('input',function(e){ S[k]=+e.target.value; renderM1(); });
+  });
+  ['varB','fixB','cap'].forEach(function(k){
+    $('#n_'+k).addEventListener('input',function(e){ var v=+e.target.value; if(v>0){ S[k]=v; renderM1(); } });
+  });
+  $('#btnRate').addEventListener('click',function(){
+    var p=$('#ratePanel');
+    var show=p.style.display==='none';
+    p.style.display=show?'block':'none';
+    this.textContent=show?'收起分配率推导 ▴':'分配率推导 ▾';
+  });
+  $('#btnReset1').addEventListener('click',function(){
+    ['matQ','matP','labQ','labP','out'].forEach(function(k){ S[k]=BASE[k]; $('#r_'+k).value=BASE[k]; });
+    S.varB=BASE.varB; S.fixB=BASE.fixB; S.cap=BASE.cap;
+    $('#n_varB').value=BASE.varB; $('#n_fixB').value=BASE.fixB; $('#n_cap').value=BASE.cap;
+    renderM1();
+  });
+
+  /* ================= 模块二 ================= */
+  function m2data(){
+    if(S.m2==='mat'){
+      return {name:'直接材料',AP:S.apM,SP:SP_M,AQ:S.aqM,SQ:SQ_M,uP:'元/千克',uQ:'千克',fmtP:1};
+    }
+    var AP=S.wage/S.aqL;
+    return {name:'直接人工',AP:AP,SP:SP_L,AQ:S.aqL,SQ:SQ_L,uP:'元/小时',uQ:'小时',fmtP:2};
+  }
+  function drawM2(){
+    var d=m2data();
+    var a1=d.AP*d.AQ, a2=d.SP*d.AQ, a3=d.SP*d.SQ;
+    var priceDiff=(d.AP-d.SP)*d.AQ, qtyDiff=(d.AQ-d.SQ)*d.SP, total=a1-a3;
+    $('#lbl1').textContent='① AP×AQ 实际（'+d.name+'）';
+    $('#lbl2').textContent='② SP×AQ 桥';
+    $('#lbl3').textContent='③ SP×SQ 标准';
+    $('#v_a1').textContent=fmt(a1);
+    $('#v_a2').textContent=fmt(a2);
+    $('#v_a3').textContent=fmt(a3);
+
+    $('#e_price').innerHTML='① − ② ＝（AP−SP）×AQ ＝（'+fmt(d.AP,d.fmtP)+'−'+fmt(d.SP,0)+'）×'+fmt(d.AQ)+' ＝ <b>'+sgn(priceDiff)+'</b> 元（'+(priceDiff>0?'不利':'有利')+'）';
+    $('#e_qty').innerHTML='② − ③ ＝（AQ−SQ）×SP ＝（'+fmt(d.AQ)+'−'+fmt(d.SQ)+'）×'+fmt(d.SP,0)+' ＝ <b>'+sgn(qtyDiff)+'</b> 元（'+(qtyDiff>0?'不利':'有利')+'）';
+    $('#e_sum').innerHTML='① − ③ ＝ '+fmt(a1)+' − '+fmt(a3)+' ＝ <b>'+sgn(total)+'</b> 元（'+(total>0?'不利':'有利')+'，与两块之和相等）';
+
+    /* ---- 三条比例条：长度即金额 ---- */
+    var W=700,H=248,L=96,R=132,T=14;
+    var pw=W-L-R;
+    var maxV=Math.max(a1,a2,a3)*1.03;
+    var X=function(v){ return L+v/maxV*pw; };
+    var bh=30, gap=30;
+    var ys={1:T, 2:T+bh+gap, 3:T+2*(bh+gap)};
+    var axisY=ys[3]+bh+22;
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto">';
+    svg+='<rect x="0" y="0" width="'+W+'" height="'+H+'" fill="#ffffff"/>';
+
+    /* 竖向参考虚线 */
+    [[a3,'#b8860b'],[a2,'#1f3c88'],[a1,'#1b5e20']].forEach(function(it){
+      svg+='<line x1="'+X(it[0]).toFixed(1)+'" y1="'+(T-6)+'" x2="'+X(it[0]).toFixed(1)+'" y2="'+axisY+'" stroke="'+it[1]+'" stroke-width="1" stroke-dasharray="3 4" opacity=".45"/>';
+    });
+
+    /* 三根条 */
+    function bar(k,val,fill,stroke,label,sub){
+      var y=ys[k];
+      svg+='<rect x="'+L+'" y="'+y+'" width="'+Math.max((X(val)-L),1).toFixed(1)+'" height="'+bh+'" rx="6" fill="'+fill+'" stroke="'+stroke+'" stroke-width="1.5"/>';
+      svg+='<text x="'+(L-10)+'" y="'+(y+20)+'" font-size="13" text-anchor="end" fill="'+stroke+'" font-weight="700">'+label+'</text>';
+      svg+='<text x="'+(L-10)+'" y="'+(y+34)+'" font-size="10" text-anchor="end" fill="#7a8a7c">'+sub+'</text>';
+      svg+='<text x="'+(X(val)+8)+'" y="'+(y+20)+'" font-size="13" fill="#17251a" font-weight="700">'+fmt(val)+'</text>';
+    }
+    bar(3,a3,'rgba(240,216,154,.75)','#b8860b','③ 标准','SP×SQ');
+    bar(2,a2,'rgba(201,214,240,.85)','#1f3c88','② 桥','SP×AQ');
+    bar(1,a1,'rgba(207,230,209,.9)','#2e7d32','① 实际','AP×AQ');
+
+    /* 差量括号 */
+    function bracket(k,from,to,diff,txt,color){
+      var y=ys[k]+bh+15;
+      var xa=X(from), xb=X(to);
+      var x0=Math.min(xa,xb), x1=Math.max(xa,xb);
+      svg+='<line x1="'+x0.toFixed(1)+'" y1="'+y+'" x2="'+x1.toFixed(1)+'" y2="'+y+'" stroke="'+color+'" stroke-width="3"/>';
+      svg+='<line x1="'+xa.toFixed(1)+'" y1="'+(y-6)+'" x2="'+xa.toFixed(1)+'" y2="'+(y+4)+'" stroke="'+color+'" stroke-width="2"/>';
+      svg+='<line x1="'+xb.toFixed(1)+'" y1="'+(y-6)+'" x2="'+xb.toFixed(1)+'" y2="'+(y+4)+'" stroke="'+color+'" stroke-width="2"/>';
+      svg+='<text x="'+(x1+10)+'" y="'+(y+5)+'" font-size="12" fill="'+color+'" font-weight="700">'+txt+' '+sgn(diff)+'</text>';
+    }
+    bracket(1,a2,a1,priceDiff,'价格差异',priceDiff>0?'#c62828':'#1b5e20');
+    bracket(2,a3,a2,qtyDiff,'用量差异',qtyDiff>0?'#c62828':'#1b5e20');
+
+    /* 轴 */
+    svg+='<line x1="'+L+'" y1="'+axisY+'" x2="'+(L+pw)+'" y2="'+axisY+'" stroke="#b9c8ba"/>';
+    svg+='<text x="'+L+'" y="'+(axisY+15)+'" font-size="11" text-anchor="middle" fill="#7a8a7c">0</text>';
+    svg+='<text x="'+(L+pw)+'" y="'+(axisY+15)+'" font-size="11" text-anchor="end" fill="#7a8a7c">金额（元）</text>';
+
+    svg+='</svg>';
+    $('#svgBox').innerHTML=svg;
+
+    var wn=$('#wrongNote');
+    if(S.wrong){
+      var cross=(d.AP-d.SP)*(d.AQ-d.SQ);
+      wn.style.display='block';
+      wn.innerHTML='<b>错误做法</b>：（AP−SP）×（AQ−SQ）＝（'+fmt(d.AP,d.fmtP)+'−'+fmt(d.SP,0)+'）×（'+fmt(d.AQ)+'−'+fmt(d.SQ)+'）＝ <b>'+sgn(cross)+'</b> 元。'+
+        '它只算了两个差量围出来的一个小角，两条整段的差量（整条价格差、整条用量差）全被漏掉了。'+
+        '正确做法是<b>一次只让一个因素变</b>：先让价格变、量固定在实际量 ②；再让量变、价固定在标准价 ③。';
+    }else{ wn.style.display='none'; }
+  }
+  $('#btnMat2').addEventListener('click',function(){ S.m2='mat'; S.wrong=false; sync2(); });
+  $('#btnLab2').addEventListener('click',function(){ S.m2='lab'; S.wrong=false; sync2(); });
+  function sync2(){
+    $('#btnMat2').classList.toggle('on',S.m2==='mat');
+    $('#btnLab2').classList.toggle('on',S.m2==='lab');
+    $('#btnWrong').textContent=S.wrong?'回到正确拆解':'切换“错误的交叉相乘法”';
+    drawM2();
+  }
+  $('#btnWrong').addEventListener('click',function(){ S.wrong=!S.wrong; sync2(); });
+
+  /* ================= 模块三 ================= */
+  function renderM3(){
+    var apL=S.wage/S.aqL;
+    var pM=(S.apM-SP_M)*S.aqM, qM=(S.aqM-SQ_M)*SP_M;
+    var pL=(apL-SP_L)*S.aqL, qL=(S.aqL-SQ_L)*SP_L;
+    $('#v_aqM').textContent=fmt(S.aqM); $('#v_apM').textContent=S.apM.toFixed(1);
+    $('#v_aqL').textContent=fmt(S.aqL); $('#v_wage').textContent=fmt(S.wage);
+    $('#v_apL').textContent=apL.toFixed(2);
+    $('#i_apM').textContent=S.apM.toFixed(1); $('#i_aqM').textContent=fmt(S.aqM); $('#i_aqM2').textContent=fmt(S.aqM);
+    $('#i_apL').textContent=apL.toFixed(2); $('#i_aqL').textContent=fmt(S.aqL); $('#i_aqL2').textContent=fmt(S.aqL);
+    $('#i_pM').textContent=sgn(pM); $('#i_qM').textContent=sgn(qM);
+    $('#i_pL').textContent=sgn(pL); $('#i_qL').textContent=sgn(qL);
+    setDir('#a_pM',pM); setDir('#a_qM',qM); setDir('#a_pL',pL); setDir('#a_qL',qL);
+    $('#i_matSum').textContent=sgn(pM+qM);
+    $('#i_labSum').textContent=sgn(pL+qL);
+    $('#signWarn').style.display=(pM<0||qM<0||pL<0||qL<0)?'block':'none';
+    applyStep();
+  }
+  function setDir(sel,v){
+    var el=$(sel);
+    el.textContent=v>0?'↑ 不利':(v<0?'↓ 有利':'— 无差异');
+    el.style.color=v>0?'#c62828':(v<0?'#1b5e20':'#4a5b4d');
+  }
+  ['aqM','apM','aqL','wage'].forEach(function(k){
+    $('#r_'+k).addEventListener('input',function(e){ S[k]=+e.target.value; renderM3(); });
+  });
+  $('#btnReset3').addEventListener('click',function(){
+    ['aqM','apM','aqL','wage'].forEach(function(k){ S[k]=BASE[k]; $('#r_'+k).value=BASE[k]; });
+    renderM3();
+  });
+  function applyStep(){
+    $$('#steps .sbtn').forEach(function(b){
+      b.classList.toggle('on', +b.getAttribute('data-step')<=S.step);
+    });
+    $$('.mod[data-mod="3"] [data-step]').forEach(function(el){
+      if(el.classList.contains('sbtn')) return;
+      el.style.opacity = (+el.getAttribute('data-step')<=S.step)?'1':'0.16';
+    });
+  }
+  $$('#steps .sbtn').forEach(function(b){
+    b.addEventListener('click',function(){
+      var n=+b.getAttribute('data-step');
+      S.step = (S.step===n)? n-1 : n;
+      if(S.step<1) S.step=4;
+      applyStep();
+    });
+  });
+
+  /* ================= 模块四 ================= */
+  function renderNine(){
+    var apL=S.wage/S.aqL;
+    var pM=(S.apM-SP_M)*S.aqM, qM=(S.aqM-SQ_M)*SP_M;
+    var pL=(apL-SP_L)*S.aqL, qL=(S.aqL-SQ_L)*SP_L;
+    var rows=[
+      ['材料价格差异',pM,'采购部门'],
+      ['材料数量差异',qM,'生产车间'],
+      ['人工工资率差异',pL,'人事／用工安排'],
+      ['人工效率差异',qL,'生产车间']
+    ];
+    var mfg=[['变动制造费用耗费差异',1,'车间'],['变动制造费用效率差异',1,'车间'],
+             ['固定制造费用耗费差异',-1,'车间／预算归口'],['固定制造费用闲置能量差异',1,'计划与产能'],
+             ['固定制造费用效率差异',1,'车间']];
+    var html='',i=1;
+    rows.forEach(function(r){
+      html+='<tr><td>'+i+'</td><td class="l">'+r[0]+'</td><td class="num">'+sgn(r[1])+'</td><td class="'+(r[1]>0?'r':'g')+'">'+(r[1]>0?'不利':'有利')+'</td><td class="l">'+r[2]+'</td></tr>';
+      i++;
+    });
+    mfg.forEach(function(r){
+      html+='<tr><td>'+i+'</td><td class="l">'+r[0]+'</td><td class="dim">线上算</td><td class="'+(r[1]>0?'r':'g')+'">'+(r[1]>0?'＋':'−')+'</td><td class="l">'+r[2]+'</td></tr>';
+      i++;
+    });
+    $('#nineBody').innerHTML=html;
+
+    var labor4=pM+qM+pL+qL;
+    $('#o_labor4').textContent=sgn(labor4);
+    var isBase=Math.abs(S.aqM-8800)<1&&Math.abs(S.apM-10.5)<0.001&&Math.abs(S.aqL-9500)<1&&Math.abs(S.wage-361000)<1;
+    if(isBase){
+      $('#o_mfg5').textContent='＋3,900';
+      $('#o_nineTotal').textContent='−10,700 元';
+      $('#o_nineTotal').className='big';
+      $('#o_nineLb').textContent='九项总差异（有利）· 与首判看到的总数一致';
+      $('#nineNote').innerHTML='料工四项已经把 '+sgn(labor4)+' 元说清楚了；剩下的 <b>＋3,900 元</b>全在制造费用五项里。方向已经在表上了，金额是要线上算的——这就是课后实训的入口。';
+    }else{
+      $('#o_mfg5').textContent='待核验';
+      $('#o_nineTotal').textContent='试算中 '+sgn(labor4);
+      $('#o_nineTotal').className='big y';
+      $('#o_nineLb').textContent='已改参，不是本月实际数；点模块三“复位原例”回到 −10,700';
+      $('#nineNote').innerHTML='当前是试算：料工小计 '+sgn(labor4)+' 元。九项合计＝料工小计＋制造费用五项，制造费用五项要用本月实际数（77,900／115,000／预算 120,000／产能 10,000 小时）才能算——先在模块三复位。';
+    }
+  }
+
+  /* ================= 模块五 ================= */
+  var CHIPS=[
+    {id:'m_p',n:'材料价格差异',a:4400,side:'D'},
+    {id:'m_q',n:'材料用量差异',a:-2000,side:'C'},
+    {id:'l_p',n:'人工工资率差异',a:-19000,side:'C'},
+    {id:'l_q',n:'人工效率差异',a:2000,side:'D'}
+  ];
+  var placed={}, sel=null;
+  function paintChips(){
+    var box=$('#chipBox'); box.innerHTML='';
+    var pool=CHIPS.filter(function(c){ return !placed[c.id]; });
+    if(!pool.length){ box.innerHTML='<span class="sm mute">四枚都放下了，点“核对方向”。</span>'; }
+    pool.forEach(function(c){
+      var d=document.createElement('div');
+      d.className='tchip'+(sel===c.id?' sel':'');
+      d.setAttribute('draggable','true');
+      d.setAttribute('data-id',c.id);
+      d.innerHTML=c.n+'<span class="amt num">'+sgn(c.a)+'</span>';
+      d.addEventListener('click',function(){ sel=(sel===c.id?null:c.id); paintChips(); });
+      d.addEventListener('dragstart',function(e){ try{ e.dataTransfer.setData('text/plain',c.id); }catch(err){} sel=c.id; });
+      box.appendChild(d);
+    });
+    $$('.drop').forEach(function(drop){
+      drop.innerHTML='';
+      CHIPS.forEach(function(c){
+        if(placed[c.id]!==drop.parentNode.getAttribute('data-side')) return;
+        var d=document.createElement('div');
+        d.className='tchip';
+        d.setAttribute('data-id',c.id);
+        d.innerHTML=c.n+'<span class="amt num">'+sgn(c.a)+'</span>';
+        d.addEventListener('click',function(){ delete placed[c.id]; sel=null; paintChips(); });
+        drop.appendChild(d);
+      });
+    });
+  }
+  function dropTo(side){
+    if(!sel){ return; }
+    placed[sel]=side; sel=null;
+    paintChips();
+    $('#chkNote').textContent='已放下，继续或点“核对方向”。';
+  }
+  ['bD','bC'].forEach(function(id){
+    var b=$('#'+id);
+    b.addEventListener('click',function(e){
+      if(e.target.closest&&e.target.closest('.tchip')) return;
+      dropTo(b.getAttribute('data-side'));
+    });
+    b.addEventListener('dragover',function(e){ e.preventDefault(); b.classList.add('over'); });
+    b.addEventListener('dragleave',function(){ b.classList.remove('over'); });
+    b.addEventListener('drop',function(e){
+      e.preventDefault(); b.classList.remove('over');
+      var id2=''; try{ id2=e.dataTransfer.getData('text/plain'); }catch(err){}
+      if(id2){ sel=id2; }
+      dropTo(b.getAttribute('data-side'));
+    });
+  });
+  $('#btnCheck').addEventListener('click',function(){
+    var ok=0, bad=0, un=0;
+    CHIPS.forEach(function(c){
+      var s=placed[c.id];
+      if(!s){ un++; return; }
+      if(s===c.side){ ok++; } else { bad++; }
+    });
+    var msg;
+    if(un){ msg='还有 '+un+' 枚没放下。先都放完再核对。'; }
+    else if(bad===0){
+      msg='全对：两枚不利（材料价格 4,400、人工效率 2,000）在借方，两枚有利（材料用量 −2,000、人工工资率 −19,000）在贷方。借方合计 6,400，贷方合计 21,000，净额 −14,600（贷方·有利）。';
+    }else{
+      msg='有 '+bad+' 枚放错了。只看一条：这笔差异让成本<b>增加</b>还是<b>减少</b>？增加记借方，减少记贷方——和“有利／不利”这两个字无关。';
+    }
+    var n=$('#chkNote');
+    n.innerHTML=msg;
+    n.className='note '+(bad===0&&!un?'g':'r');
+    $$('#chipBox .tchip, .drop .tchip').forEach(function(el){
+      var id2=el.getAttribute('data-id'); if(!id2) return;
+      var c=CHIPS.filter(function(x){return x.id===id2})[0];
+      var s=placed[id2];
+      el.classList.remove('ok','no');
+      if(s) el.classList.add(s===c.side?'ok':'no');
+    });
+  });
+  $('#btnReset5').addEventListener('click',function(){
+    placed={}; sel=null; paintChips();
+    var n=$('#chkNote'); n.className='note'; n.textContent='已打乱。让学生先说结论，再按按钮。';
+  });
+  paintChips();
+
+  /* ================= 工具条 ================= */
+  $('#btnProj').addEventListener('click',function(){
+    document.documentElement.classList.toggle('proj');
+    this.classList.toggle('on');
+  });
+  $('#btnFull').addEventListener('click',function(){
+    if(!document.fullscreenElement){ if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen(); }
+    else if(document.exitFullscreen){ document.exitFullscreen(); }
+  });
+  function openOv(id){ $('#'+id).classList.add('on'); }
+  function closeOv(){ $$('.overlay').forEach(function(o){ o.classList.remove('on'); }); }
+  $$('[data-close]').forEach(function(b){ b.addEventListener('click',function(){ $('#'+b.getAttribute('data-close')).classList.remove('on'); }); });
+  $$('.overlay').forEach(function(o){ o.addEventListener('click',function(e){ if(e.target===o) o.classList.remove('on'); }); });
+  $('#btnHelp').addEventListener('click',function(){ openOv('ovHelp'); });
+  $('#btnTimer').addEventListener('click',function(){ openOv('ovTimer'); });
+
+  var cdLeft=0,cdT=null,cdTotal=0,cdPaused=false;
+  function cdPaint(){
+    var n=$('#cdNum'); n.textContent=mmss(cdLeft);
+    n.classList.toggle('warn',cdLeft>0&&cdLeft<=30);
+    n.classList.toggle('over',cdLeft<=0);
+    if(cdLeft<=0) $('#cdTip').textContent='时间到 · 请停下';
+  }
+  function cdStart(sec,tip){
+    cdTotal=sec; cdLeft=sec; cdPaused=false;
+    if(tip) $('#cdTip').textContent=tip;
+    if(cdT) clearInterval(cdT);
+    cdT=setInterval(function(){ if(cdPaused) return; if(cdLeft>0) cdLeft--; cdPaint(); },1000);
+    cdPaint(); closeOv(); openOv('cdOv');
+  }
+  $$('#ovTimer [data-min]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var m=+b.getAttribute('data-min');
+      cdStart(m*60, m===2?'账务方向练习：两分钟，四枚差异放完':(m===3?'双轨卡试算：三分钟，改一个数看两块差异怎么变':(m===5?'纸笔标准卡：五分钟，独立填完四项':'计时 '+m+' 分钟')));
+    });
+  });
+  $('#custGo').addEventListener('click',function(){ var m=+$('#custMin').value||4; cdStart(m*60,'自定义计时 '+m+' 分钟'); });
+  $('#cdCtl').addEventListener('click',function(e){
+    var k=e.target.getAttribute&&e.target.getAttribute('data-cd'); if(!k) return;
+    if(k==='pause') cdPaused=true;
+    else if(k==='resume') cdPaused=false;
+    else if(k==='plus') cdLeft+=30;
+    else if(k==='minus') cdLeft=Math.max(0,cdLeft-30);
+    else if(k==='reset') cdLeft=cdTotal;
+    else if(k==='close'){ if(cdT){clearInterval(cdT);cdT=null;} $('#cdOv').classList.remove('on'); }
+    cdPaint();
+  });
+
+  document.addEventListener('keydown',function(e){
+    if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    var k=e.key;
+    if(k==='Escape'){ closeOv(); return; }
+    if(k>='1'&&k<='6'){ showMod(+k-1); return; }
+    if(k==='ArrowRight'){ showMod(cur+1); return; }
+    if(k==='ArrowLeft'){ showMod(cur-1); return; }
+    if(k==='m'||k==='M'){ $('#btnProj').click(); return; }
+    if(k==='f'||k==='F'){ $('#btnFull').click(); return; }
+    if(k==='t'||k==='T'){ openOv('ovTimer'); return; }
+    if(k==='?'||k==='/'){ openOv('ovHelp'); }
+  });
+
+  /* ================= 初始化 ================= */
+  renderM1();
+  renderM3();
+  sync2();
+  showMod(0);
+})();
+</script>
+</body>
+</html>

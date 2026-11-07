@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>金穗农业合作社·全面预算编制实训｜管理会计虚拟仿真</title>
+<style>
+:root{
+  --green:#2e7d32; --green-dk:#1b5e20; --bg:#e8f5e9;
+  --gold:#8a6d1f; --gold-bar:#d9a521; --gold-soft:#fbf3dc;
+  --blue:#1565c0; --blue-soft:#e8f1fb;
+  --red:#c62828; --red-soft:#fdecea;
+  --ink:#22331f; --ink-soft:#5a6b5a; --card:#ffffff; --line:#cfe2cf;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);line-height:1.75;
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Source Han Sans SC","Noto Sans CJK SC",sans-serif;}
+[hidden]{display:none!important}
+.wrap{max-width:980px;margin:0 auto;padding:16px 14px 70px}
+
+/* ---------- 头部 ---------- */
+.hd{background:linear-gradient(135deg,#2e7d32,#1b5e20);color:#fff;border-radius:14px;padding:20px 18px 16px;margin-top:6px}
+.hd .badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.hd .badge{font-size:12px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:2px 10px}
+.hd h1{font-size:clamp(19px,4.6vw,26px);letter-spacing:.5px;line-height:1.4}
+.hd .sub{font-size:13px;opacity:.92;margin-top:6px}
+.goal{background:var(--gold-soft);border:2px solid var(--gold);border-radius:10px;padding:12px 16px;margin:12px 0 4px;font-size:14px}
+.goal b{color:var(--gold)}
+
+/* ---------- 进度步骤 ---------- */
+.steps{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+.step{flex:1 1 150px;min-width:132px;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;color:var(--ink-soft);display:flex;align-items:center;gap:8px}
+.step .no{flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:#e3eee3;color:var(--green-dk);font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.step.cur{border-color:var(--green);color:var(--green-dk);font-weight:600;box-shadow:0 0 0 3px rgba(46,125,50,.12)}
+.step.done{color:var(--green-dk)}
+.step.done .no{background:var(--green);color:#fff}
+
+/* ---------- 卡片通用 ---------- */
+.card{background:var(--card);border-radius:12px;padding:16px;margin:14px 0;box-shadow:0 1px 5px rgba(27,94,32,.08)}
+.card h2{font-size:17px;color:var(--green-dk);margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card h2 .tag{font-size:12px;font-weight:400;color:var(--ink-soft)}
+
+/* ---------- 情境 ---------- */
+.story p{font-size:15px;text-indent:2em;margin-bottom:12px}
+svg.chart,svg.hero{display:block;width:100%;height:auto}
+svg.hero{border-radius:10px}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px}
+.plan{border:1.5px solid var(--line);border-radius:10px;padding:12px;font-size:13px;background:#fcfdfc}
+.plan h3{font-size:15px;margin-bottom:6px}
+.plan.a h3{color:var(--gold)} .plan.b h3{color:var(--green)} .plan.c h3{color:var(--blue)}
+.plan .lim{display:block;margin-top:6px;font-size:12px;color:var(--ink-soft);border-top:1px dashed var(--line);padding-top:6px}
+.databar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.databar span{font-size:12.5px;background:#eef5ee;border-radius:999px;padding:3px 12px;color:var(--green-dk)}
+.cta{margin-top:14px;text-align:center}
+.btn{appearance:none;border:none;cursor:pointer;font-family:inherit;border-radius:10px;font-size:15px;transition:transform .12s ease,box-shadow .12s ease,background .12s ease}
+.btn:active{transform:scale(.97)}
+.btn.solid{background:var(--green);color:#fff;padding:11px 26px;font-weight:600;box-shadow:0 2px 6px rgba(27,94,32,.25)}
+.btn.solid:hover{background:var(--green-dk)}
+.btn.solid:disabled{background:#9db89d;cursor:not-allowed;box-shadow:none}
+.btn.ghost{background:#fff;color:var(--green-dk);border:1.5px solid var(--green);padding:8px 18px}
+.btn.ghost:hover{background:#f0f7f0}
+.btn.sm{font-size:13px;padding:7px 14px}
+
+/* ---------- 方法速览 ---------- */
+details.meth{border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;margin:12px 0;background:#fbfdfb;font-size:13.5px}
+details.meth summary{cursor:pointer;font-weight:600;color:var(--green-dk);list-style:none}
+details.meth summary::-webkit-details-marker{display:none}
+details.meth summary::before{content:"▸ ";color:var(--green)}
+details.meth[open] summary::before{content:"▾ "}
+details.meth ul{margin:8px 0 2px 18px}
+details.meth li{margin:4px 0}
+
+/* ---------- 参数面板 ---------- */
+.sld{margin:12px 0}
+.sld .lab{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;font-size:14px;font-weight:600}
+.sld .lab .val{font-size:13px;font-weight:700;color:var(--green-dk);background:#eef5ee;border-radius:999px;padding:2px 12px}
+.sld .hint{font-size:12px;color:var(--ink-soft);font-weight:400}
+.sld input[type=range]{width:100%;accent-color:var(--green);height:26px;margin-top:4px}
+.presets{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}
+.presets .cap{font-size:13px;color:var(--ink-soft);margin-right:2px}
+.chip{background:#fff;border:1.5px solid var(--gold);color:var(--gold);border-radius:999px;padding:5px 14px;font-size:13px;cursor:pointer;font-family:inherit;transition:background .12s}
+.chip:hover{background:var(--gold-soft)}
+.notice{font-size:12.5px;color:var(--red);margin-top:10px}
+
+/* ---------- 测算区 ---------- */
+.estrow{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.est{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;background:#fff;flex:1 1 150px}
+.est .k{color:var(--ink-soft);font-size:12px}
+.est .v{font-size:clamp(17px,4vw,21px);font-weight:800;font-variant-numeric:tabular-nums;color:var(--green-dk)}
+.est .v.q{color:var(--ink-soft)}
+.est.hide{border-style:dashed;background:#fafcfa}
+.est .src{font-size:11.5px;color:var(--ink-soft);margin-top:2px}
+.chartbox{border:1.5px solid var(--line);border-radius:10px;padding:12px 10px 6px;background:#fff;margin-top:12px}
+.chartbox h4{font-size:14px;color:var(--green-dk);margin-bottom:4px}
+.chartbox .leg{display:flex;flex-wrap:wrap;gap:12px;font-size:11.5px;color:var(--ink-soft);padding:4px 4px 6px}
+.chartbox .leg i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.mcard{border:2px solid var(--line);border-radius:10px;padding:12px 10px;text-align:center;background:#fff}
+.mcard .nm{font-size:13px;font-weight:700;color:var(--ink-soft)}
+.mcard .big{font-size:clamp(19px,4.6vw,25px);font-weight:800;margin:2px 0;font-variant-numeric:tabular-nums;color:var(--green-dk)}
+.mcard .big.q{color:#9db89d}
+.mcard .unit{font-size:11.5px;color:var(--ink-soft)}
+.mcard .brk{font-size:11px;color:var(--ink-soft);margin-top:6px;border-top:1px dashed var(--line);padding-top:6px;line-height:1.5}
+.mcard.good{border-color:var(--green);box-shadow:0 0 0 3px rgba(46,125,50,.15)}
+.mcard.bad{border-color:var(--red);background:var(--red-soft)}
+.mcard.bad .big{color:var(--red)}
+
+/* ---------- 现值系数表 ---------- */
+
+/* ---------- 决策区 ---------- */
+.q{margin:14px 0;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:#fcfdfc}
+.q .qt{font-size:15px;font-weight:600;margin-bottom:4px}
+.q .qt b{color:var(--green-dk)}
+.q .qh{font-size:12.5px;color:var(--ink-soft);margin-bottom:8px}
+.q .qh code{background:#eef5ee;border-radius:4px;padding:1px 6px;font-family:Consolas,"Courier New",monospace;font-size:12px;color:var(--green-dk)}
+.opts{display:flex;flex-wrap:wrap;gap:10px}
+.opt{flex:1 1 220px;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14px;cursor:pointer;display:flex;gap:8px;align-items:center;background:#fff}
+.opt:hover{border-color:var(--green)}
+.opt input{accent-color:var(--green);width:18px;height:18px}
+.opt.sel{border-color:var(--green);background:#f2f9f2}
+.fillrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.fillrow input{flex:1 1 180px;font-size:16px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;background:#fff;color:var(--ink)}
+.fillrow input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(46,125,50,.12)}
+.fillrow .u{font-size:13px;color:var(--ink-soft)}
+.fb{margin-top:8px;font-size:13.5px;border-radius:8px;padding:8px 12px}
+.fb.ok{background:#e8f5e9;color:var(--green-dk);border:1px solid #bcdcbc}
+.fb.bad{background:var(--red-soft);color:var(--red);border:1px solid #f2c4bd}
+.trynote{font-size:12.5px;color:var(--ink-soft);margin-top:10px}
+.submitrow{margin-top:16px;text-align:center}
+
+/* ---------- 揭晓区 ---------- */
+.reveal-anim{animation:rise .45s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.resline{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+.resline .fb{flex:1 1 260px;margin-top:0}
+details.calc{border:1.5px solid var(--green);border-radius:10px;padding:10px 14px;margin:10px 0;background:#fbfdfb;font-size:14px}
+details.calc summary{cursor:pointer;font-weight:700;color:var(--green-dk);list-style:none}
+details.calc summary::-webkit-details-marker{display:none}
+details.calc summary::before{content:"▸ ";color:var(--green)}
+details.calc[open] summary::before{content:"▾ "}
+.cstep{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;margin:10px 0;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:8px}
+.cstep .k{font-weight:700;color:var(--green-dk)}
+.cstep .v{font-weight:800;font-variant-numeric:tabular-nums}
+.cstep .v.pos{color:var(--green-dk)} .cstep .v.negv{color:var(--red)}
+.callout{border:2px solid var(--gold);background:var(--gold-soft);border-radius:10px;padding:12px 16px;font-size:14px;margin:12px 0}
+.callout b{color:var(--gold)}
+table.rev{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}
+table.rev th,table.rev td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+table.rev th{background:#eef5ee;color:var(--green-dk);font-weight:700}
+table.rev td.num{font-variant-numeric:tabular-nums}
+table.rev tr.better td{background:#e8f5e9;font-weight:700;color:var(--green-dk)}
+.ending{font-size:14.5px;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0}
+.ending p{margin:6px 0}
+.scorebox{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.scorebox .sc{font-size:24px;font-weight:800;color:var(--green-dk);font-variant-numeric:tabular-nums}
+.scorebox .word{font-size:14px;font-weight:700;border-radius:999px;padding:3px 14px}
+.scorebox .word.good{background:#e8f5e9;color:var(--green-dk);border:1px solid #a5d6a7}
+.scorebox .word.mid{background:var(--gold-soft);color:var(--gold);border:1px solid #e3cd8a}
+.scorebox .word.low{background:var(--red-soft);color:var(--red);border:1px solid #f2c4bd}
+.scorebox .best{font-size:12.5px;color:var(--ink-soft);margin-left:auto}
+
+/* ---------- 导出区 ---------- */
+.export.locked{opacity:.55;pointer-events:none}
+.export .locknote{font-size:13px;color:var(--red);margin-bottom:8px}
+.export .locknote[hidden]{display:none!important}
+.export label{font-size:13.5px;font-weight:600;display:block;margin:10px 0 4px}
+.export input{font-size:15px;padding:8px 12px;border:1.5px solid var(--line);border-radius:10px;width:min(320px,100%);font-family:inherit;background:#fff}
+.export textarea{width:100%;min-height:280px;font-size:13px;line-height:1.8;padding:12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;background:#fbfdfb;color:var(--ink);resize:vertical}
+.export .acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.foot{font-size:12px;color:var(--ink-soft);text-align:center;margin-top:22px;line-height:1.8}
+
+/* ---------- 提示浮层 ---------- */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:rgba(27,94,32,.94);color:#fff;font-size:13.5px;border-radius:999px;padding:9px 20px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:99;max-width:86vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:860px){}
+@media(max-width:640px){
+  .plans{grid-template-columns:1fr}
+  .mgrid{grid-template-columns:repeat(2,1fr)}
+  .step{flex:1 1 100%}
+  .card{padding:13px}
+}
+@media(max-width:400px){.mgrid{grid-template-columns:1fr}}
+/* ---------- 云收口提交（新增） ---------- */
+.subcloud{border:2px solid var(--green);border-radius:10px;padding:14px 16px;margin-top:16px;background:#f4faf4}
+.subcloud .subhr{border:none;border-top:1px dashed var(--line);margin:2px 0 12px}
+.subcloud .subttl{font-size:15px;font-weight:700;color:var(--green-dk);margin-bottom:6px}
+.subcloud .subint{font-size:12.5px;color:var(--ink-soft);margin:0 0 10px}
+.subcloud .fillrow{margin-bottom:10px}
+.subcloud .acts{margin-top:4px}
+.risk-demo{font-size:12.5px;color:var(--gold);background:var(--gold-soft);border:1px dashed var(--gold);border-radius:8px;padding:8px 10px;margin:2px 0 8px;line-height:1.6}
+
+/* ---------- 第8章 标准成本法 增补样式 ---------- */
+.chip.on{background:var(--gold);color:#fff}
+.chip.on:hover{background:#6f5716}
+.sldgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
+@media(max-width:720px){.sldgrid{grid-template-columns:1fr}}
+
+/* ---------- 第10章 全面预算 增补样式 ---------- */
+table.bud{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+table.bud caption{font-size:12px;color:var(--ink-soft);text-align:left;padding-bottom:4px}
+table.bud th,table.bud td{border:1px solid var(--line);padding:5px 6px;text-align:center}
+table.bud th{background:#eef5ee;color:var(--green-dk);font-weight:700;font-size:12px}
+table.bud td.rh{background:#fafcfa;text-align:left;font-weight:700;color:var(--green-dk);width:36%}
+table.bud td.num{font-variant-numeric:tabular-nums}
+table.bud td.q{color:#9db89d;font-weight:700}
+table.bud tr.hl td{background:#eef5ee;font-weight:700}
+table.bud.small td.rh{width:64%}
+.budnote{font-size:11.5px;color:var(--ink-soft);margin-top:6px;line-height:1.6}
+.budwrap{width:100%}
+@media(max-width:640px){table.bud{font-size:11px}table.bud td.rh{width:34%}
+  #budTable{min-width:520px}
+  .budwrap table.rev{min-width:520px}
+  .budwrap{overflow-x:auto;-webkit-overflow-scrolling:touch}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ================= 头部 ================= -->
+  <header class="hd">
+    <div class="badges">
+      <span class="badge">全面预算 · 编制流程</span>
+      <span class="badge">销售→生产→材料→人工→现金</span>
+      <span class="badge">虚拟仿真实训 · 约 18 分钟</span>
+    </div>
+    <h1>金穗农业合作社：明年的预算，编得出来、撑得住吗？</h1>
+    <div class="sub">理事会拍板：明年速冻玉米粒要卖 10 万件。会计芳姐把政策清单摊开——存货怎么留、材料多少钱、工资多少、货款什么时候回。年底这盘账能不能算清、一季度会不会断钱，就看你这条预算链编得顺不顺。</div>
+  </header>
+
+  <div class="goal">本实训练两样本事：<b>第一，按「销售→生产→材料→人工→制造费用」的钩稽关系把营业预算串起来</b>（每一张表的产出都是下一张表的输入）；<b>第二，用现金预算看清哪个季度缺钱、要借多少</b>——预算不只是算利润，还要算现金撑不撑得住。</div>
+
+  <div class="steps" id="steps">
+    <div class="step cur" data-step="1"><span class="no">1</span>读懂处境</div>
+    <div class="step" data-step="2"><span class="no">2</span>调准参数</div>
+    <div class="step" data-step="3"><span class="no">3</span>逐表编制</div>
+    <div class="step" data-step="4"><span class="no">4</span>核对通过</div>
+    <div class="step" data-step="5"><span class="no">5</span>带走成果</div>
+  </div>
+
+  <!-- ================= 情境 ================= -->
+  <section class="card story" id="secStory">
+    <h2>一、处境 <span class="tag">先读 40 秒，知道要编哪几张表、手上有哪些政策</span></h2>
+    <p>金穗农业合作社的速冻玉米粒去年打开了省城商超的渠道。理事会定下明年目标：全年销售 10 万件，按 1∶3∶4∶2 分到四个季度（一季度淡、三季度旺）。售价按 20 元/件锁定。会计芳姐说：销售预算只是起点，后面生产、采购、人工、制造费用、现金，一环扣一环，哪一环算错，年底就是一笔糊涂账。</p>
+    <p>她把政策清单念了一遍：季末产成品存货按下一季度销售量的 20% 留，年末盘存 3,000 件；每件耗用材料 5 千克、每千克 0.60 元，季末材料存货按下季需用量的 10% 留，年末 7,500 千克；每件 0.8 工时、每小时 7.5 元；变动制造费用每工时 2 元，每季固定制造费用 60,600 元（含折旧 15,000 元）。货款当季收回 70%、下季收回 30%；采购当季付 50%、下季付 50%；每季缴所得税 18,000 元、付股利 10,000 元；一、二季度还要各买 30,000 元和 20,000 元的设备。账上期初现金 42,500 元，财务纪律是任何时候现金不得低于 40,000 元。</p>
+
+    <svg class="hero" viewBox="0 0 640 230" role="img" aria-label="合作社办公室里的预算会议：预算表、算盘、玉米样品与三位成员">
+      <rect width="640" height="230" fill="#fbf6e9"/>
+      <circle cx="576" cy="40" r="22" fill="#f2c84b"/>
+      <path d="M0 120 Q100 88 210 114 T430 106 T640 122 V230 H0 Z" fill="#d9ead9"/>
+      <path d="M0 138 Q160 106 330 134 T640 130 V230 H0 Z" fill="#bcdcbc"/>
+      <rect x="0" y="152" width="640" height="78" fill="#ecd9a0"/>
+      <!-- 办公桌 -->
+      <g>
+        <rect x="196" y="150" width="232" height="10" rx="2" fill="#b5a08a"/>
+        <rect x="204" y="160" width="8" height="30" fill="#a89580"/>
+        <rect x="412" y="160" width="8" height="30" fill="#a89580"/>
+      </g>
+      <!-- 预算表（桌面左） -->
+      <g>
+        <rect x="216" y="112" width="74" height="40" rx="2" fill="#fff" stroke="#7d9a7d" stroke-width="2"/>
+        <g stroke="#c9d8c9" stroke-width="1.2">
+          <path d="M222 122 h62 M222 130 h62 M222 138 h62 M240 116 v32 M266 116 v32"/>
+        </g>
+        <rect x="222" y="116" width="18" height="6" fill="#cfe2cf"/>
+      </g>
+      <!-- 算盘（桌面中） -->
+      <g>
+        <rect x="304" y="118" width="70" height="34" rx="3" fill="#c08a4a" stroke="#7d5222" stroke-width="2"/>
+        <g stroke="#7d5222" stroke-width="1.5">
+          <path d="M312 126 h56 M312 134 h56 M312 142 h56"/>
+        </g>
+        <g fill="#f2c84b">
+          <circle cx="320" cy="126" r="3"/><circle cx="334" cy="126" r="3"/><circle cx="352" cy="126" r="3"/>
+          <circle cx="326" cy="134" r="3"/><circle cx="344" cy="134" r="3"/><circle cx="360" cy="134" r="3"/>
+          <circle cx="318" cy="142" r="3"/><circle cx="338" cy="142" r="3"/><circle cx="356" cy="142" r="3"/>
+        </g>
+      </g>
+      <!-- 玉米样品袋（桌面右） -->
+      <g>
+        <path d="M392 150 v-30 q14 -10 28 0 v30 Z" fill="#f4faf4" stroke="#7cb57c" stroke-width="2"/>
+        <g fill="#f2c84b" stroke="#c99a1f" stroke-width="1.2">
+          <rect x="398" y="132" width="6" height="14" rx="3"/>
+          <rect x="407" y="130" width="6" height="16" rx="3"/>
+        </g>
+        <text x="406" y="127" text-anchor="middle" font-size="9" fill="#5a6b5a">样品</text>
+      </g>
+      <!-- 人物 -->
+      <ellipse cx="330" cy="212" rx="112" ry="7" fill="#dcc98e"/>
+      <g fill="#2f4f2f">
+        <circle cx="232" cy="176" r="9"/>
+        <path d="M222 186 q10 -8 20 0 v26 h-20 Z"/>
+        <path d="M243 194 l24 -12" stroke="#2f4f2f" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="330" cy="178" r="9"/>
+        <path d="M320 188 q10 -8 20 0 v24 h-20 Z"/>
+        <circle cx="424" cy="176" r="9"/>
+        <path d="M414 186 q10 -8 20 0 v26 h-20 Z"/>
+        <path d="M413 194 l-18 -8" stroke="#2f4f2f" stroke-width="5" stroke-linecap="round"/>
+      </g>
+      <!-- 墙上白板（右上） -->
+      <g>
+        <rect x="470" y="86" width="150" height="58" rx="3" fill="#fff" stroke="#a89580" stroke-width="2.5"/>
+        <g stroke="#9db89d" stroke-width="1.5" fill="none">
+          <path d="M482 104 h40 M482 114 h64 M482 124 h52 M482 134 h34"/>
+        </g>
+        <path d="M540 100 l14 14 l-4 4 l-14 -14 Z" fill="#c62828"/>
+        <path d="M556 96 l8 8" stroke="#8d6a4a" stroke-width="3"/>
+      </g>
+    </svg>
+
+    <div class="plans">
+      <div class="plan a">
+        <h3>销售与生产政策</h3>
+        全年销售 10 万件，按 1∶3∶4∶2 分季；售价 20 元/件。季末产成品存货＝下季销量×20%，年末盘存 3,000 件，期初存货为上季末存货。
+        <span class="lim">生产量＝销量＋期末存货−期初存货</span>
+      </div>
+      <div class="plan b">
+        <h3>成本标准</h3>
+        材料 5 千克/件×0.60 元/千克，季末材料存货＝下季需用量×10%（年末 7,500 千克）；人工 0.8 小时/件×7.5 元/小时；变动制造费用 2 元/工时，季度固定 60,600 元（含折旧 15,000 元）。
+        <span class="lim">单位产品成本＝材料＋人工＋制造费用</span>
+      </div>
+      <div class="plan c">
+        <h3>现金与筹资政策</h3>
+        销售当季收 70%、次季收 30%；采购当季付 50%、次季付 50%；季度所得税 18,000 元、股利 10,000 元；设备一二季度各 30,000、20,000 元；期初现金 42,500 元、期初应收 90,000 元、期初应付 25,800 元；<b>现金不得低于 40,000 元</b>。
+        <span class="lim">缺口靠短期借款补足</span>
+      </div>
+    </div>
+
+    <details class="meth">
+      <summary>方法速览：全面预算的编制流程（先点开看链条，再动手编）</summary>
+      <ul>
+        <li><b>起点是销售预算</b>：预计销售量×售价＝销售收入。以后所有预算都由它派生。</li>
+        <li><b>生产预算看存货</b>：预计生产量＝预计销售量＋预计期末产成品存货−预计期初产成品存货。期末存货按下一季销量的一定比例留，期初存货就是上季末存货。</li>
+        <li><b>直接材料预算同理</b>：材料需用量＝生产量×单耗；采购量＝需用量＋期末材料存货−期初材料存货；采购额＝采购量×单价。</li>
+        <li><b>直接人工与制造费用</b>：人工成本＝生产量×单位工时×工资率；制造费用＝变动（工时×分配率）＋固定，付现部分要扣折旧。</li>
+        <li><b>现金预算看四个数</b>：期初现金＋现金收入−现金支出＝现金余缺；低于最低现金余额的部分就是借款额。</li>
+        <li><b>三组编制方法各自回答一个问题</b>：固定还是弹性（按一个业务量还是按多个业务量编）、增量还是零基（在基期上加减还是从零审议）、定期还是滚动（一年编一次还是逐期向后滚动）。</li>
+      </ul>
+    </details>
+
+    <div class="cta">
+      <button class="btn solid" id="btnStart" type="button">处境清楚了，开始调参</button>
+    </div>
+  </section>
+
+  <!-- ================= 参数面板 ================= -->
+  <section class="card" id="secPanel">
+    <h2>二、调准参数 <span class="tag">拖动滑块，预算表与现金图实时重算；提交后再改参数，本轮作答自动重置</span></h2>
+
+    <div class="sldgrid">
+      <div class="sld">
+        <div class="lab"><span>全年销量目标 <span class="hint">按 1∶3∶4∶2 分到四个季度</span></span><span class="val" id="vQty">100,000 件</span></div>
+        <input type="range" id="sldQty" min="80000" max="120000" step="2000" value="100000" aria-label="全年销量目标，件">
+      </div>
+      <div class="sld">
+        <div class="lab"><span>产品售价 <span class="hint">影响销售收入与回款</span></span><span class="val" id="vPrice">20 元/件</span></div>
+        <input type="range" id="sldPrice" min="15" max="25" step="1" value="20" aria-label="产品售价，元每件">
+      </div>
+      <div class="sld">
+        <div class="lab"><span>产成品期末存货比例 <span class="hint">按下季销量的百分比留</span></span><span class="val" id="vInv">20%</span></div>
+        <input type="range" id="sldInv" min="10" max="30" step="5" value="20" aria-label="产成品期末存货比例，百分比">
+      </div>
+      <div class="sld">
+        <div class="lab"><span>材料单耗 <span class="hint">每件耗用材料量</span></span><span class="val" id="vMat">5 千克/件</span></div>
+        <input type="range" id="sldMat" min="4" max="6" step="0.5" value="5" aria-label="材料单耗，千克每件">
+      </div>
+      <div class="sld">
+        <div class="lab"><span>材料单价 <span class="hint">决定采购额与材料成本</span></span><span class="val" id="vMatP">0.60 元/千克</span></div>
+        <input type="range" id="sldMatP" min="0.5" max="0.8" step="0.05" value="0.6" aria-label="材料单价，元每千克">
+      </div>
+      <div class="sld">
+        <div class="lab"><span>单位产品工时 <span class="hint">决定人工与变动制造费用</span></span><span class="val" id="vHours">0.8 小时/件</span></div>
+        <input type="range" id="sldHours" min="0.6" max="1" step="0.05" value="0.8" aria-label="单位产品工时，小时每件">
+      </div>
+      <div class="sld">
+        <div class="lab"><span>小时工资率 <span class="hint">人工成本＝工时×工资率</span></span><span class="val" id="vWage">7.5 元/小时</span></div>
+        <input type="range" id="sldWage" min="6" max="9" step="0.5" value="7.5" aria-label="小时工资率，元每小时">
+      </div>
+      <div class="sld">
+        <div class="lab"><span>当季回款比例 <span class="hint">其余部分下季收回</span></span><span class="val" id="vCash">70%</span></div>
+        <input type="range" id="sldCash" min="60" max="80" step="5" value="70" aria-label="当季回款比例，百分比">
+      </div>
+    </div>
+
+    <div class="presets">
+      <span class="cap">典型情境一键打版：</span>
+      <button class="chip" type="button" data-qty="100000" data-price="20" data-inv="20" data-mat="5" data-matp="0.6" data-hours="0.8" data-wage="7.5" data-cash="70">理事会基准版</button>
+      <button class="chip" type="button" data-qty="80000" data-price="20" data-inv="20" data-mat="5" data-matp="0.6" data-hours="0.8" data-wage="7.5" data-cash="70">销售缩水版</button>
+      <button class="chip" type="button" data-qty="100000" data-price="24" data-inv="20" data-mat="5" data-matp="0.6" data-hours="0.8" data-wage="7.5" data-cash="70">提价版</button>
+      <button class="chip" type="button" data-qty="100000" data-price="20" data-inv="20" data-mat="5" data-matp="0.75" data-hours="0.8" data-wage="7.5" data-cash="70">材料涨价版</button>
+      <button class="chip" type="button" data-qty="100000" data-price="20" data-inv="20" data-mat="5" data-matp="0.6" data-hours="0.8" data-wage="7.5" data-cash="60">回款放缓版</button>
+      <button class="btn ghost sm" id="btnDefault" type="button">恢复默认参数</button>
+    </div>
+    <div class="notice">提示：只动「当季回款比例」，看一季度借款额怎么变——预算的现金部分最怕账期拉长；只动「售价」，看销售收入和回款一起抬起来。</div>
+  </section>
+
+  <!-- ================= 测算区 ================= -->
+  <section class="card">
+    <h2>三、逐表编制 <span class="tag">给定政策已填好；要你算的格子，提交前一律留「？」</span></h2>
+
+    <div class="budwrap">
+    <table class="bud" id="budTable">
+      <caption>全面预算总表（金额单位：元）</caption>
+      <thead>
+        <tr><th>项目</th><th>第一季度</th><th>第二季度</th><th>第三季度</th><th>第四季度</th><th>全年合计</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    </div>
+    <div class="budnote">注：借款行按「期初现金＋现金收入−现金支出」与最低现金余额 40,000 元的差额补足；本实训不编偿还借款与利息，四季度借款额按同一规则测算。</div>
+
+    <div class="chartbox" id="cashBox">
+      <h4>四季度现金收入与现金支出（单位：万元）</h4>
+      <div class="leg">
+        <span><i style="background:#2e7d32"></i>现金收入</span>
+        <span><i style="background:#c62828"></i>现金支出</span>
+        <span id="legTodo"><i style="background:#f2f8f2;border:1px dashed #9db89d"></i>待你计算</span>
+      </div>
+      <svg class="chart" viewBox="0 0 640 320" role="img" aria-label="四季度现金收入与现金支出分组柱状图，第一季度与第二季度支出大于收入，形成现金缺口">
+        <g font-size="11" fill="#7d8f7d" text-anchor="end">
+          <text x="60" y="66" id="cy60">60.0</text>
+          <text x="60" y="126" id="cy45">45.0</text>
+          <text x="60" y="186" id="cy30">30.0</text>
+          <text x="60" y="246" id="cy15">15.0</text>
+          <text x="60" y="288">0</text>
+        </g>
+        <g stroke="#e3eee3" stroke-width="1">
+          <path d="M70 62 H620"/><path d="M70 122 H620"/><path d="M70 182 H620"/><path d="M70 242 H620"/>
+        </g>
+        <path d="M70 282 H620" stroke="#9db89d" stroke-width="2"/>
+        <g font-size="11.5" fill="#5a6b5a" text-anchor="middle">
+          <text x="140" y="304">第一季度</text>
+          <text x="280" y="304">第二季度</text>
+          <text x="420" y="304">第三季度</text>
+          <text x="560" y="304">第四季度</text>
+        </g>
+        <g>
+          <rect id="bi0" x="102" y="256" width="34" height="26" rx="2" fill="#f2f8f2" stroke="#9db89d" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <rect id="bo0" x="142" y="256" width="34" height="26" rx="2" fill="#f2f8f2" stroke="#9db89d" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <rect id="bi1" x="242" y="256" width="34" height="26" rx="2" fill="#f2f8f2" stroke="#9db89d" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <rect id="bo1" x="282" y="256" width="34" height="26" rx="2" fill="#f2f8f2" stroke="#9db89d" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <rect id="bi2" x="382" y="256" width="34" height="26" rx="2" fill="#f2f8f2" stroke="#9db89d" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <rect id="bo2" x="422" y="256" width="34" height="26" rx="2" fill="#f2f8f2" stroke="#9db89d" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <rect id="bi3" x="522" y="256" width="34" height="26" rx="2" fill="#f2f8f2" stroke="#9db89d" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <rect id="bo3" x="562" y="256" width="34" height="26" rx="2" fill="#f2f8f2" stroke="#9db89d" stroke-width="1.5" stroke-dasharray="5 4"/>
+        </g>
+        <g font-size="11.5" font-weight="700" text-anchor="middle" fill="#5a6b5a">
+          <text id="li0" x="119" y="248">？</text><text id="lo0" x="159" y="248">？</text>
+          <text id="li1" x="259" y="248">？</text><text id="lo1" x="299" y="248">？</text>
+          <text id="li2" x="399" y="248">？</text><text id="lo2" x="439" y="248">？</text>
+          <text id="li3" x="539" y="248">？</text><text id="lo3" x="579" y="248">？</text>
+        </g>
+      </svg>
+      <div class="leg" style="padding-top:0"><span>每季左右两根依次为现金收入、现金支出；柱高按 60 万元标尺等比绘制，数值以标签为准。</span></div>
+    </div>
+
+    <table class="bud small" id="costTable">
+      <caption>单位产品成本与期末产成品存货</caption>
+      <tbody>
+        <tr><td class="rh">直接材料（元/件）</td><td class="num" id="uMat">？</td></tr>
+        <tr><td class="rh">直接人工（元/件）</td><td class="num" id="uLab">？</td></tr>
+        <tr><td class="rh">制造费用（元/件）</td><td class="num" id="uOh">？</td></tr>
+        <tr class="hl"><td class="rh">单位产品成本（元/件）</td><td class="num" id="uTotal">？</td></tr>
+        <tr><td class="rh">期末产成品存货金额（元）</td><td class="num" id="uFgVal">？</td></tr>
+      </tbody>
+    </table>
+
+    <div class="mgrid">
+      <div class="mcard" id="mcRev">
+        <div class="nm">全年销售收入</div>
+        <div class="big q" id="vRev">？</div>
+        <div class="unit">元</div>
+        <div class="brk">全年销量 × 售价</div>
+      </div>
+      <div class="mcard" id="mcProd">
+        <div class="nm">全年生产量</div>
+        <div class="big q" id="vProd">？</div>
+        <div class="unit">件</div>
+        <div class="brk">销量＋年末存货−期初存货</div>
+      </div>
+      <div class="mcard" id="mcUnit">
+        <div class="nm">单位产品成本</div>
+        <div class="big q" id="vUnit">？</div>
+        <div class="unit">元/件</div>
+        <div class="brk">材料＋人工＋制造费用</div>
+      </div>
+      <div class="mcard" id="mcLoan">
+        <div class="nm">一季度借款额</div>
+        <div class="big q" id="vLoan">？</div>
+        <div class="unit">元</div>
+        <div class="brk">补足最低现金 40,000 元</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 决策区 ================= -->
+  <section class="card" id="secDecide">
+    <h2>四、算出预算 <span class="tag">六问＋加分题，先自己算再提交；系统按 ±0.5% 容差核对</span></h2>
+
+    <div class="q">
+      <div class="qt">第一问：销售预算——<b>第一季度的销售收入、全年销售收入各是多少元？</b></div>
+      <div class="qh" id="qhRev"></div>
+      <div class="fillrow">
+        <input type="text" id="inpRevQ1" inputmode="decimal" placeholder="第一季度销售收入" aria-label="第一季度销售收入">
+        <span class="u">元</span>
+        <input type="text" id="inpRevY" inputmode="decimal" placeholder="全年销售收入" aria-label="全年销售收入">
+        <span class="u">元</span>
+      </div>
+      <div class="fb" id="fbRev" hidden></div>
+    </div>
+
+    <div class="q">
+      <div class="qt">第二问：生产预算——<b>第一季度期末产成品存货、第一季度生产量、全年生产量各是多少件？</b></div>
+      <div class="qh" id="qhProd"></div>
+      <div class="fillrow">
+        <input type="text" id="inpFgQ1" inputmode="decimal" placeholder="一季度期末存货" aria-label="第一季度期末产成品存货">
+        <span class="u">件</span>
+        <input type="text" id="inpProdQ1" inputmode="decimal" placeholder="一季度生产量" aria-label="第一季度生产量">
+        <span class="u">件</span>
+        <input type="text" id="inpProdY" inputmode="decimal" placeholder="全年生产量" aria-label="全年生产量">
+        <span class="u">件</span>
+      </div>
+      <div class="fb" id="fbProd" hidden></div>
+    </div>
+
+    <div class="q">
+      <div class="qt">第三问：直接材料预算——<b>第一季度材料需用量、材料采购量、材料采购额各是多少？</b></div>
+      <div class="qh" id="qhMat"></div>
+      <div class="fillrow">
+        <input type="text" id="inpMatUse" inputmode="decimal" placeholder="材料需用量" aria-label="第一季度材料需用量">
+        <span class="u">千克</span>
+        <input type="text" id="inpMatBuy" inputmode="decimal" placeholder="材料采购量" aria-label="第一季度材料采购量">
+        <span class="u">千克</span>
+        <input type="text" id="inpMatAmt" inputmode="decimal" placeholder="材料采购额" aria-label="第一季度材料采购额">
+        <span class="u">元</span>
+      </div>
+      <div class="fb" id="fbMat" hidden></div>
+    </div>
+
+    <div class="q">
+      <div class="qt">第四问：直接人工预算——<b>第一季度直接人工工时、直接人工成本各是多少？</b></div>
+      <div class="qh" id="qhLab"></div>
+      <div class="fillrow">
+        <input type="text" id="inpLabH" inputmode="decimal" placeholder="人工工时" aria-label="第一季度直接人工工时">
+        <span class="u">小时</span>
+        <input type="text" id="inpLabAmt" inputmode="decimal" placeholder="人工成本" aria-label="第一季度直接人工成本">
+        <span class="u">元</span>
+      </div>
+      <div class="fb" id="fbLab" hidden></div>
+    </div>
+
+    <div class="q">
+      <div class="qt">第五问：制造费用与单位成本——<b>第一季度付现制造费用、单位产品成本、期末产成品存货金额各是多少？</b></div>
+      <div class="qh" id="qhOh"></div>
+      <div class="fillrow">
+        <input type="text" id="inpOhCash" inputmode="decimal" placeholder="付现制造费用" aria-label="第一季度付现制造费用">
+        <span class="u">元</span>
+        <input type="text" id="inpUnit" inputmode="decimal" placeholder="单位产品成本" aria-label="单位产品成本">
+        <span class="u">元/件</span>
+        <input type="text" id="inpFgVal" inputmode="decimal" placeholder="期末存货金额" aria-label="期末产成品存货金额">
+        <span class="u">元</span>
+      </div>
+      <div class="fb" id="fbOh" hidden></div>
+    </div>
+
+    <div class="q">
+      <div class="qt">第六问：现金预算——<b>第一季度现金收入、现金支出、借款额各是多少元？</b></div>
+      <div class="qh" id="qhCash"></div>
+      <div class="fillrow">
+        <input type="text" id="inpCashIn" inputmode="decimal" placeholder="现金收入" aria-label="第一季度现金收入">
+        <span class="u">元</span>
+        <input type="text" id="inpCashOut" inputmode="decimal" placeholder="现金支出" aria-label="第一季度现金支出">
+        <span class="u">元</span>
+        <input type="text" id="inpLoan" inputmode="decimal" placeholder="借款额" aria-label="第一季度借款额">
+        <span class="u">元</span>
+      </div>
+      <div class="fb" id="fbCash" hidden></div>
+    </div>
+
+    <div class="q">
+      <div class="qt">加分题（10 分）：<b>① 全年制造费用合计是多少元？② 按弹性预算，产能利用率只有 80%（即预算工时的 80%）时，季度制造费用总额是多少元？</b></div>
+      <div class="qh">提示：① 制造费用＝变动（工时×2）＋固定 60,600，四个季度相加；② 弹性预算 y＝固定费用＋单位变动费用×业务量，业务量降到预算工时的 80%，固定费用不变。</div>
+      <div class="fillrow">
+        <input type="text" id="inpOhY" inputmode="decimal" placeholder="全年制造费用" aria-label="全年制造费用合计">
+        <span class="u">元</span>
+        <input type="text" id="inpFlex" inputmode="decimal" placeholder="80% 产能制费" aria-label="弹性预算 80% 产能制造费用">
+        <span class="u">元</span>
+      </div>
+      <div class="fb" id="fbBonus" hidden></div>
+    </div>
+
+    <div class="trynote" id="tryNote">提示：生产量与采购量都别忘了「加期末、减期初」；单位产品成本的制造费用按全年制造费用÷全年产量算；现金支出别漏了所得税、股利和设备款；借款额＝最低现金 40,000−（期初现金＋现金收入−现金支出）。</div>
+    <div class="submitrow">
+      <button class="btn solid" id="btnSubmit" type="button">提交作答，核对结果</button>
+    </div>
+  </section>
+
+  <!-- ================= 揭晓区 ================= -->
+  <section class="card reveal-anim" id="revealCard" hidden>
+    <h2>五、核对与复盘 <span class="tag">分步过程、预算表全貌、现金缺口分析、如果当初</span></h2>
+
+    <div class="resline">
+      <div class="fb" id="resRev" hidden></div>
+      <div class="fb" id="resProd" hidden></div>
+      <div class="fb" id="resMat" hidden></div>
+      <div class="fb" id="resLab" hidden></div>
+      <div class="fb" id="resOh" hidden></div>
+      <div class="fb" id="resCash" hidden></div>
+      <div class="fb" id="resBonus" hidden></div>
+    </div>
+
+    <details class="calc" open>
+      <summary>分步过程一：营业预算的四级钩稽（销售→生产→材料→人工）</summary>
+      <div class="cstep"><span class="k">第一步 · 销售收入</span><span class="f" id="sRevF"></span><span class="v pos" id="sRev"></span><span class="f">元（第一季度）</span></div>
+      <div class="cstep"><span class="k">第二步 · 期末产成品存货</span><span class="f" id="sFgF"></span><span class="v pos" id="sFg"></span><span class="f">件</span></div>
+      <div class="cstep"><span class="k">第三步 · 生产量</span><span class="f" id="sProdF"></span><span class="v pos" id="sProd"></span><span class="f">件（全年 <span id="sProdY"></span> 件）</span></div>
+      <div class="cstep"><span class="k">第四步 · 材料需用量</span><span class="f" id="sMatUseF"></span><span class="v pos" id="sMatUse"></span><span class="f">千克</span></div>
+      <div class="cstep"><span class="k">第五步 · 材料采购量</span><span class="f" id="sMatBuyF"></span><span class="v pos" id="sMatBuy"></span><span class="f">千克 → 采购额 <span id="sMatAmt"></span> 元</span></div>
+      <div class="cstep"><span class="k">第六步 · 直接人工</span><span class="f" id="sLabF"></span><span class="v pos" id="sLab"></span><span class="f">元</span></div>
+      <div class="callout">钩稽关系一句话：<b>销量定生产、生产定用料、用料定采购</b>。上一张表的产出就是下一张表的输入——任何一格算错，后面全跟着错。</div>
+    </details>
+
+    <details class="calc" open>
+      <summary>分步过程二：制造费用、单位产品成本与期末存货</summary>
+      <div class="cstep"><span class="k">第一季度制造费用</span><span class="f" id="sOhF"></span><span class="v pos" id="sOh"></span><span class="f">元；减折旧 15,000 → 付现 <span id="sOhCash"></span> 元</span></div>
+      <div class="cstep"><span class="k">单位产品成本</span><span class="f" id="sUnitF"></span><span class="v pos" id="sUnit"></span><span class="f">元/件（材料 <span id="sUmat"></span>＋人工 <span id="sUlab"></span>＋制造费用 <span id="sUoh"></span>）</span></div>
+      <div class="cstep"><span class="k">期末产成品存货</span><span class="f" id="sFgValF"></span><span class="v pos" id="sFgVal"></span><span class="f">元</span></div>
+      <div class="callout">单位制造费用为什么是「全年制造费用÷全年产量」？<b>因为固定制造费用要由全年产量来分摊</b>——产量越高，每件摊得越薄；这也正是弹性预算要按业务量重编的原因。</div>
+    </details>
+
+    <details class="calc" open>
+      <summary>分步过程三：现金预算与借款额</summary>
+      <div class="cstep"><span class="k">第一季度现金收入</span><span class="f" id="sCashInF"></span><span class="v pos" id="sCashIn"></span><span class="f">元</span></div>
+      <div class="cstep"><span class="k">第一季度现金支出</span><span class="f">＝材料 <span id="sOutMat"></span>＋人工 <span id="sOutLab"></span>＋制费付现 <span id="sOutOh"></span>＋期间费用 <span id="sOutSga"></span>＋所得税 18,000＋设备 30,000＋股利 10,000 ＝</span><span class="v negv" id="sCashOut"></span><span class="f">元</span></div>
+      <div class="cstep"><span class="k">现金余缺</span><span class="f" id="sBalF"></span><span class="v negv" id="sBal"></span><span class="f">元</span></div>
+      <div class="cstep"><span class="k">借款额</span><span class="f" id="sLoanF"></span><span class="v negv" id="sLoan"></span><span class="f">元（补足到最低现金 40,000 元）</span></div>
+      <div class="callout">预算的最后一关不是利润，是现金：<b>账上算得赚，钱没回来照样要借</b>。一季度淡季回款少、又要买设备，缺口就是这么来的。</div>
+    </details>
+
+    <h2 style="margin-top:16px">现金缺口复盘：四个季度谁缺钱、缺口靠什么补</h2>
+    <div class="budwrap">
+    <table class="rev">
+      <thead>
+        <tr><th>季度</th><th>现金收入（元）</th><th>现金支出（元）</th><th>收支差额（元）</th><th>借款额（元）</th><th>说明</th></tr>
+      </thead>
+      <tbody id="cashBody"></tbody>
+    </table>
+    </div>
+
+    <h2 style="margin-top:16px">如果当初：销量与回款政策怎么影响借款</h2>
+    <div class="budwrap">
+    <table class="rev">
+      <thead>
+        <tr><th>抓手</th><th>当前位置</th><th>一季度借款（元）</th><th>说明</th></tr>
+      </thead>
+      <tbody>
+        <tr id="rowBase"><td>理事会基准版</td><td class="num">全年 10 万件、当季回款 70%</td><td class="num" id="rvBase"></td><td>当前参数下的借款额</td></tr>
+        <tr id="rowSlow"><td>回款放缓到 60%</td><td class="num">账期拉长一个档</td><td class="num" id="rvSlow"></td><td id="rvSlowD"></td></tr>
+        <tr id="rowBoost"><td>销量提到 12 万件</td><td class="num">规模扩两成</td><td class="num" id="rvBoost"></td><td id="rvBoostD"></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="ending" id="endingText"></div>
+
+    <div class="scorebox">
+      <span class="sc" id="scoreVal">0</span><span class="u">分</span>
+      <span class="word" id="scoreWord">待改进</span>
+      <span class="best" id="bestVal"></span>
+    </div>
+
+    <div class="cta" style="margin-top:14px">
+      <button class="btn ghost" id="btnRestart" type="button">重新挑战一轮</button>
+    </div>
+  </section>
+
+  <!-- ================= 导出区 ================= -->
+  <section class="card export locked" id="exportCard">
+    <h2>六、带走成果 <span class="tag">经营决策卡 · 五字段</span></h2>
+    <div class="locknote" id="lockNote">完成预算核对后，此处解锁，可生成并导出你的经营决策卡。</div>
+    <div id="exportBody" hidden>
+      <label for="inpName">姓名 / 学号（填入后写入决策卡）</label>
+      <input type="text" id="inpName" placeholder="如：屈梦汐 20240123">
+      <label for="inpRisk">风险责任（先看一条示范，再任选一个风险点写你自己的）</label>
+      <div class="risk-demo">示范写法：① 淡旺季现金错配风险：一季度回款少、又要付设备款，靠短期借款补缺口——财务负责人芳姐负责按月跟踪回款进度与授信额度。请按「序号 + 风险类别：具体描述——责任人 + 应对措施」的格式，从「回款账期 / 存货积压 / 材料涨价 / 借款利息 / 销量不达预期」中任选一点，写你自己的一条。</div>
+      <textarea id="inpRisk" placeholder="任选一个风险点，写「风险—责任人—应对」。"></textarea>
+      <label for="cardArea">经营决策卡内容（可编辑，导出前请通读一遍）</label>
+      <textarea id="cardArea" aria-label="经营决策卡内容"></textarea>
+      <div class="acts">
+        <button class="btn solid sm" id="btnCopy" type="button">复制决策卡</button>
+        <button class="btn ghost sm" id="btnDownload" type="button">下载为文本文件</button>
+        <button class="btn ghost sm" id="btnRebuild" type="button">按当前参数重建</button>
+      </div>
+      <div class="subcloud" id="subCloud">
+        <div class="subhr"></div>
+        <div class="subttl">提交到教师后台（数据收口）</div>
+        <p class="subint">完成预算核对后，可把经营决策卡五字段、你的学号/姓名/班级与得分提交到教师后台，用于批改与统计。</p>
+        <div class="fillrow">
+          <input type="text" id="subStuId" placeholder="学号" aria-label="学号">
+          <input type="text" id="subName" placeholder="姓名" aria-label="姓名">
+          <input type="text" id="subClass" placeholder="班级" aria-label="班级">
+        </div>
+        <div class="acts">
+          <button class="btn solid sm" id="btnSubmitCloud" type="button">提交到教师后台</button>
+        </div>
+        <div class="fb" id="cloudMsg" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">全面预算 · 虚拟仿真实训 第 1 版<br>单文件离线课件，双击即用；案例与数据为教学示例，可按本地实际调整。</div>
+</div>
+
+<div id="toast" role="status"></div>
+
+
+<script>
+/* ==== CLOUD-SDK-INLINE v1（@tencent-ai/workbuddy-cloud-sdk@dev）==== */
+var WorkBuddyCloud=(()=>{var ie=Object.defineProperty;var _t=Object.getOwnPropertyDescriptor;var Tt=Object.getOwnPropertyNames;var Ot=Object.prototype.hasOwnProperty;var a=(r,e)=>ie(r,"name",{value:e,configurable:!0});var At=(r,e)=>{for(var t in e)ie(r,t,{get:e[t],enumerable:!0})},Rt=(r,e,t,s)=>{if(e&&typeof e=="object"||typeof e=="function")for(let n of Tt(e))!Ot.call(r,n)&&n!==t&&ie(r,n,{get:()=>e[n],enumerable:!(s=_t(e,n))||s.enumerable});return r};var $t=r=>Rt(ie({},"__esModule",{value:!0}),r);var nr={};At(nr,{AuthModule:()=>D,CLOUD_MODULE_PATHS:()=>R,CLOUD_PATH_PREFIX:()=>j,CloudOpenAIError:()=>x,CloudStoragePathError:()=>w,DEFAULT_SIGNED_URL_TTL_SECONDS:()=>ge,LlmModule:()=>M,MAX_SIGNED_URL_TTL_SECONDS:()=>ye,PUBLISHABLE_KEY_HEADER:()=>be,RUNTIME_STORAGE_BUCKET:()=>W,WorkBuddyCloudClient:()=>se,WorkBuddyCloudConfigError:()=>T,WorkBuddyDatabaseModule:()=>J,WorkBuddyStorageBucket:()=>H,WorkBuddyStorageDownload:()=>te,WorkBuddyStorageModule:()=>re,anonymousTokenProvider:()=>oe,createMemoryStorage:()=>ke,createWorkBuddyCloud:()=>vt,getModelCapability:()=>Oe,getModelDisplayName:()=>Te,shouldClearCredentials:()=>Pt});var T=class extends Error{static{a(this,"WorkBuddyCloudConfigError")}constructor(e){super(e),this.name="WorkBuddyCloudConfigError"}};var Ut=/^wbpk_/;function Le(r,e){if(typeof r!="string"||r.trim()==="")throw new T(`${e} is required and must be a non-empty string.`);let t=r.trim(),s;try{s=new URL(t)}catch{throw new T(`${e} must be an absolute URL, received: ${t}`)}if(s.protocol!=="https:"&&s.protocol!=="http:")throw new T(`${e} must use http(s), received protocol: ${s.protocol}`);return t.replace(/\/+$/,"")}a(Le,"normalizeHttpUrl");function It(r){if(r!=null&&r!=="")return Le(r,"endpoint");let e=globalThis.location?.origin;if(typeof e!="string"||e==="")throw new T("endpoint is required outside browsers (no location.origin to fall back to).");return e.replace(/\/+$/,"")}a(It,"resolveEndpoint");function Ct(r){if(typeof r!="string"||r.trim()==="")throw new T("publishableKey is required and must be a non-empty string.");let e=r.trim();if(!Ut.test(e))throw new T('publishableKey must start with "wbpk_".');return e}a(Ct,"normalizePublishableKey");function Lt(r){if(r)return r;if(typeof globalThis.fetch!="function")throw new T("Global fetch is unavailable in this runtime; pass options.fetch explicitly.");return globalThis.fetch.bind(globalThis)}a(Lt,"resolveFetch");function je(r){if(!r||typeof r!="object")throw new T("createWorkBuddyCloud requires publishableKey.");return Object.freeze({endpoint:It(r.endpoint),oauthRelayBaseUrl:r.oauthRelayBaseUrl?Le(r.oauthRelayBaseUrl,"oauthRelayBaseUrl"):"",publishableKey:Ct(r.publishableKey),fetch:Lt(r.fetch)})}a(je,"resolveRuntimeConfig");var be="x-wb-webapp-access-key";function we(r,e){return async(t,s)=>{let n=new Headers(s?.headers);if(n.set(be,r.publishableKey),!n.has("Authorization")){let i=await e();i&&n.set("Authorization",`Bearer ${i}`)}return r.fetch(t,{...s,headers:n})}}a(we,"createCloudFetch");var oe=a(()=>Promise.resolve(void 0),"anonymousTokenProvider");var j="/.cloud",R=Object.freeze({auth:`${j}/auth`,database:`${j}/database/rest`,storage:`${j}/storage`,llm:`${j}/llm`});var jt="workbuddy-cloud.pkce.workbuddy.",Bt="workbuddy-cloud.pkce-done.workbuddy.";function Be(r){let e="";for(let t of r)e+=String.fromCharCode(t);return btoa(e).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")}a(Be,"base64UrlEncode");function De(){let r=globalThis.crypto;return typeof r?.getRandomValues=="function"&&typeof r?.subtle?.digest=="function"&&typeof globalThis.btoa=="function"}a(De,"hasWebCrypto");function Ne(){let r=new Uint8Array(32);return globalThis.crypto.getRandomValues(r),Be(r)}a(Ne,"createCodeVerifier");async function Me(r){let e=new TextEncoder().encode(r),t=await globalThis.crypto.subtle.digest("SHA-256",e);return Be(new Uint8Array(t))}a(Me,"computeS256Challenge");var ae=class{static{a(this,"WorkBuddyPkceStore")}verifierKey;consumedKey;constructor(e){this.verifierKey=jt+e,this.consumedKey=Bt+e}usable(){let e=this.storage();if(!e)return!1;try{let t=`${this.verifierKey}.probe`;return e.setItem(t,"1"),e.removeItem(t),!0}catch{return!1}}saveVerifier(e){try{let t=this.storage();return t?(t.setItem(this.verifierKey,e),t.removeItem(this.consumedKey),!0):!1}catch{return!1}}readVerifier(){try{return this.storage()?.getItem(this.verifierKey)??null}catch{return null}}clearVerifier(){try{this.storage()?.removeItem(this.verifierKey)}catch{}}markConsumed(e){try{this.storage()?.setItem(this.consumedKey,e)}catch{}}isConsumed(e){try{return!!e&&this.storage()?.getItem(this.consumedKey)===e}catch{return!1}}storage(){try{return globalThis.sessionStorage??null}catch{return null}}};var b={signUp:"/v1/signup",signIn:"/v1/signin",signInWithProvider:"/v1/signin/with/provider",token:"/v1/token",loginWechat:"/v1/login-wechat",loginWechatWeb:"/v1/login-wechat-web",loginWorkBuddy:"/v1/login-workbuddy",loginWorkBuddyMiniProgram:"/v1/login-workbuddy-miniprogram",signOut:"/v1/user/signout",userMe:"/v1/user/me",verification:"/v1/verification",verificationVerify:"/v1/verification/verify",resetPassword:"/v1/reset",sudo:"/v1/user/sudo",userPassword:"/v1/user/password"};function Se(r,e){let t=r??{},s=typeof t.access_token=="string"?t.access_token:"";if(!s)throw Mt("response has no access_token");let n=typeof t.refresh_token=="string"?t.refresh_token:"",i=typeof t.expires_in=="number"?t.expires_in:0;return{accessToken:s,refreshToken:n,expiresAt:e+i*1e3,user:Dt(t)}}a(Se,"parseSession");function Dt(r){let e=r.is_anonymous===!0;return{id:typeof r.sub=="string"?r.sub:"",name:O(r.name),avatarUrl:O(r.avatar_url),isAnonymous:e,raw:r}}a(Dt,"userFromSessionPayload");function Fe(r){let e=r??{},t=typeof e.sub=="string"?e.sub:typeof e.uid=="string"?e.uid:"",s=e.user_metadata??{};return{id:t,email:O(e.email)??O(s.email),phone:O(e.phone_number)??O(e.phone),name:O(e.name),avatarUrl:O(e.avatar_url),isAnonymous:e.is_anonymous===!0||e.scope==="anonymous",raw:e}}a(Fe,"parseUser");function O(r){return typeof r=="string"&&r!==""?r:void 0}a(O,"pickString");function qe(r,e){let t=e??{},s=typeof t.error=="string"?t.error:void 0,n=O(t.error_description)??O(t.message)??O(t.msg)??`HTTP ${r}`;return{kind:Nt(r,s),message:n,status:r,code:s,cause:e}}a(qe,"normalizeHttpError");function Nt(r,e){if(e==="invalid_grant")return"unauthenticated";switch(r){case 400:return"invalid-request";case 401:return"unauthenticated";case 403:return"permission-denied";case 404:return"not-found";case 429:return"rate-limited";case 501:return"unimplemented";case 503:return"backend-unavailable";default:return r>=500?"backend-unavailable":"unknown"}}a(Nt,"errorKind");function K(r){return{kind:"network",message:`request failed before a response was received: ${r instanceof Error?r.message:String(r)}`,status:0,cause:r}}a(K,"normalizeNetworkError");function Mt(r){let e=new Error(`workbuddy-cloud auth: ${r}`);return e.kind="unknown",e.status=0,e}a(Mt,"sessionShapeError");var ce=class{static{a(this,"SessionManager")}store;refresh;emit;isCredentialsRejected;now;inflight=null;signOutEpoch=0;lastFailure=null;constructor(e){this.store=e.store,this.refresh=e.refresh,this.emit=e.emit,this.isCredentialsRejected=e.isCredentialsRejected,this.now=e.now??Date.now}peek(){return this.store.read()}async ensure(){let e=this.store.read();return e?this.isExpiring(e)?e.refreshToken?this.refreshOnce(e):this.abandon():e:null}async forceRefresh(){let e=this.store.read();return e?.refreshToken?this.refreshOnce(e,{ignoreCooldown:!0}):null}commitSignIn(e){return this.lastFailure=null,this.store.write(e),this.emit("SIGNED_IN",e),e}commitUserUpdate(e){return this.store.write(e),this.emit("USER_UPDATED",e),e}clear(){this.signOutEpoch+=1,this.lastFailure=null,this.inflight=null,this.store.clear(),this.emit("SIGNED_OUT",null)}isExpiring(e){return typeof e.expiresAt!="number"?!0:e.expiresAt-this.now()<9e4}refreshOnce(e,t={}){if(this.inflight)return this.inflight;if(!t.ignoreCooldown&&this.inCooldown(e.refreshToken))return Promise.resolve(null);let s=this.doRefresh(e).finally(()=>{this.inflight=null});return this.inflight=s,s}inCooldown(e){let t=this.lastFailure;return t!==null&&t.token===e&&this.now()-t.at<6e4}async doRefresh(e){let t=this.signOutEpoch,s=e.refreshToken,n;try{n=await this.refresh(s)}catch(o){return this.onRefreshFailed(s,o)}if(this.signOutEpoch!==t)return this.store.clear(),null;let i=this.store.read();return i&&i.refreshToken!==s?i:(this.lastFailure=null,this.store.write(n),this.emit("TOKEN_REFRESHED",n),n)}onRefreshFailed(e,t){return this.isCredentialsRejected(t)?this.abandon():(this.lastFailure={token:e,at:this.now()},null)}abandon(){return this.store.clear(),this.lastFailure=null,this.emit("SIGNED_OUT",null),null}};var Ft="workbuddy-cloud.session.";function ke(){let r=new Map;return{getItem:a(e=>r.get(e)??null,"getItem"),setItem:a((e,t)=>{r.set(e,t)},"setItem"),removeItem:a(e=>{r.delete(e)},"removeItem")}}a(ke,"createMemoryStorage");function We(r){if(r)return r;try{let e="__workbuddy_probe__";return globalThis.localStorage.setItem(e,"1"),globalThis.localStorage.removeItem(e),globalThis.localStorage}catch{return ke()}}a(We,"resolveStorage");var ue=class{static{a(this,"SessionStore")}storage;key;constructor(e,t){this.storage=e,this.key=Ft+t}read(){let e;try{e=this.storage.getItem(this.key)}catch{return null}if(!e)return null;try{let t=JSON.parse(e);return qt(t)?t:this.discard()}catch{return this.discard()}}write(e){try{this.storage.setItem(this.key,JSON.stringify(e))}catch{}}clear(){try{this.storage.removeItem(this.key)}catch{}}discard(){return this.clear(),null}};function qt(r){if(!r||typeof r!="object")return!1;let e=r;return typeof e.accessToken=="string"&&e.accessToken!==""&&typeof e.refreshToken=="string"&&typeof e.expiresAt=="number"&&!!e.user&&typeof e.user=="object"}a(qt,"isStoredSession");function B(r,e){let t=r.email??"",s=r.phone??"";return!!t==!!s?{data:null,error:{kind:"invalid-request",message:`${e} requires exactly one of email or phone`,status:0}}:{data:t?{kind:"email",value:t,username:t}:{kind:"phone",value:s,username:Wt(s)},error:null}}a(B,"resolveAuthIdentifier");function Wt(r){let t=r.replace(/\D/g,"");return t.startsWith("0086")?t=t.slice(4):t.startsWith("86")&&t.length===13&&(t=t.slice(2)),/^1\d{10}$/.test(t)?`+86 ${t}`:r}a(Wt,"normalizePhone");var He="wx907c65e5e107ddcf",Ht="subpackages/secondary/oauth-authorize/index";var de=class{static{a(this,"WorkBuddyMiniProgramAuth")}storage;platform;exchange;key;starting;exchanges=new Map;constructor(e,t,s,n){this.storage=t,this.platform=s,this.exchange=n,this.key=`workbuddy-cloud.miniprogram-workbuddy.${e}`}async signIn(e){if(this.starting)return this.starting;let t=this.start(e);this.starting=t;try{return await t}finally{this.starting=void 0}}async start(e){if(typeof e?.redirectPath!="string"||!e.redirectPath.trim())return P("invalid_request","WorkBuddy login requires redirectPath");let t=this.platform.applicationId;if(typeof t!="string"||!t.trim())return P("invalid_request","WorkBuddy login requires publicConfig.workBuddyOAuthClientId");try{let s=this.platform.getEnvVersion?.(),n=await this.platform.createState(),i={state:n,appId:He,expiresAt:Date.now()+6e5},o=JSON.stringify(i);if(this.storage.setItem(this.key,o),this.storage.getItem(this.key)!==o)return P("storage_unavailable","Could not persist WorkBuddy login; sign in again");let c=await this.platform.navigate({appId:He,path:`${Ht}?client_id=${encodeURIComponent(t)}&redirect_uri=${encodeURIComponent(e.redirectPath)}&state=${encodeURIComponent(n)}`+(s?`&envVersion=${s}`:""),envVersion:"release"});return c.error&&this.storage.removeItem(this.key),c}catch(s){return P("miniprogram_login_failed",xe(s))}}async handleCallback(e){let t=e?.referrerInfo,s=Ke(t?.extraData);if(!s||!s.code&&!s.error)return{data:null,error:null};let n=typeof s.state=="string"?this.exchanges.get(s.state):void 0;if(n)return t?.appId===n.appId?n.task:P("invalid_request","WorkBuddy callback does not match the login source");let i;try{i=this.readPending()}catch(c){return P("storage_unavailable",xe(c))}if(!i)return{data:null,error:null};if(typeof s.state!="string"||!s.state)return P("invalid_request","WorkBuddy callback requires state");if(t?.appId!==i.appId||s.state!==i.state)return P("invalid_request","WorkBuddy callback does not match the login source or state");if(!(typeof s.code=="string"&&s.code)&&!(typeof s.error=="string"&&s.error))return P("invalid_request","WorkBuddy callback has no authorization code");if(!s.error&&(typeof s.redirect_uri!="string"||!s.redirect_uri.trim()))return P("invalid_request","WorkBuddy callback requires redirect_uri");try{if(this.storage.removeItem(this.key),this.storage.getItem(this.key)!==null)return P("storage_unavailable","Could not consume WorkBuddy login; sign in again")}catch(c){return P("storage_unavailable",xe(c))}if(i.expiresAt<=Date.now())return P("invalid_grant","WorkBuddy login expired; sign in again","unauthenticated");if(s.error)return P(String(s.error),typeof s.error_description=="string"?s.error_description:"WorkBuddy authorization was not completed","permission-denied");let o=this.exchange({code:s.code,state:i.state,shortlink:s.redirect_uri});this.exchanges.set(i.state,{appId:i.appId,task:o});try{return await o}finally{this.exchanges.delete(i.state)}}readPending(){let e=this.storage.getItem(this.key);if(!e)return null;let t=Ke(JSON.parse(e));if(!t||typeof t.state!="string"||typeof t.appId!="string"||typeof t.expiresAt!="number")throw new Error("Invalid saved WorkBuddy login; sign in again");return t}};function Ke(r){return r!==null&&typeof r=="object"&&!Array.isArray(r)?r:null}a(Ke,"record");function P(r,e,t="invalid-request"){return{data:null,error:{kind:t,code:r,message:e,status:0}}}a(P,"failure");function xe(r){return r instanceof Error?r.message:String(r)}a(xe,"describe");var Ge=200;function Je(r,e){let t=Array.from(r);return t.length<=e?r:`${t.slice(0,e).join("")}\u2026`}a(Je,"truncateMessage");function Ee(r){let e=r.get("error");if(!e)return null;let t=r.get("error_description"),s=t?`oauth provider rejected the request: ${e}: ${t}`:`oauth provider rejected the request: ${e}`;return Je(s,Ge)}a(Ee,"oauthProviderRejectMessage");var D=class{static{a(this,"AuthModule")}fetch;baseUrl;sessions;storage;oauthRelayBaseUrl;workBuddyPkce;workBuddyMiniProgram;workBuddyExchanges=new Map;listeners=new Map;nextListenerId=1;constructor(e,t,s={}){this.fetch=t,this.baseUrl=`${e.endpoint}${R.auth}`,this.oauthRelayBaseUrl=e.oauthRelayBaseUrl,this.storage=We(s.storage),this.workBuddyPkce=new ae(e.publishableKey),this.sessions=new ce({store:new ue(this.storage,e.publishableKey),refresh:a(n=>this.exchangeRefreshHandle(n),"refresh"),emit:a((n,i)=>this.notify(n,i),"emit"),isCredentialsRejected:a(n=>le(n)&&Ve(n),"isCredentialsRejected")}),s.workBuddyMiniProgram&&(this.workBuddyMiniProgram=new de(e.publishableKey,this.storage,s.workBuddyMiniProgram,n=>this.postForSession(b.loginWorkBuddyMiniProgram,n)))}async getAccessToken(){return(await this.sessions.ensure())?.accessToken}async signInWithWorkBuddyMiniProgram(e){return this.workBuddyMiniProgram?this.workBuddyMiniProgram.signIn(e):h({kind:"unimplemented",status:0,message:"Use createMiniProgramWorkBuddyCloud for WorkBuddy mini program login"})}async handleWorkBuddyMiniProgramCallback(e){return this.workBuddyMiniProgram?this.workBuddyMiniProgram.handleCallback(e):h({kind:"unimplemented",status:0,message:"Use createMiniProgramWorkBuddyCloud for WorkBuddy mini program login"})}async signInWithPassword(e){if(!e.password)return h(p("signInWithPassword requires a password"));let t=B(e,"signInWithPassword");return t.error?h(t.error):this.postForSession(b.signIn,{username:t.data.username,password:e.password})}async signInWithWechat(e,t){return e?t?this.postForSession(b.loginWechat,{code:e,appid:t}):h(p("signInWithWechat requires appid")):h(p("signInWithWechat requires code"))}async signUp(e){let t=B(e,"signUp");if(t.error)return h(t.error);if(!e.verificationToken)return h(p("signUp requires a verificationToken; run sendOtp + verifyOtp first (the provider rejects username+password-only signup)"));let s={verification_token:e.verificationToken};return t.data.kind==="phone"?s.phone_number=t.data.username:s.email=t.data.username,e.password&&(s.password=e.password),this.postForSession(b.signUp,s)}async sendOtp(e){let t=B(e,"sendOtp");if(t.error)return h(t.error);let s={};t.data.kind==="phone"?(s.phone_number=t.data.username,s.target="ANY"):(s.email=t.data.username,s.usage="email",e.emailRedirectTo&&(s.email_redirect_to=e.emailRedirectTo));let n=await this.request(b.verification,{method:"POST",body:s});if(n.error)return h(n.error);let i=n.data??{},o=typeof i.verification_id=="string"?i.verification_id:"";return o?S({verificationId:o,isExistingUser:i.is_user===!0}):h(p("provider returned no verification_id"))}async signInWithOtp(e){let t=B(e,"signInWithOtp");if(t.error)return h(t.error);let s=await this.sendOtp(e);if(s.error)return h(s.error);let{verificationId:n,isExistingUser:i}=s.data,o=t.data.kind==="phone"?{phone:t.data.username}:{email:t.data.username};return S({verificationId:n,isExistingUser:i,isUser:i,verify:a(({token:c,password:u})=>this.verifyOtp({verificationId:n,token:c,...o,isExistingUser:i,password:u}),"verify")})}async verifyOtp(e){let t=B(e,"verifyOtp");if(t.error)return h(t.error);if(!e.verificationId||!e.token)return h(p("verifyOtp requires verificationId and token"));let s=await this.request(b.verificationVerify,{method:"POST",body:{verification_id:e.verificationId,verification_code:e.token}});if(s.error)return h(s.error);let n=s.data??{},i=typeof n.verification_token=="string"?n.verification_token:"";if(!i)return h(p("provider returned no verification_token"));if(e.isExistingUser)return this.postForSession(b.signIn,{username:t.data.username,verification_token:i});let o=t.data.kind==="phone"?{phone:t.data.value,password:e.password}:{email:t.data.value,password:e.password};return this.signUp({...o,verificationToken:i})}async signInWithOAuth(e){if(!this.oauthRelayBaseUrl)return h(p("signInWithOAuth requires oauthRelayBaseUrl"));if(e.provider!=="google"&&e.provider!=="wechat"&&e.provider!=="workbuddy")return h(p("\u5F53\u524D SDK \u4E0D\u652F\u6301\u8BE5\u767B\u5F55\u65B9\u5F0F\uFF0C\u8BF7\u68C0\u67E5 SDK \u7248\u672C\u4E0E\u767B\u5F55\u914D\u7F6E\u3002"));let t=e.redirectTo??zt();return t?this.startRelayOAuth(e,t):h(p("signInWithOAuth requires redirectTo outside a browser environment"))}parseCallbackQuery(e){try{let t=/^https?:\/\//i.test(e)?new URL(e).search:e;return S(new URLSearchParams(t))}catch{return h(p("oauth callback URL is invalid"))}}async handleOAuthCallback(e){let t=this.parseCallbackQuery(e??ve());if(t.error||!t.data)return h(t.error??p("oauth callback URL is invalid"));let s=t.data,n=Ee(s);if(n)return h({kind:"unauthenticated",message:n,status:0});let i=s.get("code");if(!i)return S(null);let o=s.get("state")??"";if(!o)return h(p("oauth callback requires state"));let c=s.get("provider_id");if(c!=="custom-oauth")return h(p("oauth callback requires provider_id=custom-oauth"));let u={provider_id:c,provider_code:i,state:o,provider_params:{state:o}};return this.postForSession(b.signInWithProvider,u)}async handleWechatWebCallback(e){let t=this.parseCallbackQuery(e??ve());if(t.error||!t.data)return h(t.error??p("oauth callback URL is invalid"));let s=t.data,n=Ee(s);if(n)return h({kind:"unauthenticated",message:n,status:0});let i=s.get("code");if(!i)return S(null);let o=s.get("state")??"";if(!o)return h(p("oauth callback requires state"));let c=s.get("provider");return c&&c!=="wechat"?h(p("wechat callback requires provider=wechat")):s.get("provider_id")==="custom-oauth"?h(p("wechat callback must not use provider_id=custom-oauth")):this.postForSession(b.loginWechatWeb,{code:i,state:o})}async handleWorkBuddyCallback(e){let t=this.parseCallbackQuery(e??ve());if(t.error||!t.data)return h(t.error??p("oauth callback URL is invalid"));let s=t.data,n=s.get("provider");if(n&&n!=="workbuddy")return S(null);let i=Ee(s);if(i)return this.workBuddyPkce.clearVerifier(),h({kind:"unauthenticated",message:i,status:0});let o=s.get("code");if(!o)return S(null);let c=s.get("state")??"";if(!c)return h(p("workbuddy callback requires state"));if(s.get("provider_id")==="custom-oauth")return h(p("workbuddy callback must not use provider_id=custom-oauth"));if(this.workBuddyPkce.isConsumed(c))return S(null);let u=this.workBuddyExchanges.get(c);if(u)return u;let d=this.workBuddyPkce.readVerifier();if(!d)return h(p("workbuddy callback has no local PKCE verifier; sign in again in this tab"));this.workBuddyPkce.clearVerifier();let l=this.exchangeWorkBuddyCode(o,c,d);this.workBuddyExchanges.set(c,l);try{return await l}finally{this.workBuddyExchanges.delete(c)}}async exchangeWorkBuddyCode(e,t,s){let n=await this.postForSession(b.loginWorkBuddy,{code:e,state:t,code_verifier:s});return n.data&&this.workBuddyPkce.markConsumed(t),n}async resetPasswordForEmail(e){if(!e)return h(p("resetPasswordForEmail requires email"));let t=await this.request(b.verification,{method:"POST",body:{email:e,usage:"PASSWORD_RESET",target:"USER"}});if(t.error)return h(t.error);let s=t.data??{},n=typeof s.verification_id=="string"?s.verification_id:"";return n?S({updateUser:a(async({nonce:i,password:o})=>{let c=await this.request(b.verificationVerify,{method:"POST",body:{verification_id:n,verification_code:i}});if(c.error)return h(c.error);let u=c.data??{},d=typeof u.verification_token=="string"?u.verification_token:"";if(!d)return h(p("provider returned no verification_token"));let l=await this.request(b.resetPassword,{method:"POST",body:{email:e,new_password:o,verification_token:d}});if(l.error)return h(l.error);let f=await this.signInWithPassword({email:e,password:o});return f.error||this.notify("PASSWORD_RECOVERY",f.data),f},"updateUser")}):h(p("provider returned no verification_id"))}async resetPasswordForOld(e){let t=await this.getAccessToken();if(!t)return h({kind:"unauthenticated",message:"no active session",status:0});let s=await this.request(b.sudo,{method:"POST",token:t,body:{password:e.oldPassword}});if(s.error)return h(s.error);let n=s.data??{},i=typeof n.sudo_token=="string"?n.sudo_token:"";if(!i)return h(p("provider returned no sudo_token"));let o=await this.request(b.userPassword,{method:"PATCH",token:t,body:{sudo_token:i,new_password:e.newPassword}});if(o.error)return h(o.error);let c=await this.getSession();return c.data?(this.notify("USER_UPDATED",c.data),S(c.data)):h(c.error??{kind:"unauthenticated",message:"no active session",status:0})}async getSession(){try{return S(await this.sessions.ensure())}catch(e){return h(le(e)?e:K(e))}}async refreshSession(){try{return S(await this.sessions.forceRefresh())}catch(e){return h(le(e)?e:K(e))}}async getUser(){let e=await this.getAccessToken();if(!e)return h({kind:"unauthenticated",message:"no active session",status:0});let t=await this.request(b.userMe,{method:"GET",token:e});return t.error?(Ve(t.error)&&this.sessions.clear(),h(t.error)):S(Fe(t.data))}async signOut(){let e=this.sessions.peek();return e?.accessToken&&await this.request(b.signOut,{method:"POST",body:{},token:e.accessToken}),this.sessions.clear(),S(null)}onAuthStateChange(e){let t=this.nextListenerId++;return this.listeners.set(t,e),ze(e,"INITIAL_SESSION",this.sessions.peek()),()=>{this.listeners.delete(t)}}async startRelayOAuth(e,t){let s;try{s=new URL(t)}catch{return h(p("signInWithOAuth requires an absolute redirectTo URL"))}let n=new URL(`${this.oauthRelayBaseUrl}/authorize`);if(n.searchParams.set("provider",e.provider),n.searchParams.set("callback_url",s.toString()),e.provider==="workbuddy"){let i=await this.createWorkBuddyProof();if(i.error||!i.data)return h(i.error??p("signInWithOAuth could not create PKCE"));n.searchParams.set("code_challenge",i.data),n.searchParams.set("code_challenge_method","S256")}return S({url:n.toString()})}async createWorkBuddyProof(){if(!De())return h(p("workbuddy sign-in requires WebCrypto; it is unavailable in this runtime (an insecure http:// origin disables it \u2014 serve the app over https)"));if(!this.workBuddyPkce.usable())return h(p("workbuddy sign-in requires sessionStorage to keep the PKCE verifier across the redirect; it is unavailable in this runtime"));let e,t;try{e=Ne(),t=await Me(e)}catch(s){return h(p(`workbuddy sign-in could not create a PKCE proof: ${Kt(s)}`))}return this.workBuddyPkce.saveVerifier(e)?S(t):h(p("workbuddy sign-in could not persist the PKCE verifier"))}async exchangeRefreshHandle(e){let t=await this.request(b.token,{method:"POST",body:{grant_type:"refresh_token",refresh_token:e}});if(t.error)throw t.error;return Se(t.data,Date.now())}async postForSession(e,t,s={}){let n=await this.request(e,{method:"POST",body:t,headers:s.headers});if(n.error)return h(n.error);try{return S(this.sessions.commitSignIn(Se(n.data,Date.now())))}catch(i){return h(le(i)?i:K(i))}}async request(e,t){let s={...t.headers};t.body!==void 0&&(s["Content-Type"]="application/json"),t.token&&(s.Authorization=`Bearer ${t.token}`);let n;try{n=await this.fetch(this.baseUrl+e,{method:t.method,headers:s,body:t.body===void 0?void 0:JSON.stringify(t.body)})}catch(o){return h(K(o))}let i=await Vt(n);return n.ok?S(i):h(qe(n.status,i))}notify(e,t){for(let s of this.listeners.values())ze(s,e,t)}};function S(r){return{data:r,error:null}}a(S,"ok");function h(r){return{data:null,error:r}}a(h,"fail");function p(r){return{kind:"invalid-request",message:r,status:0}}a(p,"badRequest");function Kt(r){return Je(r instanceof Error?r.message:String(r),Ge)}a(Kt,"describeError");function le(r){return!!r&&typeof r=="object"&&typeof r.kind=="string"}a(le,"isCloudError");function Ve(r){return r.kind==="unauthenticated"||r.code==="invalid_grant"}a(Ve,"rejectedCredentials");async function Vt(r){let e=await r.text();if(!e)return null;try{return JSON.parse(e)}catch{return{message:e}}}a(Vt,"readBody");function ze(r,e,t){try{r(e,t)}catch{}}a(ze,"safeInvoke");function zt(){let r=globalThis.location;return r?r.origin+r.pathname:""}a(zt,"currentPageUrl");function ve(){return globalThis.location?.search??""}a(ve,"currentPageSearch");var Pe=a(r=>Math.min(1e3*2**r,3e4),"getRetryDelay"),Ye=[520,503],_e=["GET","HEAD","OPTIONS"];var I=class extends Error{static{a(this,"PostgrestError")}details;hint;code;constructor(e){super(e.message),this.name="PostgrestError",this.details=e.details,this.hint=e.hint,this.code=e.code}toJSON(){return{name:this.name,message:this.message,details:this.details,hint:this.hint,code:this.code}}};function Xe(r,e){return new Promise(t=>{if(e?.aborted){t();return}let s=setTimeout(()=>{e?.removeEventListener("abort",n),t()},r);function n(){clearTimeout(s),t()}a(n,"onAbort"),e?.addEventListener("abort",n)})}a(Xe,"sleep");function Gt(r,e,t,s){return!(!s||t>=3||!_e.includes(r)||!Ye.includes(e))}a(Gt,"shouldRetry");var V=class{static{a(this,"PostgrestBuilder")}method;url;headers;schema;body;shouldThrowOnError=!1;signal;fetch;isMaybeSingle;shouldStripNulls;urlLengthLimit;retryEnabled=!0;constructor(e){this.method=e.method,this.url=e.url,this.headers=new Headers(e.headers),this.schema=e.schema,this.body=e.body,this.shouldThrowOnError=e.shouldThrowOnError??!1,this.signal=e.signal,this.isMaybeSingle=e.isMaybeSingle??!1,this.shouldStripNulls=e.shouldStripNulls??!1,this.urlLengthLimit=e.urlLengthLimit??8e3,this.retryEnabled=e.retry??!0,e.fetch?this.fetch=e.fetch:this.fetch=fetch}throwOnError(){return this.shouldThrowOnError=!0,this}stripNulls(){if(this.headers.get("Accept")==="text/csv")throw new Error("stripNulls() cannot be used with csv()");return this.shouldStripNulls=!0,this}setHeader(e,t){return this.headers=new Headers(this.headers),this.headers.set(e,t),this}retry(e){return this.retryEnabled=e,this}then(e,t){if(this.schema===void 0||(["GET","HEAD"].includes(this.method)?this.headers.set("Accept-Profile",this.schema):this.headers.set("Content-Profile",this.schema)),this.method!=="GET"&&this.method!=="HEAD"&&this.headers.set("Content-Type","application/json"),this.shouldStripNulls){let o=this.headers.get("Accept");o==="application/vnd.pgrst.object+json"?this.headers.set("Accept","application/vnd.pgrst.object+json;nulls=stripped"):(!o||o==="application/json")&&this.headers.set("Accept","application/vnd.pgrst.array+json;nulls=stripped")}let s=this.fetch,i=a(async()=>{let o=0;for(;;){let c={};this.headers.forEach((d,l)=>{c[l]=d}),o>0&&(c["X-Retry-Count"]=String(o));let u;try{u=await s(this.url.toString(),{method:this.method,headers:c,body:JSON.stringify(this.body,(d,l)=>typeof l=="bigint"?l.toString():l),signal:this.signal})}catch(d){if(d?.name==="AbortError"||d?.code==="ABORT_ERR"||!_e.includes(this.method))throw d;if(this.retryEnabled&&o<3){let l=Pe(o);o++,await Xe(l,this.signal);continue}throw d}if(Gt(this.method,u.status,o,this.retryEnabled)){let d=u.headers?.get("Retry-After")??null,l=d!==null?Math.max(0,parseInt(d,10)||0)*1e3:Pe(o);await u.text(),o++,await Xe(l,this.signal);continue}return await this.processResponse(u)}},"executeWithRetry")();return this.shouldThrowOnError||(i=i.catch(o=>{let c="",u="",d="",l=o?.cause;if(l){let g=l?.message??"",y=l?.code??"";c=`${o?.name??"FetchError"}: ${o?.message}`,c+=`
+
+Caused by: ${l?.name??"Error"}: ${g}`,y&&(c+=` (${y})`),l?.stack&&(c+=`
+${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name==="AbortError"||o?.code==="ABORT_ERR"?(d="",u="Request was aborted (timeout or manual cancellation)",f>this.urlLengthLimit&&(u+=`. Note: Your request URL is ${f} characters, which may exceed server limits. If selecting many fields, consider using views. If filtering with large arrays (e.g., .in('id', [many IDs])), consider using an RPC function to pass values server-side.`)):(l?.name==="HeadersOverflowError"||l?.code==="UND_ERR_HEADERS_OVERFLOW")&&(d="",u="HTTP headers exceeded server limits (typically 16KB)",f>this.urlLengthLimit&&(u+=`. Your request URL is ${f} characters. If selecting many fields, consider using views. If filtering with large arrays (e.g., .in('id', [200+ IDs])), consider using an RPC function instead.`)),{success:!1,error:{message:`${o?.name??"FetchError"}: ${o?.message}`,details:c,hint:u,code:d},data:null,count:null,status:0,statusText:""}})),i.then(e,t)}async processResponse(e){let t=null,s=null,n=null,i=e.status,o=e.statusText;if(e.ok){if(this.method!=="HEAD"){let d=await e.text();if(d!=="")if(this.headers.get("Accept")==="text/csv")s=d;else if(this.headers.get("Accept")&&this.headers.get("Accept")?.includes("application/vnd.pgrst.plan+text"))s=d;else try{s=JSON.parse(d)}catch{if(t={message:d},s=null,this.shouldThrowOnError)throw new I({message:d,details:"",hint:"",code:""})}}let c=this.headers.get("Prefer")?.match(/count=(exact|planned|estimated)/),u=e.headers.get("content-range")?.split("/");if(c&&u&&u.length>1&&(n=parseInt(u[1])),this.isMaybeSingle&&Array.isArray(s))if(s.length>1){if(t={code:"PGRST116",details:`Results contain ${s.length} rows, application/vnd.pgrst.object+json requires 1 row`,hint:null,message:"JSON object requested, multiple (or no) rows returned"},s=null,n=null,i=406,o="Not Acceptable",this.shouldThrowOnError)throw new I({...t,hint:t.hint??""})}else s.length===1?s=s[0]:s=null}else{let c=await e.text();try{t=JSON.parse(c),Array.isArray(t)&&e.status===404&&(s=[],t=null,i=200,o="OK")}catch{e.status===404&&c===""?(i=204,o="No Content"):t={message:c}}if(t&&this.shouldThrowOnError)throw new I(t)}return{success:t===null,error:t,data:s,count:n,status:i,statusText:o}}returns(){return this}overrideTypes(){return this}};var z=class extends V{static{a(this,"PostgrestTransformBuilder")}throwOnError(){return super.throwOnError()}select(e){let t=!1,s=(e??"*").split("").map(n=>/\s/.test(n)&&!t?"":(n==='"'&&(t=!t),n)).join("");return this.url.searchParams.set("select",s),this.headers.append("Prefer","return=representation"),this}order(e,{ascending:t=!0,nullsFirst:s,foreignTable:n,referencedTable:i=n}={}){let o=i?`${i}.order`:"order",c=this.url.searchParams.get(o);return this.url.searchParams.set(o,`${c?`${c},`:""}${e}.${t?"asc":"desc"}${s===void 0?"":s?".nullsfirst":".nullslast"}`),this}limit(e,{foreignTable:t,referencedTable:s=t}={}){let n=typeof s>"u"?"limit":`${s}.limit`;return this.url.searchParams.set(n,`${e}`),this}range(e,t,{foreignTable:s,referencedTable:n=s}={}){let i=typeof n>"u"?"offset":`${n}.offset`,o=typeof n>"u"?"limit":`${n}.limit`;return this.url.searchParams.set(i,`${e}`),this.url.searchParams.set(o,`${t-e+1}`),this}abortSignal(e){return this.signal=e,this}single(){return this.headers.set("Accept","application/vnd.pgrst.object+json"),this}maybeSingle(){return this.isMaybeSingle=!0,this}csv(){return this.headers.set("Accept","text/csv"),this}geojson(){return this.headers.set("Accept","application/geo+json"),this}explain({analyze:e=!1,verbose:t=!1,settings:s=!1,buffers:n=!1,wal:i=!1,format:o="text"}={}){let c=[e?"analyze":null,t?"verbose":null,s?"settings":null,n?"buffers":null,i?"wal":null].filter(Boolean).join("|"),u=this.headers.get("Accept")??"application/json";return this.headers.set("Accept",`application/vnd.pgrst.plan+${o}; for="${u}"; options=${c};`),o==="json"?this:this}rollback(){return this.headers.append("Prefer","tx=rollback"),this}returns(){return this}maxAffected(e){return this.headers.append("Prefer","handling=strict"),this.headers.append("Prefer",`max-affected=${e}`),this}};var Ze=new RegExp("[,()]"),A=class extends z{static{a(this,"PostgrestFilterBuilder")}throwOnError(){return super.throwOnError()}eq(e,t){return this.url.searchParams.append(e,`eq.${t}`),this}neq(e,t){return this.url.searchParams.append(e,`neq.${t}`),this}gt(e,t){return this.url.searchParams.append(e,`gt.${t}`),this}gte(e,t){return this.url.searchParams.append(e,`gte.${t}`),this}lt(e,t){return this.url.searchParams.append(e,`lt.${t}`),this}lte(e,t){return this.url.searchParams.append(e,`lte.${t}`),this}like(e,t){return this.url.searchParams.append(e,`like.${t}`),this}likeAllOf(e,t){return this.url.searchParams.append(e,`like(all).{${t.join(",")}}`),this}likeAnyOf(e,t){return this.url.searchParams.append(e,`like(any).{${t.join(",")}}`),this}ilike(e,t){return this.url.searchParams.append(e,`ilike.${t}`),this}ilikeAllOf(e,t){return this.url.searchParams.append(e,`ilike(all).{${t.join(",")}}`),this}ilikeAnyOf(e,t){return this.url.searchParams.append(e,`ilike(any).{${t.join(",")}}`),this}regexMatch(e,t){return this.url.searchParams.append(e,`match.${t}`),this}regexIMatch(e,t){return this.url.searchParams.append(e,`imatch.${t}`),this}is(e,t){return this.url.searchParams.append(e,`is.${t}`),this}isDistinct(e,t){return this.url.searchParams.append(e,`isdistinct.${t}`),this}in(e,t){let s=Array.from(new Set(t)).map(n=>typeof n=="string"&&Ze.test(n)?`"${n}"`:`${n}`).join(",");return this.url.searchParams.append(e,`in.(${s})`),this}notIn(e,t){let s=Array.from(new Set(t)).map(n=>typeof n=="string"&&Ze.test(n)?`"${n}"`:`${n}`).join(",");return this.url.searchParams.append(e,`not.in.(${s})`),this}contains(e,t){return typeof t=="string"?this.url.searchParams.append(e,`cs.${t}`):Array.isArray(t)?this.url.searchParams.append(e,`cs.{${t.join(",")}}`):this.url.searchParams.append(e,`cs.${JSON.stringify(t)}`),this}containedBy(e,t){return typeof t=="string"?this.url.searchParams.append(e,`cd.${t}`):Array.isArray(t)?this.url.searchParams.append(e,`cd.{${t.join(",")}}`):this.url.searchParams.append(e,`cd.${JSON.stringify(t)}`),this}rangeGt(e,t){return this.url.searchParams.append(e,`sr.${t}`),this}rangeGte(e,t){return this.url.searchParams.append(e,`nxl.${t}`),this}rangeLt(e,t){return this.url.searchParams.append(e,`sl.${t}`),this}rangeLte(e,t){return this.url.searchParams.append(e,`nxr.${t}`),this}rangeAdjacent(e,t){return this.url.searchParams.append(e,`adj.${t}`),this}overlaps(e,t){return typeof t=="string"?this.url.searchParams.append(e,`ov.${t}`):this.url.searchParams.append(e,`ov.{${t.join(",")}}`),this}textSearch(e,t,{config:s,type:n}={}){let i="";n==="plain"?i="pl":n==="phrase"?i="ph":n==="websearch"&&(i="w");let o=s===void 0?"":`(${s})`;return this.url.searchParams.append(e,`${i}fts${o}.${t}`),this}match(e){return Object.entries(e).filter(([t,s])=>s!==void 0).forEach(([t,s])=>{this.url.searchParams.append(t,`eq.${s}`)}),this}not(e,t,s){return this.url.searchParams.append(e,`not.${t}.${s}`),this}or(e,{foreignTable:t,referencedTable:s=t}={}){let n=s?`${s}.or`:"or";return this.url.searchParams.append(n,`(${e})`),this}filter(e,t,s){return this.url.searchParams.append(e,`${t}.${s}`),this}};var G=class{static{a(this,"PostgrestQueryBuilder")}url;headers;schema;signal;fetch;urlLengthLimit;retry;constructor(e,{headers:t={},schema:s,fetch:n,urlLengthLimit:i=8e3,retry:o}){this.url=e,this.headers=new Headers(t),this.schema=s,this.fetch=n,this.urlLengthLimit=i,this.retry=o}cloneRequestState(){return{url:new URL(this.url.toString()),headers:new Headers(this.headers)}}select(e,t){let{head:s=!1,count:n}=t??{},i=s?"HEAD":"GET",o=!1,c=(e??"*").split("").map(l=>/\s/.test(l)&&!o?"":(l==='"'&&(o=!o),l)).join(""),{url:u,headers:d}=this.cloneRequestState();return u.searchParams.set("select",c),n&&d.append("Prefer",`count=${n}`),new A({method:i,url:u,headers:d,schema:this.schema,fetch:this.fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}insert(e,{count:t,defaultToNull:s=!0}={}){let n="POST",{url:i,headers:o}=this.cloneRequestState();if(t&&o.append("Prefer",`count=${t}`),s||o.append("Prefer","missing=default"),Array.isArray(e)){let c=e.reduce((u,d)=>u.concat(Object.keys(d)),[]);if(c.length>0){let u=[...new Set(c)].map(d=>`"${d}"`);i.searchParams.set("columns",u.join(","))}}return new A({method:n,url:i,headers:o,schema:this.schema,body:e,fetch:this.fetch??fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}upsert(e,{onConflict:t,ignoreDuplicates:s=!1,count:n,defaultToNull:i=!0}={}){let o="POST",{url:c,headers:u}=this.cloneRequestState();if(u.append("Prefer",`resolution=${s?"ignore":"merge"}-duplicates`),t!==void 0&&c.searchParams.set("on_conflict",t),n&&u.append("Prefer",`count=${n}`),i||u.append("Prefer","missing=default"),Array.isArray(e)){let d=e.reduce((l,f)=>l.concat(Object.keys(f)),[]);if(d.length>0){let l=[...new Set(d)].map(f=>`"${f}"`);c.searchParams.set("columns",l.join(","))}}return new A({method:o,url:c,headers:u,schema:this.schema,body:e,fetch:this.fetch??fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}update(e,{count:t}={}){let s="PATCH",{url:n,headers:i}=this.cloneRequestState();return t&&i.append("Prefer",`count=${t}`),new A({method:s,url:n,headers:i,schema:this.schema,body:e,fetch:this.fetch??fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}delete({count:e}={}){let t="DELETE",{url:s,headers:n}=this.cloneRequestState();return e&&n.append("Prefer",`count=${e}`),new A({method:t,url:s,headers:n,schema:this.schema,fetch:this.fetch??fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}};var N=class r{static{a(this,"PostgrestClient")}url;headers;schemaName;fetch;urlLengthLimit;retry;constructor(e,{headers:t={},schema:s,fetch:n,timeout:i,urlLengthLimit:o=8e3,retry:c}={}){this.url=e,this.headers=new Headers(t),this.schemaName=s,this.urlLengthLimit=o;let u=n??globalThis.fetch;i!==void 0&&i>0?this.fetch=(d,l)=>{let f=new AbortController,g=setTimeout(()=>f.abort(),i),y=l?.signal;if(y){if(y.aborted)return clearTimeout(g),u(d,l);let ne=a(()=>{clearTimeout(g),f.abort()},"abortHandler");return y.addEventListener("abort",ne,{once:!0}),u(d,{...l,signal:f.signal}).finally(()=>{clearTimeout(g),y.removeEventListener("abort",ne)})}return u(d,{...l,signal:f.signal}).finally(()=>clearTimeout(g))}:this.fetch=u,this.retry=c}from(e){if(!e||typeof e!="string"||e.trim()==="")throw new Error("Invalid relation name: relation must be a non-empty string.");let t=new URL(`${this.url}/${e}`);return new G(t,{headers:new Headers(this.headers),schema:this.schemaName,fetch:this.fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}schema(e){return new r(this.url,{headers:this.headers,schema:e,fetch:this.fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}rpc(e,t={},{head:s=!1,get:n=!1,count:i}={}){let o,c=new URL(`${this.url}/rpc/${e}`),u,d=a(g=>g!==null&&typeof g=="object"&&(!Array.isArray(g)||g.some(d)),"_isObject"),l=s&&Object.values(t).some(d);l?(o="POST",u=t):s||n?(o=s?"HEAD":"GET",Object.entries(t).filter(([g,y])=>y!==void 0).map(([g,y])=>[g,Array.isArray(y)?`{${y.join(",")}}`:`${y}`]).forEach(([g,y])=>{c.searchParams.append(g,y)})):(o="POST",u=t);let f=new Headers(this.headers);return l?f.set("Prefer",i?`count=${i},return=minimal`:"return=minimal"):i&&f.set("Prefer",`count=${i}`),new A({method:o,url:c,headers:f,schema:this.schemaName,body:u,fetch:this.fetch??fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}};var J=class{static{a(this,"WorkBuddyDatabaseModule")}client;constructor(e,t){this.client=new N(`${e.endpoint}${R.database}`,{fetch:t}),this.from=this.client.from.bind(this.client),this.rpc=this.client.rpc.bind(this.client)}from;rpc;get url(){return this.client.url}};function et(r,e){return new J(r,e)}a(et,"createDatabaseModule");var x=class extends Error{static{a(this,"CloudOpenAIError")}error;status;requestId;retryAfterMs;constructor(e,t={}){let s=typeof e=="string"?{message:e,type:"server_error",param:null,code:null}:e;super(s.message),this.name="CloudOpenAIError",this.error=s,this.status=t.status,this.requestId=t.requestId,this.retryAfterMs=t.retryAfterMs,t.cause!==void 0&&("cause"in this||Object.defineProperty(this,"cause",{value:t.cause,writable:!1,enumerable:!1,configurable:!1}))}};function tt(r){if(!r)return;let e=r.trim(),t=Number(e);if(!isNaN(t)&&t>=0&&Number.isInteger(t))return t*1e3;let s=Date.parse(e);if(!isNaN(s)){let n=s-Date.now();return n>0?n:0}}a(tt,"parseRetryAfter");function m(...r){return r.find(e=>typeof e=="string"&&e.length>0)}a(m,"stringField");function k(...r){return r.find(e=>typeof e=="number"&&Number.isFinite(e))}a(k,"numberField");function E(...r){return r.find(e=>typeof e=="boolean")}a(E,"booleanField");function rt(...r){for(let e of r){if(typeof e=="number"&&Number.isFinite(e))return e;if(e!==null&&typeof e=="object"&&!Array.isArray(e))return Jt(e)}}a(rt,"contextWindowField");function Jt(r){let e={};for(let[t,s]of Object.entries(r)){if(t==="supportedLengths"){Array.isArray(s)&&(e.supportedLengths=s.filter(n=>typeof n=="number"&&Number.isFinite(n)));continue}if(t==="defaultLength"){typeof s=="number"&&Number.isFinite(s)&&(e.defaultLength=s);continue}Object.defineProperty(e,t,{value:s,writable:!0,enumerable:!0,configurable:!0})}return e}a(Jt,"normalizeContextWindowObject");function st(r){if(!r||typeof r!="object")return;let e=r,t=Array.isArray(e.input)?e.input.filter(n=>typeof n=="string"):void 0,s=Array.isArray(e.output)?e.output.filter(n=>typeof n=="string"):void 0;return t?.length||s?.length?{...t?.length?{input:t}:{},...s?.length?{output:s}:{}}:void 0}a(st,"modalitiesField");function nt(r){if(!r||typeof r!="object")return;let t=Object.entries(r).filter(([,s])=>typeof s=="boolean");return t.length?Object.fromEntries(t):void 0}a(nt,"capabilitiesField");function it(r){if(!r||typeof r!="object")return;let e=r,t={...m(e.currency)?{currency:e.currency}:{},...k(e.inputPerMillionTokens)!==void 0?{inputPerMillionTokens:e.inputPerMillionTokens}:{},...k(e.outputPerMillionTokens)!==void 0?{outputPerMillionTokens:e.outputPerMillionTokens}:{},...m(e.displayText)?{displayText:e.displayText}:{}};return Object.keys(t).length?t:void 0}a(it,"pricingField");function ot(r){if(!r||typeof r!="object")return;let e=r,t={},s=m(e.effort);s!==void 0&&(t.effort=s);let n=m(e.defaultEffort);n!==void 0&&(t.defaultEffort=n),Array.isArray(e.supportedEfforts)&&(t.supportedEfforts=e.supportedEfforts.filter(c=>typeof c=="string"));let i=m(e.summary);i!==void 0&&(i==="auto"||i==="concise"||i==="detailed")&&(t.summary=i);let o=E(e.canDisableThinking);return o!==void 0&&(t.canDisableThinking=o),Object.keys(t).length>0?t:void 0}a(ot,"reasoningField");function Yt(r){let e=m(r.id,r.ID);if(!e)return null;let t=E(r.enabled,r.Enabled),s=E(r.disabled,r.Disabled),n,i;return t!==void 0?(n=t,s!==void 0&&(i=s)):s!==void 0?(i=s,n=!s):n=!0,{id:e,name:m(r.name,r.Name)??e,...m(r.provider,r.Provider)?{provider:m(r.provider,r.Provider)}:{},...m(r.vendor,r.Vendor)?{vendor:m(r.vendor,r.Vendor)}:{},...m(r.family,r.Family)?{family:m(r.family,r.Family)}:{},...m(r.version,r.Version)?{version:m(r.version,r.Version)}:{},...m(r.description,r.Description)?{description:m(r.description,r.Description)}:{},...m(r.descriptionZh,r.DescriptionZh)?{descriptionZh:m(r.descriptionZh,r.DescriptionZh)}:{},...m(r.descriptionEn,r.DescriptionEn)?{descriptionEn:m(r.descriptionEn,r.DescriptionEn)}:{},...m(r.iconUrl,r.IconURL)?{iconUrl:m(r.iconUrl,r.IconURL)}:{},...rt(r.contextWindow,r.ContextWindow)!==void 0?{contextWindow:rt(r.contextWindow,r.ContextWindow)}:{},...k(r.maxInputTokens,r.MaxInputTokens)!==void 0?{maxInputTokens:k(r.maxInputTokens,r.MaxInputTokens)}:{},...k(r.maxOutputTokens,r.MaxOutputTokens)!==void 0?{maxOutputTokens:k(r.maxOutputTokens,r.MaxOutputTokens)}:{},...st(r.modalities??r.Modalities)?{modalities:st(r.modalities??r.Modalities)}:{},...nt(r.capabilities??r.Capabilities)?{capabilities:nt(r.capabilities??r.Capabilities)}:{},enabled:n,...i!==void 0?{disabled:i}:{},...E(r.isDefault,r.IsDefault)!==void 0?{isDefault:E(r.isDefault,r.IsDefault)}:{},...k(r.sortOrder,r.SortOrder)!==void 0?{sortOrder:k(r.sortOrder,r.SortOrder)}:{},...it(r.pricing??r.Pricing)?{pricing:it(r.pricing??r.Pricing)}:{},...m(r.credits,r.Credits)?{credits:m(r.credits,r.Credits)}:{},...k(r.maxAllowedSize,r.MaxAllowedSize)!==void 0?{maxAllowedSize:k(r.maxAllowedSize,r.MaxAllowedSize)}:{},...E(r.disabledMultimodal,r.DisabledMultimodal)!==void 0?{disabledMultimodal:E(r.disabledMultimodal,r.DisabledMultimodal)}:{},...E(r.supportsImages,r.SupportsImages)!==void 0?{supportsImages:E(r.supportsImages,r.SupportsImages)}:{},...E(r.supportsToolCall,r.SupportsToolCall)!==void 0?{supportsToolCall:E(r.supportsToolCall,r.SupportsToolCall)}:{},...E(r.supportsReasoning,r.SupportsReasoning)!==void 0?{supportsReasoning:E(r.supportsReasoning,r.SupportsReasoning)}:{},...E(r.onlyReasoning,r.OnlyReasoning)!==void 0?{onlyReasoning:E(r.onlyReasoning,r.OnlyReasoning)}:{},...ot(r.reasoning??r.Reasoning)?{reasoning:ot(r.reasoning??r.Reasoning)}:{},...k(r.temperature,r.Temperature)!==void 0?{temperature:k(r.temperature,r.Temperature)}:{},...k(r.top_k,r.Top_K)!==void 0?{top_k:k(r.top_k,r.Top_K)}:{},...k(r.top_p,r.Top_P)!==void 0?{top_p:k(r.top_p,r.Top_P)}:{},...k(r.repetition_penalty,r.Repetition_Penalty)!==void 0?{repetition_penalty:k(r.repetition_penalty,r.Repetition_Penalty)}:{}}}a(Yt,"normalizeModel");function Te(r){return r.name||r.id}a(Te,"getModelDisplayName");function Oe(r,e){return r.capabilities?.[e]}a(Oe,"getModelCapability");var he=class{static{a(this,"ModelsAPI")}baseUrl;fetch;constructor(e,t){this.baseUrl=e,this.fetch=t}async list(e){let t;try{t=await this.fetch(`${this.baseUrl}/models`,{method:"GET",headers:{Accept:"application/json"},signal:e})}catch(c){throw c instanceof Error&&c.name==="AbortError"?c:new x({message:`Network error: ${c?.message??"unknown"}`,type:"server_error",param:null,code:"gateway_network_error"},{cause:c})}if(!t.ok)throw await Ae(t);let s=await t.text(),n;try{n=JSON.parse(s)}catch{throw new x({message:"Failed to parse models response: invalid JSON",type:"server_error",param:null,code:"gateway_invalid_response"})}let i=Array.isArray(n)?n:Array.isArray(n?.data)?n.data:[],o=[];for(let c of i){let u=Yt(c);u&&o.push(u)}return o}};async function Ae(r){let e=await r.text().catch(()=>""),t;try{let i=JSON.parse(e);if(i&&typeof i=="object"&&i.error){let o=i.error;t={message:typeof o.message=="string"?o.message:`HTTP ${r.status}`,type:typeof o.type=="string"?o.type:"server_error",param:o.param===void 0?null:o.param,code:o.code===void 0?null:o.code}}else t={message:typeof i=="string"?i:`HTTP ${r.status}`,type:"server_error",param:null,code:null}}catch{t={message:e||`HTTP ${r.status}`,type:"server_error",param:null,code:null}}let s=r.headers.get("x-request-id")??void 0,n=tt(r.headers.get("retry-after"));return new x(t,{status:r.status,requestId:s,retryAfterMs:n})}a(Ae,"httpError");var fe=class{static{a(this,"Utf8Decoder")}codePoint=0;bytesNeeded=0;bytesSeen=0;lowerBoundary=128;upperBoundary=191;bomSeen=!1;streaming=!1;resetSequence(){this.codePoint=0,this.bytesNeeded=0,this.bytesSeen=0,this.lowerBoundary=128,this.upperBoundary=191}decode(e=new Uint8Array,t={}){this.streaming||(this.resetSequence(),this.bomSeen=!1),this.streaming=t.stream===!0;let s="",n=a(i=>{!this.bomSeen&&(this.bomSeen=!0,i===65279)||(s+=String.fromCodePoint(i))},"emit");for(let i=0;i<e.length;i++){let o=e[i];if(this.bytesNeeded===0){o<=127?n(o):o>=194&&o<=223?(this.bytesNeeded=1,this.codePoint=o&31):o>=224&&o<=239?(this.bytesNeeded=2,this.codePoint=o&15,o===224&&(this.lowerBoundary=160),o===237&&(this.upperBoundary=159)):o>=240&&o<=244?(this.bytesNeeded=3,this.codePoint=o&7,o===240&&(this.lowerBoundary=144),o===244&&(this.upperBoundary=143)):n(65533);continue}if(o<this.lowerBoundary||o>this.upperBoundary){this.resetSequence(),n(65533),i--;continue}this.lowerBoundary=128,this.upperBoundary=191,this.codePoint=this.codePoint<<6|o&63,this.bytesSeen++,this.bytesSeen===this.bytesNeeded&&(n(this.codePoint),this.resetSequence())}return!this.streaming&&this.bytesNeeded>0&&(n(65533),this.resetSequence()),s}};var Xt=class{static{a(this,"SSEDecoder")}event=null;dataParts=[];decode(e){let t=e;if(t.endsWith("\r")&&(t=t.slice(0,-1)),t===""){if(this.event===null&&this.dataParts.length===0)return null;let o={event:this.event,data:this.dataParts.join(`
+`)};return this.event=null,this.dataParts=[],o}if(t.startsWith(":"))return null;let s=t.indexOf(":"),n,i;if(s===-1)n=t,i="";else{n=t.slice(0,s);let o=t.slice(s+1);o.startsWith(" ")&&(o=o.slice(1)),i=o}return n==="event"?this.event=i:n==="data"&&this.dataParts.push(i),null}flush(){if(this.event===null&&this.dataParts.length===0)return null;let e={event:this.event,data:this.dataParts.join(`
+`)};return this.event=null,this.dataParts=[],e}},Qt=class{static{a(this,"LineDecoder")}buffer=new Uint8Array;decoder;constructor(){this.decoder=typeof TextDecoder>"u"?new fe:new TextDecoder("utf-8")}decode(e){let t=new Uint8Array(this.buffer.length+e.length);t.set(this.buffer),t.set(e,this.buffer.length),this.buffer=t;let s=[],n=0;for(let i=0;i<this.buffer.length;i++)if(this.buffer[i]===10||this.buffer[i]===13){let o=this.buffer.subarray(n,i),c=this.decoder.decode(o,{stream:!0});s.push(c),this.buffer[i]===13&&i+1<this.buffer.length&&this.buffer[i+1]===10&&i++,n=i+1}return n>0&&(this.buffer=this.buffer.slice(n)),s}flush(){if(this.buffer.length===0){let t=this.decoder.decode();return t?[t]:[]}let e=this.decoder.decode(this.buffer,{stream:!1});return this.buffer=new Uint8Array,e?[e]:[]}},at="[DONE]";async function*ct(r,e){let t=new Xt,s=new Qt,n=r.getReader(),i=!1,o=a(()=>{i=!0,n.cancel().catch(()=>{})},"onAbort");if(e){if(e.aborted)return;e.addEventListener("abort",o,{once:!0})}try{for(;;){if(i)return;let u;try{u=await n.read()}catch(f){if(i||f instanceof Error&&f.name==="AbortError")return;throw f}let{done:d,value:l}=u;if(d)break;for(let f of s.decode(l)){let g=t.decode(f);g&&(yield g)}}for(let u of s.flush()){let d=t.decode(u);d&&(yield d)}let c=t.flush();c&&(yield c)}finally{e&&e.removeEventListener("abort",o);try{n.releaseLock()}catch{}}}a(ct,"iterSSEEvents");function Zt(r,e){let t=e?{requestId:e}:{};try{let s=JSON.parse(r);if(s&&typeof s=="object"){let n=s.error??s;if(n&&typeof n=="object")return new x({message:typeof n.message=="string"?n.message:"Stream error",type:typeof n.type=="string"?n.type:"server_error",param:n.param===void 0?null:n.param,code:n.code===void 0?null:n.code},t)}}catch{}return new x({message:r||"Stream error",type:"server_error",param:null,code:null},t)}a(Zt,"extractSSEError");var pe=class{static{a(this,"ChatCompletionsAPI")}baseUrl;fetch;constructor(e,t){this.baseUrl=e,this.fetch=t}create(e){if(e.stream!==!0)throw new x({message:"stream must be true; non-streaming chat completions are not supported",type:"invalid_request_error",param:"stream",code:"request_stream_required"});return this.createStreaming(e)}async*createStreaming(e){let{signal:t,conversationId:s,...n}=e;n.stream=!0;let i;try{i=await this.fetch(`${this.baseUrl}/chat/completions`,{method:"POST",headers:{Accept:"text/event-stream","Content-Type":"application/json",...s!==void 0?{"X-Conversation-ID":s}:{}},body:JSON.stringify(n),signal:t})}catch(d){if(d instanceof Error&&d.name==="AbortError")return;throw new x({message:`Network error: ${d?.message??"unknown"}`,type:"server_error",param:null,code:"gateway_network_error"},{cause:d})}if(!i.ok)throw await Ae(i);if(!i.body)throw new x({message:"Response body is empty \u2014 streaming not supported",type:"server_error",param:null,code:"gateway_invalid_response"},{requestId:i.headers.get("x-request-id")??void 0});let o=i.headers.get("x-request-id")??void 0,c=!1,u=!1;try{for await(let d of ct(i.body,t)){if(d.event==="error")throw u=!0,Zt(d.data,o);if(d.event===null||d.event===""){if(d.data===at){c=!0;return}if(!d.data)continue;let l;try{l=JSON.parse(d.data)}catch{throw u=!0,new x({message:`Failed to parse SSE data: ${d.data}`,type:"server_error",param:null,code:"gateway_invalid_response"},{requestId:o})}if(l&&typeof l=="object"&&"error"in l){u=!0;let f=l.error;throw new x({message:typeof f?.message=="string"?f.message:"Stream error",type:typeof f?.type=="string"?f.type:"server_error",param:f?.param===void 0?null:f.param,code:f?.code===void 0?null:f.code},{requestId:o})}yield l}}}catch(d){if(d instanceof Error&&d.name==="AbortError")return;throw u=!0,d}if(!c&&!u&&!t?.aborted)throw new x({message:"\u6D41\u5F0F\u54CD\u5E94\u4E2D\u65AD\u3002",type:"server_error",param:null,code:"gateway_stream_interrupted"},{requestId:o})}};var M=class{static{a(this,"LlmModule")}fetch;baseUrl;models;chat;constructor(e,t){this.fetch=t,this.baseUrl=`${e.endpoint}${R.llm}`,this.models=new he(this.baseUrl,this.fetch),this.chat={completions:new pe(this.baseUrl,this.fetch)}}};var F=class extends Error{static{a(this,"StorageError")}__isStorageError=!0;namespace;status;statusCode;constructor(e,t="storage",s,n){super(e),this.namespace=t,this.name=t==="vectors"?"StorageVectorsError":"StorageError",this.status=s,this.statusCode=n}toJSON(){return{name:this.name,message:this.message,status:this.status,statusCode:this.statusCode}}};function U(r){return typeof r=="object"&&r!==null&&"__isStorageError"in r}a(U,"isStorageError");var C=class extends F{static{a(this,"StorageApiError")}status;statusCode;code;constructor(e,t,s,n="storage",i){super(e,n,t,s),this.name=n==="vectors"?"StorageVectorsApiError":"StorageApiError",this.status=t,this.statusCode=s,this.code=i}toJSON(){return{...super.toJSON(),code:this.code}}},q=class extends F{static{a(this,"StorageUnknownError")}originalError;constructor(e,t,s="storage"){super(e,s),this.name=s==="vectors"?"StorageVectorsUnknownError":"StorageUnknownError",this.originalError=t}};function L(r,e,t){let s={...r},n=e.toLowerCase();for(let i of Object.keys(s))i.toLowerCase()===n&&delete s[i];return s[n]=t,s}a(L,"setHeader");function ut(r){let e={};for(let[t,s]of Object.entries(r))e[t.toLowerCase()]=s;return e}a(ut,"normalizeHeaders");var dt=a(r=>r?(...e)=>r(...e):(...e)=>fetch(...e),"resolveFetch");var lt=a(r=>{if(typeof r!="object"||r===null)return!1;let e=Object.getPrototypeOf(r);return(e===null||e===Object.prototype||Object.getPrototypeOf(e)===null)&&!(Symbol.toStringTag in r)&&!(Symbol.iterator in r)},"isPlainObject"),me=a(r=>{if(Array.isArray(r))return r.map(t=>me(t));if(typeof r=="function"||r!==Object(r))return r;let e={};return Object.entries(r).forEach(([t,s])=>{let n=t.replace(/([-_][a-z])/gi,i=>i.toUpperCase().replace(/[-_]/g,""));e[n]=me(s)}),e},"recursiveToCamel");var ht=a(r=>r.split("/").map(encodeURIComponent).join("/"),"encodeStoragePath");var ft=a(r=>{if(typeof r=="object"&&r!==null){let e=r;if(typeof e.msg=="string")return e.msg;if(typeof e.message=="string")return e.message;if(typeof e.error_description=="string")return e.error_description;if(typeof e.error=="string")return e.error;if(typeof e.error=="object"&&e.error!==null){let t=e.error;if(typeof t.message=="string")return t.message}}return JSON.stringify(r)},"_getErrorMessage"),er=a(async(r,e,t,s)=>{if(r!==null&&typeof r=="object"&&"json"in r&&typeof r.json=="function"){let i=r,o=parseInt(String(i.status),10);Number.isFinite(o)||(o=500),i.json().then(c=>{let u=c?.statusCode||c?.code||o+"";e(new C(ft(c),o,u,s,c?.code))}).catch(()=>{let c=o+"",u=i.statusText||`HTTP ${o} error`;e(new C(u,o,c,s))})}else e(new q(ft(r),r,s))},"handleError"),tr=a((r,e,t,s)=>{let n={method:r,headers:e?.headers||{}};if(r==="GET"||r==="HEAD"||!s)return{...n,...t};if(lt(s)){let i=e?.headers||{},o;for(let[c,u]of Object.entries(i))c.toLowerCase()==="content-type"&&(o=u);n.headers=L(i,"Content-Type",o??"application/json"),n.body=JSON.stringify(s)}else n.body=s;return e?.duplex&&(n.duplex=e.duplex),{...n,...t}},"_getRequestParams");async function Y(r,e,t,s,n,i,o){return new Promise((c,u)=>{r(t,tr(e,s,n,i)).then(d=>{if(!d.ok)throw d;if(s?.noResolveJson)return d;if(o==="vectors"){let l=d.headers.get("content-type");if(d.headers.get("content-length")==="0"||d.status===204)return{};if(!l||!l.includes("application/json"))return{}}return d.json()}).then(d=>c(d)).catch(d=>er(d,u,s,o))})}a(Y,"_handleRequest");function pt(r="storage"){return{get:a(async(e,t,s,n)=>Y(e,"GET",t,s,n,void 0,r),"get"),post:a(async(e,t,s,n,i)=>Y(e,"POST",t,n,i,s,r),"post"),put:a(async(e,t,s,n,i)=>Y(e,"PUT",t,n,i,s,r),"put"),head:a(async(e,t,s,n)=>Y(e,"HEAD",t,{...s,noResolveJson:!0},n,void 0,r),"head"),remove:a(async(e,t,s,n,i)=>Y(e,"DELETE",t,n,i,s,r),"remove")}}a(pt,"createFetchApi");var rr=pt("storage"),{get:Re,post:$,put:$e,head:mt,remove:Ue}=rr,Ms=pt("vectors");var X=class{static{a(this,"BaseApiClient")}url;headers;fetch;shouldThrowOnError=!1;namespace;constructor(e,t={},s,n="storage"){this.url=e,this.headers=ut(t),this.fetch=dt(s),this.namespace=n}throwOnError(){return this.shouldThrowOnError=!0,this}setHeader(e,t){return this.headers=L(this.headers,e,t),this}async handleOperation(e){try{return{data:await e(),error:null}}catch(t){if(this.shouldThrowOnError)throw t;if(U(t))return{data:null,error:t};throw t}}};var Q=class{static{a(this,"StreamDownloadBuilder")}downloadFn;shouldThrowOnError;[Symbol.toStringTag]="StreamDownloadBuilder";promise=null;constructor(e,t){this.downloadFn=e,this.shouldThrowOnError=t}then(e,t){return this.getPromise().then(e,t)}catch(e){return this.getPromise().catch(e)}finally(e){return this.getPromise().finally(e)}getPromise(){return this.promise||(this.promise=this.execute()),this.promise}async execute(){try{return{data:(await this.downloadFn()).body,error:null}}catch(e){if(this.shouldThrowOnError)throw e;if(U(e))return{data:null,error:e};throw e}}};var Z=class{static{a(this,"BlobDownloadBuilder")}downloadFn;shouldThrowOnError;[Symbol.toStringTag]="BlobDownloadBuilder";promise=null;constructor(e,t){this.downloadFn=e,this.shouldThrowOnError=t}asStream(){return new Q(this.downloadFn,this.shouldThrowOnError)}then(e,t){return this.getPromise().then(e,t)}catch(e){return this.getPromise().catch(e)}finally(e){return this.getPromise().finally(e)}getPromise(){return this.promise||(this.promise=this.execute()),this.promise}async execute(){try{return{data:await(await this.downloadFn()).blob(),error:null}}catch(e){if(this.shouldThrowOnError)throw e;if(U(e))return{data:null,error:e};throw e}}};var Ie={limit:100,offset:0,sortBy:{column:"name",order:"asc"}},gt={cacheControl:"3600",contentType:"text/plain;charset=UTF-8",upsert:!1},ee=class extends X{static{a(this,"StorageFileApi")}bucketId;constructor(e,t={},s,n){super(e,t,n,"storage"),this.bucketId=s}async uploadOrUpdate(e,t,s,n){return this.handleOperation(async()=>{let i,o={...gt,...n},c={...this.headers,...e==="POST"&&{"x-upsert":String(o.upsert)}},u=o.metadata;if(typeof Blob<"u"&&s instanceof Blob?(i=new FormData,i.append("cacheControl",o.cacheControl),u&&i.append("metadata",this.encodeMetadata(u)),i.append("",s)):typeof FormData<"u"&&s instanceof FormData?(i=s,i.has("cacheControl")||i.append("cacheControl",o.cacheControl),u&&!i.has("metadata")&&i.append("metadata",this.encodeMetadata(u))):(i=s,c["cache-control"]=`max-age=${o.cacheControl}`,c["content-type"]=o.contentType,u&&(c["x-metadata"]=this.toBase64(this.encodeMetadata(u))),(typeof ReadableStream<"u"&&i instanceof ReadableStream||i&&typeof i=="object"&&"pipe"in i&&typeof i.pipe=="function")&&!o.duplex&&(o.duplex="half")),n?.headers)for(let[g,y]of Object.entries(n.headers))c=L(c,g,y);let d=this._removeEmptyFolders(t),l=this._getFinalPath(d),f=await(e=="PUT"?$e:$)(this.fetch,`${this.url}/object/${l}`,i,{headers:c,...o?.duplex?{duplex:o.duplex}:{}});return{path:d,id:f.Id,fullPath:f.Key}})}async upload(e,t,s){return this.uploadOrUpdate("POST",e,t,s)}async uploadToSignedUrl(e,t,s,n){let i=this._removeEmptyFolders(e),o=this._getFinalPath(i),c=new URL(this.url+`/object/upload/sign/${o}`);return c.searchParams.set("token",t),this.handleOperation(async()=>{let u,d={...gt,...n},l={...this.headers,"x-upsert":String(d.upsert)},f=d.metadata;if(typeof Blob<"u"&&s instanceof Blob?(u=new FormData,u.append("cacheControl",d.cacheControl),f&&u.append("metadata",this.encodeMetadata(f)),u.append("",s)):typeof FormData<"u"&&s instanceof FormData?(u=s,u.has("cacheControl")||u.append("cacheControl",d.cacheControl),f&&!u.has("metadata")&&u.append("metadata",this.encodeMetadata(f))):(u=s,l["cache-control"]=`max-age=${d.cacheControl}`,l["content-type"]=d.contentType,f&&(l["x-metadata"]=this.toBase64(this.encodeMetadata(f))),(typeof ReadableStream<"u"&&u instanceof ReadableStream||u&&typeof u=="object"&&"pipe"in u&&typeof u.pipe=="function")&&!d.duplex&&(d.duplex="half")),n?.headers)for(let[y,ne]of Object.entries(n.headers))l=L(l,y,ne);let g=await $e(this.fetch,c.toString(),u,{headers:l,...d?.duplex?{duplex:d.duplex}:{}});return{path:i,fullPath:g.Key}})}async createSignedUploadUrl(e,t){return this.handleOperation(async()=>{let s=this._getFinalPath(e),n={...this.headers};t?.upsert&&(n["x-upsert"]="true");let i=await $(this.fetch,`${this.url}/object/upload/sign/${s}`,{},{headers:n}),o=new URL(this.url+i.url),c=o.searchParams.get("token");if(!c)throw new F("No token returned by API");return{signedUrl:o.toString(),path:e,token:c}})}async update(e,t,s){return this.uploadOrUpdate("PUT",e,t,s)}async move(e,t,s){return this.handleOperation(async()=>await $(this.fetch,`${this.url}/object/move`,{bucketId:this.bucketId,sourceKey:e,destinationKey:t,destinationBucket:s?.destinationBucket},{headers:this.headers}))}async copy(e,t,s){return this.handleOperation(async()=>({path:(await $(this.fetch,`${this.url}/object/copy`,{bucketId:this.bucketId,sourceKey:e,destinationKey:t,destinationBucket:s?.destinationBucket},{headers:this.headers})).Key}))}async createSignedUrl(e,t,s){return this.handleOperation(async()=>{let n=this._getFinalPath(e),i=typeof s?.transform=="object"&&s.transform!==null&&Object.keys(s.transform).length>0,o=await $(this.fetch,`${this.url}/object/sign/${n}`,{expiresIn:t,...i?{transform:s.transform}:{}},{headers:this.headers}),c=new URLSearchParams;s?.download&&c.set("download",s.download===!0?"":s.download),s?.cacheNonce!=null&&c.set("cacheNonce",String(s.cacheNonce));let u=c.toString();return{signedUrl:encodeURI(`${this.url}${o.signedURL}${u?`&${u}`:""}`)}})}async createSignedUrls(e,t,s){return this.handleOperation(async()=>{let n=await $(this.fetch,`${this.url}/object/sign/${this.bucketId}`,{expiresIn:t,paths:e},{headers:this.headers}),i=new URLSearchParams;s?.download&&i.set("download",s.download===!0?"":s.download),s?.cacheNonce!=null&&i.set("cacheNonce",String(s.cacheNonce));let o=i.toString();return n.map(c=>({...c,signedUrl:c.signedURL?encodeURI(`${this.url}${c.signedURL}${o?`&${o}`:""}`):null}))})}download(e,t,s){let i=typeof t?.transform=="object"&&t.transform!==null&&Object.keys(t.transform).length>0?"render/image/authenticated":"object",o=new URLSearchParams;t?.transform&&this.applyTransformOptsToQuery(o,t.transform),t?.cacheNonce!=null&&o.set("cacheNonce",String(t.cacheNonce));let c=o.toString(),u=this._getFinalPath(e),d=a(()=>Re(this.fetch,`${this.url}/${i}/${u}${c?`?${c}`:""}`,{headers:this.headers,noResolveJson:!0},s),"downloadFn");return new Z(d,this.shouldThrowOnError)}async info(e){let t=this._getFinalPath(e);return this.handleOperation(async()=>{let s=await Re(this.fetch,`${this.url}/object/info/${t}`,{headers:this.headers});return me(s)})}async exists(e){let t=this._getFinalPath(e);try{return await mt(this.fetch,`${this.url}/object/${t}`,{headers:this.headers}),{data:!0,error:null}}catch(s){if(this.shouldThrowOnError)throw s;if(U(s)){let n=s instanceof C?s.status:s instanceof q?s.originalError?.status:void 0;if(n!==void 0&&[400,404].includes(n))return{data:!1,error:s}}throw s}}getPublicUrl(e,t){let s=this._getFinalPath(e),n=new URLSearchParams;t?.download&&n.set("download",t.download===!0?"":t.download),t?.transform&&this.applyTransformOptsToQuery(n,t.transform),t?.cacheNonce!=null&&n.set("cacheNonce",String(t.cacheNonce));let i=n.toString(),c=typeof t?.transform=="object"&&t.transform!==null&&Object.keys(t.transform).length>0?"render/image":"object";return{data:{publicUrl:encodeURI(`${this.url}/${c}/public/${s}`)+(i?`?${i}`:"")}}}async remove(e){return this.handleOperation(async()=>await Ue(this.fetch,`${this.url}/object/${this.bucketId}`,{prefixes:e},{headers:this.headers}))}async purgeCache(e,t,s){return this.handleOperation(async()=>{let n=ht(this._getFinalPath(e)),i=new URLSearchParams;t?.transformations&&i.set("transformations","true");let o=i.toString();return await Ue(this.fetch,`${this.url}/cdn/${n}${o?`?${o}`:""}`,{},{headers:this.headers},s)})}async list(e,t,s){return this.handleOperation(async()=>{let n=t?.sortBy?{...Ie.sortBy,...t.sortBy}:Ie.sortBy,i={...Ie,...t,sortBy:n,prefix:e||""};return await $(this.fetch,`${this.url}/object/list/${this.bucketId}`,i,{headers:this.headers},s)})}async listV2(e,t){return this.handleOperation(async()=>{let s={...e};return await $(this.fetch,`${this.url}/object/list-v2/${this.bucketId}`,s,{headers:this.headers},t)})}encodeMetadata(e){return JSON.stringify(e)}toBase64(e){return typeof Buffer<"u"?Buffer.from(e).toString("base64"):btoa(e)}_getFinalPath(e){return`${this.bucketId}/${e.replace(/^\/+/,"")}`}_removeEmptyFolders(e){return e.replace(/^\/|\/$/g,"").replace(/\/+/g,"/")}applyTransformOptsToQuery(e,t){return t.width&&e.set("width",t.width.toString()),t.height&&e.set("height",t.height.toString()),t.resize&&e.set("resize",t.resize),t.format&&e.set("format",t.format),t.quality&&e.set("quality",t.quality.toString()),e}};var yt="2.112.3";var bt={"X-Client-Info":`storage-js/${yt}`};var W="runtime",ge=600,ye=3600,w=class extends Error{static{a(this,"CloudStoragePathError")}constructor(e){super(e),this.name="CloudStoragePathError"}},te=class{static{a(this,"WorkBuddyStorageDownload")}blob;stream;[Symbol.toStringTag]="WorkBuddyStorageDownload";constructor(e,t){this.blob=e,this.stream=t}asStream(){return this.stream()}then(e,t){return this.blob().then(e,t)}catch(e){return this.blob().catch(e)}finally(e){return this.blob().finally(e)}},H=class{static{a(this,"WorkBuddyStorageBucket")}fileApi;constructor(e){this.fileApi=e}upload(e,t,s){return _(this.fileApi.upload(v(e),t,s))}update(e,t,s){return _(this.fileApi.update(v(e),t,s))}list(e="",t){return _(this.fileApi.list(St(e),t))}listPage(e){return _(this.fileApi.listV2({...e,prefix:St(e?.prefix??"")}))}info(e){return _(this.fileApi.info(v(e)))}async exists(e){let t=await this.fileApi.exists(v(e));return t.error?{data:null,error:Et(t.error)}:{data:t.data,error:null}}download(e){let t=this.fileApi.download(v(e));return new te(()=>_(t),()=>_(t.asStream()))}remove(e){if(e.length===0)throw new w("remove requires at least one object path.");return _(this.fileApi.remove(e.map(v)))}copy(e,t){return _(this.fileApi.copy(v(e),v(t)))}move(e,t){return _(this.fileApi.move(v(e),v(t)))}createSignedUrl(e,t=ge){return _(this.fileApi.createSignedUrl(v(e),kt(t)))}createSignedUrls(e,t=ge){if(e.length===0)throw new w("createSignedUrls requires at least one object path.");return _(this.fileApi.createSignedUrls(e.map(v),kt(t)))}createSignedUploadUrl(e,t){return _(this.fileApi.createSignedUploadUrl(v(e),{upsert:t?.upsert??!1}))}uploadToSignedUrl(e,t,s,n){if(!t)throw new w("signed upload token is required.");return _(this.fileApi.uploadToSignedUrl(v(e),t,s,n))}},re=class extends H{static{a(this,"WorkBuddyStorageModule")}runtime;constructor(e){let s=e.from(W);super(s),this.runtime=new H(s)}from(e=W){if(e!==W)throw new w(`Only the "${W}" storage bucket is available.`);return this.runtime}userPath(e,t){return wt("users",e,t)}sharedPath(e,t){return wt("shared",e,t)}};function xt(r,e){let t={from:a(s=>new ee(`${r.endpoint}${R.storage}`,bt,s,e),"from")};return new re(t)}a(xt,"createStorageModule");function wt(r,e,t){let s=sr(e,"owner/user id"),n=Ce(t,!1);return v(`${r}/${s}/${n}`)}a(wt,"scopedPath");function v(r){let e=Ce(r,!1);if(!e.includes("/"))throw new w("Object paths must use users/<uid>/... or shared/<ownerUid>/....");let[t,s,...n]=e.split("/");if(t!=="users"&&t!=="shared"||!s||n.length===0)throw new w("Object paths must use users/<uid>/... or shared/<ownerUid>/....");return e}a(v,"validateObjectPath");function St(r){if(r==="")return"";let e=Ce(r,!0),[t,s]=e.split("/");if(t==="shared"&&!s)return"shared";if(t!=="users"&&t!=="shared"||!s)throw new w("List prefixes must start with users/<uid> or shared/<ownerUid>.");return e}a(St,"validateObjectPrefix");function Ce(r,e){if(typeof r!="string"||r.trim()==="")throw new w("Storage path must be a non-empty relative path.");let t=r.trim();for(let i=0;i<3;i+=1)try{let o=decodeURIComponent(t);if(o===t)break;t=o}catch{throw new w("Storage path contains invalid URL encoding.")}if(t.startsWith("/")||t.includes("\\")||t.includes("\0")||t.includes("//")||!e&&t.endsWith("/"))throw new w("Storage path is not a safe relative object path.");let s=e?t.replace(/\/+$/,""):t;if(s.split("/").some(i=>i===""||i==="."||i===".."))throw new w("Storage path traversal is not allowed.");return s}a(Ce,"validatePath");function sr(r,e){if(!r)throw new w(`${e} is not a valid storage path segment.`);let t=r;for(let s=0;s<3;s+=1)try{let n=decodeURIComponent(t);if(n===t)break;t=n}catch{throw new w(`${e} contains invalid URL encoding.`)}if(t.includes("/")||t.includes("\\")||t.includes("\0")||t==="."||t==="..")throw new w(`${e} is not a valid storage path segment.`);return t}a(sr,"validatePathSegment");function kt(r){if(!Number.isInteger(r)||r<=0||r>ye)throw new w(`Signed URL expiry must be an integer between 1 and ${ye} seconds.`);return r}a(kt,"validateSignedURLTTL");async function _(r){let e=await r;return e.error?{data:null,error:Et(e.error)}:e.data===null?{data:null,error:{name:"CloudStorageResponseError",message:"Storage API returned neither data nor an error."}}:{data:e.data,error:null}}a(_,"mapStorageResult");function Et(r){if(r instanceof Error){let e=r;return{name:e.name,message:e.message,status:e.status,statusCode:e.statusCode,code:e.code,cause:r}}return{name:"CloudStorageError",message:String(r),cause:r}}a(Et,"normalizeStorageError");var se=class{static{a(this,"WorkBuddyCloudClient")}config;database;auth;storage;llm;constructor(e,t={}){this.config=e,this.auth=new D(e,we(e,oe),{storage:t.storage,workBuddyMiniProgram:t.workBuddyMiniProgram});let s=we(e,()=>this.auth.getAccessToken());this.database=et(e,s),this.storage=xt(e,s),this.llm=new M(e,s)}get endpoint(){return this.config.endpoint}get oauthRelayBaseUrl(){return this.config.oauthRelayBaseUrl}};function vt(r){return new se(je(r),{storage:r.storage})}a(vt,"createWorkBuddyCloud");function Pt(r){return r.kind==="unauthenticated"||r.code==="invalid_grant"}a(Pt,"shouldClearCredentials");return $t(nr);})();
+
+</script>
+
+<script>
+(function(){
+'use strict';
+
+/* ================= 政策与参数 ================= */
+/* 政策常量：全部沿用《10（1）管理会计——全面预算示例》M 公司 2001 年度示例原数 */
+var POL={
+  ratio:[0.1,0.3,0.4,0.2],      /* 季度销量结构 1:3:4:2 */
+  yEndFg:3000,                  /* 年末产成品盘存 */
+  matInvRate:0.1,               /* 材料期末存货＝下季需用×10% */
+  yEndMat:7500,                 /* 年末材料存货 */
+  fohQ:60600, depQ:15000, vohRate:2,
+  sgaVar:1.8, sgaFixed:75000, sgaMisc:[0,1900,37750,18150],
+  taxQ:18000, divQ:10000, capex:[30000,20000,0,0],
+  cash0:42500, ar0:90000, ap0:25800, minCash:40000
+};
+var DEF={ qty:100000, price:20, inv:20, mat:5, matP:0.6, hours:0.8, wage:7.5, cashPct:70 };
+var P={ qty:DEF.qty, price:DEF.price, inv:DEF.inv, mat:DEF.mat, matP:DEF.matP,
+        hours:DEF.hours, wage:DEF.wage, cashPct:DEF.cashPct };
+var BEST_KEY='jx_ch10_sim_v1_best';
+var ITEM_PTS={ rev:10, prod:14, mat:14, lab:10, oh:14, cash:18, bonus:10 };
+var ITEM_KEYS=['rev','prod','mat','lab','oh','cash','bonus'];
+var st={ submitted:false, resolved:false,
+  t:{rev:0,prod:0,mat:0,lab:0,oh:0,cash:0,bonus:0},
+  ok:{rev:false,prod:false,mat:false,lab:false,oh:false,cash:false,bonus:false},
+  score:0, best:loadBest() };
+
+function loadBest(){ try{ var v=parseInt(localStorage.getItem(BEST_KEY)||'0',10); return isFinite(v)?v:0; }catch(e){ return 0; } }
+function saveBest(v){ try{ localStorage.setItem(BEST_KEY,String(v)); }catch(e){} }
+
+function $(id){ return document.getElementById(id); }
+function fmt(n,d){ d=(d===undefined)?0:d; n=Math.round(n*Math.pow(10,d))/Math.pow(10,d);
+  var s=String(Math.abs(n).toFixed(d)).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  return (n<0?'-':'')+s; }
+var toastTimer=0;
+function toast(msg){
+  var t=$('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove('show'); },2400);
+}
+
+/* ================= 核心计算（全部实时，无写死结果常量） ================= */
+function calc(p){
+  var i, q=[], rev=[], revY=0, r=p.inv/100, cr=p.cashPct/100;
+  for(i=0;i<4;i++){ q[i]=p.qty*POL.ratio[i]; rev[i]=q[i]*p.price; revY+=rev[i]; }
+  /* 生产预算 */
+  var fgEnd=[], fgBeg=[], prod=[], prodY=0;
+  for(i=0;i<3;i++){ fgEnd[i]=q[i+1]*r; }
+  fgEnd[3]=POL.yEndFg;
+  fgBeg[0]=q[0]*r;
+  for(i=1;i<4;i++){ fgBeg[i]=fgEnd[i-1]; }
+  for(i=0;i<4;i++){ prod[i]=q[i]+fgEnd[i]-fgBeg[i]; prodY+=prod[i]; }
+  /* 直接材料预算 */
+  var matUse=[], matEnd=[], matBeg=[], matBuy=[], matAmt=[];
+  for(i=0;i<4;i++){ matUse[i]=prod[i]*p.mat; }
+  for(i=0;i<3;i++){ matEnd[i]=matUse[i+1]*POL.matInvRate; }
+  matEnd[3]=POL.yEndMat;
+  matBeg[0]=matUse[0]*POL.matInvRate;
+  for(i=1;i<4;i++){ matBeg[i]=matEnd[i-1]; }
+  for(i=0;i<4;i++){ matBuy[i]=matUse[i]+matEnd[i]-matBeg[i]; matAmt[i]=matBuy[i]*p.matP; }
+  /* 直接人工与制造费用 */
+  var labH=[], labAmt=[], oh=[], ohCash=[], ohY=0, labHY=0;
+  for(i=0;i<4;i++){ labH[i]=prod[i]*p.hours; labAmt[i]=labH[i]*p.wage;
+    oh[i]=labH[i]*POL.vohRate+POL.fohQ; ohCash[i]=oh[i]-POL.depQ; ohY+=oh[i]; labHY+=labH[i]; }
+  var mfgUnit=prodY>0?ohY/prodY:0;
+  var uMat=p.mat*p.matP, uLab=p.hours*p.wage, uTotal=uMat+uLab+mfgUnit;
+  var fgVal=POL.yEndFg*uTotal;
+  /* 销售及管理费用（案例给定各季杂项） */
+  var sga=[];
+  for(i=0;i<4;i++){ sga[i]=q[i]*POL.sgaVar+POL.sgaFixed+POL.sgaMisc[i]; }
+  /* 现金预算 */
+  var cashIn=[], matCash=[], cashOut=[], bal=[], loan=[], endCash=[];
+  for(i=0;i<4;i++){
+    var arPrior=(i===0)?POL.ar0:q[i-1]*p.price*(1-cr);
+    cashIn[i]=arPrior+q[i]*p.price*cr;
+  }
+  for(i=0;i<4;i++){
+    matCash[i]=((i===0)?POL.ap0:matAmt[i-1]*0.5)+matAmt[i]*0.5;
+    cashOut[i]=matCash[i]+labAmt[i]+ohCash[i]+sga[i]+POL.taxQ+POL.capex[i]+POL.divQ;
+  }
+  for(i=0;i<4;i++){
+    var beg=(i===0)?POL.cash0:endCash[i-1];
+    bal[i]=beg+cashIn[i]-cashOut[i];
+    loan[i]=Math.max(0,POL.minCash-bal[i]);
+    endCash[i]=bal[i]+loan[i];
+  }
+  var cashInY=0, cashOutY=0;
+  for(i=0;i<4;i++){ cashInY+=cashIn[i]; cashOutY+=cashOut[i]; }
+  return { q:q, rev:rev, revY:revY, fgEnd:fgEnd, fgBeg:fgBeg, prod:prod, prodY:prodY,
+    matUse:matUse, matBuy:matBuy, matAmt:matAmt, matEnd:matEnd, matBeg:matBeg,
+    labH:labH, labAmt:labAmt, oh:oh, ohCash:ohCash, ohY:ohY, labHY:labHY,
+    uMat:uMat, uLab:uLab, uOh:mfgUnit, uTotal:uTotal, fgVal:fgVal, sga:sga,
+    cashIn:cashIn, cashOut:cashOut, matCash:matCash, bal:bal, loan:loan, endCash:endCash,
+    cashInY:cashInY, cashOutY:cashOutY,
+    flex80:POL.fohQ+POL.vohRate*labH[0]*0.8 };
+}
+
+/* ================= 预算总表（骨架建一次，之后按 id 改文本） ================= */
+var ROWS=[
+  {k:'qty',   n:'预计销售量（件）',      q:function(r){ return [r.q[0],r.q[1],r.q[2],r.q[3],P.qty]; }, vis:true},
+  {k:'rev',   n:'销售收入（元）',        q:function(r){ return [r.rev[0],r.rev[1],r.rev[2],r.rev[3],r.revY]; }},
+  {k:'fgEnd', n:'期末产成品存货（件）',  q:function(r){ return [r.fgEnd[0],r.fgEnd[1],r.fgEnd[2],r.fgEnd[3],r.fgEnd[3]]; }},
+  {k:'fgBeg', n:'期初产成品存货（件）',  q:function(r){ return [r.fgBeg[0],r.fgBeg[1],r.fgBeg[2],r.fgBeg[3],r.fgBeg[0]]; }},
+  {k:'prod',  n:'预计生产量（件）',      q:function(r){ return [r.prod[0],r.prod[1],r.prod[2],r.prod[3],r.prodY]; }},
+  {k:'matUse',n:'材料需用量（千克）',    q:function(r){ return [r.matUse[0],r.matUse[1],r.matUse[2],r.matUse[3],r.matUse[0]+r.matUse[1]+r.matUse[2]+r.matUse[3]]; }},
+  {k:'matBuy',n:'材料采购量（千克）',    q:function(r){ return [r.matBuy[0],r.matBuy[1],r.matBuy[2],r.matBuy[3],r.matBuy[0]+r.matBuy[1]+r.matBuy[2]+r.matBuy[3]]; }},
+  {k:'matAmt',n:'材料采购额（元）',      q:function(r){ return [r.matAmt[0],r.matAmt[1],r.matAmt[2],r.matAmt[3],r.matAmt[0]+r.matAmt[1]+r.matAmt[2]+r.matAmt[3]]; }},
+  {k:'labH',  n:'直接人工工时（小时）',  q:function(r){ return [r.labH[0],r.labH[1],r.labH[2],r.labH[3],r.labHY]; }},
+  {k:'labAmt',n:'直接人工成本（元）',    q:function(r){ return [r.labAmt[0],r.labAmt[1],r.labAmt[2],r.labAmt[3],r.labAmt[0]+r.labAmt[1]+r.labAmt[2]+r.labAmt[3]]; }},
+  {k:'ohCash',n:'制造费用付现（元）',    q:function(r){ return [r.ohCash[0],r.ohCash[1],r.ohCash[2],r.ohCash[3],r.ohCash[0]+r.ohCash[1]+r.ohCash[2]+r.ohCash[3]]; }},
+  {k:'cashIn',n:'现金收入（元）',        q:function(r){ return [r.cashIn[0],r.cashIn[1],r.cashIn[2],r.cashIn[3],r.cashInY]; }},
+  {k:'cashOut',n:'现金支出（元）',       q:function(r){ return [r.cashOut[0],r.cashOut[1],r.cashOut[2],r.cashOut[3],r.cashOutY]; }},
+  {k:'loan',  n:'借款（元）',            q:function(r){ return [r.loan[0],r.loan[1],r.loan[2],r.loan[3],r.loan[0]+r.loan[1]+r.loan[2]+r.loan[3]]; }}
+];
+(function buildTable(){
+  var tb=$('budTable').querySelector('tbody'), html='';
+  for(var i=0;i<ROWS.length;i++){
+    html+='<tr><td class="rh">'+ROWS[i].n+'</td>';
+    for(var j=0;j<5;j++){ html+='<td class="num" id="b_'+ROWS[i].k+'_'+j+'">？</td>'; }
+    html+='</tr>';
+  }
+  tb.innerHTML=html;
+})();
+
+/* ================= 现金收支图（分组柱，随最大值缩放） ================= */
+var CASHMX=600000;
+function layoutCash(r){
+  var mx=0, i;
+  for(i=0;i<4;i++){ mx=Math.max(mx,r.cashIn[i],r.cashOut[i]); }
+  mx=Math.ceil(mx/100000)*100000;
+  if(mx<600000){ mx=600000; }
+  CASHMX=mx;
+  var ids=['cy60','cy45','cy30','cy15'], lv=[1,0.75,0.5,0.25];
+  for(i=0;i<4;i++){ $(ids[i]).textContent=fmt(mx*lv[i]/10000,1); }
+}
+function placeholderCash(){
+  for(var i=0;i<4;i++){
+    ['bi','bo'].forEach(function(p){
+      var rect=$(p+i);
+      rect.setAttribute('y',256); rect.setAttribute('height',26);
+      rect.setAttribute('fill','#f2f8f2'); rect.setAttribute('stroke','#9db89d');
+      rect.setAttribute('stroke-dasharray','5 4'); rect.setAttribute('stroke-width','1.5');
+    });
+    $('li'+i).textContent='？'; $('lo'+i).textContent='？';
+    $('li'+i).setAttribute('fill','#5a6b5a'); $('lo'+i).setAttribute('fill','#5a6b5a');
+  }
+  $('legTodo').hidden=false;
+}
+function drawCash(r){
+  layoutCash(r);
+  var s=220/CASHMX;
+  for(var i=0;i<4;i++){
+    paintBar('bi'+i,r.cashIn[i],s,'#2e7d32');
+    paintBar('bo'+i,r.cashOut[i],s,'#c62828');
+    $('li'+i).textContent=fmt(r.cashIn[i]/10000,1);
+    $('li'+i).setAttribute('y',282-Math.max(r.cashIn[i]*s,0)-6);
+    $('li'+i).setAttribute('fill','#1b5e20');
+    $('lo'+i).textContent=fmt(r.cashOut[i]/10000,1);
+    $('lo'+i).setAttribute('y',282-Math.max(r.cashOut[i]*s,0)-6);
+    $('lo'+i).setAttribute('fill','#c62828');
+  }
+  $('legTodo').hidden=true;
+  var box=$('cashBox');
+  box.classList.remove('reveal-anim');
+  void box.offsetWidth;
+  box.classList.add('reveal-anim');
+}
+function paintBar(id,v,s,col){
+  var rect=$(id), h=Math.max(0,v*s);
+  rect.setAttribute('y',282-h); rect.setAttribute('height',h);
+  rect.setAttribute('fill',col);
+  rect.removeAttribute('stroke'); rect.removeAttribute('stroke-dasharray'); rect.removeAttribute('stroke-width');
+}
+
+/* ================= 静态渲染（就地更新，不整体重渲染） ================= */
+function renderStatic(r){
+  $('vQty').textContent=fmt(P.qty,0)+' 件';
+  $('vPrice').textContent=P.price+' 元/件';
+  $('vInv').textContent=P.inv+'%';
+  $('vMat').textContent=P.mat+' 千克/件';
+  $('vMatP').textContent=P.matP.toFixed(2)+' 元/千克';
+  $('vHours').textContent=P.hours.toFixed(1)+' 小时/件';
+  $('vWage').textContent=P.wage.toFixed(1)+' 元/小时';
+  $('vCash').textContent=P.cashPct+'%';
+
+  /* 预算总表：给定行显示，派生行留 ？ */
+  var q1=r.q[0], q2=r.q[1];
+  for(var i=0;i<ROWS.length;i++){
+    var vals=ROWS[i].q(r);
+    for(var j=0;j<5;j++){
+      var cell=$('b_'+ROWS[i].k+'_'+j);
+      if(st.resolved){
+        cell.textContent=(ROWS[i].k==='loan'&&vals[j]===0)?'—':fmt(vals[j],0);
+        cell.className='num';
+      }else if(ROWS[i].vis){
+        cell.textContent=fmt(vals[j],0);
+        cell.className='num';
+      }else{
+        cell.textContent='？';
+        cell.className='num q';
+      }
+    }
+  }
+
+  /* 单位成本小表 */
+  var uIds=['uMat','uLab','uOh','uTotal','uFgVal'], uVals=[r.uMat,r.uLab,r.uOh,r.uTotal,r.fgVal];
+  for(i=0;i<5;i++){
+    if(st.resolved){ $(uIds[i]).textContent=fmt(uVals[i],2); $(uIds[i]).className='num'; }
+    else{ $(uIds[i]).textContent='？'; $(uIds[i]).className='num q'; }
+  }
+
+  /* 指标卡 */
+  if(st.resolved){
+    $('vRev').textContent=fmt(r.revY,0); $('vRev').classList.remove('q');
+    $('vProd').textContent=fmt(r.prodY,0); $('vProd').classList.remove('q');
+    $('vUnit').textContent=fmt(r.uTotal,2); $('vUnit').classList.remove('q');
+    $('vLoan').textContent=fmt(r.loan[0],0); $('vLoan').classList.remove('q');
+    $('mcLoan').classList.toggle('bad', r.loan[0]>0);
+    $('mcLoan').classList.toggle('good', r.loan[0]<=0);
+  }else{
+    ['vRev','vProd','vUnit','vLoan'].forEach(function(id){ $(id).textContent='？'; $(id).classList.add('q'); });
+    $('mcLoan').classList.remove('good','bad');
+  }
+
+  /* 提示语：代入式随当前参数生成（结果不给） */
+  $('qhRev').innerHTML='销售收入＝预计销售量×售价。第一季度销量＝'+fmt(P.qty,0)+'×10%＝'+fmt(q1,0)+' 件；全年销量＝'+fmt(P.qty,0)+' 件，售价 '+P.price+' 元/件。';
+  $('qhProd').innerHTML='第一季度期末存货＝第二季度销量 '+fmt(q2,0)+'×'+P.inv+'%；第一季度期初存货＝第一季度销量 '+fmt(q1,0)+'×'+P.inv+'%；生产量＝销量＋期末存货−期初存货。全年生产量＝全年销量＋年末盘存 3,000−年初存货。';
+  $('qhMat').innerHTML='材料需用量＝生产量×单耗 '+P.mat+' 千克；采购量＝需用量＋期末材料存货−期初材料存货（期末＝下季需用×10%，期初＝本季需用×10%）；采购额＝采购量×单价 '+P.matP.toFixed(2)+' 元。';
+  $('qhLab').innerHTML='人工工时＝生产量×单位工时 '+P.hours.toFixed(1)+' 小时；人工成本＝工时×工资率 '+P.wage.toFixed(1)+' 元/小时。';
+  $('qhOh').innerHTML='制造费用＝工时×变动分配率 2＋固定 60,600；付现制造费用＝制造费用−折旧 15,000。单位产品成本＝材料 '+P.mat+'×'+P.matP.toFixed(2)+'＋人工 '+P.hours.toFixed(1)+'×'+P.wage.toFixed(1)+'＋全年制造费用÷全年产量；期末存货金额＝3,000×单位产品成本。';
+  $('qhCash').innerHTML='现金收入＝期初应收 90,000＋本季销售×'+P.cashPct+'%＋上季销售×'+(100-P.cashPct)+'%；现金支出＝材料付现（期初应付 25,800＋本季采购额×50%）＋人工＋制费付现＋期间费用＋所得税 18,000＋设备 30,000＋股利 10,000；借款额＝最低现金 40,000−（期初现金 42,500＋收入−支出），不足才借。';
+
+  syncPresets();
+}
+
+/* ================= 进度步骤 ================= */
+function setStep(n){
+  var els=document.querySelectorAll('#steps .step');
+  for(var i=0;i<els.length;i++){
+    var s=i+1;
+    els[i].classList.toggle('done', s<n);
+    els[i].classList.toggle('cur', s===n);
+  }
+}
+
+/* ================= 轮次控制 ================= */
+var INPUT_IDS=['inpRevQ1','inpRevY','inpFgQ1','inpProdQ1','inpProdY','inpMatUse','inpMatBuy','inpMatAmt',
+  'inpLabH','inpLabAmt','inpOhCash','inpUnit','inpFgVal','inpCashIn','inpCashOut','inpLoan','inpOhY','inpFlex'];
+function resetRound(byParam){
+  st.submitted=false; st.resolved=false;
+  st.t={rev:0,prod:0,mat:0,lab:0,oh:0,cash:0,bonus:0};
+  st.ok={rev:false,prod:false,mat:false,lab:false,oh:false,cash:false,bonus:false};
+  st.score=0;
+  $('revealCard').hidden=true;
+  ['fbRev','fbProd','fbMat','fbLab','fbOh','fbCash','fbBonus'].forEach(function(id){ $(id).hidden=true; });
+  ['resRev','resProd','resMat','resLab','resOh','resCash','resBonus'].forEach(function(id){ $(id).hidden=true; });
+  INPUT_IDS.forEach(function(id){ $(id).disabled=false; $(id).value=''; });
+  $('btnSubmit').disabled=false;
+  lockExport(true);
+  setStep(2);
+  placeholderCash();
+  renderStatic(calc(P));
+  if(byParam){ toast('参数已变动，本轮作答已重置'); }
+}
+
+/* ================= 提交与判定 ================= */
+function numOf(id){ var v=$(id).value.replace(/[^\d.\-]/g,''); return parseFloat(v); }
+function filled(id){ return $(id).value.replace(/\s/g,'')!==''; }
+function near(a,b){
+  if(!isFinite(a)){ return false; }
+  var denom=Math.max(Math.abs(b),1e-9);
+  return Math.abs(a-b)/denom<=0.005 || Math.abs(a-b)<=0.05;
+}
+function partialHint(fbId,ids,names){
+  var any=false;
+  for(var i=0;i<ids.length;i++){ if(filled(ids[i])){ any=true; } }
+  if(any&&!st.submitted){
+    var fb=$(fbId); fb.hidden=false; fb.className='fb bad';
+    fb.innerHTML='这一问的 '+ids.length+' 个空（'+names+'）要全部填上再核对。';
+  }
+}
+function gradeQ(key,fbId,parts,labelOk,labelAns,hints){
+  var fb=$(fbId), empty=0, i;
+  for(i=0;i<parts.length;i++){ if(!filled(parts[i].id)){ empty++; } }
+  if(empty>0){
+    if(!st.submitted){
+      fb.hidden=false; fb.className='fb bad';
+      fb.innerHTML='这一问的 '+parts.length+' 个空要全部填上再核对（还差 '+empty+' 个）。';
+    }
+    return false;
+  }
+  if(st.t[key]>=3){ return false; }
+  fb.hidden=false;
+  var wrong=-1;
+  for(i=0;i<parts.length;i++){ if(!near(numOf(parts[i].id),parts[i].ans)){ wrong=i; break; } }
+  if(wrong<0){
+    st.ok[key]=true;
+    fb.className='fb ok';
+    fb.innerHTML=labelOk;
+    for(i=0;i<parts.length;i++){ $(parts[i].id).disabled=true; }
+    return true;
+  }
+  st.t[key]++;
+  if(st.t[key]>=3){
+    fb.className='fb bad';
+    fb.innerHTML=labelAns;
+    for(i=0;i<parts.length;i++){ $(parts[i].id).disabled=true; }
+  }else{
+    fb.className='fb bad';
+    fb.innerHTML='不对，再算一次。'+hints[st.t[key]-1];
+  }
+  return false;
+}
+
+function grade(){
+  if(st.resolved){ return; }
+  var r=calc(P), anyAction=false;
+
+  /* 问1 销售预算 */
+  if(!st.ok.rev){
+    if(filled('inpRevQ1')&&filled('inpRevY')){
+      anyAction=true;
+      gradeQ('rev','fbRev',[{id:'inpRevQ1',ans:r.rev[0]},{id:'inpRevY',ans:r.revY}],
+        '计算正确：第一季度销售收入 '+fmt(r.rev[0],0)+' 元，全年销售收入 '+fmt(r.revY,0)+' 元，容差核对通过。',
+        '三次未算对，正确答案是：第一季度 '+fmt(r.rev[0],0)+' 元、全年 '+fmt(r.revY,0)+' 元，推导看下方分步过程。',
+        ['销售收入＝销量×售价：第一季度 '+fmt(r.q[0],0)+' 件×'+P.price+' 元。',
+         '全年销售收入＝全年销量 '+fmt(P.qty,0)+' 件×'+P.price+' 元。']);
+    }else{ partialHint('fbRev',['inpRevQ1','inpRevY'],'一季度与全年收入'); }
+  }
+
+  /* 问2 生产预算 */
+  if(!st.ok.prod){
+    if(filled('inpFgQ1')&&filled('inpProdQ1')&&filled('inpProdY')){
+      anyAction=true;
+      gradeQ('prod','fbProd',[{id:'inpFgQ1',ans:r.fgEnd[0]},{id:'inpProdQ1',ans:r.prod[0]},{id:'inpProdY',ans:r.prodY}],
+        '计算正确：一季度期末存货 '+fmt(r.fgEnd[0],0)+' 件、生产量 '+fmt(r.prod[0],0)+' 件、全年生产量 '+fmt(r.prodY,0)+' 件，容差核对通过。',
+        '三次未算对，正确答案是：期末存货 '+fmt(r.fgEnd[0],0)+' 件、一季度生产量 '+fmt(r.prod[0],0)+' 件、全年 '+fmt(r.prodY,0)+' 件，推导看下方分步过程。',
+        ['期末存货＝第二季度销量×'+P.inv+'%＝'+fmt(r.q[1],0)+'×'+P.inv+'%。',
+         '生产量＝销量＋期末存货−期初存货；全年＝全年销量 '+fmt(P.qty,0)+'＋3,000−年初存货 '+fmt(r.fgBeg[0],0)+'。']);
+    }else{ partialHint('fbProd',['inpFgQ1','inpProdQ1','inpProdY'],'期末存货、一季度与全年产量'); }
+  }
+
+  /* 问3 直接材料预算 */
+  if(!st.ok.mat){
+    if(filled('inpMatUse')&&filled('inpMatBuy')&&filled('inpMatAmt')){
+      anyAction=true;
+      gradeQ('mat','fbMat',[{id:'inpMatUse',ans:r.matUse[0]},{id:'inpMatBuy',ans:r.matBuy[0]},{id:'inpMatAmt',ans:r.matAmt[0]}],
+        '计算正确：材料需用量 '+fmt(r.matUse[0],0)+' 千克、采购量 '+fmt(r.matBuy[0],0)+' 千克、采购额 '+fmt(r.matAmt[0],0)+' 元，容差核对通过。',
+        '三次未算对，正确答案是：需用量 '+fmt(r.matUse[0],0)+' 千克、采购量 '+fmt(r.matBuy[0],0)+' 千克、采购额 '+fmt(r.matAmt[0],0)+' 元，推导看下方分步过程。',
+        ['需用量＝生产量 '+fmt(r.prod[0],0)+'×单耗 '+P.mat+'；采购量＝需用量＋期末−期初。',
+         '采购额＝采购量×单价 '+P.matP.toFixed(2)+' 元；期末材料存货＝下季需用×10%。']);
+    }else{ partialHint('fbMat',['inpMatUse','inpMatBuy','inpMatAmt'],'需用量、采购量、采购额'); }
+  }
+
+  /* 问4 直接人工 */
+  if(!st.ok.lab){
+    if(filled('inpLabH')&&filled('inpLabAmt')){
+      anyAction=true;
+      gradeQ('lab','fbLab',[{id:'inpLabH',ans:r.labH[0]},{id:'inpLabAmt',ans:r.labAmt[0]}],
+        '计算正确：一季度人工工时 '+fmt(r.labH[0],0)+' 小时、人工成本 '+fmt(r.labAmt[0],0)+' 元，容差核对通过。',
+        '三次未算对，正确答案是：工时 '+fmt(r.labH[0],0)+' 小时、人工成本 '+fmt(r.labAmt[0],0)+' 元，推导看下方分步过程。',
+        ['工时＝生产量 '+fmt(r.prod[0],0)+'×'+P.hours.toFixed(1)+' 小时。',
+         '人工成本＝工时×工资率 '+P.wage.toFixed(1)+' 元。']);
+    }else{ partialHint('fbLab',['inpLabH','inpLabAmt'],'工时与人工成本'); }
+  }
+
+  /* 问5 制造费用与单位成本 */
+  if(!st.ok.oh){
+    if(filled('inpOhCash')&&filled('inpUnit')&&filled('inpFgVal')){
+      anyAction=true;
+      gradeQ('oh','fbOh',[{id:'inpOhCash',ans:r.ohCash[0]},{id:'inpUnit',ans:r.uTotal},{id:'inpFgVal',ans:r.fgVal}],
+        '计算正确：一季度付现制造费用 '+fmt(r.ohCash[0],0)+' 元、单位产品成本 '+fmt(r.uTotal,2)+' 元/件、期末存货金额 '+fmt(r.fgVal,0)+' 元，容差核对通过。',
+        '三次未算对，正确答案是：付现制造费用 '+fmt(r.ohCash[0],0)+' 元、单位成本 '+fmt(r.uTotal,2)+' 元/件、期末存货 '+fmt(r.fgVal,0)+' 元，推导看下方分步过程。',
+        ['制造费用＝工时 '+fmt(r.labH[0],0)+'×2＋60,600，付现再减折旧 15,000。',
+         '单位成本＝材料 '+P.mat+'×'+P.matP.toFixed(2)+'＋人工 '+P.hours.toFixed(1)+'×'+P.wage.toFixed(1)+'＋全年制造费用÷全年产量。']);
+    }else{ partialHint('fbOh',['inpOhCash','inpUnit','inpFgVal'],'付现制费、单位成本、期末存货'); }
+  }
+
+  /* 问6 现金预算 */
+  if(!st.ok.cash){
+    if(filled('inpCashIn')&&filled('inpCashOut')&&filled('inpLoan')){
+      anyAction=true;
+      gradeQ('cash','fbCash',[{id:'inpCashIn',ans:r.cashIn[0]},{id:'inpCashOut',ans:r.cashOut[0]},{id:'inpLoan',ans:r.loan[0]}],
+        '计算正确：一季度现金收入 '+fmt(r.cashIn[0],0)+' 元、现金支出 '+fmt(r.cashOut[0],0)+' 元、借款额 '+fmt(r.loan[0],0)+' 元，容差核对通过。',
+        '三次未算对，正确答案是：收入 '+fmt(r.cashIn[0],0)+' 元、支出 '+fmt(r.cashOut[0],0)+' 元、借款 '+fmt(r.loan[0],0)+' 元，推导看下方分步过程。',
+        ['现金收入＝期初应收 90,000＋本季销售×'+P.cashPct+'%；支出别漏所得税、股利和设备款。',
+         '借款＝最低现金 40,000−（期初现金 42,500＋收入−支出），差额为正才借。']);
+    }else{ partialHint('fbCash',['inpCashIn','inpCashOut','inpLoan'],'收入、支出、借款'); }
+  }
+
+  /* 加分题 */
+  if(!st.ok.bonus){
+    if(filled('inpOhY')&&filled('inpFlex')){
+      anyAction=true;
+      gradeQ('bonus','fbBonus',[{id:'inpOhY',ans:r.ohY},{id:'inpFlex',ans:r.flex80}],
+        '加分题正确：全年制造费用 '+fmt(r.ohY,0)+' 元；弹性预算下 80% 产能的季度制造费用 '+fmt(r.flex80,0)+' 元。',
+        '三次未答对，正确答案：全年制造费用 '+fmt(r.ohY,0)+' 元；80% 产能季度制费 '+fmt(r.flex80,0)+' 元。',
+        ['全年制造费用＝全年工时×2＋60,600×4。',
+         '弹性预算 y＝60,600＋2×业务量；业务量取预算工时 '+fmt(r.labH[0],0)+'×80%。']);
+    }else{ partialHint('fbBonus',['inpOhY','inpFlex'],'全年制费、80% 产能制费'); }
+  }
+
+  if(!anyAction){ toast('七项都作答完才能提交'); return; }
+  st.submitted=true;
+  setStep(3);
+  var allDone=true;
+  ITEM_KEYS.forEach(function(k){ if(!(st.ok[k]||st.t[k]>=3)){ allDone=false; } });
+  if(allDone){ resolveAll(r); }
+}
+
+/* ================= 完全揭晓 ================= */
+function resolveAll(r){
+  st.resolved=true;
+  $('revealCard').hidden=false;
+  $('btnSubmit').disabled=true;
+  setStep(4);
+
+  /* 分步过程一 */
+  $('sRevF').innerHTML='＝'+fmt(r.q[0],0)+' 件 × '+P.price+' 元 ＝';
+  $('sRev').textContent=fmt(r.rev[0],0);
+  $('sFgF').innerHTML='＝第二季度销量 '+fmt(r.q[1],0)+' × '+P.inv+'% ＝';
+  $('sFg').textContent=fmt(r.fgEnd[0],0);
+  $('sProdF').innerHTML='＝'+fmt(r.q[0],0)+' ＋ '+fmt(r.fgEnd[0],0)+' − '+fmt(r.fgBeg[0],0)+' ＝';
+  $('sProd').textContent=fmt(r.prod[0],0);
+  $('sProdY').textContent=fmt(r.prodY,0);
+  $('sMatUseF').innerHTML='＝'+fmt(r.prod[0],0)+' × '+P.mat+' 千克 ＝';
+  $('sMatUse').textContent=fmt(r.matUse[0],0);
+  $('sMatBuyF').innerHTML='＝需用 '+fmt(r.matUse[0],0)+' ＋ 期末 '+fmt(r.matEnd[0],0)+' − 期初 '+fmt(r.matBeg[0],0)+' ＝';
+  $('sMatBuy').textContent=fmt(r.matBuy[0],0);
+  $('sMatAmt').textContent=fmt(r.matAmt[0],0);
+  $('sLabF').innerHTML='＝工时 '+fmt(r.labH[0],0)+' × '+P.wage.toFixed(1)+' 元 ＝';
+  $('sLab').textContent=fmt(r.labAmt[0],0);
+
+  /* 分步过程二 */
+  $('sOhF').innerHTML='＝'+fmt(r.labH[0],0)+' × 2 ＋ 60,600 ＝';
+  $('sOh').textContent=fmt(r.oh[0],0);
+  $('sOhCash').textContent=fmt(r.ohCash[0],0);
+  $('sUnitF').innerHTML='＝'+P.mat+'×'+P.matP.toFixed(2)+' ＋ '+P.hours.toFixed(1)+'×'+P.wage.toFixed(1)+' ＋ '+fmt(r.uOh,2)+' ＝';
+  $('sUnit').textContent=fmt(r.uTotal,2);
+  $('sUmat').textContent=fmt(r.uMat,2);
+  $('sUlab').textContent=fmt(r.uLab,2);
+  $('sUoh').textContent=fmt(r.uOh,2);
+  $('sFgValF').innerHTML='＝3,000 件 × '+fmt(r.uTotal,2)+' 元 ＝';
+  $('sFgVal').textContent=fmt(r.fgVal,0);
+
+  /* 分步过程三 */
+  $('sCashInF').innerHTML='＝期初应收 90,000 ＋ 本季销售 '+fmt(r.rev[0],0)+'×'+P.cashPct+'% ＝';
+  $('sCashIn').textContent=fmt(r.cashIn[0],0);
+  $('sOutMat').textContent=fmt(r.matCash[0],0);
+  $('sOutLab').textContent=fmt(r.labAmt[0],0);
+  $('sOutOh').textContent=fmt(r.ohCash[0],0);
+  $('sOutSga').textContent=fmt(r.sga[0],0);
+  $('sCashOut').textContent=fmt(r.cashOut[0],0);
+  $('sBalF').innerHTML='＝期初现金 42,500 ＋ 收入 '+fmt(r.cashIn[0],0)+' − 支出 '+fmt(r.cashOut[0],0)+' ＝';
+  $('sBal').textContent=fmt(r.bal[0],0);
+  $('sLoanF').innerHTML='＝最低现金 40,000 − 余缺 '+fmt(r.bal[0],0)+' ＝';
+  $('sLoan').textContent=fmt(r.loan[0],0);
+
+  /* 现金缺口复盘表 */
+  var html='';
+  for(var i=0;i<4;i++){
+    var diff=r.cashIn[i]-r.cashOut[i];
+    var desc=(r.loan[i]>0)
+      ? '支出大于收入，需借款 '+fmt(r.loan[i],0)+' 元补足最低现金'
+      : (r.cashIn[i]>=r.cashOut[i]?'收入覆盖支出，现金有结余':'支出大于收入但期初现金尚可覆盖');
+    html+='<tr'+(r.loan[i]>0?' class="better"':'')+'><td>第'+(i+1)+'季度</td><td class="num">'+fmt(r.cashIn[i],0)+'</td><td class="num">'+fmt(r.cashOut[i],0)
+      +'</td><td class="num">'+(diff<0?'-':'')+fmt(Math.abs(diff),0)+'</td><td class="num">'+(r.loan[i]>0?fmt(r.loan[i],0):'—')+'</td><td>'+desc+'</td></tr>';
+  }
+  $('cashBody').innerHTML=html;
+
+  /* 如果当初：三个情景的借款额 */
+  function loanAt(qty,cashPct){
+    var p2={ qty:qty, price:P.price, inv:P.inv, mat:P.mat, matP:P.matP, hours:P.hours, wage:P.wage, cashPct:cashPct };
+    return calc(p2).loan[0];
+  }
+  var baseLoan=loanAt(P.qty,P.cashPct);
+  var slowLoan=loanAt(P.qty,Math.max(50,P.cashPct-10));
+  var boostLoan=loanAt(P.qty+20000,P.cashPct);
+  $('rvBase').textContent=fmt(baseLoan,0);
+  $('rvSlow').textContent=fmt(slowLoan,0);
+  $('rvSlowD').textContent=(slowLoan>baseLoan)
+    ? '账期再拉长 10 个点，一季度借款增加 '+fmt(slowLoan-baseLoan,0)+' 元——回款政策直接决定筹资压力'
+    : '账期变化对一季度借款影响有限';
+  $('rvBoost').textContent=fmt(boostLoan,0);
+  $('rvBoostD').textContent=(boostLoan>baseLoan)
+    ? '规模扩两成，生产与采购跟着涨，借款增加 '+fmt(boostLoan-baseLoan,0)+' 元——增长也要现金撑着'
+    : '规模变化对一季度借款影响有限';
+
+  /* 逐项结果 */
+  function res(id,key,txtOk,txtBad){
+    var el=$(id); el.hidden=false;
+    if(st.ok[key]){ el.className='fb ok'; el.innerHTML=txtOk; }
+    else{ el.className='fb bad'; el.innerHTML=txtBad; }
+  }
+  res('resRev','rev','第一问 · <b>计算正确</b>：一季度收入 '+fmt(r.rev[0],0)+'、全年 '+fmt(r.revY,0)+' 元。','第一问 · <b>未算对</b>，推导见上。');
+  res('resProd','prod','第二问 · <b>计算正确</b>：生产量 '+fmt(r.prod[0],0)+'／全年 '+fmt(r.prodY,0)+' 件。','第二问 · <b>未算对</b>，推导见上。');
+  res('resMat','mat','第三问 · <b>计算正确</b>：需用 '+fmt(r.matUse[0],0)+'／采购 '+fmt(r.matBuy[0],0)+' 千克、'+fmt(r.matAmt[0],0)+' 元。','第三问 · <b>未算对</b>，推导见上。');
+  res('resLab','lab','第四问 · <b>计算正确</b>：工时 '+fmt(r.labH[0],0)+' 小时、人工 '+fmt(r.labAmt[0],0)+' 元。','第四问 · <b>未算对</b>，推导见上。');
+  res('resOh','oh','第五问 · <b>计算正确</b>：付现制费 '+fmt(r.ohCash[0],0)+' 元、单位成本 '+fmt(r.uTotal,2)+' 元/件、期末存货 '+fmt(r.fgVal,0)+' 元。','第五问 · <b>未算对</b>，推导见上。');
+  res('resCash','cash','第六问 · <b>计算正确</b>：收入 '+fmt(r.cashIn[0],0)+'／支出 '+fmt(r.cashOut[0],0)+'／借款 '+fmt(r.loan[0],0)+' 元。','第六问 · <b>未算对</b>，推导见上。');
+  res('resBonus','bonus','加分题 · <b>正确</b>：全年制费 '+fmt(r.ohY,0)+' 元；80% 产能 '+fmt(r.flex80,0)+' 元。','加分题 · <b>未答对</b>，推导见上。');
+
+  /* 结局叙事 */
+  $('endingText').innerHTML=buildEnding(r);
+
+  /* 计分 */
+  function itemScore(pts,tries){ if(tries===0){ return pts; } return tries===1?Math.round(pts*0.5):Math.round(pts*0.3); }
+  var sc=0, firstAll=true;
+  ITEM_KEYS.forEach(function(k){
+    sc+=itemScore(ITEM_PTS[k],st.t[k]);
+    if(!st.ok[k]||st.t[k]>0){ firstAll=false; }
+  });
+  if(firstAll){ sc+=10; }
+  st.score=sc;
+  $('scoreVal').textContent=sc;
+  var wd=$('scoreWord');
+  if(sc>=90){ wd.textContent='优秀'; wd.className='word good'; }
+  else if(sc>=60){ wd.textContent='合格'; wd.className='word mid'; }
+  else{ wd.textContent='待改进'; wd.className='word low'; }
+  var isBest=sc>st.best;
+  if(isBest){ st.best=sc; saveBest(sc); }
+  $('bestVal').textContent='历史最佳 '+st.best+' 分'+(isBest?'（新纪录）':'');
+
+  lockExport(false);
+  renderStatic(r);
+  drawCash(r);
+  buildCard();
+}
+function buildEnding(r){
+  var p=[];
+  p.push('芳姐把八张表摞在理事会桌上：全年销售收入 '+fmt(r.revY,0)+' 元，生产 '+fmt(r.prodY,0)+' 件，单位产品成本 '+fmt(r.uTotal,2)+' 元/件，年末压着 '+fmt(r.fgVal,0)+' 元的产成品存货。');
+  if(r.loan[0]>0){
+    p.push('最扎眼的是现金：一季度账上期初只有 42,500 元，收支一抵还差 '+fmt(-r.bal[0],0)+' 元，要压住 40,000 元的最低余额，得先借 '+fmt(r.loan[0],0)+' 元。');
+    if(r.loan[0]>150000){
+      p.push('这个缺口偏大。要么把一季度那 30,000 元设备款挪到三季度回款之后，要么把回款政策从 '+P.cashPct+'% 往上谈——账期每松一格，借款就多一截。');
+    }else{
+      p.push('缺口不算离谱，按授信额度借短贷能兜住；三季度回款集中，届时可以还上。');
+    }
+  }else{
+    p.push('现金没有缺口：一季度期初现金加上回款就够覆盖支出，不需要借款。');
+  }
+  if(r.uTotal&&P.price){
+    var margin=(P.price-r.uTotal)/P.price*100;
+    p.push('单位产品成本 '+fmt(r.uTotal,2)+' 元、售价 '+P.price+' 元，毛利率约 '+fmt(margin,1)+'%。成本里制造费用占 '+fmt(r.uOh/r.uTotal*100,1)+'%，固定费用靠产量摊薄——这也是弹性预算要按业务量重编的理由。');
+  }
+  p.push('预算编完不是结束：季度末要拿实际数和这张表比，差异出现在哪张表，就说明哪个环节的假设站不住——这正是标准成本法要接着管的事。');
+  var html='';
+  for(var i=0;i<p.length;i++){ html+='<p>'+p[i]+'</p>'; }
+  return html;
+}
+
+/* ================= 决策卡导出 ================= */
+function lockExport(on){
+  $('exportCard').classList.toggle('locked',on);
+  $('lockNote').hidden=!on;
+  $('exportBody').hidden=on;
+}
+function buildCard(){
+  var r=calc(P);
+  var who=$('inpName').value.replace(/^\s+|\s+$/g,'')||'（未填）';
+  var now=new Date();
+  function pad(n){ return (n<10?'0':'')+n; }
+  var ts=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes());
+  var adv=[];
+  adv.push('结论：全年销售收入 '+fmt(r.revY,0)+' 元、生产 '+fmt(r.prodY,0)+' 件、单位产品成本 '+fmt(r.uTotal,2)+' 元/件；一季度现金收支差 '+fmt(r.bal[0],0)+' 元，需借款 '+fmt(r.loan[0],0)+' 元补足最低现金余额。');
+  adv.push('抓手：① 一季度缺口主要来自淡季回款少＋设备款 30,000 元，可把设备采购挪到三季度或提高当季回款比例；② 材料采购额占现金支出大头，采购付款政策（当季 50%）与存货比例（'+P.inv+'%）要联动看；③ 单位成本里固定制造费用靠产量摊薄，产量不达预算会推高单位成本。');
+  adv.push('监控线：当季回款比例 '+P.cashPct+'%、产成品期末存货比例 '+P.inv+'%、材料单耗 '+P.mat+' 千克/件、单位工时 '+P.hours.toFixed(1)+' 小时/件——任一条走坏，现金缺口和单位成本都会跟着变。');
+  var L=[];
+  L.push('经营决策卡｜全面预算 · 编制流程与现金预算');
+  L.push('姓名/学号：'+who);
+  L.push('生成时间：'+ts);
+  L.push('————————————');
+  L.push('【问题】金穗农业合作社 2027 年度全面预算：在全年销量 '+fmt(P.qty,0)+' 件、售价 '+P.price+' 元/件的目标下，从销售预算编到现金预算，一季度现金能否自平衡、需要借多少？');
+  L.push('【假设】① 销量按 1∶3∶4∶2 分季；② 产成品期末存货＝下季销量×'+P.inv+'%（年末盘存 3,000 件）；③ 材料单耗 '+P.mat+' 千克/件、单价 '+P.matP.toFixed(2)+' 元/千克（期末存货＝下季需用×10%，年末 7,500 千克）；④ 单位工时 '+P.hours.toFixed(1)+' 小时、工资率 '+P.wage.toFixed(1)+' 元/小时；⑤ 变动制造费用 2 元/工时、季度固定 60,600 元（含折旧 15,000 元）；⑥ 销售当季回款 '+P.cashPct+'%、次季 '+(100-P.cashPct)+'%；采购当季付 50%、次季付 50%；⑦ 季度所得税 18,000 元、股利 10,000 元，设备一二季度 30,000／20,000 元；⑧ 期初现金 42,500、期初应收 90,000、期初应付 25,800 元，最低现金余额 40,000 元。');
+  L.push('【指标变化】一季度销售收入 '+fmt(r.rev[0],0)+' 元、全年 '+fmt(r.revY,0)+' 元；一季度生产量 '+fmt(r.prod[0],0)+' 件、全年 '+fmt(r.prodY,0)+' 件；一季度材料需用量 '+fmt(r.matUse[0],0)+' 千克、采购量 '+fmt(r.matBuy[0],0)+' 千克、采购额 '+fmt(r.matAmt[0],0)+' 元；一季度人工工时 '+fmt(r.labH[0],0)+' 小时、人工成本 '+fmt(r.labAmt[0],0)+' 元；一季度制造费用 '+fmt(r.oh[0],0)+' 元（付现 '+fmt(r.ohCash[0],0)+' 元）；全年制造费用 '+fmt(r.ohY,0)+' 元；单位产品成本 '+fmt(r.uTotal,2)+' 元/件（材料 '+fmt(r.uMat,2)+'＋人工 '+fmt(r.uLab,2)+'＋制造费用 '+fmt(r.uOh,2)+'）；期末产成品存货 '+fmt(r.fgVal,0)+' 元；一季度现金收入 '+fmt(r.cashIn[0],0)+' 元、现金支出 '+fmt(r.cashOut[0],0)+' 元、收支差 '+fmt(r.bal[0],0)+' 元、借款 '+fmt(r.loan[0],0)+' 元。');
+  L.push('【经营建议】'+adv.join(''));
+  var riskTxt=($('inpRisk')&&$('inpRisk').value.trim())||'（尚未填写风险责任，请在决策卡上方补写）';
+  L.push('【风险责任】示范：① 淡旺季现金错配风险：一季度回款少、又要付设备款，靠短期借款补缺口——财务负责人芳姐负责按月跟踪回款进度与授信额度；我的判断：'+riskTxt);
+  L.push('————————————');
+  L.push('自评：本场得分 '+st.score+' 分（'+$('scoreWord').textContent+'）。');
+  $('cardArea').value=L.join('\n');
+}
+function copyCard(){
+  var text=$('cardArea').value;
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.left='-9999px'; ta.style.top='0';
+  document.body.appendChild(ta); ta.select();
+  var ok=false;
+  try{ ok=document.execCommand('copy'); }catch(e){ ok=false; }
+  document.body.removeChild(ta);
+  if(ok){ toast('决策卡已复制到剪贴板'); }
+  else{
+    $('cardArea').focus();
+    if($('cardArea').select){ $('cardArea').select(); }
+    toast('自动复制未成功，已为你选中全文，请直接复制');
+  }
+  setStep(5);
+}
+function downloadCard(){
+  try{
+    var blob=new Blob([$('cardArea').value],{type:'text/plain;charset=utf-8'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    var who=$('inpName').value.replace(/^\s+|\s+$/g,'');
+    a.download=(who?who:'决策卡')+'-全面预算-决策卡.txt';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ try{ URL.revokeObjectURL(a.href); }catch(e){} },1000);
+    toast('决策卡文本已开始下载');
+  }catch(e){
+    copyCard();
+  }
+  setStep(5);
+}
+
+/* ================= 事件绑定 ================= */
+function syncSliders(){
+  $('sldQty').value=String(P.qty);
+  $('sldPrice').value=String(P.price);
+  $('sldInv').value=String(P.inv);
+  $('sldMat').value=String(P.mat);
+  $('sldMatP').value=String(P.matP);
+  $('sldHours').value=String(P.hours);
+  $('sldWage').value=String(P.wage);
+  $('sldCash').value=String(P.cashPct);
+}
+function onParamChange(){
+  if(st.submitted){ resetRound(true); }
+  else{ renderStatic(calc(P)); }
+}
+function bindSlider(id,key,parse){
+  $(id).addEventListener('input',function(){ P[key]=parse(this.value); onParamChange(); });
+}
+bindSlider('sldQty','qty',parseFloat);
+bindSlider('sldPrice','price',parseFloat);
+bindSlider('sldInv','inv',parseFloat);
+bindSlider('sldMat','mat',parseFloat);
+bindSlider('sldMatP','matP',parseFloat);
+bindSlider('sldHours','hours',parseFloat);
+bindSlider('sldWage','wage',parseFloat);
+bindSlider('sldCash','cashPct',parseFloat);
+
+function syncPresets(){
+  var chips=document.querySelectorAll('.presets .chip');
+  for(var i=0;i<chips.length;i++){
+    var c=chips[i];
+    var on=(P.qty===parseFloat(c.getAttribute('data-qty'))
+      &&P.price===parseFloat(c.getAttribute('data-price'))
+      &&P.inv===parseFloat(c.getAttribute('data-inv'))
+      &&P.mat===parseFloat(c.getAttribute('data-mat'))
+      &&P.matP===parseFloat(c.getAttribute('data-matp'))
+      &&P.hours===parseFloat(c.getAttribute('data-hours'))
+      &&P.wage===parseFloat(c.getAttribute('data-wage'))
+      &&P.cashPct===parseFloat(c.getAttribute('data-cash')));
+    c.classList.toggle('on',on);
+  }
+}
+var presetBtns=document.querySelectorAll('.presets .chip');
+for(var pi=0;pi<presetBtns.length;pi++){
+  presetBtns[pi].addEventListener('click',function(){
+    P.qty=parseFloat(this.getAttribute('data-qty'));
+    P.price=parseFloat(this.getAttribute('data-price'));
+    P.inv=parseFloat(this.getAttribute('data-inv'));
+    P.mat=parseFloat(this.getAttribute('data-mat'));
+    P.matP=parseFloat(this.getAttribute('data-matp'));
+    P.hours=parseFloat(this.getAttribute('data-hours'));
+    P.wage=parseFloat(this.getAttribute('data-wage'));
+    P.cashPct=parseFloat(this.getAttribute('data-cash'));
+    syncSliders(); onParamChange();
+    toast('已打版：'+this.textContent);
+  });
+}
+$('btnDefault').addEventListener('click',function(){
+  P.qty=DEF.qty; P.price=DEF.price; P.inv=DEF.inv; P.mat=DEF.mat; P.matP=DEF.matP;
+  P.hours=DEF.hours; P.wage=DEF.wage; P.cashPct=DEF.cashPct;
+  syncSliders(); onParamChange();
+  toast('已恢复默认参数');
+});
+$('btnStart').addEventListener('click',function(){
+  setStep(2);
+  var el=$('secPanel');
+  if(el.scrollIntoView){ el.scrollIntoView({behavior:'smooth',block:'start'}); }
+});
+$('btnSubmit').addEventListener('click',grade);
+$('btnRestart').addEventListener('click',function(){
+  P.qty=DEF.qty; P.price=DEF.price; P.inv=DEF.inv; P.mat=DEF.mat; P.matP=DEF.matP;
+  P.hours=DEF.hours; P.wage=DEF.wage; P.cashPct=DEF.cashPct;
+  syncSliders(); resetRound(false); setStep(2);
+  toast('新一轮开始，参数已恢复默认');
+  var el=$('secDecide');
+  if(el.scrollIntoView){ el.scrollIntoView({behavior:'smooth',block:'start'}); }
+});
+$('btnCopy').addEventListener('click',copyCard);
+$('btnDownload').addEventListener('click',downloadCard);
+$('btnRebuild').addEventListener('click',function(){ buildCard(); toast('已按当前参数重建决策卡'); });
+
+/* ================= 启动 ================= */
+syncSliders();
+lockExport(true);
+setStep(1);
+placeholderCash();
+renderStatic(calc(P));
+
+/* ================= 云收口提交 ================= */
+var cloud=null;
+try{
+  cloud=WorkBuddyCloud.createWorkBuddyCloud({
+    endpoint:'https://ma-lab-submit.app.workbuddy.host',
+    oauthRelayBaseUrl:'https://www.workbuddy.cn/v2/as/genie-baas/oauth',
+    publishableKey:'wbpk_J2ivIU3MBpwtd9XeOywJFz_geY4Jq9Xkb8yaRlNYZy4orirmOoPPXET'
+  });
+}catch(e){ cloud=null; }
+function parseCard(text){
+  function g(mark){
+    var m=text.match(new RegExp('【'+mark+'】([^\\n]*)'));
+    return m?m[1].trim():'';
+  }
+  return { question:g('问题'), assumption:g('假设'), metric:g('指标变化'), suggestion:g('经营建议'), risk:g('风险责任') };
+}
+var cloudSubmitted=false;
+$('btnSubmitCloud').addEventListener('click',function(){
+  if(cloudSubmitted){ toast('本场已提交，无需重复'); return; }
+  var sid=$('subStuId').value.replace(/\s/g,'');
+  var nm=$('subName').value.replace(/^\s+|\s+$/g,'');
+  var cls=$('subClass').value.replace(/^\s+|\s+$/g,'');
+  var msg=$('cloudMsg');
+  if(!sid||!nm||!cls){
+    msg.hidden=false; msg.className='fb bad';
+    msg.textContent='请先填全学号、姓名、班级三项，再提交。';
+    return;
+  }
+  $('inpName').value=(nm+' '+sid).trim();
+  buildCard();
+  var f=parseCard($('cardArea').value);
+  var riskVal=($('inpRisk')&&$('inpRisk').value.trim())||'';
+  var btn=$('btnSubmitCloud'); btn.disabled=true;
+  msg.hidden=false; msg.className='fb ok'; msg.textContent='正在提交…';
+  if(!riskVal){
+    msg.className='fb bad';
+    msg.textContent='请先在决策卡上方"风险责任"栏写下你的分析，再提交。';
+    btn.disabled=false; return;
+  }
+  if(!cloud){
+    msg.className='fb bad';
+    msg.textContent='提交失败：当前环境未能连接教师后台。请改用手机自带浏览器（Safari / Chrome）重新打开本页，或用电脑浏览器打开后重试；也可先下载决策卡文本交回。';
+    btn.disabled=false; return;
+  }
+  cloud.database.rpc('submit_decision_card', {
+    p_task_id:'ch10-full-budget-corn',
+    p_student_id:sid, p_class_name:cls, p_student_name:nm,
+    p_card_question:f.question, p_card_assumption:f.assumption,
+    p_card_metric:f.metric, p_card_suggestion:f.suggestion,
+    p_card_risk:riskVal, p_score:st.score
+  }).then(function(res){
+    if(res.error){
+      var code=res.error.code||'';
+      if(code==='23505'){ msg.className='fb bad'; msg.textContent='这份提交已存在，请勿重复提交。'; }
+      else if(code==='42501'){ msg.className='fb bad'; msg.textContent='权限不足，无法写入后台，请联系教师检查配置。'; }
+      else { msg.className='fb bad'; msg.textContent='提交未成功：'+(res.error.message||'未知错误')+'（可先下载决策卡文本交回）'; }
+      btn.disabled=false; return;
+    }
+    cloudSubmitted=true;
+    msg.className='fb ok';
+    msg.textContent='已成功提交到教师后台，谢谢！可继续复制或下载决策卡留存。';
+    toast('提交成功');
+  }).catch(function(err){
+    msg.className='fb bad';
+    msg.textContent='网络异常，提交失败：'+(err&&err.message?err.message:'请检查网络')+'（可先下载决策卡文本交回）';
+    btn.disabled=false;
+  });
+});
+})();
+
+</script>
+</body>
+</html>
